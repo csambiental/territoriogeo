@@ -1,0 +1,24 @@
+name: Atualizar MapBiomas
+on:
+  workflow_dispatch:
+  push:
+    paths: ['tools/baixar_mapbiomas.py', '.github/workflows/mapbiomas.yml']
+permissions:
+  contents: write
+jobs:
+  mapbiomas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install rasterio shapely numpy pillow pyproj
+      - run: python tools/baixar_mapbiomas.py > data/mapbiomas/_log.txt 2>&1 || true
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          git diff --cached --quiet || git commit -m "MapBiomas: cobertura do solo e alertas de Londrina"
+          git pull --rebase origin main || true
+          git push
