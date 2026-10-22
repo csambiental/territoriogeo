@@ -1,0 +1,7 @@
+lote 0 1000
+lote 1000 1000
+lote 2000 1000
+lote 3000 57
+/home/runner/work/territoriogeo/territoriogeo/tools/baixar_sigef.py:24: DeprecationWarning: datetime.datetime.utcfromtimestamp() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.fromtimestamp(timestamp, datetime.UTC).
+  data = lambda ms: datetime.datetime.utcfromtimestamp(ms / 1000).strftime('%d/%m/%Y') if isinstance(ms, (int, float)) else (ms or '')
+baixados 3057 | em Londrina 1841
