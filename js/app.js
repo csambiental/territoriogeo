@@ -177,7 +177,24 @@ function renderOpcionais() {
         ${iconeCamada(o)}<span class="camada-nome">${esc(o.nome)}</span><span class="chave" aria-hidden="true"></span></button>`;
     const soltas = lista.filter(o => !o.grupo);
     const grupos = [...new Set(lista.filter(o => o.grupo).map(o => o.grupo))];
-    el.innerHTML = camadasBase().map(o => linha(o, 'base', ligada(o.id))).join('') +
+    // categorias de uma camada colorida por atributo (ex.: situação do CAR) com chave própria
+    const subcats = (o) => {
+        const c = camadas.find(x => x.id === o.id);
+        if (!c || !c.categorias_ativaveis || !c.cor_por || !c.cores) return '';
+        const ocl = catOcultas[c.id] || new Set();
+        const feats = (camadasData[c.id] || {}).features || [];
+        const itens = Object.entries(c.cores).map(([k, cor]) => {
+            const n = feats.filter(f => f.properties[c.cor_por] === k).length;
+            if (!n) return '';
+            const on = !ocl.has(k);
+            return `<button type="button" class="camada-row cat${on ? ' ativo' : ''}" data-tipo="cat" data-camada="${esc(c.id)}" data-cat="${esc(k)}" aria-pressed="${on}">
+                <i class="ic-area cheia" style="border-color:${cor};background:${cor}aa"></i><span class="camada-nome">${esc(k)} <span class="lg-n">${n.toLocaleString('pt-BR')}</span></span><span class="chave" aria-hidden="true"></span></button>`;
+        }).join('');
+        const vis = Object.keys(c.cores).length - ocl.size;
+        return `<details class="camada-grupo cats" open><summary><span class="camada-nome">Categorias</span><span class="lg-n">${ocl.size ? `${vis} de ${Object.keys(c.cores).length} ligadas` : 'todas ligadas'}</span></summary>
+            <div class="cats-acoes"><button type="button" data-acao="todas" data-camada="${esc(c.id)}">Ligar todas</button><button type="button" data-acao="nenhuma" data-camada="${esc(c.id)}">Desligar todas</button></div>${itens}</details>`;
+    };
+    el.innerHTML = camadasBase().map(o => linha(o, 'base', ligada(o.id)) + subcats(o)).join('') +
         (lista.length ? `<div class="camada-sub">Hidrografia</div>` + soltas.map(o => linha({ ...o, icone: 'line' }, 'opc', opcionaisAtivas.has(o.id))).join('') +
             grupos.map(g => {
                 const itens = lista.filter(o => o.grupo === g);
@@ -185,6 +202,17 @@ function renderOpcionais() {
                 return `<details class="camada-grupo"${ativos ? ' open' : ''}><summary>${iconeCamada({ icone: 'line', cor: itens[0].cor })}<span class="camada-nome">${esc(g)}</span><span class="lg-n">${ativos ? `${ativos} ligada${ativos > 1 ? 's' : ''}` : `${itens.length} bacias`}</span></summary>
                     ${itens.map(o => linha({ ...o, icone: 'line' }, 'opc', opcionaisAtivas.has(o.id))).join('')}</details>`;
             }).join('') : '');
+    el.querySelectorAll('.camada-row[data-tipo=cat]').forEach(b => b.addEventListener('click', () => {
+        const id = b.dataset.camada, k = b.dataset.cat;
+        const ocl = catOcultas[id] = catOcultas[id] || new Set();
+        if (ocl.has(k)) ocl.delete(k); else ocl.add(k);
+        aplicarCategorias(id); renderOpcionais(); renderLegenda();
+    }));
+    el.querySelectorAll('.cats-acoes button').forEach(b => b.addEventListener('click', () => {
+        const c = camadas.find(x => x.id === b.dataset.camada);
+        catOcultas[c.id] = b.dataset.acao === 'todas' ? new Set() : new Set(Object.keys(c.cores));
+        aplicarCategorias(c.id); renderOpcionais(); renderLegenda();
+    }));
     el.querySelectorAll('.camada-row[data-tipo=base]').forEach(b => b.addEventListener('click', () => {
         const id = b.dataset.id;
         if (ocultas.has(id)) ocultas.delete(id); else ocultas.add(id);
@@ -237,6 +265,14 @@ function popupOpcional(e) {
             <p class="popup-hint">Fonte: ANA – Base Hidrográfica Ottocodificada</p></div>`).addTo(map);
 }
 
+// categorias ocultas por camada (ex.: imóveis 'Cancelado' desligados)
+const catOcultas = {};
+function aplicarCategorias(id) {
+    const c = camadas.find(x => x.id === id); if (!c) return;
+    const ocl = [...(catOcultas[id] || [])];
+    const filtro = ocl.length ? ['!', ['in', ['get', c.cor_por], ['literal', ocl]]] : null;
+    [`cam-${id}`, `cam-${id}-line`].forEach(l => { if (map.getLayer(l)) map.setFilter(l, filtro); });
+}
 // ---------- camada de imóveis: busca por CAR e troca de coloração ----------
 function camadaBusca() { return camadas.find(c => c.id === dadosGerais.busca_camada); }
 function mostrarFeicao(c, f) {
@@ -270,6 +306,7 @@ function renderModosCor() {
     el.innerHTML = c.cor_por_opcoes.map((o, i) => `<button type="button" data-i="${i}" class="${i === 0 ? 'active' : ''}">${esc(o.rotulo)}</button>`).join('');
     const aplicar = (o) => {
         c.cor_por = o.campo; c.cores = o.cores; c.nome = o.titulo || c.nome;
+        catOcultas[c.id] = new Set(); aplicarCategorias(c.id); renderOpcionais();
         if (map.getLayer(`cam-${c.id}`)) map.setPaintProperty(`cam-${c.id}`, 'fill-color', ['match', ['get', o.campo], ...Object.entries(o.cores).flat(), '#777777']);
         renderLegenda(); if (camadaBusca() === c) renderBuscaCamada();
     };
@@ -569,7 +606,8 @@ function renderLegenda() {
                 const lista = c.listar ? grupo.map(f => f.properties.doc_arquivo
                     ? `<button type="button" class="lg-item lg-doc lg-leaf" data-titulo="${esc(f.properties.nome)} – ${esc(f.properties.Portaria || '')}" data-arquivo="${esc(f.properties.doc_arquivo)}">${esc(f.properties.nome)} 📄</button>`
                     : `<div class="lg-item lg-leaf">${esc(f.properties.nome)}</div>`).join('') : '';
-                return `<div class="lg-item lg-sub"><i class="${c.tipo === 'fill' ? 'lg-sq' : 'lg-dot'}" style="background:${cor}"></i>${esc(k)} (${grupo.length})</div>${lista}`;
+                const off = (catOcultas[c.id] || new Set()).has(k);
+                return `<div class="lg-item lg-sub${off ? ' lg-off' : ''}"><i class="${c.tipo === 'fill' ? 'lg-sq' : 'lg-dot'}" style="background:${cor}"></i>${esc(k)} (${grupo.length})</div>${lista}`;
             }).join('');
             itens.push(`<div class="lg-group">${esc(c.nome)}</div>${sub}`);
         } else if (c.destaque) {
@@ -800,6 +838,7 @@ function adicionarCamadas() {
     destacarSelecionada();
     aplicarFiltroMapa();
     aplicarVisibilidadeCamadas();
+    Object.keys(catOcultas).forEach(aplicarCategorias);
 }
 
 function destacarSelecionada() {

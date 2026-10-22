@@ -107,7 +107,8 @@
       "Grande (acima de 15 MF)": "#e57373"
      }
     }
-   ]
+   ],
+   "categorias_ativaveis": true
   }
  ],
  "camadas_opcionais": [
