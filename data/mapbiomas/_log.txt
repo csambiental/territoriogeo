@@ -1,31 +1,16 @@
-raster EPSG:4326 (8.983152841195223e-05, 8.983152841195223e-05) 465718 476412 [(256, 256)] True
-janela (6997, 5166) [ 3  9 11 15 19 21 24 25 31 33 36]
-grupos {'Vegetação nativa': 33864.9, 'Agricultura': 73133.1, 'Pastagem': 14163.1, 'Silvicultura': 2431.3, 'Mosaico de usos': 28838.0, 'Área urbanizada': 10749.1, 'Água': 1185.3, 'Outras áreas': 297.3}
-data/car/imoveis_londrina.geojson ok
-data/bacias/microbacias_regiao.geojson ok
-imagem 2584 3815
+Traceback (most recent call last):
+  File "/home/runner/work/territoriogeo/territoriogeo/tools/baixar_mapbiomas.py", line 38, in <module>
+    if os.environ.get('SO_ALERTAS'): raise SystemExit('pulando cobertura')
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SystemExit: pulando cobertura
 camadas WFS ['mapbiomas-alerta-bolivia:dashboard-alerts-staging', 'mapbiomas-alertas:alert_summary_shapefile', 'mapbiomas-alertas:alert_summary_shapefile_staging', 'mapbiomas-alertas:dashboard-alert-rural-properties-shapefile-staging', 'mapbiomas-alertas:dashboard-alert-rural-properties-shapefile', 'mapbiomas-alertas:dashboard-alert-shapefile', 'mapbiomas-alertas:dashboard-alert-shapefile-staging', 'mapbiomas-alertas:dashboard-alerts', 'mapbiomas-alertas:dashboard-alerts-staging', 'mapbiomas-alertas:dashboard-alerts-staging-v2', 'mapbiomas-alertas:dashboard-elasticsearch-alerts', 'mapbiomas-alertas:dashboard-elasticsearch-alerts-staging', 'mapbiomas-alertas:alerts-notifications-icmbio-users', 'mapbiomas-alertas:mv_qgis_published_alerts_snap_to_grid', 'mapbiomas-alertas:mv_rural_properties', 'mapbiomas-alertas:mv_rural_properties_with_alerts_published', 'mapbiomas-alerta-colombia:dashboard-alerts-staging', 'mapbiomas-alerta-colombia:mv_rural_properties', 'mapbiomas-alerta-indonesia:dashboard-alerts-staging-indonesia', 'mapbiomas-alerta-peru:dashboard-alerts-staging', 'mapbiomas-alertas:dashboard-alert-shapefile-mapbiomas', 'mapbiomas-alerta-bolivia:dashboard-elasticsearch-alerts-staging']
 alvo ['mapbiomas-alerta-bolivia:dashboard-alerts-staging', 'mapbiomas-alertas:alert_summary_shapefile', 'mapbiomas-alertas:alert_summary_shapefile_staging', 'mapbiomas-alertas:dashboard-alert-rural-properties-shapefile-staging', 'mapbiomas-alertas:dashboard-alert-rural-properties-shapefile', 'mapbiomas-alertas:dashboard-alert-shapefile', 'mapbiomas-alertas:dashboard-alert-shapefile-staging', 'mapbiomas-alertas:dashboard-alerts', 'mapbiomas-alertas:dashboard-alerts-staging', 'mapbiomas-alertas:dashboard-alerts-staging-v2', 'mapbiomas-alertas:dashboard-elasticsearch-alerts', 'mapbiomas-alertas:dashboard-elasticsearch-alerts-staging', 'mapbiomas-alertas:alerts-notifications-icmbio-users', 'mapbiomas-alertas:mv_qgis_published_alerts_snap_to_grid', 'mapbiomas-alertas:mv_rural_properties', 'mapbiomas-alertas:mv_rural_properties_with_alerts_published', 'mapbiomas-alerta-colombia:dashboard-alerts-staging', 'mapbiomas-alerta-colombia:mv_rural_properties', 'mapbiomas-alerta-indonesia:dashboard-alerts-staging-indonesia', 'mapbiomas-alerta-peru:dashboard-alerts-staging', 'mapbiomas-alertas:dashboard-alert-shapefile-mapbiomas', 'mapbiomas-alerta-bolivia:dashboard-elasticsearch-alerts-staging']
-mapbiomas-alerta-bolivia:dashboard-alerts-staging 0 no retângulo, 0 no município
+amostra mapbiomas-alertas:alert_summary_shapefile {} 
+mapbiomas-alertas:alert_summary_shapefile -23.7795294001,-51.3210719523,-23.1709599403,-50.876961626,urn:ogc:def:crs:EPSG::4326 0
+mapbiomas-alertas:alert_summary_shapefile -51.3210719523,-23.7795294001,-50.876961626,-23.1709599403,EPSG:4326 0
+mapbiomas-alertas:alert_summary_shapefile -51.3210719523,-23.7795294001,-50.876961626,-23.1709599403 0
 mapbiomas-alertas:alert_summary_shapefile 0 no retângulo, 0 no município
-mapbiomas-alertas:alert_summary_shapefile_staging 0 no retângulo, 0 no município
-mapbiomas-alertas:dashboard-alert-rural-properties-shapefile-staging 0 no retângulo, 0 no município
-mapbiomas-alertas:dashboard-alert-rural-properties-shapefile 0 no retângulo, 0 no município
-mapbiomas-alertas:dashboard-alert-shapefile 0 no retângulo, 0 no município
-mapbiomas-alertas:dashboard-alert-shapefile-staging 0 no retângulo, 0 no município
-mapbiomas-alertas:dashboard-alerts 0 no retângulo, 0 no município
-mapbiomas-alertas:dashboard-alerts-staging 0 no retângulo, 0 no município
-mapbiomas-alertas:dashboard-alerts-staging-v2 0 no retângulo, 0 no município
-mapbiomas-alertas:dashboard-elasticsearch-alerts 0 no retângulo, 0 no município
-mapbiomas-alertas:dashboard-elasticsearch-alerts-staging 0 no retângulo, 0 no município
-mapbiomas-alertas:alerts-notifications-icmbio-users 0 no retângulo, 0 no município
-mapbiomas-alertas:mv_qgis_published_alerts_snap_to_grid 0 no retângulo, 0 no município
-falhou mapbiomas-alertas:mv_rural_properties Expecting value: line 1 column 1 (char 0)
-mapbiomas-alertas:mv_rural_properties_with_alerts_published 0 no retângulo, 0 no município
-mapbiomas-alerta-colombia:dashboard-alerts-staging 0 no retângulo, 0 no município
-mapbiomas-alerta-colombia:mv_rural_properties 0 no retângulo, 0 no município
-mapbiomas-alerta-indonesia:dashboard-alerts-staging-indonesia 0 no retângulo, 0 no município
-mapbiomas-alerta-peru:dashboard-alerts-staging 0 no retângulo, 0 no município
-mapbiomas-alertas:dashboard-alert-shapefile-mapbiomas 0 no retângulo, 0 no município
-mapbiomas-alerta-bolivia:dashboard-elasticsearch-alerts-staging 0 no retângulo, 0 no município
-nenhum alerta salvo
+amostra mapbiomas-alertas:dashboard-alert-rural-properties-shapefile {"alert_code": 885147, "area_ha": 4.7372, "rural_property_id": 8381747, "rural_property_code": "9500411362391-RR", "rural_property_ha": 17691.65112, "alert_car_area": 4.73725, "sources": "{DETERB-AMAZONIA}", "biomes": "{Amazônia}", "states": "{RORAIMA}", "cities": "{Amajari}", "detected_at": "2023-03-13", "published_at": "2023-06-13", "image_after_at": "2023-03-13", "image_before_at": "2022-09-03", "deforestation_driver": "agriculture", "status_name": "published", "lat": "3.6573250686252874", "l [[[-61.7496, 3.6569], [-61.7495, 3.6568], [-61.7494, 3.6569], [-61.7493, 3.6568], [-61.7494, 3.6567], [-61.7496, 3.6566], [-61.7495, 3.6565], [-61.7496, 3.6564], [-61.7493, 3.6564], [-61.7491, 3.6563], [-61.7491, 3.6563], [-61.749, 3.6562], [-61.7491, 3.6561], [-61.7492, 3.6559], [-61.7491, 3.6559], [-61.749, 3.6559], [-61.7491, 3.6558], [-61.7495, 3.6559], [-61.7497, 3.6559], [-61.7498, 3.6562], [-61.7498, 3.6562], [-61.75, 3.6562], [-61.75, 3.6563], [-61.7501, 3.6563], [-61.7501, 3.6566], [-61.75, 3.6566], [-61.7501, 3.6566], [-61.75, 3.6567], [-61.7501, 3.6567], [-61.75, 3.6568], [-61.7501, 3.6569], [-61.7499, 3.6569], [-61.75, 3.6567], [-61.7499, 3.6566], [-61.7498, 3.6566], [-61.7499, 3.6569], [-61.7497, 3.6569], [-61.7497, 3.6568], [-61.7496, 3.6569]]]
+mapbiomas-alertas:dashboard-alert-rural-properties-shapefile -23.7795294001,-51.3210719523,-23.1709599403,-50.876961626,urn:ogc:def:crs:EPSG::4326 613
+mapbiomas-alertas:dashboard-alert-rural-properties-shapefile 613 no retângulo, 282 no município
+exemplo de atributos {"alert_code": 804702, "area_ha": 0.5238, "rural_property_id": 7898030, "rural_property_code": "PR-4113700-8E7E7E2313794935949BA1F0BB71E3AA", "rural_property_ha": 2091.50107, "alert_car_area": 0.52376, "sources": "{SAD-MATA-ATLANTICA}", "biomes": "{\"Mata Atlântica\"}", "states": "{PARANÁ}", "cities": "{Londrina}", "detected_at": "2023-02-28", "published_at": "2023-03-21", "image_after_at": "2022-12-10", "image_before_at": "2022-11-09", "deforestation_driver": "agriculture", "status_name": "published", "lat": "-23.477219246139363", "lng": "-51.03066489196473", "crossed_special_territories": "{
