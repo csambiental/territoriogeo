@@ -1,0 +1,24 @@
+name: Atualizar bacias hidrográficas
+on:
+  workflow_dispatch:
+  push:
+    paths: ['tools/baixar_bacias.py', 'tools/baixar_rios.py', '.github/workflows/bacias.yml']
+permissions:
+  contents: write
+jobs:
+  baixar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install shapely
+      - run: python tools/baixar_bacias.py
+      - run: python tools/baixar_rios.py > data/bacias/_log_rios.txt 2>&1 || true
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/bacias
+          git diff --cached --quiet || git commit -m "Bacias e microbacias atualizadas do SNIRH/ANA"
+          git push

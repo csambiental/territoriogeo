@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Território Rural de Londrina – CS Consultoria Ambiental</title>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css">
+    <link rel="stylesheet" href="css/style.css?v=202610221728">
+</head>
+<body>
+    <header class="topbar">
+        <img src="logo.png" alt="CS Consultoria Ambiental" class="logo">
+        <div class="topbar-title">
+            <h1 id="clienteNome">Carregando…</h1>
+            <p id="clienteSub"></p>
+        </div>
+        <button class="panel-toggle" id="panelToggle" aria-expanded="true" aria-controls="sidebar">Painel</button>
+    </header>
+
+    <main class="layout">
+        <aside class="sidebar" id="sidebar">
+            <section class="card">
+                <h2>Resumo geral</h2>
+                <div class="kpis">
+                    <div class="kpi"><span class="kpi-value" id="kpiFazendas">–</span><span class="kpi-label">fazendas</span></div>
+                    <div class="kpi"><span class="kpi-value" id="kpiArea">–</span><span class="kpi-label">hectares</span></div>
+                    <div class="kpi"><span class="kpi-value" id="kpiAdequacoes">–</span><span class="kpi-label">adequações</span></div>
+                </div>
+                <div class="progress-label">
+                    <span>Andamento das adequações</span>
+                    <strong id="kpiPct">0%</strong>
+                </div>
+                <div class="progress" id="progressTotal" aria-label="Andamento das adequações"></div>
+                <div class="status-legend" id="statusLegend"></div>
+            </section>
+
+            <section class="card" id="cardCamadas">
+                <h2>Camadas do mapa</h2>
+                <div class="controls">
+                    <div class="camadas-lista" id="camadasOpcionais" hidden></div>
+                    <span class="opc-titulo">Fundo e cores</span>
+                    <div class="segmented" role="group" aria-label="Estilo do mapa">
+                        <button type="button" data-style="esri" class="active" title="Imagem de satélite mais recente disponível (Esri/Vantor)">Satélite atual</button>
+                        <button type="button" data-style="mapbox" title="Imagem Mapbox (mais antiga, com nomes de estradas)">Satélite Mapbox</button>
+                        <button type="button" data-style="mapa">Mapa</button>
+                    </div>
+                    <div class="segmented cores-modo" id="modoCor" role="group" aria-label="Cores das áreas" hidden>
+                        <button type="button" data-modo="municipio" class="active">Cor por município</button>
+                        <button type="button" data-modo="situacao">Cor por situação</button>
+                    </div>
+                    <button type="button" class="btn" id="centerMap">Ver o território inteiro</button>
+                </div>
+            </section>
+
+            <section class="card" id="cardPrograma" hidden></section>
+
+            <section class="card" id="cardPrazos" hidden>
+                <h2>Próximos vencimentos</h2>
+                <p class="hint">Licenças, outorgas e condicionantes por data.</p>
+                <ul id="listaPrazos" class="prazos"></ul>
+                <button type="button" class="btn btn-mini" id="verTodosPrazos" hidden>Ver todos</button>
+            </section>
+
+            <section class="card">
+                <h2 id="listaTitulo">Propriedades</h2>
+                <p class="hint">Clique numa propriedade para localizá-la no mapa e ver os detalhes.</p>
+                <div class="segmented etapas" id="filtroEtapa" role="group" aria-label="Filtrar por etapa" hidden></div>
+                <input type="search" id="farmSearch" class="farm-search" placeholder="Buscar por nome ou município" hidden>
+                <div id="farmList" class="farm-list"></div>
+            </section>
+
+
+            <p class="footnote">Atualizado em <span id="updatedAt"></span> · CS Consultoria Ambiental</p>
+        </aside>
+
+        <section class="map-wrap">
+            <div id="map"></div>
+            <div id="legend" class="map-legend"></div>
+        </section>
+    </main>
+
+    <dialog id="fotoDialog" class="foto-dialog" aria-labelledby="fotoTitulo">
+        <header>
+            <h2 id="fotoTitulo">Foto</h2>
+            <span id="fotoContador" class="foto-contador"></span>
+            <button type="button" id="fotoFechar" class="close" aria-label="Fechar">×</button>
+        </header>
+        <div class="foto-palco">
+            <button type="button" id="fotoAnt" class="foto-nav" aria-label="Foto anterior">‹</button>
+            <img id="fotoImg" alt="">
+            <button type="button" id="fotoProx" class="foto-nav" aria-label="Próxima foto">›</button>
+        </div>
+        <footer><span id="fotoLegenda"></span><a id="fotoAbrir" class="btn" target="_blank" rel="noopener">Abrir em tamanho original</a></footer>
+    </dialog>
+
+    <dialog id="docDialog" class="doc-dialog" aria-labelledby="docTitle">
+        <header>
+            <h2 id="docTitle">Documento</h2>
+            <button type="button" id="docClose" class="close" aria-label="Fechar">×</button>
+        </header>
+        <iframe id="docFrame" title="Visualização do documento"></iframe>
+        <footer>
+            <a id="docOpen" class="btn" target="_blank" rel="noopener">Abrir em nova aba</a>
+            <a id="docDownload" class="btn btn-solid" download>Baixar PDF</a>
+        </footer>
+    </dialog>
+
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+    <script src="js/app.js?v=202610221728"></script>
+</body>
+</html>

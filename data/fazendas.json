@@ -1,0 +1,36 @@
+{
+ "cliente": {
+  "nome": "Território Rural de Londrina",
+  "subtitulo": "Imóveis rurais, bacias e microbacias do município · CS Consultoria Ambiental",
+  "selo": "Em construção",
+  "centro": [-51.10, -23.47],
+  "zoom": 9.6
+ },
+ "atualizado_em": "2026-10-22",
+ "resumo": [
+  {"valor": "1.656", "rotulo": "km² de território"},
+  {"valor": "2", "rotulo": "bacias hidrográficas"},
+  {"valor": "–", "rotulo": "imóveis rurais (CAR)"}
+ ],
+ "lista_titulo": "Imóveis rurais",
+ "programa": {
+  "titulo": "O projeto",
+  "texto": "Mapa territorial do município de Londrina com todos os imóveis rurais inscritos no CAR, a hidrografia oficial (bacias do Tibagi e do Pirapó/Paranapanema, microbacias e rios catalogados) e indicadores ambientais por imóvel e por microbacia. Base para diagnóstico, planejamento e acompanhamento de projetos da CS no município.",
+  "etapas": [
+   {"nome": "Etapa 1", "texto": "– limite municipal, bacias, microbacias e rios (concluída)"},
+   {"nome": "Etapa 2", "texto": "– imóveis rurais do CAR (aguardando a base do SICAR)", "classe": "andamento"},
+   {"nome": "Etapa 3", "texto": "– indicadores por imóvel e por microbacia: APP, Reserva Legal, vegetação nativa"}
+  ],
+  "documentos": []
+ },
+ "camadas": [
+  {"id": "municipio", "nome": "Limite do município", "arquivo": "data/municipio_londrina.geojson", "tipo": "line", "cor": "#ffd54f", "destaque": true}
+ ],
+ "camadas_opcionais": [
+  {"id": "bacias", "nome": "Bacias hidrográficas (PR)", "arquivo": "data/bacias/bacias_parana.geojson", "cor": "#29b6f6", "largura": 2.6, "halo": true, "preenchimento": 0.05, "rotulo_campo": "nome", "rotulo_tamanho": 13, "clicavel": true, "fonte": "ANA/SNIRH – unidades estaduais de gestão"},
+  {"id": "microbacias", "nome": "Microbacias", "arquivo": "data/bacias/microbacias_regiao.geojson", "cor": "#b2ebf2", "largura": 1, "opacidade": 0.85, "rotulo_campo": "rio", "rotulo_minzoom": 12, "rotulo_tamanho": 11, "clicavel": true, "fonte": "ANA/SNIRH – base ottocodificada"},
+  {"id": "rios-rio_tibagi", "grupo": "Rios catalogados por bacia", "nome": "Rio Tibagi", "arquivo": "data/bacias/rios_rio_tibagi.geojson", "geometria": "linha", "cor": "#4fc3f7", "rotulo_campo": "nome", "rotulo_minzoom": 9, "clicavel": true, "fonte": "ANA – BHO 2017 (base 1:250.000)"},
+  {"id": "rios-pirapo", "grupo": "Rios catalogados por bacia", "nome": "Rios Pirapó, Paranapanema 3 e 4", "arquivo": "data/bacias/rios_rios_pirapo_paranapanema_3_e_paranapanema_4.geojson", "geometria": "linha", "cor": "#4fc3f7", "rotulo_campo": "nome", "rotulo_minzoom": 9, "clicavel": true, "fonte": "ANA – BHO 2017 (base 1:250.000)"}
+ ],
+ "fazendas": []
+}
