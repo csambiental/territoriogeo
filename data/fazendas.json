@@ -39,11 +39,55 @@
    },
    {
     "nome": "Etapa 3",
-    "texto": "– indicadores por imóvel e por microbacia: APP, Reserva Legal, vegetação nativa",
+    "texto": "– MapBiomas: uso do solo 2023 (20,6% de vegetação nativa no município), % por imóvel e por microbacia, e 12 alertas de desmatamento em 19 imóveis (concluída)"
+   },
+   {
+    "nome": "Etapa 4",
+    "texto": "– APP, Reserva Legal e déficit/ativo por imóvel (camadas do SICAR)",
     "classe": "andamento"
    }
   ],
-  "documentos": []
+  "documentos": [],
+  "graficos": [
+   {
+    "titulo": "Uso e cobertura do solo em Londrina – 2023",
+    "fonte": "Fonte: MapBiomas 10 m – Coleção 2 (beta)",
+    "itens": [
+     {
+      "rotulo": "Vegetação nativa",
+      "pct": 20.57
+     },
+     {
+      "rotulo": "Agricultura",
+      "pct": 44.41
+     },
+     {
+      "rotulo": "Pastagem",
+      "pct": 8.6
+     },
+     {
+      "rotulo": "Silvicultura",
+      "pct": 1.48
+     },
+     {
+      "rotulo": "Mosaico de usos",
+      "pct": 17.51
+     },
+     {
+      "rotulo": "Área urbanizada",
+      "pct": 6.53
+     },
+     {
+      "rotulo": "Água",
+      "pct": 0.72
+     },
+     {
+      "rotulo": "Outras áreas",
+      "pct": 0.18
+     }
+    ]
+   }
+  ]
  },
  "camadas": [
   {
@@ -81,7 +125,9 @@
     "Condição",
     "Tipo",
     "Inscrição",
-    "Última atualização"
+    "Última atualização",
+    "Alertas MapBiomas",
+    "Área de alertas (ha)"
    ],
    "cor_por_opcoes": [
     {
@@ -106,12 +152,99 @@
       "Média (4 a 15 MF)": "#ffb74d",
       "Grande (acima de 15 MF)": "#e57373"
      }
+    },
+    {
+     "campo": "faixa_veg",
+     "rotulo": "Vegetação nativa",
+     "titulo": "Imóveis rurais – vegetação nativa (MapBiomas 2023)",
+     "cores": {
+      "Menos de 5%": "#d84315",
+      "5% a 10%": "#ffb74d",
+      "10% a 20%": "#c5e1a5",
+      "20% ou mais": "#2e7d32",
+      "Sem dado": "#9e9e9e"
+     }
     }
    ],
-   "categorias_ativaveis": true
+   "categorias_ativaveis": true,
+   "campos_prefixos": [
+    "MapBiomas"
+   ]
   }
  ],
  "camadas_opcionais": [
+  {
+   "id": "mb-cobertura",
+   "secao": "MapBiomas",
+   "nome": "Uso e cobertura do solo 2023",
+   "arquivo": "data/mapbiomas/cobertura_2023.json",
+   "tipo": "imagem",
+   "icone": "fill",
+   "cor": "#1f8d49",
+   "opacidade": 0.8,
+   "antes": "cam-imoveis",
+   "fonte": "MapBiomas 10 m – Coleção 2 (beta), 2023",
+   "legenda_itens": [
+    {
+     "rotulo": "Vegetação nativa (20,57%)",
+     "cor": "#1f8d49"
+    },
+    {
+     "rotulo": "Agricultura (44,41%)",
+     "cor": "#e974ed"
+    },
+    {
+     "rotulo": "Pastagem (8,6%)",
+     "cor": "#edde8e"
+    },
+    {
+     "rotulo": "Silvicultura (1,48%)",
+     "cor": "#7a5900"
+    },
+    {
+     "rotulo": "Mosaico de usos (17,51%)",
+     "cor": "#ffefc3"
+    },
+    {
+     "rotulo": "Área urbanizada (6,53%)",
+     "cor": "#d4271e"
+    },
+    {
+     "rotulo": "Água (0,72%)",
+     "cor": "#2532e4"
+    },
+    {
+     "rotulo": "Outras áreas (0,18%)",
+     "cor": "#db4d4f"
+    }
+   ]
+  },
+  {
+   "id": "mb-alertas",
+   "secao": "MapBiomas",
+   "nome": "Alertas de desmatamento",
+   "arquivo": "data/mapbiomas/alertas_londrina.geojson",
+   "icone": "fill",
+   "cor": "#ff1744",
+   "largura": 2,
+   "halo": true,
+   "preenchimento": 0.45,
+   "clicavel": true,
+   "prioridade": true,
+   "enquadrar": true,
+   "campos": [
+    "Detectado em",
+    "Publicado em",
+    "Área do alerta (ha)",
+    "Área no imóvel (ha)",
+    "Vetor",
+    "Fonte",
+    "Bioma",
+    "Áreas especiais",
+    "Imóvel (CAR)"
+   ],
+   "fonte": "MapBiomas Alerta"
+  },
   {
    "id": "bacias",
    "nome": "Bacias hidrográficas (PR)",

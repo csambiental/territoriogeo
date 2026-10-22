@@ -123,7 +123,12 @@ function antesDasFazendas() { return fazendas.map(f => `${f.id}-fill`).find(id =
 function desenharOpcional(o) {
     const g = opcionaisData[o.id];
     if (!g || map.getSource(`op-${o.id}`)) return;
-    const antes = antesDasFazendas();
+    const antes = (o.antes && map.getLayer(o.antes)) ? o.antes : antesDasFazendas();
+    if (o.tipo === 'imagem') {
+        map.addSource(`op-${o.id}`, { type: 'image', url: g.imagem, coordinates: g.cantos });
+        map.addLayer({ id: `op-${o.id}`, type: 'raster', source: `op-${o.id}`, paint: { 'raster-opacity': o.opacidade ?? 0.8, 'raster-resampling': 'nearest' } }, antes);
+        return;
+    }
     map.addSource(`op-${o.id}`, { type: 'geojson', data: g });
     if (o.preenchimento) map.addLayer({ id: `op-${o.id}-fill`, type: 'fill', source: `op-${o.id}`, paint: { 'fill-color': o.cor, 'fill-opacity': o.preenchimento } }, antes);
     if (o.halo) map.addLayer({ id: `op-${o.id}-halo`, type: 'line', source: `op-${o.id}`, paint: { 'line-color': '#000000', 'line-width': (o.largura || 1.5) + 2.5, 'line-opacity': 0.4 } }, antes);
@@ -195,13 +200,14 @@ function renderOpcionais() {
             <div class="cats-acoes"><button type="button" data-acao="todas" data-camada="${esc(c.id)}">Ligar todas</button><button type="button" data-acao="nenhuma" data-camada="${esc(c.id)}">Desligar todas</button></div>${itens}</details>`;
     };
     el.innerHTML = camadasBase().map(o => linha(o, 'base', ligada(o.id)) + subcats(o)).join('') +
-        (lista.length ? `<div class="camada-sub">Hidrografia</div>` + soltas.map(o => linha({ ...o, icone: 'line' }, 'opc', opcionaisAtivas.has(o.id))).join('') +
-            grupos.map(g => {
+        [...new Set(lista.map(o => o.secao || 'Hidrografia'))].map(sec => `<div class="camada-sub">${esc(sec)}</div>` +
+            soltas.filter(o => (o.secao || 'Hidrografia') === sec).map(o => linha({ ...o, icone: o.icone || 'line' }, 'opc', opcionaisAtivas.has(o.id))).join('') +
+            grupos.filter(g => (lista.find(o => o.grupo === g).secao || 'Hidrografia') === sec).map(g => {
                 const itens = lista.filter(o => o.grupo === g);
                 const ativos = itens.filter(o => opcionaisAtivas.has(o.id)).length;
                 return `<details class="camada-grupo"${ativos ? ' open' : ''}><summary>${iconeCamada({ icone: 'line', cor: itens[0].cor })}<span class="camada-nome">${esc(g)}</span><span class="lg-n">${ativos ? `${ativos} ligada${ativos > 1 ? 's' : ''}` : `${itens.length} bacias`}</span></summary>
                     ${itens.map(o => linha({ ...o, icone: 'line' }, 'opc', opcionaisAtivas.has(o.id))).join('')}</details>`;
-            }).join('') : '');
+            }).join('')).join('');
     el.querySelectorAll('.camada-row[data-tipo=cat]').forEach(b => b.addEventListener('click', () => {
         const id = b.dataset.camada, k = b.dataset.cat;
         const ocl = catOcultas[id] = catOcultas[id] || new Set();
@@ -242,17 +248,19 @@ function renderOpcionais() {
 }
 function alertaCamada(b) { b.title = 'Camada indisponível no momento'; b.classList.add('erro'); }
 
-function popupOpcional(e) {
-    const lista = (dadosGerais.camadas_opcionais || []).filter(o => opcionaisAtivas.has(o.id) && o.clicavel);
+function popupOpcional(e, soPrioritarias) {
+    const lista = (dadosGerais.camadas_opcionais || []).filter(o => opcionaisAtivas.has(o.id) && o.clicavel && (!soPrioritarias || o.prioridade));
     const ids = lista.flatMap(o => [`op-${o.id}-hit`, `op-${o.id}`]).filter(id => map.getLayer(id));
-    if (!ids.length) return;
+    if (!ids.length) return false;
     const caixa = [[e.point.x - 4, e.point.y - 4], [e.point.x + 4, e.point.y + 4]];
     const hit = map.queryRenderedFeatures(caixa, { layers: ids });
-    if (!hit.length) return;
+    if (!hit.length) return false;
     // prioriza rios (linhas) sobre áreas
-    const h = hit.find(x => x.layer.type === 'line' && x.source.startsWith('op-rios')) || hit[0];
+    const h = hit.find(x => lista.some(o => o.prioridade && x.source === `op-${o.id}`)) || hit.find(x => x.layer.type === 'line' && x.source.startsWith('op-rios')) || hit[0];
     const p = h.properties;
-    const linhas = [];
+    const oc = lista.find(o => h.source === `op-${o.id}`) || {};
+    const linhas = oc.campos ? camposDe(oc, p).map(k => [k, p[k]]) : [];
+    if (!oc.campos) Object.keys(p).filter(k => k.startsWith('MapBiomas')).forEach(k => linhas.push([k, p[k]]));
     if (p.rio && p.nome !== p.rio) linhas.push(['Curso d’água', p.rio]);
     if (p.bacia) linhas.push(['Bacia hidrográfica', p.bacia]);
     if (p.area_km2) linhas.push(['Área', `${fmt(p.area_km2, 2)} km²`]);
@@ -262,9 +270,16 @@ function popupOpcional(e) {
     if (p.regiao_hidrografica) linhas.push(['Região hidrográfica', p.regiao_hidrografica]);
     new mapboxgl.Popup({ maxWidth: '300px' }).setLngLat(e.lngLat)
         .setHTML(`<div class="popup"><h3>${esc(p.nome || 'Sem nome')}</h3><dl class="popup-dl">${linhas.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
-            <p class="popup-hint">Fonte: ANA – Base Hidrográfica Ottocodificada</p></div>`).addTo(map);
+            ${linkHtml(p)}<p class="popup-hint">Fonte: ${esc(oc.fonte || 'ANA – Base Hidrográfica Ottocodificada')}</p></div>`).addTo(map);
+    return true;
 }
 
+function camposDe(c, p) {
+    const lista = [...(c.campos || [])];
+    (c.campos_prefixos || []).forEach(pre => Object.keys(p).filter(k => k.startsWith(pre) && !lista.includes(k)).forEach(k => lista.push(k)));
+    return lista.filter(k => p[k] !== undefined && p[k] !== null && p[k] !== '');
+}
+function linkHtml(p) { return p.link ? `<a class="btn btn-mini" href="${esc(p.link)}" target="_blank" rel="noopener">${esc(p.link_texto || 'Ver no MapBiomas Alerta ↗')}</a>` : ''; }
 // categorias ocultas por camada (ex.: imóveis 'Cancelado' desligados)
 const catOcultas = {};
 function aplicarCategorias(id) {
@@ -279,7 +294,7 @@ function mostrarFeicao(c, f) {
     map.fitBounds(boundsDe(f), { padding: 80, maxZoom: 15, duration: 900 });
     if (map.getLayer(`cam-${c.id}-sel`)) map.setFilter(`cam-${c.id}-sel`, ['==', ['get', 'nome'], f.properties.nome]);
     const p = f.properties, cor = (c.cores || {})[p[c.cor_por]] || '#777';
-    const tabela = (c.campos || []).filter(k => p[k]).map(k => `<dt>${esc(k)}</dt><dd>${esc(p[k])}</dd>`).join('');
+    const tabela = camposDe(c, p).map(k => `<dt>${esc(k)}</dt><dd>${esc(p[k])}</dd>`).join('');
     setTimeout(() => new mapboxgl.Popup({ maxWidth: '320px' }).setLngLat(turf.pointOnFeature(f).geometry.coordinates)
         .setHTML(`<div class="popup"><h3 class="mono" style="font-size:.8rem">${esc(p.nome)}</h3><span class="status-badge" style="background:${cor}">${esc(p[c.cor_por])}</span><dl class="popup-dl">${tabela}</dl></div>`).addTo(map), 950);
 }
@@ -625,7 +640,9 @@ function renderLegenda() {
     const gruposAtivos = [...new Set(opsAtivas.filter(o => o.grupo).map(o => o.grupo))];
     gruposAtivos.forEach(g => { const it = opsAtivas.filter(o => o.grupo === g);
         itens.push(`<div class="lg-item"><i class="lg-line" style="border-color:${it[0].cor}"></i>${esc(g)}: ${it.map(o => esc(o.nome)).join(', ')}</div>`); });
-    opsAtivas.filter(o => !o.grupo).forEach(o =>
+    opsAtivas.filter(o => !o.grupo && o.legenda_itens).forEach(o => itens.push(`<div class="lg-group">${esc(o.nome)}</div>` +
+        o.legenda_itens.map(i => `<div class="lg-item lg-sub"><i class="lg-sq" style="background:${i.cor}"></i>${esc(i.rotulo)}</div>`).join('')));
+    opsAtivas.filter(o => !o.grupo && !o.legenda_itens).forEach(o =>
         itens.push(`<div class="lg-item" title="Fonte: ${esc(o.fonte || '')}"><i class="lg-line" style="border-color:${o.cor}"></i>${esc(o.nome)}</div>`));
     fazendas.forEach(f => (f.pontos || []).forEach(p => {
         const conteudo = `<i class="lg-ring" style="border-color:${f.cor}"></i>${esc(p.nome)}`;
@@ -894,6 +911,7 @@ function popupHtml(f) {
 }
 
 map.on('click', (e) => {
+    if ((dadosGerais.camadas_opcionais || []).some(o => o.prioridade && opcionaisAtivas.has(o.id)) && popupOpcional(e, true)) return;
     if (map.getLayer('pontos')) {
         const pt = map.queryRenderedFeatures(e.point, { layers: ['pontos'] });
         if (pt.length) {
@@ -918,7 +936,7 @@ map.on('click', (e) => {
                    ${p.Validade ? `Validade: <strong>${esc(p.Validade)}</strong><br>` : ''}
                    ${p.Finalidade ? `Finalidade: ${esc(p.Finalidade)}` : ''}</p>` : '';
             const jaNoResumo = p.Portaria ? ['Portaria', 'Validade', 'Finalidade'] : [];
-            const tabela = (c.campos || []).filter(k => p[k] && !jaNoResumo.includes(k))
+            const tabela = camposDe(c, p).filter(k => !jaNoResumo.includes(k))
                 .map(k => `<dt>${esc(k)}</dt><dd>${esc(p[k])}</dd>`).join('');
             new mapboxgl.Popup({ maxWidth: '320px' }).setLngLat(hit[0].geometry.type === 'Point' ? hit[0].geometry.coordinates : e.lngLat)
                 .setHTML(`<div class="popup"><h3>${esc(p.nome)}</h3>${badge}
