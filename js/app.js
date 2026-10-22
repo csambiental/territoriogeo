@@ -237,6 +237,49 @@ function popupOpcional(e) {
             <p class="popup-hint">Fonte: ANA – Base Hidrográfica Ottocodificada</p></div>`).addTo(map);
 }
 
+// ---------- camada de imóveis: busca por CAR e troca de coloração ----------
+function camadaBusca() { return camadas.find(c => c.id === dadosGerais.busca_camada); }
+function mostrarFeicao(c, f) {
+    map.fitBounds(boundsDe(f), { padding: 80, maxZoom: 15, duration: 900 });
+    if (map.getLayer(`cam-${c.id}-sel`)) map.setFilter(`cam-${c.id}-sel`, ['==', ['get', 'nome'], f.properties.nome]);
+    const p = f.properties, cor = (c.cores || {})[p[c.cor_por]] || '#777';
+    const tabela = (c.campos || []).filter(k => p[k]).map(k => `<dt>${esc(k)}</dt><dd>${esc(p[k])}</dd>`).join('');
+    setTimeout(() => new mapboxgl.Popup({ maxWidth: '320px' }).setLngLat(turf.pointOnFeature(f).geometry.coordinates)
+        .setHTML(`<div class="popup"><h3 class="mono" style="font-size:.8rem">${esc(p.nome)}</h3><span class="status-badge" style="background:${cor}">${esc(p[c.cor_por])}</span><dl class="popup-dl">${tabela}</dl></div>`).addTo(map), 950);
+}
+function renderBuscaCamada() {
+    const c = camadaBusca(); if (!c) return;
+    const busca = document.getElementById('farmSearch'), lista = document.getElementById('farmList');
+    busca.hidden = false; busca.placeholder = dadosGerais.busca_placeholder || 'Buscar pelo número do CAR';
+    const feats = (camadasData[c.id] || {}).features || [];
+    const desenhar = () => {
+        const q = busca.value.trim().toUpperCase().replace(/[.\s]/g, '');
+        if (q.length < 3) { lista.innerHTML = `<p class="hint">${feats.length.toLocaleString('pt-BR')} imóveis no mapa. Digite parte do número do CAR (ex.: 4113700-2F) ou clique num imóvel no mapa.</p>`; return; }
+        const achados = feats.filter(f => f.properties.nome.toUpperCase().replace(/[.\s]/g, '').includes(q)).slice(0, 12);
+        lista.innerHTML = achados.length ? achados.map((f, i) => `<button type="button" class="busca-item" data-i="${feats.indexOf(f)}">
+            <span class="swatch" style="background:${(c.cores || {})[f.properties[c.cor_por]] || '#777'}"></span><span class="mono">${esc(f.properties.nome)}</span>
+            <span class="farm-meta">${esc(f.properties['Área (ha)'] || '')} ha</span></button>`).join('') : '<p class="hint">Nenhum imóvel encontrado.</p>';
+        lista.querySelectorAll('.busca-item').forEach(b => b.addEventListener('click', () => mostrarFeicao(c, feats[Number(b.dataset.i)])));
+    };
+    busca.oninput = desenhar; desenhar();
+}
+function renderModosCor() {
+    const c = camadas.find(x => x.cor_por_opcoes); const el = document.getElementById('modoCor');
+    if (!c || !el) return;
+    el.hidden = false;
+    el.innerHTML = c.cor_por_opcoes.map((o, i) => `<button type="button" data-i="${i}" class="${i === 0 ? 'active' : ''}">${esc(o.rotulo)}</button>`).join('');
+    const aplicar = (o) => {
+        c.cor_por = o.campo; c.cores = o.cores; c.nome = o.titulo || c.nome;
+        if (map.getLayer(`cam-${c.id}`)) map.setPaintProperty(`cam-${c.id}`, 'fill-color', ['match', ['get', o.campo], ...Object.entries(o.cores).flat(), '#777777']);
+        renderLegenda(); if (camadaBusca() === c) renderBuscaCamada();
+    };
+    aplicar(c.cor_por_opcoes[0]);
+    el.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+        el.querySelectorAll('button').forEach(o => o.classList.toggle('active', o === b));
+        aplicar(c.cor_por_opcoes[Number(b.dataset.i)]);
+    }));
+}
+
 // Cores das áreas: 'municipio' (uma cor por município) ou 'situacao' (cor da situação)
 let modoCor = 'situacao';
 const corMapa = (f) => (modoCor === 'municipio' && f.cor_municipio) ? f.cor_municipio : f.cor;
@@ -317,6 +360,7 @@ function etapaCurta() {
 }
 const semAcento = (t) => String(t).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 function renderFazendas() {
+    if (dadosGerais.busca_camada && !fazendas.length) return;
     const el = document.getElementById('farmList');
     const busca = document.getElementById('farmSearch');
     if (busca) busca.hidden = fazendas.length <= 8;
@@ -689,7 +733,9 @@ function adicionarCamadas() {
             const corFill = c.cor_por && c.cores ? ['match', ['get', c.cor_por], ...Object.entries(c.cores).flat(), '#777777'] : c.cor;
             map.addLayer({ id: `cam-${c.id}`, type: 'fill', source: `cam-${c.id}`, paint: { 'fill-color': corFill, 'fill-opacity': c.opacidade ?? (c.cor_por ? 0.85 : 0.45) } });
             map.addLayer({ id: `cam-${c.id}-line`, type: 'line', source: `cam-${c.id}`,
-                paint: { 'line-color': c.cor_por ? '#ffffff' : corFill, 'line-width': c.cor_por ? 1.5 : 1, 'line-opacity': 0.9 } });
+                paint: { 'line-color': c.linha_cor || (c.cor_por ? '#ffffff' : corFill), 'line-width': c.linha_largura ?? (c.cor_por ? 1.5 : 1), 'line-opacity': 0.9 } });
+            if (c.destacar_selecao) map.addLayer({ id: `cam-${c.id}-sel`, type: 'line', source: `cam-${c.id}`, filter: ['==', ['get', 'nome'], ''],
+                paint: { 'line-color': '#ffeb3b', 'line-width': 3.5 } });
         } else {
             const cor = c.cor_por && c.cores
                 ? ['match', ['get', c.cor_por], ...Object.entries(c.cores).flat(), '#777777']
@@ -910,7 +956,7 @@ async function iniciar() {
     if (cliente.centro) map.jumpTo({ center: cliente.centro, zoom: cliente.zoom || 12 });
     fazendas = dados.fazendas.map((f, i) => ({ ...f, cor: f.cor || PALETA[i % PALETA.length] }));
     if (!fazendas.length) {
-        document.getElementById('farmList').innerHTML = '<p class="hint">Mapa em preparação. Os dados das propriedades serão incluídos em breve.</p>';
+        if (!dados.busca_camada) document.getElementById('farmList').innerHTML = '<p class="hint">Mapa em preparação. Os dados das propriedades serão incluídos em breve.</p>';
     }
     if (dados.atualizado_em) {
         const [a, m, d] = dados.atualizado_em.split('-');
@@ -937,6 +983,7 @@ async function iniciar() {
     }));
     renderResumo();
     renderFiltroEtapa();
+    renderModosCor();
     renderIndicadoresExternos();
     renderOpcionais();
     if (dados.cores_por_municipio) {
@@ -954,6 +1001,7 @@ async function iniciar() {
     }
     renderFazendas();
     renderLegenda();
+    renderBuscaCamada();
     renderPrazos(dados.prazos);
     prepararCartoes();
     const pronto = () => { adicionarCamadas(); enquadrarTodas(); };

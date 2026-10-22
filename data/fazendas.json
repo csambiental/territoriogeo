@@ -1,36 +1,167 @@
 {
  "cliente": {
   "nome": "Território Rural de Londrina",
-  "subtitulo": "Imóveis rurais, bacias e microbacias do município · CS Consultoria Ambiental",
+  "subtitulo": "Imóveis rurais do CAR, bacias e microbacias · CS Consultoria Ambiental",
   "selo": "Em construção",
-  "centro": [-51.10, -23.47],
+  "centro": [
+   -51.1,
+   -23.47
+  ],
   "zoom": 9.6
  },
  "atualizado_em": "2026-10-22",
  "resumo": [
-  {"valor": "1.656", "rotulo": "km² de território"},
-  {"valor": "2", "rotulo": "bacias hidrográficas"},
-  {"valor": "–", "rotulo": "imóveis rurais (CAR)"}
+  {
+   "valor": "4.153",
+   "rotulo": "imóveis rurais ativos no CAR"
+  },
+  {
+   "valor": "146,5 mil",
+   "rotulo": "hectares cadastrados"
+  },
+  {
+   "valor": "32%",
+   "rotulo": "analisados e em conformidade"
+  }
  ],
- "lista_titulo": "Imóveis rurais",
+ "lista_titulo": "Buscar imóvel rural",
  "programa": {
   "titulo": "O projeto",
   "texto": "Mapa territorial do município de Londrina com todos os imóveis rurais inscritos no CAR, a hidrografia oficial (bacias do Tibagi e do Pirapó/Paranapanema, microbacias e rios catalogados) e indicadores ambientais por imóvel e por microbacia. Base para diagnóstico, planejamento e acompanhamento de projetos da CS no município.",
   "etapas": [
-   {"nome": "Etapa 1", "texto": "– limite municipal, bacias, microbacias e rios (concluída)"},
-   {"nome": "Etapa 2", "texto": "– imóveis rurais do CAR (aguardando a base do SICAR)", "classe": "andamento"},
-   {"nome": "Etapa 3", "texto": "– indicadores por imóvel e por microbacia: APP, Reserva Legal, vegetação nativa"}
+   {
+    "nome": "Etapa 1",
+    "texto": "– limite municipal, bacias, microbacias e rios (concluída)"
+   },
+   {
+    "nome": "Etapa 2",
+    "texto": "– 4.235 imóveis rurais do CAR (base SICAR de 02/10/2026), com situação da análise e porte (concluída)"
+   },
+   {
+    "nome": "Etapa 3",
+    "texto": "– indicadores por imóvel e por microbacia: APP, Reserva Legal, vegetação nativa",
+    "classe": "andamento"
+   }
   ],
   "documentos": []
  },
  "camadas": [
-  {"id": "municipio", "nome": "Limite do município", "arquivo": "data/municipio_londrina.geojson", "tipo": "line", "cor": "#ffd54f", "destaque": true}
+  {
+   "id": "municipio",
+   "nome": "Limite do município",
+   "arquivo": "data/municipio_londrina.geojson",
+   "tipo": "line",
+   "cor": "#ffd54f",
+   "destaque": true
+  },
+  {
+   "id": "imoveis",
+   "nome": "Imóveis rurais (CAR)",
+   "arquivo": "data/car/imoveis_londrina.geojson",
+   "tipo": "fill",
+   "cor_por": "situacao",
+   "cores": {
+    "Analisado – em conformidade": "#2e9e5b",
+    "Aguardando análise": "#ffd54f",
+    "Em análise": "#4fc3f7",
+    "Analisado – notificação pendente": "#ff8a65",
+    "Analisado – regularização ambiental pendente": "#e53935",
+    "Cancelado": "#9e9e9e"
+   },
+   "opacidade": 0.45,
+   "linha_cor": "#ffffff",
+   "linha_largura": 0.6,
+   "rotulo": false,
+   "destacar_selecao": true,
+   "campos": [
+    "Área (ha)",
+    "Módulos fiscais",
+    "Porte",
+    "Status do CAR",
+    "Condição",
+    "Tipo",
+    "Inscrição",
+    "Última atualização"
+   ],
+   "cor_por_opcoes": [
+    {
+     "campo": "situacao",
+     "rotulo": "Situação do CAR",
+     "titulo": "Imóveis rurais – situação do CAR",
+     "cores": {
+      "Analisado – em conformidade": "#2e9e5b",
+      "Aguardando análise": "#ffd54f",
+      "Em análise": "#4fc3f7",
+      "Analisado – notificação pendente": "#ff8a65",
+      "Analisado – regularização ambiental pendente": "#e53935",
+      "Cancelado": "#9e9e9e"
+     }
+    },
+    {
+     "campo": "Porte",
+     "rotulo": "Porte (módulos)",
+     "titulo": "Imóveis rurais – porte",
+     "cores": {
+      "Pequena (até 4 MF)": "#a5d6a7",
+      "Média (4 a 15 MF)": "#ffb74d",
+      "Grande (acima de 15 MF)": "#e57373"
+     }
+    }
+   ]
+  }
  ],
  "camadas_opcionais": [
-  {"id": "bacias", "nome": "Bacias hidrográficas (PR)", "arquivo": "data/bacias/bacias_parana.geojson", "cor": "#29b6f6", "largura": 2.6, "halo": true, "preenchimento": 0.05, "rotulo_campo": "nome", "rotulo_tamanho": 13, "clicavel": true, "fonte": "ANA/SNIRH – unidades estaduais de gestão"},
-  {"id": "microbacias", "nome": "Microbacias", "arquivo": "data/bacias/microbacias_regiao.geojson", "cor": "#b2ebf2", "largura": 1, "opacidade": 0.85, "rotulo_campo": "rio", "rotulo_minzoom": 12, "rotulo_tamanho": 11, "clicavel": true, "fonte": "ANA/SNIRH – base ottocodificada"},
-  {"id": "rios-rio_tibagi", "grupo": "Rios catalogados por bacia", "nome": "Rio Tibagi", "arquivo": "data/bacias/rios_rio_tibagi.geojson", "geometria": "linha", "cor": "#4fc3f7", "rotulo_campo": "nome", "rotulo_minzoom": 9, "clicavel": true, "fonte": "ANA – BHO 2017 (base 1:250.000)"},
-  {"id": "rios-pirapo", "grupo": "Rios catalogados por bacia", "nome": "Rios Pirapó, Paranapanema 3 e 4", "arquivo": "data/bacias/rios_rios_pirapo_paranapanema_3_e_paranapanema_4.geojson", "geometria": "linha", "cor": "#4fc3f7", "rotulo_campo": "nome", "rotulo_minzoom": 9, "clicavel": true, "fonte": "ANA – BHO 2017 (base 1:250.000)"}
+  {
+   "id": "bacias",
+   "nome": "Bacias hidrográficas (PR)",
+   "arquivo": "data/bacias/bacias_parana.geojson",
+   "cor": "#29b6f6",
+   "largura": 2.6,
+   "halo": true,
+   "preenchimento": 0.05,
+   "rotulo_campo": "nome",
+   "rotulo_tamanho": 13,
+   "clicavel": true,
+   "fonte": "ANA/SNIRH – unidades estaduais de gestão"
+  },
+  {
+   "id": "microbacias",
+   "nome": "Microbacias",
+   "arquivo": "data/bacias/microbacias_regiao.geojson",
+   "cor": "#b2ebf2",
+   "largura": 1,
+   "opacidade": 0.85,
+   "rotulo_campo": "rio",
+   "rotulo_minzoom": 12,
+   "rotulo_tamanho": 11,
+   "clicavel": true,
+   "fonte": "ANA/SNIRH – base ottocodificada"
+  },
+  {
+   "id": "rios-rio_tibagi",
+   "grupo": "Rios catalogados por bacia",
+   "nome": "Rio Tibagi",
+   "arquivo": "data/bacias/rios_rio_tibagi.geojson",
+   "geometria": "linha",
+   "cor": "#4fc3f7",
+   "rotulo_campo": "nome",
+   "rotulo_minzoom": 9,
+   "clicavel": true,
+   "fonte": "ANA – BHO 2017 (base 1:250.000)"
+  },
+  {
+   "id": "rios-pirapo",
+   "grupo": "Rios catalogados por bacia",
+   "nome": "Rios Pirapó, Paranapanema 3 e 4",
+   "arquivo": "data/bacias/rios_rios_pirapo_paranapanema_3_e_paranapanema_4.geojson",
+   "geometria": "linha",
+   "cor": "#4fc3f7",
+   "rotulo_campo": "nome",
+   "rotulo_minzoom": 9,
+   "clicavel": true,
+   "fonte": "ANA – BHO 2017 (base 1:250.000)"
+  }
  ],
- "fazendas": []
+ "fazendas": [],
+ "busca_camada": "imoveis"
 }

@@ -469,3 +469,7 @@ table.ind tr.pos td { color: #1d6b3e; font-weight: 600; }
 .btn-externo { width: 100%; margin-top: 12px; font-weight: 600; }
 .doc-dialog.largo { width: min(1400px, 98vw); height: 94vh; }
 .doc-dialog.largo iframe { background: #fff; }
+
+.busca-item { display: flex; align-items: center; gap: 8px; width: 100%; border: 1px solid var(--borda); background: var(--painel); border-radius: 8px; padding: 7px 10px; margin-bottom: 6px; cursor: pointer; font: inherit; text-align: left; }
+.busca-item:hover { border-color: var(--verde); }
+.busca-item .mono { flex: 1; font-size: .72rem; word-break: break-all; }
