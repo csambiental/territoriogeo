@@ -1,0 +1,145 @@
+{
+ "ano": "2023",
+ "fonte": "MapBiomas 10 m – Coleção 2 (beta), 2023",
+ "area_total_ha": 164662.1,
+ "grupos": [
+  {
+   "grupo": "Vegetação nativa",
+   "cor": "#1f8d49",
+   "area_ha": 33864.9,
+   "pct": 20.57
+  },
+  {
+   "grupo": "Agricultura",
+   "cor": "#e974ed",
+   "area_ha": 73133.1,
+   "pct": 44.41
+  },
+  {
+   "grupo": "Pastagem",
+   "cor": "#edde8e",
+   "area_ha": 14163.1,
+   "pct": 8.6
+  },
+  {
+   "grupo": "Silvicultura",
+   "cor": "#7a5900",
+   "area_ha": 2431.3,
+   "pct": 1.48
+  },
+  {
+   "grupo": "Mosaico de usos",
+   "cor": "#ffefc3",
+   "area_ha": 28838.0,
+   "pct": 17.51
+  },
+  {
+   "grupo": "Área urbanizada",
+   "cor": "#d4271e",
+   "area_ha": 10749.1,
+   "pct": 6.53
+  },
+  {
+   "grupo": "Água",
+   "cor": "#2532e4",
+   "area_ha": 1185.3,
+   "pct": 0.72
+  },
+  {
+   "grupo": "Outras áreas",
+   "cor": "#db4d4f",
+   "area_ha": 297.3,
+   "pct": 0.18
+  }
+ ],
+ "classes": [
+  {
+   "nome": "Lavoura temporária",
+   "cor": "#c27ba0",
+   "grupo": "Agricultura",
+   "area_ha": 73035.6,
+   "codigo": 19,
+   "pct": 44.35
+  },
+  {
+   "nome": "Formação florestal",
+   "cor": "#1f8d49",
+   "grupo": "Vegetação nativa",
+   "area_ha": 32996.6,
+   "codigo": 3,
+   "pct": 20.04
+  },
+  {
+   "nome": "Mosaico de usos",
+   "cor": "#ffefc3",
+   "grupo": "Mosaico de usos",
+   "area_ha": 28838.0,
+   "codigo": 21,
+   "pct": 17.51
+  },
+  {
+   "nome": "Pastagem",
+   "cor": "#edde8e",
+   "grupo": "Pastagem",
+   "area_ha": 14163.1,
+   "codigo": 15,
+   "pct": 8.6
+  },
+  {
+   "nome": "Área urbanizada",
+   "cor": "#d4271e",
+   "grupo": "Área urbanizada",
+   "area_ha": 10749.1,
+   "codigo": 24,
+   "pct": 6.53
+  },
+  {
+   "nome": "Silvicultura",
+   "cor": "#7a5900",
+   "grupo": "Silvicultura",
+   "area_ha": 2431.3,
+   "codigo": 9,
+   "pct": 1.48
+  },
+  {
+   "nome": "Rio, lago e oceano",
+   "cor": "#2532e4",
+   "grupo": "Água",
+   "area_ha": 1182.5,
+   "codigo": 33,
+   "pct": 0.72
+  },
+  {
+   "nome": "Campo alagado e área pantanosa",
+   "cor": "#519799",
+   "grupo": "Vegetação nativa",
+   "area_ha": 868.3,
+   "codigo": 11,
+   "pct": 0.53
+  },
+  {
+   "nome": "Outras áreas não vegetadas",
+   "cor": "#db4d4f",
+   "grupo": "Outras áreas",
+   "area_ha": 297.3,
+   "codigo": 25,
+   "pct": 0.18
+  },
+  {
+   "nome": "Lavoura perene",
+   "cor": "#d082de",
+   "grupo": "Agricultura",
+   "area_ha": 97.5,
+   "codigo": 36,
+   "pct": 0.06
+  },
+  {
+   "nome": "Aquicultura",
+   "cor": "#091077",
+   "grupo": "Água",
+   "area_ha": 2.8,
+   "codigo": 31,
+   "pct": 0.0
+  }
+ ]
+}

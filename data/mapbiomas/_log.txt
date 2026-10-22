@@ -1,0 +1,31 @@
+raster EPSG:4326 (8.983152841195223e-05, 8.983152841195223e-05) 465718 476412 [(256, 256)] True
+janela (6997, 5166) [ 3  9 11 15 19 21 24 25 31 33 36]
+grupos {'Vegetação nativa': 33864.9, 'Agricultura': 73133.1, 'Pastagem': 14163.1, 'Silvicultura': 2431.3, 'Mosaico de usos': 28838.0, 'Área urbanizada': 10749.1, 'Água': 1185.3, 'Outras áreas': 297.3}
+data/car/imoveis_londrina.geojson ok
+data/bacias/microbacias_regiao.geojson ok
+imagem 2584 3815
+camadas WFS ['mapbiomas-alerta-bolivia:dashboard-alerts-staging', 'mapbiomas-alertas:alert_summary_shapefile', 'mapbiomas-alertas:alert_summary_shapefile_staging', 'mapbiomas-alertas:dashboard-alert-rural-properties-shapefile-staging', 'mapbiomas-alertas:dashboard-alert-rural-properties-shapefile', 'mapbiomas-alertas:dashboard-alert-shapefile', 'mapbiomas-alertas:dashboard-alert-shapefile-staging', 'mapbiomas-alertas:dashboard-alerts', 'mapbiomas-alertas:dashboard-alerts-staging', 'mapbiomas-alertas:dashboard-alerts-staging-v2', 'mapbiomas-alertas:dashboard-elasticsearch-alerts', 'mapbiomas-alertas:dashboard-elasticsearch-alerts-staging', 'mapbiomas-alertas:alerts-notifications-icmbio-users', 'mapbiomas-alertas:mv_qgis_published_alerts_snap_to_grid', 'mapbiomas-alertas:mv_rural_properties', 'mapbiomas-alertas:mv_rural_properties_with_alerts_published', 'mapbiomas-alerta-colombia:dashboard-alerts-staging', 'mapbiomas-alerta-colombia:mv_rural_properties', 'mapbiomas-alerta-indonesia:dashboard-alerts-staging-indonesia', 'mapbiomas-alerta-peru:dashboard-alerts-staging', 'mapbiomas-alertas:dashboard-alert-shapefile-mapbiomas', 'mapbiomas-alerta-bolivia:dashboard-elasticsearch-alerts-staging']
+alvo ['mapbiomas-alerta-bolivia:dashboard-alerts-staging', 'mapbiomas-alertas:alert_summary_shapefile', 'mapbiomas-alertas:alert_summary_shapefile_staging', 'mapbiomas-alertas:dashboard-alert-rural-properties-shapefile-staging', 'mapbiomas-alertas:dashboard-alert-rural-properties-shapefile', 'mapbiomas-alertas:dashboard-alert-shapefile', 'mapbiomas-alertas:dashboard-alert-shapefile-staging', 'mapbiomas-alertas:dashboard-alerts', 'mapbiomas-alertas:dashboard-alerts-staging', 'mapbiomas-alertas:dashboard-alerts-staging-v2', 'mapbiomas-alertas:dashboard-elasticsearch-alerts', 'mapbiomas-alertas:dashboard-elasticsearch-alerts-staging', 'mapbiomas-alertas:alerts-notifications-icmbio-users', 'mapbiomas-alertas:mv_qgis_published_alerts_snap_to_grid', 'mapbiomas-alertas:mv_rural_properties', 'mapbiomas-alertas:mv_rural_properties_with_alerts_published', 'mapbiomas-alerta-colombia:dashboard-alerts-staging', 'mapbiomas-alerta-colombia:mv_rural_properties', 'mapbiomas-alerta-indonesia:dashboard-alerts-staging-indonesia', 'mapbiomas-alerta-peru:dashboard-alerts-staging', 'mapbiomas-alertas:dashboard-alert-shapefile-mapbiomas', 'mapbiomas-alerta-bolivia:dashboard-elasticsearch-alerts-staging']
+mapbiomas-alerta-bolivia:dashboard-alerts-staging 0 no retângulo, 0 no município
+mapbiomas-alertas:alert_summary_shapefile 0 no retângulo, 0 no município
+mapbiomas-alertas:alert_summary_shapefile_staging 0 no retângulo, 0 no município
+mapbiomas-alertas:dashboard-alert-rural-properties-shapefile-staging 0 no retângulo, 0 no município
+mapbiomas-alertas:dashboard-alert-rural-properties-shapefile 0 no retângulo, 0 no município
+mapbiomas-alertas:dashboard-alert-shapefile 0 no retângulo, 0 no município
+mapbiomas-alertas:dashboard-alert-shapefile-staging 0 no retângulo, 0 no município
+mapbiomas-alertas:dashboard-alerts 0 no retângulo, 0 no município
+mapbiomas-alertas:dashboard-alerts-staging 0 no retângulo, 0 no município
+mapbiomas-alertas:dashboard-alerts-staging-v2 0 no retângulo, 0 no município
+mapbiomas-alertas:dashboard-elasticsearch-alerts 0 no retângulo, 0 no município
+mapbiomas-alertas:dashboard-elasticsearch-alerts-staging 0 no retângulo, 0 no município
+mapbiomas-alertas:alerts-notifications-icmbio-users 0 no retângulo, 0 no município
+mapbiomas-alertas:mv_qgis_published_alerts_snap_to_grid 0 no retângulo, 0 no município
+falhou mapbiomas-alertas:mv_rural_properties Expecting value: line 1 column 1 (char 0)
+mapbiomas-alertas:mv_rural_properties_with_alerts_published 0 no retângulo, 0 no município
+mapbiomas-alerta-colombia:dashboard-alerts-staging 0 no retângulo, 0 no município
+mapbiomas-alerta-colombia:mv_rural_properties 0 no retângulo, 0 no município
+mapbiomas-alerta-indonesia:dashboard-alerts-staging-indonesia 0 no retângulo, 0 no município
+mapbiomas-alerta-peru:dashboard-alerts-staging 0 no retângulo, 0 no município
+mapbiomas-alertas:dashboard-alert-shapefile-mapbiomas 0 no retângulo, 0 no município
+mapbiomas-alerta-bolivia:dashboard-elasticsearch-alerts-staging 0 no retângulo, 0 no município
+nenhum alerta salvo
