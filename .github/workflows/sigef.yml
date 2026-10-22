@@ -1,0 +1,24 @@
+name: Atualizar SIGEF
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '41 9 1 * *'
+permissions:
+  contents: write
+jobs:
+  sigef:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install shapely
+      - run: mkdir -p data/fundiario && python tools/baixar_sigef.py > data/fundiario/_log.txt 2>&1 || (cat data/fundiario/_log.txt; true)
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/fundiario
+          git diff --cached --quiet || git commit -m "SIGEF: imóveis certificados em Londrina"
+          git pull --rebase origin main || true
+          git push
