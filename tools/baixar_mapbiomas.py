@@ -35,6 +35,7 @@ def log(*a): print(*a, flush=True)
 
 # ---------- 1) cobertura do solo ----------
 try:
+    if os.environ.get('SO_ALERTAS'): raise SystemExit('pulando cobertura')
     import rasterio
     from rasterio.windows import from_bounds
     from rasterio.features import rasterize
@@ -114,7 +115,7 @@ try:
     json.dump({'imagem': f'{OUT}/cobertura_{ANO}.png', 'cantos': [[round(a, 6), round(b, 6)] for a, b in cantos], 'ano': ANO},
               open(f'{OUT}/cobertura_{ANO}.json', 'w'), indent=1)
     log('imagem', w2, h2)
-except Exception:
+except BaseException:
     traceback.print_exc()
 
 # ---------- 2) alertas de desmatamento ----------
@@ -129,14 +130,27 @@ try:
     mun = shape(json.load(open('data/municipio_londrina.geojson'))['features'][0]['geometry'])
     minx, miny, maxx, maxy = mun.bounds
     salvo = False
+    alvo = [n for n in alvo if n.startswith('mapbiomas-alertas:') and 'staging' not in n] or alvo
     for nome in alvo:
-        q = urllib.parse.urlencode({'service': 'WFS', 'version': '1.1.0', 'request': 'GetFeature', 'typeName': nome,
-                                    'outputFormat': 'application/json', 'srsName': 'EPSG:4326',
-                                    'bbox': f'{miny},{minx},{maxy},{maxx},EPSG:4326', 'maxFeatures': 5000})
         try:
-            d = json.load(urllib.request.urlopen(base + '?' + q, timeout=240))
+            q1 = urllib.parse.urlencode({'service': 'WFS', 'version': '2.0.0', 'request': 'GetFeature', 'typeNames': nome,
+                                         'outputFormat': 'application/json', 'count': 1})
+            ex = json.load(urllib.request.urlopen(base + '?' + q1, timeout=120))
+            f0 = (ex.get('features') or [{}])[0]
+            log('amostra', nome, json.dumps(f0.get('properties', {}), ensure_ascii=False)[:500], (f0.get('geometry') or {}).get('coordinates', [[[]]])[0][:1] if f0.get('geometry') else '')
         except Exception as e:
-            log('falhou', nome, e); continue
+            log('amostra falhou', nome, e)
+        d = {'features': []}
+        for caixa in (f'{minx},{miny},{maxx},{maxy},urn:ogc:def:crs:EPSG::4326'.replace(f'{minx},{miny},{maxx},{maxy}', f'{miny},{minx},{maxy},{maxx}'),
+                      f'{minx},{miny},{maxx},{maxy},EPSG:4326', f'{minx},{miny},{maxx},{maxy}'):
+            q = urllib.parse.urlencode({'service': 'WFS', 'version': '2.0.0', 'request': 'GetFeature', 'typeNames': nome,
+                                        'outputFormat': 'application/json', 'srsName': 'EPSG:4326', 'bbox': caixa, 'count': 5000})
+            try:
+                d = json.load(urllib.request.urlopen(base + '?' + q, timeout=240))
+            except Exception as e:
+                log('falhou', nome, caixa, e); continue
+            log(nome, caixa, len(d.get('features', [])))
+            if d.get('features'): break
         fs = [f for f in d.get('features', []) if f.get('geometry') and shape(f['geometry']).intersects(mun)]
         log(nome, len(d.get('features', [])), 'no retângulo,', len(fs), 'no município')
         if fs:
