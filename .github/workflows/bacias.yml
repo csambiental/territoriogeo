@@ -1,6 +1,8 @@
 name: Atualizar bacias hidrográficas
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '17 9 * * 1'
   push:
     paths: ['tools/baixar_bacias.py', 'tools/baixar_rios.py', '.github/workflows/bacias.yml']
 permissions:

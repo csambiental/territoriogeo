@@ -18,7 +18,9 @@ def consulta(params):
             try:
                 d = json.load(urllib.request.urlopen(req, timeout=240)); break
             except Exception as e:
+                print('tentativa', tent + 1, 'falhou:', e, flush=True)
                 if tent == 3: raise
+                import time; time.sleep(30 * (tent + 1))
         if 'error' in d:
             print('ERRO na consulta', json.dumps(params)[:300], json.dumps(d)[:600], flush=True); raise SystemExit(1)
         feats += d.get('features', [])

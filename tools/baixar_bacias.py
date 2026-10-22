@@ -12,7 +12,13 @@ def consulta(url, params):
     while True:
         p = dict(params, f='json', outSR='4326', returnGeometry='true', resultOffset=offset, resultRecordCount=1000)
         req = urllib.request.Request(url + '/query?' + urllib.parse.urlencode(p), headers={'User-Agent': 'csambiental-mapa'})
-        d = json.load(urllib.request.urlopen(req, timeout=180))
+        for tent in range(6):
+            try:
+                d = json.load(urllib.request.urlopen(req, timeout=180)); break
+            except Exception as e:
+                print('tentativa', tent + 1, 'falhou:', e, flush=True)
+                if tent == 5: raise
+                import time; time.sleep(30 * (tent + 1))
         if 'error' in d: raise SystemExit(json.dumps(d))
         feats += d.get('features', [])
         if not d.get('exceededTransferLimit') or not d.get('features'): return feats
