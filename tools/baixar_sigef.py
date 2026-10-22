@@ -21,7 +21,7 @@ while True:
     print('lote', off, len(fs), flush=True)
     if len(fs) < 1000 and not d.get('exceededTransferLimit') and not (d.get('properties') or {}).get('exceededTransferLimit'): break
     off += len(fs)
-data = lambda ms: datetime.datetime.utcfromtimestamp(ms / 1000).strftime('%d/%m/%Y') if isinstance(ms, (int, float)) else (ms or '')
+data = lambda ms: datetime.datetime.fromtimestamp(ms / 1000, datetime.timezone.utc).strftime('%d/%m/%Y') if isinstance(ms, (int, float)) else (ms or '')
 out = []
 for f in feats:
     if not f.get('geometry'): continue
@@ -30,7 +30,7 @@ for f in feats:
     p = f['properties']
     out.append({'type': 'Feature', 'geometry': mapping(g.simplify(0.00002, preserve_topology=True)), 'properties': {
         'nome': p.get('nome_area') or 'Imóvel certificado', 'Código SNCR (INCRA)': p.get('codigo_imo') or '',
-        'Parcela SIGEF': p.get('parcela_co') or '', 'Situação': p.get('situacao_i') or '', 'Status': p.get('status') or '',
+        'Parcela SIGEF': p.get('parcela_co') or '', 'Situação': {'REGISTRADA': 'Registrada', 'NAO_TITULADA': 'Não titulada', 'TITULADA_NAO_REGISTRADA': 'Titulada, não registrada'}.get(p.get('situacao_i'), p.get('situacao_i') or ''), 'Status': (p.get('status') or '').capitalize(),
         'Matrícula / registro': p.get('registro_m') or '', 'Enviado em': data(p.get('data_submi')), 'Certificado em': data(p.get('data_aprov')),
         'Área (ha)': f"{g.area * 111320 * 110574 * 0.9168 / 1e4:.2f}".replace('.', ','),
         'link': f"https://sigef.incra.gov.br/geo/parcela/detalhe/{p.get('parcela_co')}/" if p.get('parcela_co') else '',

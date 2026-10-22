@@ -42,6 +42,10 @@
     "texto": "– MapBiomas: uso do solo 2023 (20,6% de vegetação nativa no município), % por imóvel e por microbacia, e 12 alertas de desmatamento em 19 imóveis (concluída)"
    },
    {
+    "nome": "Etapa 3b",
+    "texto": "– 1.841 imóveis certificados no SIGEF/INCRA (80,5 mil ha), com situação, matrícula e link para a parcela (concluída)"
+   },
+   {
     "nome": "Etapa 4",
     "texto": "– APP, Reserva Legal e déficit/ativo por imóvel (camadas do SICAR)",
     "classe": "andamento"
@@ -244,6 +248,29 @@
     "Imóvel (CAR)"
    ],
    "fonte": "MapBiomas Alerta"
+  },
+  {
+   "id": "sigef",
+   "secao": "Fundiário",
+   "nome": "Imóveis certificados SIGEF/INCRA",
+   "arquivo": "data/fundiario/sigef_londrina.geojson",
+   "icone": "fill",
+   "cor": "#ff9800",
+   "largura": 1.6,
+   "preenchimento": 0.15,
+   "clicavel": true,
+   "prioridade": true,
+   "campos": [
+    "Código SNCR (INCRA)",
+    "Situação",
+    "Status",
+    "Matrícula / registro",
+    "Área (ha)",
+    "Enviado em",
+    "Certificado em",
+    "Parcela SIGEF"
+   ],
+   "fonte": "SIGEF/INCRA – serviço público do IAT-PR"
   },
   {
    "id": "bacias",
