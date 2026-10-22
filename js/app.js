@@ -123,6 +123,8 @@ function antesDasFazendas() { return fazendas.map(f => `${f.id}-fill`).find(id =
 function desenharOpcional(o) {
     const g = opcionaisData[o.id];
     if (!g || map.getSource(`op-${o.id}`)) return;
+    // mapa ainda carregando (satélite/dados): desenha assim que terminar
+    if (!map.isStyleLoaded()) { map.once('idle', () => { if (opcionaisAtivas.has(o.id)) { desenharOpcional(o); aplicarVisibilidadeCamadas(); } }); return; }
     const antes = (o.antes && map.getLayer(o.antes)) ? o.antes : antesDasFazendas();
     if (o.tipo === 'imagem') {
         map.addSource(`op-${o.id}`, { type: 'image', url: g.imagem, coordinates: g.cantos });
@@ -1061,7 +1063,7 @@ async function iniciar() {
     renderBuscaCamada();
     renderPrazos(dados.prazos);
     prepararCartoes();
-    const pronto = () => { adicionarCamadas(); enquadrarTodas(); };
+    const pronto = () => { adicionarCamadas(); enquadrarTodas(); map.once('idle', () => document.getElementById('carregando')?.remove()); };
     if (map.isStyleLoaded()) pronto(); else map.once('load', pronto);
 }
 iniciar();

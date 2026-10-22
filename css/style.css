@@ -480,3 +480,7 @@ table.ind tr.pos td { color: #1d6b3e; font-weight: 600; }
 .cats-acoes button { border: 1px solid var(--borda); background: var(--painel); border-radius: 999px; padding: 3px 10px; font: inherit; font-size: .74rem; cursor: pointer; }
 .cats-acoes button:hover { border-color: var(--verde); }
 .lg-off { opacity: .35; text-decoration: line-through; }
+
+.carregando { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background: rgba(255,255,255,.95); color: var(--verde-escuro); padding: 12px 18px; border-radius: 999px; box-shadow: var(--sombra); font-weight: 600; font-size: .9rem; z-index: 5; pointer-events: none; }
+.carregando::before { content: ''; display: inline-block; width: 14px; height: 14px; margin-right: 8px; border: 2px solid var(--verde); border-top-color: transparent; border-radius: 50%; vertical-align: -2px; animation: girar .8s linear infinite; }
+@keyframes girar { to { transform: rotate(360deg); } }
