@@ -484,3 +484,20 @@ table.ind tr.pos td { color: #1d6b3e; font-weight: 600; }
 .carregando { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background: rgba(255,255,255,.95); color: var(--verde-escuro); padding: 12px 18px; border-radius: 999px; box-shadow: var(--sombra); font-weight: 600; font-size: .9rem; z-index: 5; pointer-events: none; }
 .carregando::before { content: ''; display: inline-block; width: 14px; height: 14px; margin-right: 8px; border: 2px solid var(--verde); border-top-color: transparent; border-radius: 50%; vertical-align: -2px; animation: girar .8s linear infinite; }
 @keyframes girar { to { transform: rotate(360deg); } }
+
+/* balões: nunca maiores que a tela; rolagem interna */
+.mapboxgl-popup { max-width: min(340px, calc(100vw - 24px)) !important; }
+.mapboxgl-popup-content { max-height: min(62vh, 520px); overflow-y: auto; overscroll-behavior: contain; }
+.popup h3 { word-break: break-word; }
+.popup .mono, .popup dd { overflow-wrap: anywhere; }
+.popup-dl { grid-template-columns: minmax(90px, auto) 1fr; }
+@media (max-width: 800px) {
+    .mapboxgl-popup-content { max-height: 46vh; padding: 10px 12px; }
+    .popup h3 { font-size: .9rem; }
+}
+/* termos */
+.termos-texto, .termos-lista, .termos-fontes, .termos-contato { font-size: .8rem; line-height: 1.45; }
+.termos-lista, .termos-fontes { padding-left: 18px; margin: 6px 0 10px; }
+.termos-lista li, .termos-fontes li { margin-bottom: 4px; }
+#cardTermos h3 { font-size: .85rem; margin: 8px 0 4px; }
+.footnote a { color: inherit; }

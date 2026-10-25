@@ -89,6 +89,40 @@ function boundsDe(geojson) {
     return [[b[0], b[1]], [b[2], b[3]]];
 }
 
+// ---------- balões (popups) sempre dentro da tela ----------
+(function () {
+    const addTo = mapboxgl.Popup.prototype.addTo;
+    mapboxgl.Popup.prototype.addTo = function (m) {
+        const r = addTo.call(this, m);
+        requestAnimationFrame(() => setTimeout(() => enquadrarPopup(this, m), 30));
+        return r;
+    };
+})();
+function enquadrarPopup(p, m) {
+    const el = p.getElement && p.getElement(); if (!el) return;
+    const a = el.getBoundingClientRect(), b = m.getContainer().getBoundingClientRect(), pad = 12;
+    let dx = 0, dy = 0;
+    if (a.height > b.height - 2 * pad || a.top < b.top + pad) dy = a.top - b.top - pad;
+    else if (a.bottom > b.bottom - pad) dy = a.bottom - b.bottom + pad;
+    if (a.left < b.left + pad) dx = a.left - b.left - pad;
+    else if (a.right > b.right - pad) dx = a.right - b.right + pad;
+    if (dx || dy) m.panBy([dx, dy], { duration: 350 });
+}
+
+// ---------- quadro "Sobre os dados e termos de uso" ----------
+function renderTermos() {
+    const t = dadosGerais.termos, el = document.getElementById('cardTermos');
+    if (!t || !el) return;
+    el.hidden = false;
+    el.innerHTML = `<h2>${esc(t.titulo || 'Sobre os dados e termos de uso')}</h2>
+        ${t.texto ? `<p class="termos-texto">${esc(t.texto)}</p>` : ''}
+        ${(t.avisos || []).length ? `<ul class="termos-lista">${t.avisos.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
+        ${(t.fontes || []).length ? `<h3>Fontes</h3><ul class="termos-fontes">${t.fontes.map(f => `<li>${f.link ? `<a href="${esc(f.link)}" target="_blank" rel="noopener">${esc(f.nome)}</a>` : esc(f.nome)}${f.detalhe ? ` – ${esc(f.detalhe)}` : ''}</li>`).join('')}</ul>` : ''}
+        ${t.contato ? `<p class="termos-contato">Correções, dúvidas ou pedidos de retirada de informação: <a href="mailto:${esc(t.contato)}">${esc(t.contato)}</a></p>` : ''}
+        ${t.site ? `<a class="btn btn-externo" href="${esc(t.site.url)}" target="_blank" rel="noopener">${esc(t.site.texto)} ↗</a>` : ''}`;
+    if (typeof prepararCartoes === 'function') prepararCartoes();
+}
+
 // ---------- painel lateral ----------
 let dadosGerais = {};
 function renderResumo() {
@@ -1042,6 +1076,7 @@ async function iniciar() {
     }));
     renderResumo();
     renderFiltroEtapa();
+    renderTermos();
     renderModosCor();
     renderIndicadoresExternos();
     renderOpcionais();

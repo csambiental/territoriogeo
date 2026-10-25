@@ -324,5 +324,50 @@
   }
  ],
  "fazendas": [],
- "busca_camada": "imoveis"
+ "busca_camada": "imoveis",
+ "termos": {
+  "titulo": "Sobre os dados e termos de uso",
+  "texto": "Mapa de caráter informativo, elaborado para diagnóstico territorial e ambiental do município de Londrina a partir de bases públicas oficiais. Não substitui a consulta aos órgãos competentes e não tem valor de laudo, certidão ou documento oficial.",
+  "avisos": [
+   "Não são exibidos nomes de proprietários, CPF ou CNPJ. Número do CAR, matrícula e código SIGEF vêm das consultas públicas oficiais.",
+   "Alertas de desmatamento do MapBiomas não são autuação nem infração: indicam supressão de vegetação detectada por satélite, que pode estar autorizada, em análise ou já regularizada.",
+   "A situação do CAR e a cobertura do solo refletem a data de cada base e podem estar desatualizadas.",
+   "Os percentuais de vegetação nativa vêm de imagens de satélite (MapBiomas) e não substituem a APP e a Reserva Legal declaradas no CAR."
+  ],
+  "fontes": [
+   {
+    "nome": "SICAR – Cadastro Ambiental Rural",
+    "detalhe": "consulta pública, base de 02/10/2026",
+    "link": "https://consultapublica.car.gov.br/"
+   },
+   {
+    "nome": "SIGEF/INCRA – imóveis certificados",
+    "detalhe": "serviço público do IAT-PR",
+    "link": "https://geopr.iat.pr.gov.br/"
+   },
+   {
+    "nome": "MapBiomas – Cobertura e uso da terra 10 m (Coleção 2, 2023)",
+    "detalhe": "CC-BY 4.0",
+    "link": "https://brasil.mapbiomas.org/"
+   },
+   {
+    "nome": "MapBiomas Alerta – Sistema de Validação e Refinamento de Alertas de Desmatamento com Imagens de Alta Resolução",
+    "detalhe": "acessado em 22/10/2026, CC-BY 4.0",
+    "link": "https://alerta.mapbiomas.org/"
+   },
+   {
+    "nome": "ANA/SNIRH – bacias, microbacias e base hidrográfica ottocodificada",
+    "link": "https://www.snirh.gov.br/"
+   },
+   {
+    "nome": "IBGE – limite municipal",
+    "link": "https://www.ibge.gov.br/"
+   }
+  ],
+  "contato": "contato@institutobiosimos.org.br",
+  "site": {
+   "url": "https://lp-biosimos.vercel.app/",
+   "texto": "Conheça o Instituto Biosimos"
+  }
+ }
 }
