@@ -2,8 +2,7 @@
 import json, time, urllib.request, urllib.parse, os, sys
 from shapely.geometry import shape, mapping
 SERVICOS = {
-    'barragens': 'https://geopr.iat.pr.gov.br/server/rest/services/Hosted/service_5d013e1849744e3f8370df9b8217a741/FeatureServer',
-    'outorgas': 'https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/outorgas_sigarh/FeatureServer',
+    'barragens': 'https://geopr.iat.pr.gov.br/server/rest/services/Hosted/barragens_dashboard_publico/FeatureServer',
 }
 def get(u, dados=None):
     for t in range(4):
