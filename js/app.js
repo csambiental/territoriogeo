@@ -160,6 +160,19 @@ function desenharOpcional(o) {
     // mapa ainda carregando (satélite/dados): desenha assim que terminar
     if (!map.isStyleLoaded()) { map.once('idle', () => { if (opcionaisAtivas.has(o.id)) { desenharOpcional(o); aplicarVisibilidadeCamadas(); } }); return; }
     const antes = (o.antes && map.getLayer(o.antes)) ? o.antes : antesDasFazendas();
+    if (o.geometria === 'ponto') {
+        map.addSource(`op-${o.id}`, { type: 'geojson', data: g });
+        const cor = o.cor_por && o.cores ? ['match', ['get', o.cor_por], ...Object.entries(o.cores).flat(), o.cor || '#777777'] : o.cor;
+        map.addLayer({ id: `op-${o.id}`, type: 'circle', source: `op-${o.id}`,
+            paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 9, 5, 14, 9], 'circle-color': cor, 'circle-stroke-color': '#ffffff', 'circle-stroke-width': 2 } });
+        if (o.rotulo_campo) try {
+            map.addLayer({ id: `op-${o.id}-nome`, type: 'symbol', source: `op-${o.id}`, minzoom: o.rotulo_minzoom || 12,
+                layout: { 'text-field': ['get', o.rotulo_campo], 'text-size': 11.5, 'text-offset': [0, 1.2], 'text-anchor': 'top', 'text-max-width': 10,
+                          'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'] },
+                paint: { 'text-color': '#ffffff', 'text-halo-color': '#000000', 'text-halo-width': 1.4 } });
+        } catch (err) { console.warn('Rótulos indisponíveis', err); }
+        return;
+    }
     if (o.tipo === 'imagem') {
         map.addSource(`op-${o.id}`, { type: 'image', url: g.imagem, coordinates: g.cantos });
         map.addLayer({ id: `op-${o.id}`, type: 'raster', source: `op-${o.id}`, paint: { 'raster-opacity': o.opacidade ?? 0.8, 'raster-resampling': 'nearest' } }, antes);

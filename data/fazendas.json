@@ -273,6 +273,52 @@
    "fonte": "SIGEF/INCRA – serviço público do IAT-PR"
   },
   {
+   "id": "barragens",
+   "secao": "Hidrografia",
+   "nome": "Barragens cadastradas (IAT)",
+   "arquivo": "data/iat/barragens_londrina.geojson",
+   "geometria": "ponto",
+   "icone": "dot",
+   "cor": "#1e88e5",
+   "cor_por": "risco",
+   "cores": {
+    "Alto": "#d32f2f",
+    "Médio": "#ffa000",
+    "Baixo": "#43a047"
+   },
+   "rotulo_campo": "nome",
+   "rotulo_minzoom": 12,
+   "clicavel": true,
+   "prioridade": true,
+   "campos": [
+    "Código IAT",
+    "Categoria de risco",
+    "Dano potencial associado (DPA)",
+    "Classificação",
+    "Fase",
+    "Finalidade",
+    "Tipo (material)",
+    "Altura (m)",
+    "Área do reservatório (m²)",
+    "Volume (hm³)"
+   ],
+   "legenda_itens": [
+    {
+     "rotulo": "Risco alto",
+     "cor": "#d32f2f"
+    },
+    {
+     "rotulo": "Risco médio",
+     "cor": "#ffa000"
+    },
+    {
+     "rotulo": "Risco baixo",
+     "cor": "#43a047"
+    }
+   ],
+   "fonte": "IAT-PR – cadastro de barragens (painel público)"
+  },
+  {
    "id": "bacias",
    "nome": "Bacias hidrográficas (PR)",
    "arquivo": "data/bacias/bacias_parana.geojson",
@@ -344,6 +390,10 @@
     "nome": "SIGEF/INCRA – imóveis certificados",
     "detalhe": "serviço público do IAT-PR",
     "link": "https://geopr.iat.pr.gov.br/"
+   },
+   {
+    "nome": "IAT-PR – cadastro de barragens (painel público de segurança de barragens)",
+    "link": "https://geopr.iat.pr.gov.br/portal/apps/experiencebuilder/experience/?id=8cf1eaa023fa40e88549e4f727f1812f"
    },
    {
     "nome": "MapBiomas – Cobertura e uso da terra 10 m (Coleção 2, 2023)",

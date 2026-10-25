@@ -1,12 +1,15 @@
-name: Descobrir camadas IAT
-on: { workflow_dispatch: {} }
+name: Atualizar IAT
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '51 9 1 * *'
 permissions: { contents: write }
 jobs:
-  d:
+  iat:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: mkdir -p data/_diag && pip install shapely -q && mkdir -p data/iat && (python3 tools/baixar_iat.py > data/_diag/iat_barragens.txt 2>&1 || true)
+      - run: pip install shapely -q && mkdir -p data/iat data/_diag && (python3 tools/baixar_iat.py > data/_diag/iat_barragens.txt 2>&1 && python3 tools/processar_barragens.py || true)
       - run: |
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/_diag data/iat; git commit -m "diagnóstico IAT" || true; git pull --rebase origin main || true; git push
+          git add data/_diag data/iat; git commit -m "IAT: barragens de Londrina atualizadas" || true; git pull --rebase origin main || true; git push
