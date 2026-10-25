@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: mkdir -p data/_diag && pip install shapely -q && mkdir -p data/iat && (python3 tools/baixar_iat.py > data/_diag/iat_baixar.txt 2>&1 || true)
+      - run: mkdir -p data/_diag && pip install shapely -q && mkdir -p data/iat && (python3 tools/descobrir_iat.py > data/_diag/iat2.txt 2>&1 || true)
       - run: |
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/_diag data/iat; git commit -m "diagnóstico IAT" || true; git pull --rebase origin main || true; git push
