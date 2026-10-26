@@ -494,7 +494,9 @@
     "Zoneamento",
     "Código do loteamento"
    ],
-   "fonte": "Prefeitura de Londrina – GeoLondrina/SIGLON (dados públicos) – base cartográfica de quadras e lotes"
+   "fonte": "Prefeitura de Londrina – GeoLondrina/SIGLON (dados públicos) – base cartográfica de quadras e lotes",
+   "link_fixo": "https://app.londrina.pr.gov.br/app/r/fazenda_front/acelera-londrina/sondagem",
+   "link_fixo_texto": "Sondar atividades no lote (Acelera Londrina) ↗"
   },
   {
    "id": "loteamentos",

@@ -393,7 +393,8 @@ function popupOpcional(e, soPrioritarias) {
     if (p.regiao_hidrografica) linhas.push(['Região hidrográfica', p.regiao_hidrografica]);
     new mapboxgl.Popup({ maxWidth: '300px' }).setLngLat(e.lngLat)
         .setHTML(`<div class="popup"><h3>${esc(p.nome || 'Sem nome')}</h3><dl class="popup-dl">${linhas.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
-            ${linkHtml(p)}<p class="popup-hint">Fonte: ${esc(oc.fonte || 'ANA – Base Hidrográfica Ottocodificada')}</p></div>`).addTo(map);
+            ${linkHtml(p)}${oc.link_fixo ? `<a class="btn btn-mini" href="${esc(oc.link_fixo)}" target="_blank" rel="noopener">${esc(oc.link_fixo_texto || 'Abrir ↗')}</a>` : ''}
+            <p class="popup-hint">Fonte: ${esc(oc.fonte || 'ANA – Base Hidrográfica Ottocodificada')}</p></div>`).addTo(map);
     return true;
 }
 
