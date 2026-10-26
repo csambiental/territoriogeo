@@ -1,4 +1,4 @@
-# Território Rural de Londrina
+# Território Urbano e Rural de Londrina
 
 Mapa interativo do município de Londrina (PR) — CS Consultoria Ambiental.
 
