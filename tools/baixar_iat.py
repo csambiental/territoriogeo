@@ -3,6 +3,7 @@ import json, time, urllib.request, urllib.parse, os, sys
 from shapely.geometry import shape, mapping
 SERVICOS = {
     'barragens': 'https://geopr.iat.pr.gov.br/server/rest/services/Hosted/barragens_dashboard_publico/FeatureServer',
+    'outorgas': 'https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/outorgas_sigarh/FeatureServer',
 }
 def get(u, dados=None):
     for t in range(4):

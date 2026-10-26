@@ -332,6 +332,122 @@
    "fonte": "IAT-PR – consulta pública de processos de licenciamento; localização pela outorga SIGARH"
   },
   {
+   "secao": "Outorgas de água (SIGARH)",
+   "geometria": "ponto",
+   "icone": "dot",
+   "cor_por": "grupo",
+   "cores": {
+    "Poço (água subterrânea)": "#1e88e5",
+    "Captação superficial": "#00acc1",
+    "Lançamento de efluentes": "#8d6e63",
+    "Barragem / soleira": "#3949ab",
+    "Obras e intervenções em rios": "#ff7043"
+   },
+   "rotulo_campo": "nome",
+   "rotulo_minzoom": 15,
+   "clicavel": true,
+   "prioridade": true,
+   "campos": [
+    "Interferência",
+    "Documento",
+    "Portaria / declaração",
+    "Situação",
+    "Setor do usuário",
+    "Finalidade",
+    "Corpo hídrico / aquífero",
+    "Vazão máxima (m³/h)",
+    "Publicação",
+    "Vencimento",
+    "Bacia (comitê)",
+    "Área"
+   ],
+   "legenda_itens": [
+    {
+     "rotulo": "Poço (água subterrânea)",
+     "cor": "#1e88e5"
+    },
+    {
+     "rotulo": "Captação superficial",
+     "cor": "#00acc1"
+    },
+    {
+     "rotulo": "Lançamento de efluentes",
+     "cor": "#8d6e63"
+    },
+    {
+     "rotulo": "Barragem / soleira",
+     "cor": "#3949ab"
+    },
+    {
+     "rotulo": "Obras e intervenções em rios",
+     "cor": "#ff7043"
+    }
+   ],
+   "fonte": "IAT-PR – outorgas SIGARH (deferidas, em renovação ou regularização)",
+   "id": "outorgas-rural",
+   "nome": "Outorgas na área rural (338)",
+   "arquivo": "data/iat/outorgas_rural.geojson",
+   "cor": "#00acc1"
+  },
+  {
+   "secao": "Outorgas de água (SIGARH)",
+   "geometria": "ponto",
+   "icone": "dot",
+   "cor_por": "grupo",
+   "cores": {
+    "Poço (água subterrânea)": "#1e88e5",
+    "Captação superficial": "#00acc1",
+    "Lançamento de efluentes": "#8d6e63",
+    "Barragem / soleira": "#3949ab",
+    "Obras e intervenções em rios": "#ff7043"
+   },
+   "rotulo_campo": "nome",
+   "rotulo_minzoom": 15,
+   "clicavel": true,
+   "prioridade": true,
+   "campos": [
+    "Interferência",
+    "Documento",
+    "Portaria / declaração",
+    "Situação",
+    "Setor do usuário",
+    "Finalidade",
+    "Corpo hídrico / aquífero",
+    "Vazão máxima (m³/h)",
+    "Publicação",
+    "Vencimento",
+    "Bacia (comitê)",
+    "Área"
+   ],
+   "legenda_itens": [
+    {
+     "rotulo": "Poço (água subterrânea)",
+     "cor": "#1e88e5"
+    },
+    {
+     "rotulo": "Captação superficial",
+     "cor": "#00acc1"
+    },
+    {
+     "rotulo": "Lançamento de efluentes",
+     "cor": "#8d6e63"
+    },
+    {
+     "rotulo": "Barragem / soleira",
+     "cor": "#3949ab"
+    },
+    {
+     "rotulo": "Obras e intervenções em rios",
+     "cor": "#ff7043"
+    }
+   ],
+   "fonte": "IAT-PR – outorgas SIGARH (deferidas, em renovação ou regularização)",
+   "id": "outorgas-urbana",
+   "nome": "Outorgas na área urbana (478)",
+   "arquivo": "data/iat/outorgas_urbana.geojson",
+   "cor": "#1e88e5"
+  },
+  {
    "id": "barragens",
    "secao": "Hidrografia",
    "nome": "Barragens cadastradas (IAT)",
@@ -453,6 +569,11 @@
    {
     "nome": "IAT-PR – cadastro de barragens (painel público de segurança de barragens)",
     "link": "https://geopr.iat.pr.gov.br/portal/apps/experiencebuilder/experience/?id=8cf1eaa023fa40e88549e4f727f1812f"
+   },
+   {
+    "nome": "IAT-PR – outorgas de recursos hídricos (SIGARH)",
+    "detalhe": "só documentos deferidos, em renovação ou em regularização; nomes de pessoas físicas não são exibidos",
+    "link": "https://geopr.iat.pr.gov.br/"
    },
    {
     "nome": "IAT-PR – consulta pública de processos de licenciamento ambiental",
