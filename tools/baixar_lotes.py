@@ -88,4 +88,6 @@ cmd = ['tippecanoe', '-e', 'data/urbano/tiles', '--no-tile-compression', '-Z10',
 print(' '.join(cmd), flush=True)
 subprocess.run(cmd, check=True)
 shutil.rmtree(tmp)
+import glob
+print('lotes num tile z16 do centro:', 'ok' if os.path.exists('data/urbano/tiles/16/23453/37133.pbf') else '-')
 print('tiles:', sum(len(fs) for _, _, fs in os.walk('data/urbano/tiles')), 'arquivos')
