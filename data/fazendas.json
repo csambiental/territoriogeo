@@ -568,7 +568,7 @@
   "titulo": "Sobre os dados e termos de uso",
   "texto": "Mapa de caráter informativo, elaborado para diagnóstico territorial e ambiental do município de Londrina a partir de bases públicas oficiais. Não substitui a consulta aos órgãos competentes e não tem valor de laudo, certidão ou documento oficial.",
   "avisos": [
-   "Não são exibidos nomes de proprietários, CPF ou CNPJ. Número do CAR, matrícula e código SIGEF vêm das consultas públicas oficiais.",
+   "Não são exibidos nomes de proprietários de imóveis, CPF ou CNPJ. Nas outorgas de água, o titular aparece como consta na consulta pública do SIGARH (IAT). Número do CAR, matrícula e código SIGEF vêm das consultas públicas oficiais.",
    "Alertas de desmatamento do MapBiomas não são autuação nem infração: indicam supressão de vegetação detectada por satélite, que pode estar autorizada, em análise ou já regularizada.",
    "O indicador de pendências é uma triagem automática a partir de bases públicas e não constitui laudo, autuação ou conclusão sobre a situação do imóvel; depende de verificação técnica e documental.",
    "A situação do CAR e a cobertura do solo refletem a data de cada base e podem estar desatualizadas.",
