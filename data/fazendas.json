@@ -1,7 +1,7 @@
 {
  "cliente": {
   "nome": "Território Urbano e Rural de Londrina",
-  "subtitulo": "Imóveis rurais do CAR, bacias e microbacias · CS Consultoria Ambiental",
+  "subtitulo": "Imóveis rurais, lotes urbanos, águas e licenças · CS Consultoria Ambiental",
   "selo": "Em construção",
   "centro": [
    -51.1,
@@ -53,6 +53,10 @@
    {
     "nome": "Pendências",
     "texto": "– indicador por imóvel (CAR, alertas, vegetação nativa e SIGEF): 236 com prioridade alta, 367 média, 2.220 em atenção (CAR sem análise) e 1.330 sem pendência identificada. Caráter indicativo."
+   },
+   {
+    "nome": "Cadastro urbano",
+    "texto": "– 173.677 lotes urbanos com quadra, loteamento e zona de uso do solo (Lei 12.236/2015), 778 loteamentos, perímetros urbanos, bairros e regiões oficiais (Prefeitura/IPPUL) (concluída)"
    }
   ],
   "documentos": [],
@@ -403,7 +407,7 @@
    ],
    "fonte": "IAT-PR – outorgas SIGARH (deferidas, em renovação ou regularização)",
    "id": "outorgas-rural",
-   "nome": "Outorgas na área rural (338)",
+   "nome": "Outorgas na área rural (316)",
    "arquivo": "data/iat/outorgas_rural.geojson",
    "cor": "#00acc1"
   },
@@ -461,7 +465,7 @@
    ],
    "fonte": "IAT-PR – outorgas SIGARH (deferidas, em renovação ou regularização)",
    "id": "outorgas-urbana",
-   "nome": "Outorgas na área urbana (478)",
+   "nome": "Outorgas na área urbana (500)",
    "arquivo": "data/iat/outorgas_urbana.geojson",
    "cor": "#1e88e5"
   },
