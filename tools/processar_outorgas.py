@@ -23,14 +23,25 @@ dt = lambda ms: datetime.datetime.fromtimestamp(ms / 1000, datetime.timezone.utc
 def vazao(p):
     v = [p.get(k) for k in p if k.startswith('vlr_vazao_capt_lanc_') and isinstance(p.get(k), (int, float))]
     return max(v) if v else None
-imv = [shape(f['geometry']) for f in json.load(open('data/car/imoveis_londrina.geojson'))['features']]
-arv = STRtree(imv)
+import os
+# área urbana = dentro dos perímetros urbanos oficiais (IPPUL, Lei 13.718/2023); sem o arquivo, usa os imóveis do CAR
+PERIM = 'data/urbano/perimetros_urbanos.geojson'
+if os.path.exists(PERIM):
+    per = [shape(f['geometry']).buffer(0) for f in json.load(open(PERIM))['features']]
+    parv = STRtree(per)
+    def rural_pt(pt): return not any(per[i].contains(pt) for i in parv.query(pt))
+    ROT = ('Rural – fora do perímetro urbano', 'Urbana – dentro do perímetro urbano (IPPUL)')
+else:
+    imv = [shape(f['geometry']) for f in json.load(open('data/car/imoveis_londrina.geojson'))['features']]
+    arv = STRtree(imv)
+    def rural_pt(pt): return any(imv[i].contains(pt) for i in arv.query(pt))
+    ROT = ('Rural – dentro de imóvel do CAR', 'Urbana / fora de imóvel do CAR')
 rural, urbana = [], []
 for f in bruto:
     p = f['properties']
     if p.get('st_portaria') not in VALIDAS or (p.get('nm_tipo_solicitacao') or '').startswith('Desativa'): continue
     pt = Point(f['geometry']['coordinates'][:2])
-    dentro = any(imv[i].contains(pt) for i in arv.query(pt))
+    dentro = rural_pt(pt)
     vz = vazao(p)
     corpo = p.get('nm_corpo_hidrico_popular') or p.get('nm_tipo_corpo_hidrico') or (p.get('nm_aquifero') if 'subterr' in (p.get('nm_tipo_interferencia') or '').lower() else '')
     props = {'nome': nome(p), 'grupo': grupo(p),
@@ -38,7 +49,7 @@ for f in bruto:
              'Situação': (p.get('st_portaria') or '').capitalize(), 'Setor do usuário': p.get('nm_tipo_usuario') or '',
              'Finalidade': (p.get('desc_finalidades') or '').replace(',', ', '), 'Corpo hídrico / aquífero': corpo or '',
              'Vazão máxima (m³/h)': f'{vz:.2f}'.replace('.', ',') if vz else '', 'Publicação': dt(p.get('dt_publicacao')), 'Vencimento': dt(p.get('dt_vencimento')),
-             'Bacia (comitê)': p.get('nm_comite') or '', 'Área': 'Rural – dentro de imóvel do CAR' if dentro else 'Urbana / fora de imóvel do CAR'}
+             'Bacia (comitê)': p.get('nm_comite') or '', 'Área': ROT[0] if dentro else ROT[1]}
     feat = {'type': 'Feature', 'geometry': {'type': 'Point', 'coordinates': [round(c, 6) for c in f['geometry']['coordinates'][:2]]}, 'properties': props}
     (rural if dentro else urbana).append(feat)
 for nome_arq, fs in (('outorgas_rural', rural), ('outorgas_urbana', urbana)):

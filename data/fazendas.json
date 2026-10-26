@@ -466,6 +466,59 @@
    "cor": "#1e88e5"
   },
   {
+   "id": "perimetros",
+   "secao": "Cadastro urbano (Prefeitura)",
+   "nome": "Perímetros urbanos oficiais",
+   "arquivo": "data/urbano/perimetros_urbanos.geojson",
+   "icone": "area",
+   "cor": "#e040fb",
+   "largura": 2.2,
+   "halo": true,
+   "preenchimento": 0.04,
+   "rotulo_campo": "nome",
+   "rotulo_tamanho": 12,
+   "clicavel": true,
+   "campos": [
+    "DESCRIÇÃO",
+    "TIPO"
+   ],
+   "fonte": "Prefeitura de Londrina – IPPUL, divisão territorial (Lei 13.718/2023)"
+  },
+  {
+   "id": "bairros",
+   "secao": "Cadastro urbano (Prefeitura)",
+   "nome": "Bairros",
+   "arquivo": "data/urbano/bairros.geojson",
+   "icone": "area",
+   "cor": "#ffffff",
+   "largura": 1.4,
+   "tracejado": [
+    2,
+    1.5
+   ],
+   "rotulo_campo": "nome",
+   "rotulo_minzoom": 12,
+   "rotulo_tamanho": 12,
+   "clicavel": true,
+   "campos": [
+    "REGIAO"
+   ],
+   "fonte": "Prefeitura de Londrina – IPPUL, divisão territorial (Lei 13.718/2023)"
+  },
+  {
+   "id": "regioes",
+   "secao": "Cadastro urbano (Prefeitura)",
+   "nome": "Regiões da cidade",
+   "arquivo": "data/urbano/regioes.geojson",
+   "icone": "area",
+   "cor": "#ff80ab",
+   "largura": 2,
+   "rotulo_campo": "nome",
+   "rotulo_tamanho": 13,
+   "clicavel": true,
+   "fonte": "Prefeitura de Londrina – IPPUL, divisão territorial (Lei 13.718/2023)"
+  },
+  {
    "id": "lotes-urbanos",
    "secao": "Cadastro urbano (Prefeitura)",
    "nome": "Lotes urbanos",
