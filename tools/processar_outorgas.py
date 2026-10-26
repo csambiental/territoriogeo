@@ -18,7 +18,7 @@ EMPRESA = re.compile(r'\b(LTDA|S/?A|S\.A|CIA|COMPANHIA|CONDOMINIO|EDIFICIO|RESID
 def sem_acento(t): return unicodedata.normalize('NFD', t or '').encode('ascii', 'ignore').decode().upper()
 def nome(p):
     r = (p.get('nm_requerente') or '').strip()
-    return r if EMPRESA.search(sem_acento(r)) else 'Pessoa física'
+    return r or 'Titular não informado'  # nome como consta na consulta pública do SIGARH
 dt = lambda ms: datetime.datetime.fromtimestamp(ms / 1000, datetime.timezone.utc).strftime('%d/%m/%Y') if isinstance(ms, (int, float)) else ''
 def vazao(p):
     v = [p.get(k) for k in p if k.startswith('vlr_vazao_capt_lanc_') and isinstance(p.get(k), (int, float))]
@@ -45,4 +45,4 @@ for nome_arq, fs in (('outorgas_rural', rural), ('outorgas_urbana', urbana)):
     json.dump({'type': 'FeatureCollection', 'features': fs}, open(f'data/iat/{nome_arq}.geojson', 'w'), ensure_ascii=False, separators=(',', ':'))
 print('rural', len(rural), Counter(x['properties']['grupo'] for x in rural))
 print('urbana', len(urbana), Counter(x['properties']['grupo'] for x in urbana))
-print('pessoa física', sum(1 for x in rural + urbana if x['properties']['nome'] == 'Pessoa física'))
+print('pessoa física', sum(1 for x in rural + urbana if not EMPRESA.search(sem_acento(x['properties']['nome']))))
