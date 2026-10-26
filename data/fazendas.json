@@ -466,6 +466,126 @@
    "cor": "#1e88e5"
   },
   {
+   "id": "lotes-urbanos",
+   "secao": "Cadastro urbano (Prefeitura)",
+   "nome": "Lotes urbanos",
+   "tipo": "vetor",
+   "tiles": "data/urbano/tiles/{z}/{x}/{y}.pbf",
+   "camada_fonte": "lotes",
+   "minzoom": 14,
+   "zoom_minimo": 15,
+   "centro": [
+    -51.163,
+    -23.31
+   ],
+   "icone": "area",
+   "cor": "#ffffff",
+   "largura": 0.7,
+   "preenchimento": 0.01,
+   "rotulo_campo": "Lote",
+   "rotulo_minzoom": 17.5,
+   "clicavel": true,
+   "prioridade": true,
+   "campos": [
+    "Loteamento",
+    "Quadra",
+    "Lote",
+    "Área aproximada (m²)",
+    "Zoneamento",
+    "Código do loteamento"
+   ],
+   "fonte": "Prefeitura de Londrina – GeoLondrina/SIGLON (dados públicos) – base cartográfica de quadras e lotes"
+  },
+  {
+   "id": "loteamentos",
+   "secao": "Cadastro urbano (Prefeitura)",
+   "nome": "Loteamentos aprovados",
+   "tipo": "vetor",
+   "tiles": "data/urbano/tiles/{z}/{x}/{y}.pbf",
+   "camada_fonte": "loteamentos",
+   "icone": "area",
+   "cor": "#ffca28",
+   "largura": 1.6,
+   "preenchimento": 0.04,
+   "rotulo_campo": "nome",
+   "rotulo_minzoom": 14,
+   "clicavel": true,
+   "campos": [
+    "Código do loteamento"
+   ],
+   "fonte": "Prefeitura de Londrina – GeoLondrina/SIGLON (dados públicos)"
+  },
+  {
+   "id": "glebas",
+   "secao": "Cadastro urbano (Prefeitura)",
+   "nome": "Lotes e glebas (chácaras)",
+   "tipo": "vetor",
+   "tiles": "data/urbano/tiles/{z}/{x}/{y}.pbf",
+   "camada_fonte": "glebas",
+   "minzoom": 12,
+   "icone": "area",
+   "cor": "#a1887f",
+   "largura": 1,
+   "preenchimento": 0.05,
+   "clicavel": true,
+   "campos": [
+    "Gleba",
+    "Área (m²)"
+   ],
+   "fonte": "Prefeitura de Londrina – GeoLondrina/SIGLON (dados públicos)"
+  },
+  {
+   "id": "zoneamento",
+   "secao": "Cadastro urbano (Prefeitura)",
+   "nome": "Zoneamento urbano (Lei 12.236/2015)",
+   "tipo": "vetor",
+   "tiles": "data/urbano/tiles/{z}/{x}/{y}.pbf",
+   "camada_fonte": "zoneamento",
+   "icone": "fill",
+   "cor": "#90a4ae",
+   "cor_por": "zona",
+   "cor_prefixo": 2,
+   "cores": {
+    "ZR": "#fff176",
+    "ZC": "#ff8a65",
+    "ZI": "#9575cd",
+    "ZE": "#4db6ac",
+    "ZA": "#81c784",
+    "ZQ": "#f06292",
+    "ZP": "#aed581",
+    "ZU": "#ffb74d"
+   },
+   "preenchimento": 0.35,
+   "largura": 0.6,
+   "clicavel": true,
+   "campos": [
+    "zona"
+   ],
+   "fonte": "Prefeitura de Londrina – GeoLondrina/SIGLON (dados públicos) – IPPUL, Lei 12.236/2015 revisada",
+   "legenda_itens": [
+    {
+     "rotulo": "ZR – residenciais",
+     "cor": "#fff176"
+    },
+    {
+     "rotulo": "ZC – comerciais",
+     "cor": "#ff8a65"
+    },
+    {
+     "rotulo": "ZI – industriais",
+     "cor": "#9575cd"
+    },
+    {
+     "rotulo": "ZE – especiais",
+     "cor": "#4db6ac"
+    },
+    {
+     "rotulo": "Outras",
+     "cor": "#90a4ae"
+    }
+   ]
+  },
+  {
    "id": "barragens",
    "secao": "Hidrografia",
    "nome": "Barragens cadastradas (IAT)",

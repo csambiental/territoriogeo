@@ -229,6 +229,22 @@ function desenharOpcional(o) {
         } catch (err) { console.warn('Rótulos indisponíveis', err); }
         return;
     }
+    if (o.tipo === 'vetor') {
+        // tiles vetoriais estáticos (camadas grandes: lotes urbanos, zoneamento)
+        const base = location.href.replace(/[?#].*$/, '').replace(/[^/]*$/, '');
+        map.addSource(`op-${o.id}`, { type: 'vector', tiles: [base + o.tiles], minzoom: o.tiles_min || 10, maxzoom: o.tiles_max || 16 });
+        const sl = { source: `op-${o.id}`, 'source-layer': o.camada_fonte, ...(o.minzoom ? { minzoom: o.minzoom } : {}) };
+        const cor = o.cor_por && o.cores
+            ? ['match', o.cor_prefixo ? ['slice', ['get', o.cor_por], 0, o.cor_prefixo] : ['get', o.cor_por], ...Object.entries(o.cores).flat(), o.cor || '#90a4ae'] : o.cor;
+        map.addLayer({ id: `op-${o.id}-hit`, type: 'fill', ...sl, paint: { 'fill-color': cor, 'fill-opacity': o.preenchimento ?? 0.01 } }, antes);
+        map.addLayer({ id: `op-${o.id}`, type: 'line', ...sl, paint: { 'line-color': o.cor_linha || cor, 'line-width': o.largura || 0.8, 'line-opacity': o.opacidade ?? 0.9 } }, antes);
+        if (o.rotulo_campo) try {
+            map.addLayer({ id: `op-${o.id}-nome`, type: 'symbol', ...sl, minzoom: o.rotulo_minzoom || 16,
+                layout: { 'text-field': ['get', o.rotulo_campo], 'text-size': 10.5, 'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'], 'text-max-width': 8 },
+                paint: { 'text-color': '#ffffff', 'text-halo-color': '#000000', 'text-halo-width': 1.3 } });
+        } catch (err) { console.warn('Rótulos indisponíveis', err); }
+        return;
+    }
     if (o.tipo === 'imagem') {
         map.addSource(`op-${o.id}`, { type: 'image', url: g.imagem, coordinates: g.cantos });
         map.addLayer({ id: `op-${o.id}`, type: 'raster', source: `op-${o.id}`, paint: { 'raster-opacity': o.opacidade ?? 0.8, 'raster-resampling': 'nearest' } }, antes);
@@ -338,14 +354,16 @@ function renderOpcionais() {
         } else {
             b.classList.add('carregando');
             try {
-                if (!opcionaisData[o.id]) opcionaisData[o.id] = await (await fetch(o.arquivo, { cache: 'no-cache' })).json();
+                if (o.tipo === 'vetor') opcionaisData[o.id] = opcionaisData[o.id] || { vetor: true };
+                else if (!opcionaisData[o.id]) opcionaisData[o.id] = await (await fetch(o.arquivo, { cache: 'no-cache' })).json();
                 opcionaisAtivas.add(o.id); desenharOpcional(o); aplicarVisibilidadeCamadas();
             } catch (err) { console.error(err); alertaCamada(b); }
             b.classList.remove('carregando');
         }
         const on = opcionaisAtivas.has(o.id);
         b.classList.toggle('ativo', on); b.setAttribute('aria-pressed', on);
-        if (on && o.enquadrar && opcionaisData[o.id]) map.fitBounds(boundsDe(opcionaisData[o.id]), { padding: 40, duration: 900 });
+        if (on && o.tipo === 'vetor' && o.zoom_minimo && map.getZoom() < o.zoom_minimo) map.easeTo({ center: o.centro || map.getCenter(), zoom: o.zoom_minimo, duration: 900 });
+        else if (on && o.enquadrar && opcionaisData[o.id]?.features) map.fitBounds(boundsDe(opcionaisData[o.id]), { padding: 40, duration: 900 });
         const grp = b.closest('.camada-grupo');
         if (grp) { const n = grp.querySelectorAll('.camada-row.ativo').length; grp.querySelector('summary .lg-n').textContent = n ? `${n} ligada${n > 1 ? 's' : ''}` : `${grp.querySelectorAll('.camada-row').length} bacias`; }
         renderLegenda();
