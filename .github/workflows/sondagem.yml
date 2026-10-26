@@ -1,0 +1,12 @@
+name: Sondagem (diagnóstico)
+on: { workflow_dispatch: {} }
+permissions: { contents: write }
+jobs:
+  s:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: mkdir -p data/_diag && (python3 tools/sondagem_probe.py > data/_diag/sondagem.txt 2>&1; true)
+      - run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/_diag; git commit -q -m "Sondagem: diagnóstico" || true; git pull -q --rebase origin main || true; git push
