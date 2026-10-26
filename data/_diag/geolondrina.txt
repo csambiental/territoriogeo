@@ -1,0 +1,370 @@
+APP {"theme": {"name": "LaunchpadTheme", "styles": ["default", "style2", "style3"], "version": "2.12", "sharedTheme": {"useHeader": true, "useLogo": false, "isPortalSupport": true}, "customStyles": {"mainBackgroundColor": null}}, "portalUrl": "https://geo.londrina.pr.gov.br/portal", "appId": "", "authorizedCrossOriginDomains": [], "title": "Sistema de Informa\u00e7\u00e3o Geogr\u00e1fica de Londrina", "subtitle": "", "keepAppState": true, "logo": "https://geo.londrina.pr.gov.br/portal/sharing/rest/content/items/${itemId}/resources/inConfig/7254524363436337.png", "geometryService": "https://utility.arcgisonline.com/arcgis/rest/services/Geometry/GeometryServer", "links": [], "widgetOnScreen": {"widgets": [{"uri": "themes/LaunchpadTheme/widgets/AnchorBarController/Widget", "position": {"bottom": 10, "height": 40, "relativeTo": "map", "zIndex": 0}, "version": "2.21", "id": "themes_LaunchpadTheme_widgets_AnchorBarController_Widget_20", "name": "AnchorBarController"}, {"uri": "themes/LaunchpadTheme/widgets/Header/Widget", "position": {"left": 15, "top": 17, "width": 670, "height": 46, "relativeTo": "map"}, "version": "2.21", "id": "themes_LaunchpadTheme_widgets_Header_Widget_21", "name": "Header"}, {"uri": "widgets/Search/Widget", "position": {"left": 350, "top": 25, "width": 300, "zIndex": 1, "relativeTo": "map"}, "version": "2.21", "id": "widgets_Search_Widget_22", "name": "Search", "config": {"allPlaceholder": "", "showInfoWindowOnSelect": true, "sources": [{"layerId": null, "url": 
+WEBMAP 627766553e2e4b3b87942dd3ae12123d
+CAMADA Ortofoto Paranacidade 2021 None None
+CAMADA Ortofoto Infraero - 2019-2020 None None
+CAMADA Imagem Satélite SPOT-6 - 2016 None None
+CAMADA Imagem Satélite World View 2: 2012 - 2014 None None
+CAMADA Ortofoto Paranacidade - Copel 2011 None None
+CAMADA Imagem Satélite Quick Bird - 2006 None None
+CAMADA Foto Aérea - 1974 None None
+CAMADA Foto Aérea - 1949 None None
+CAMADA Planta Azul - Londrina - 1932 https://geo.londrina.pr.gov.br/server/rest/services/Imagens/PlantaAzulLondrina1932/MapServer 9fec3cc14aff4e0892c3afbc4083a83c
+CAMADA Leis de Uso e Ocupação do Solo (REVOGADA) https://geo.londrina.pr.gov.br/server/rest/services/Publico/IPPULLeisUsoOcupacaoSoloRevisado2023/MapServer 584aed5cab1842d3bb7f55bfc485f829
+CAMADA Leis de Uso e Ocupação do Solo (REVOGADA) / None None None
+CAMADA Leis de Uso e Ocupação do Solo (REVOGADA) / None None None
+CAMADA Leis de Uso e Ocupação do Solo (REVOGADA) / None None None
+CAMADA Área de Abrangência Cartórios Londrina https://geo.londrina.pr.gov.br/server/rest/services/Portal_Publico/Area_Abrangencia_Cartorios_Londrina/MapServer db45a4ef976f4007aaad619c9c1d9cd6
+CAMADA Área de Abrangência Cartórios Londrina / None None None
+CAMADA Pontos de Referência - Marcos Geodésicos https://geo.londrina.pr.gov.br/server/rest/services/SMOP/SmopPontosdeReferênciaMarcos_Geodésicos/MapServer df5c08eaec734172b42416985284cb03
+CAMADA Pontos de Referência - Marcos Geodésicos / None None None
+CAMADA DECEA - Aeródromos de Londrina https://geo.londrina.pr.gov.br/server/rest/services/abertos_sist_transporte/Aeródromos/MapServer 5721c5a9658d486b8052967f3bab2266
+CAMADA Políticas para as Mulheres https://geo.londrina.pr.gov.br/server/rest/services/SMPM/SmpmLocaisEquipamentos/MapServer e5e6bde4c0e0427f86cbeb8a2d1d229e
+CAMADA Saúde https://geo.londrina.pr.gov.br/server/rest/services/Publico/SaudeUnidadesBasicasAbrangenciaPublico/MapServer 8c056d3a851b42149725d037bf8701d2
+CAMADA Saúde / None None None
+CAMADA Saúde / None None None
+CAMADA Educação https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmeEducacaoPublico/MapServer 8a63598531aa4577a27b50dd79644760
+CAMADA Assistência Social https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer 368436625a0a4e9588bd7a62f621c7ff
+CAMADA Patrimônio Histórico https://geo.londrina.pr.gov.br/server/rest/services/AAA_Cultura/Patrimônio_Histórico/MapServer edbaa92808e841488c23821559275b23
+CAMADA Curvas de Nível - 5m https://geo.londrina.pr.gov.br/server/rest/services/Gerais/RelevoCurvasNivel5m/MapServer 3a1f1f31e2904587a4d622c751f69b5f
+CAMADA Curvas de Nível - 5m / None None None
+CAMADA Sistema Ambiental https://geo.londrina.pr.gov.br/server/rest/services/Gerais/UnidadesConservacao/MapServer b6f4103ffc944713872ec36d2f85a074
+CAMADA Sistema Ambiental / None None None
+CAMADA Sistema Ambiental / None None None
+CAMADA Sistema Hídrico https://geo.londrina.pr.gov.br/server/rest/services/Publico/SIGLONSistemaHidricoPublico/MapServer a17c8a3aae094f618f80b94bbefcefee
+CAMADA Estradas do Município https://geo.londrina.pr.gov.br/server/rest/services/Portal_Publico/Estradas__do__Municipio/MapServer 57008d66d0bf40b6b792fc95dbb31275
+CAMADA Estradas do Município / None None None
+CAMADA Sistema Viário VIGENTE https://geo.londrina.pr.gov.br/server/rest/services/abertos_sist_transporte/Sistema_Viário_VIGENTE/MapServer c3ab9dca92634cd8a3c6303248f7ee57
+CAMADA Quadrantes do Município https://geo.londrina.pr.gov.br/server/rest/services/Publico/Quadrantes_Municipio/MapServer 476c65ab8c9b4632a026d602d4a60e80
+CAMADA Quadrantes do Município / None None None
+CAMADA Quadrantes do Município / None None None
+CAMADA Quadrantes do Município / None None None
+CAMADA Quadrantes do Município / None None None
+CAMADA Quadrantes do Município / None None None
+CAMADA Divisão Territorial https://geo.londrina.pr.gov.br/server/rest/services/abe_limites/Divisão_Territorial/MapServer 6586929d4d854a6d90b2020e5cbe5911
+CAMADA Base Cartográfica de Lotes Urbanos https://geo.londrina.pr.gov.br/server/rest/services/Gerais/BCarSiglon/MapServer 36bc0bc924d34d85b06627782d3f2a19
+CAMADA Base Cartográfica de Lotes Urbanos / None None None
+CAMADA Lotes e Glebas https://geo.londrina.pr.gov.br/server/rest/services/Publico/LotesGlebasSimbologia/MapServer 235d197e16ec429d940540c26e9e260e
+CAMADA Lotes e Glebas / None None None
+CAMADA Loteamentos https://geo.londrina.pr.gov.br/server/rest/services/Publico/Loteamentos/MapServer 3fb8960c13894c98bf6f7336e7c36ae0
+CAMADA Loteamentos / None None None
+CAMADA Arruamento https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmopArruamento/MapServer 1193acb4cd0a4472a3c6e344bccf09dc
+CAMADA Arruamento / None None None
+CAMADA Limites do Município de Londrina https://geo.londrina.pr.gov.br/server/rest/services/Portal_Publico/Limites_do_Município_de_Londrina/MapServer c4af8c234aac47369bc46e7d90ce44dd
+CAMADA Limites do Município de Londrina / None None None
+CAMADA BASE OpenStreetMap None None
+DIR https://geo.londrina.pr.gov.br/server/rest/services {"currentVersion": 11.3, "folders": ["AAA_Cultura", "AAA_Educacao", "AAA_Limites", "AAA_SistemaTransporte", "AAA_Zoneamento", "abe_limites", "abe_perfil", "abe_planejamento_urbano", "abe_sistema_ambiental", "abertos_sist_transporte", "abertos_zoneamento", "ACESFIntranet", "AMS", "BBB_Cartografico", "BBB_SistemaAmbiental", "BBB_SistemaTransporte", "CBEA", "CCC_SMF", "CMTUInternet", "COHABIntranet", "DCEA", "GabPref", "Gerais", "Homologacao", "Hosted", "Imagens", "int_drenagem_urbana", "Internet", "IPPUL", "Paranacidade", "PlanoDiretor", "Portal_Publico", "PortalAmbiental", "PrintingTools", "Publico", "SiglonIntranet", "SMAA", "SMCInternet", "SMEInternetTranspEscolar", "SMEIntranet", "SmfMatriculaCartorio", "SMGIntranet", "SMGPInternet", "SMGPIntranet", "SMI", "SMOPIntranet", "SMPM", "Utilities"], "services": [{"name": "Arboriza\u00e7\u00e3o_Urbana_MIL1", "type": "MapServer"}, {"name": "Divis\u00e3o_Territorial_de_Londrina___Lei_13_718", "type": "FeatureServer"}, {"name": "Divis\u00e3o_Territorial_de_Londrina___Lei_13_718", "type": "MapServer"}, {"name": "IndicadoresTesteBI", "type": "MapServer"}, {"name": "SemaInvetarioArboreoProverde2017", "type": "FeatureServer"}, {"name": "SemaInvetarioArboreoProverde2017", "type": "MapServer"}, {"name": "SMCPatrimHistoricoPublico", "type": "MapServer"}, {"name": "SmdsNovoCamerasSeguranca", "type": "FeatureServer"}, {"name": "SmdsNovoCamerasSeguranca", "type": "MapServer"}, {"name": "Unidades_de_Conserva\u00e7\u00e3o_MIL1", "type": "MapServer"}, {"name": "Vegeta\u00e7\u00e3o_e_Unidades_de_Conserva\u00e7\u00e3o", "type": "MapServer"}]}
+DIR https://geo.londrina.pr.gov.br/arcgis/rest/services {"_erro": "HTTP Error 404: Not Found"}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/AAA_Cultura/Patrimônio_Histórico/MapServer | None | None | total {'_erro': "'ascii' codec can't encode character '\\xf4' in position 44: ordinal not in range(128)"} | maxRecord None | caps None
+  campos: []
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Gerais/BCarSiglon/MapServer/0 | Base Cartográfica com Quadra, Lote e Loteamento | esriGeometryPolygon | total 173677 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('QUADR_C', 'QUADR_C'), ('LOTE_C', 'LOTE_C'), ('CODLOT', 'CODLOT'), ('NOME_LOTE', 'NOME_LOTE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA'), ('SHAPE', 'SHAPE'), ('SHAPE.AREA', 'SHAPE.AREA'), ('SHAPE.LEN', 'SHAPE.LEN')]
+  ex: {"OBJECTID": 1, "QUADR_C": "1", "LOTE_C": "12", "CODLOT": 1635, "NOME_LOTE": "JARDIM PALERMO", "SE_ANNO_CAD_DATA": null, "SHAPE.AREA": 0, "SHAPE.LEN": 0}
+  ex: {"OBJECTID": 2, "QUADR_C": "6", "LOTE_C": "10", "CODLOT": 299, "NOME_LOTE": "BAIRRO BOA VISTA 4 SECCAO", "SE_ANNO_CAD_DATA": null, "SHAPE.AREA": 0, "SHAPE.LEN": 0}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Gerais/RelevoCurvasNivel5m/MapServer/0 | Curva de nível de 5m | esriGeometryPolyline | total 1761 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'objectid'), ('id', 'Id'), ('cota', 'Cota'), ('SHAPE', 'shape'), ('SHAPE.LEN', 'SHAPE.LEN'), ('ID', 'Id'), ('COTA', 'Cota'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "ID": 2, "COTA": 465.0, "SHAPE.LEN": 0, "SE_ANNO_CAD_DATA": null}
+  ex: {"OBJECTID": 2, "ID": 5, "COTA": 465.0, "SHAPE.LEN": 0, "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Gerais/UnidadesConservacao/MapServer/0 | Zona de Amortecimento da Mata dos Godoy | esriGeometryPolygon | total 1 | maxRecord 2000 | caps Map,Query,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('DESCRICAO', 'Descrição'), ('ACESSOSENTENCA', 'Acesso a Sentença'), ('SHAPE', 'SHAPE'), ('SHAPE.AREA', 'SHAPE.AREA'), ('SHAPE.LEN', 'SHAPE.LEN'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "DESCRICAO": "Zona de Amortecimento da Mata dos Godoy, definida nos Autos no. 18657-05.2015.8.16.0014", "ACESSOSENTENCA": "http://www1.londrina.pr.gov.br/dados/images/stories/Storage/sec_planejamento/siglon/lim_londrina/186570515bmgodoy.rar", "SHAPE.AREA": 0, "SHAPE.LEN": 0, "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Gerais/UnidadesConservacao/MapServer/1 | Unidades de Conservação | esriGeometryPolygon | total 3 | maxRecord 2000 | caps Map,Query,Data
+  campos: [('SHAPE.AREA', 'SHAPE.AREA'), ('SHAPE.LEN', 'SHAPE.LEN'), ('OBJECTID', 'OBJECTID'), ('NOME', 'nome'), ('GEOMETRIAAPROXIMADA', 'geometriaAproximada'), ('ANOCRIACAO', 'anoCriacao'), ('SIGLA', 'sigla'), ('AREAOFICIAL', 'areaOficial'), ('ATOLEGAL', 'atoLegal'), ('ADMINISTRACAO', 'administracao'), ('TIPOUNIDPROTINTEG', 'TIPOUNIDPROTINTEG'), ('NOMEABREV', 'nomeAbrev'), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"SHAPE.AREA": 0, "SHAPE.LEN": 0, "OBJECTID": 401, "NOME": "Parque Mata dos Godoy", "GEOMETRIAAPROXIMADA": 2, "ANOCRIACAO": 1989, "SIGLA": null, "AREAOFICIAL": "6757000", "ATOLEGAL": "Decreto Estadual nº 5.150 de 05 de junho de 1989", "ADMINISTRACAO": 2, "TIPOUNIDPROTINTEG": 2, "NOMEABREV": "PEMG", "SE_ANNO_CAD_DATA": null}
+  ex: {"SHAPE.AREA": 0, "SHAPE.LEN": 0, "OBJECTID": 402, "NOME": "Parque Ecológico Dr. Daisaku Ikeda", "GEOMETRIAAPROXIMADA": 2, "ANOCRIACAO": 1999, "SIGLA": null, "AREAOFICIAL": null, "ATOLEGAL": "Decreto Municipal nº 581 de 1999", "ADMINISTRACAO": 3, "TIPOUNIDPROTINTEG": 2, "NOMEABREV": null, "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Imagens/PlantaAzulLondrina1932/MapServer/0 | Planta azul 1932.jpg | None | total {'error': {'code': 400, 'message': 'Invalid or missing input parameters.', 'details': []}} | maxRecord None | caps Map,Query
+  campos: []
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Portal_Publico/Area_Abrangencia_Cartorios_Londrina/MapServer/0 | Área de Abrangência de Cartórios | esriGeometryPolygon | total 4 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('NOME', 'NOME'), ('LEI', 'LEI'), ('LINK', 'LINK'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA'), ('SHAPE', 'SHAPE'), ('CREATED_USER', 'CREATED_USER'), ('CREATED_DATE', 'CREATED_DATE'), ('LAST_EDITED_USER', 'LAST_EDITED_USER'), ('LAST_EDITED_DATE', 'LAST_EDITED_DATE'), ('SHAPE.AREA', 'SHAPE.AREA'), ('SHAPE.LEN', 'SHAPE.LEN')]
+  ex: {"OBJECTID": 1, "NOME": "2º Ofício de Registro de Imóveis de Londrina", "LEI": "9.497/1990 (Anexo IV)", "LINK": "http://www.legislacao.pr.gov.br/legislacao/pesquisarAto.do?action=exibir&codAto=4880&codItemAto=330*", "SE_ANNO_CAD_DATA": null, "CREATED_USER": null, "CREATED_DATE": null, "LAST_EDITED_USER": null, "LAST_EDITED_DATE": null, "SHAPE.AREA": 0, "SHAPE.LEN": 0}
+  ex: {"OBJECTID": 2, "NOME": "1º Ofício de Registro de Imóveis de Londrina", "LEI": "9.497/1990 (Anexo IV)", "LINK": "http://www.legislacao.pr.gov.br/legislacao/pesquisarAto.do?action=exibir&codAto=4880&codItemAto=330*", "SE_ANNO_CAD_DATA": null, "CREATED_USER": null, "CREATED_DATE": null, "LAST_EDITED_USER": null, "LAST_EDITED_DATE": null, "SHAPE.AREA": 0, "SHAPE.LEN": 0}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Portal_Publico/Estradas__do__Municipio/MapServer/4 | Estradas do Município | esriGeometryPolyline | total 336 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('GEOMETRIAAPROXIMADA', 'geometriaAproximada'), ('CODTRECHOROD', 'codTrechoRod'), ('TIPOTRECHOROD', 'tipoTrechoRod'), ('JURISDICAO', 'jurisdicao'), ('ADMINISTRACAO', 'administracao'), ('CONCESSIONARIA', 'concessionaria'), ('REVESTIMENTO', 'revestimento'), ('OPERACIONAL', 'operacional'), ('SITUACAOFISICA', 'Situação física'), ('TRAFEGO', 'trafego'), ('CANTEIRODIVISORIO', 'Canteiro divisório'), ('CAPACCARGA', 'Capacidade de carga'), ('NRFAIXAS', 'Número de faixas'), ('ID', 'id'), ('ESTRADA', 'estrada'), ('RODOVIA', 'rodovia'), ('EXTENSAO', 'Extensão'), ('DISTRITO', 'Distrito'), ('NOMEPOPULAR', 'Nome Popular'), ('LARGURAMEDIA', 'Largura média'), ('FAIXADOMINIO', 'Faixa de domínio'), ('LEGISLACAO', 'Legislação'), ('TRECHOCOMPLEMENTAR', 'Trecho complementar'), ('TRANSPORTEESCOLAR', 'Transporte escolar'), ('TRANSPORTECOLETIVO', 'Transporte coletivo'), ('COLETALIXO', 'Coleta de lixo'), ('OBSERVACOES', 'Observações'), ('HIERARQUIAVIARIA', 'Hierarquia viária'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA'), ('SHAPE', 'SHAPE'), ('CREATED_USER', 'CREATED_USER'), ('CREATED_DATE', 'CREATED_DATE'), ('LAST_EDITED_USER', 'LAST_EDITED_USER'), ('LAST_EDITED_DATE', 'LAST_EDITED_DATE'), ('SHAPE.LEN', 'SHAPE.LEN')]
+  ex: {"OBJECTID": 1, "GEOMETRIAAPROXIMADA": 1, "CODTRECHOROD": null, "TIPOTRECHOROD": 1, "JURISDICAO": 3, "ADMINISTRACAO": 3, "CONCESSIONARIA": null, "REVESTIMENTO": 2, "OPERACIONAL": 1, "SITUACAOFISICA": 5, "TRAFEGO": 1, "CANTEIRODIVISORIO": 2, "CAPACCARGA": null, "NRFAIXAS": 2, "ID": "24", "ESTRADA": "Estrada Selva - Torre", "RODOVIA": null, "EXTENSAO": 2.0, "DISTRITO": "Sede", "NOMEPOPULAR": null, "LARGURAMEDIA": null, "FAIXADOMINIO": "25m", "LEGISLACAO": "Lei 12237/2015 e Lei 11468/2011", "TRECHOCOMPLEMENTAR": null, "TRANSPORTEESCOLAR": null, "TRANSPORTECOLETIVO": null, "COLETALIXO": null, "OBSERVACOES": null, "HIERARQUIAVIARIA": null, "SE_ANNO_CAD_DATA": null, "CREATED_USER": null, "CREATED_DATE": null, "LAST_EDITED_USER": null, "LAST_EDITED_DATE": null, "SHAPE.LEN": 0}
+  ex: {"OBJECTID": 2, "GEOMETRIAAPROXIMADA": 1, "CODTRECHOROD": null, "TIPOTRECHOROD": 1, "JURISDICAO": 3, "ADMINISTRACAO": 3, "CONCESSIONARIA": null, "REVESTIMENTO": 2, "OPERACIONAL": 1, "SITUACAOFISICA": 5, "TRAFEGO": 1, "CANTEIRODIVISORIO": 2, "CAPACCARGA": null, "NRFAIXAS": 2, "ID": "32", "ESTRADA": "Estrada Guarani II", "RODOVIA": null, "EXTENSAO": 1.1, "DISTRITO": "Sede", "NOMEPOPULAR": null, "LARGURAMEDIA": null, "FAIXADOMINIO": "25m", "LEGISLACAO": "Lei 11468/2011", "TRECHOCOMPLEMENTAR": null, "TRANSPORTEESCOLAR": null, "TRANSPORTECOLETIVO": null, "COLETALIXO": null, "OBSERVACOES": null, "HIERARQUIAVIARIA": null, "SE_ANNO_CAD_DATA": null, "CREATED_USER": null, "CREATED_DATE": null, "LAST_EDITED_USER": null, "LAST_EDITED_DATE": null, "SHAPE.LEN": 0}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Portal_Publico/Limites_do_Município_de_Londrina/MapServer | None | None | total {'_erro': "'ascii' codec can't encode character '\\xed' in position 57: ordinal not in range(128)"} | maxRecord None | caps None
+  campos: []
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/IPPULLeisUsoOcupacaoSoloRevisado2023/MapServer/6 | Ippul - Zoneamento Manchas - Lei 12.236/2015 - Revisado | esriGeometryPolygon | total 1918 | maxRecord 2000 | caps Map,Query,Data
+  campos: [('OBJECTID_12', 'OBJECTID_12'), ('OBJECTID_1', 'OBJECTID_1'), ('OBJECTID', 'OBJECTID'), ('ZONEAMENTO', 'ZONEAMENTO'), ('ITEM', 'ITEM'), ('LEI_12236_', 'LEI_12236_'), ('PARÂMETRO', 'PARÂMETRO'), ('SHAPE_LENG', 'SHAPE_LENG'), ('CORRECAO', 'CORRECAO'), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA'), ('SHAPE.AREA', 'SHAPE.AREA'), ('SHAPE.LEN', 'SHAPE.LEN')]
+  ex: {"OBJECTID_12": 1, "OBJECTID_1": 2539.0, "OBJECTID": 2531.0, "ZONEAMENTO": "ZE4", "ITEM": "não identificado", "LEI_12236_": "https://www1.cml.pr.gov.br/cml/site/leidetalhe.xhtml?leicodigo=LE122362015", "PARÂMETRO": "https://www1.cml.pr.gov.br/leis/2015/web/LE122362015consol.html", "SHAPE_LENG": 101.16977841, "CORRECAO": " ", "SE_ANNO_CAD_DATA": null, "SHAPE.AREA": 0, "SHAPE.LEN": 0}
+  ex: {"OBJECTID_12": 2, "OBJECTID_1": 2533.0, "OBJECTID": 2525.0, "ZONEAMENTO": "ZE4", "ITEM": "não identificado", "LEI_12236_": "https://www1.cml.pr.gov.br/cml/site/leidetalhe.xhtml?leicodigo=LE122362015", "PARÂMETRO": "https://www1.cml.pr.gov.br/leis/2015/web/LE122362015consol.html", "SHAPE_LENG": 266.12916939, "CORRECAO": " ", "SE_ANNO_CAD_DATA": null, "SHAPE.AREA": 0, "SHAPE.LEN": 0}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/IPPULLeisUsoOcupacaoSoloRevisado2023/MapServer/1 | Zoneamento dos Distritos - Lei 12.236/2015 | esriGeometryPolygon | total 3098 | maxRecord 2000 | caps Map,Query,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('ZONEAM', 'Zoneamento'), ('NOMEDISTR', 'Nome do Distrito'), ('QUADRA', 'Quadra'), ('DATA', 'Data'), ('PARAMETROS', 'Parâmetros da Lei'), ('ACESSOALEI', 'Acesso a Lei'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "ZONEAM": "ZR3", "NOMEDISTR": "GUARAVERA", "QUADRA": "30", "DATA": "01", "PARAMETROS": "http://www1.londrina.pr.gov.br/dados/images/stories/Storage/ippul/arcgis_online/proposta/zr/zr_3.pdf", "ACESSOALEI": "http://www1.cml.pr.gov.br/cml/site/projetodetalhe.xhtml?codigoproj=PL002282013&codigo=PL002282013", "SE_ANNO_CAD_DATA": null}
+  ex: {"OBJECTID": 2, "ZONEAM": "ZR3", "NOMEDISTR": "GUARAVERA", "QUADRA": "33", "DATA": "06", "PARAMETROS": "http://www1.londrina.pr.gov.br/dados/images/stories/Storage/ippul/arcgis_online/proposta/zr/zr_3.pdf", "ACESSOALEI": "http://www1.cml.pr.gov.br/cml/site/projetodetalhe.xhtml?codigoproj=PL002282013&codigo=PL002282013", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/IPPULLeisUsoOcupacaoSoloRevisado2023/MapServer/4 | Zoneamento Aeroportuário | esriGeometryPolygon | total 12 | maxRecord 2000 | caps Map,Query,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('LAYER', 'Zoneamento'), ('LIGACAOLEI', 'Ligação para a Lei'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "LAYER": "ZZ-AEA3", "LIGACAOLEI": "http://www1.londrina.pr.gov.br/dados/images/stories/Storage/ippul/aeroporto/port_538_1989_08_07.pdf", "SE_ANNO_CAD_DATA": null}
+  ex: {"OBJECTID": 2, "LAYER": "ZZ-AEA1", "LIGACAOLEI": "http://www1.londrina.pr.gov.br/dados/images/stories/Storage/ippul/aeroporto/port_538_1989_08_07.pdf", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/Loteamentos/MapServer/0 | Loteamentos | esriGeometryPolygon | total 778 | maxRecord 2000 | caps Map,Query,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('LOTEAMENTO', 'Loteamento'), ('CODLOTEAMENTO', 'Código do loteamento'), ('SHAPE', 'SHAPE'), ('SHAPE.AREA', 'SHAPE.AREA'), ('SHAPE.LEN', 'SHAPE.LEN'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "LOTEAMENTO": "Parque Recreativo Fonteque", "CODLOTEAMENTO": 13285, "SHAPE.AREA": 0, "SHAPE.LEN": 0, "SE_ANNO_CAD_DATA": null}
+  ex: {"OBJECTID": 2, "LOTEAMENTO": "Moradas Portugal", "CODLOTEAMENTO": 14493, "SHAPE.AREA": 0, "SHAPE.LEN": 0, "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/LotesGlebasSimbologia/MapServer/4 | Lotes e Glebas | esriGeometryPolygon | total 1791 | maxRecord 2000 | caps Map,Query,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('GLEBA', 'Gleba'), ('LOTE', 'Lote'), ('GISADMIN.LimSmopLotesGlebas.AREA', 'GISADMIN.LimSmopLotesGlebas.AREA'), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA'), ('SHAPE.AREA', 'SHAPE.AREA'), ('SHAPE.LEN', 'SHAPE.LEN')]
+  ex: {"OBJECTID": 1, "GLEBA": "JACUTINGA", "LOTE": "266B", "GISADMIN.LimSmopLotesGlebas.AREA": 0.0, "SE_ANNO_CAD_DATA": null, "SHAPE.AREA": 0, "SHAPE.LEN": 0}
+  ex: {"OBJECTID": 2, "GLEBA": "JACUTINGA", "LOTE": "266A", "GISADMIN.LimSmopLotesGlebas.AREA": 0.0, "SE_ANNO_CAD_DATA": null, "SHAPE.AREA": 0, "SHAPE.LEN": 0}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/Quadrantes_Municipio/MapServer/0 | Quadrantes_Municipio_N1 | esriGeometryPolygon | total 53 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('PAGENUMBER', 'PageNumber'), ('NOMECLATURA', 'Nomeclatura'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA'), ('SHAPE', 'SHAPE'), ('CREATED_USER', 'CREATED_USER'), ('CREATED_DATE', 'CREATED_DATE'), ('LAST_EDITED_USER', 'LAST_EDITED_USER'), ('LAST_EDITED_DATE', 'LAST_EDITED_DATE'), ('SHAPE.AREA', 'SHAPE.AREA'), ('SHAPE.LEN', 'SHAPE.LEN')]
+  ex: {"OBJECTID": 1, "PAGENUMBER": 1, "NOMECLATURA": "A1", "SE_ANNO_CAD_DATA": null, "CREATED_USER": null, "CREATED_DATE": null, "LAST_EDITED_USER": null, "LAST_EDITED_DATE": null, "SHAPE.AREA": 0, "SHAPE.LEN": 0}
+  ex: {"OBJECTID": 2, "PAGENUMBER": 2, "NOMECLATURA": "A2", "SE_ANNO_CAD_DATA": null, "CREATED_USER": null, "CREATED_DATE": null, "LAST_EDITED_USER": null, "LAST_EDITED_DATE": null, "SHAPE.AREA": 0, "SHAPE.LEN": 0}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/Quadrantes_Municipio/MapServer/1 | Quadrantes_Municipio_N2 | esriGeometryPolygon | total 192 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('PAGENUMBER', 'PageNumber'), ('NOMECLATURA', 'Nomeclatura'), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA'), ('SHAPE.AREA', 'SHAPE.AREA'), ('SHAPE.LEN', 'SHAPE.LEN')]
+  ex: {"OBJECTID": 1, "PAGENUMBER": 1, "NOMECLATURA": "B1", "SE_ANNO_CAD_DATA": null, "SHAPE.AREA": 0, "SHAPE.LEN": 0}
+  ex: {"OBJECTID": 2, "PAGENUMBER": 2, "NOMECLATURA": "B2", "SE_ANNO_CAD_DATA": null, "SHAPE.AREA": 0, "SHAPE.LEN": 0}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/Quadrantes_Municipio/MapServer/2 | Quadrantes_Municipio_N3 | esriGeometryPolygon | total 693 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('PAGENUMBER', 'PageNumber'), ('NOMECLATURA', 'Nomeclatura'), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA'), ('SHAPE.AREA', 'SHAPE.AREA'), ('SHAPE.LEN', 'SHAPE.LEN')]
+  ex: {"OBJECTID": 1, "PAGENUMBER": 1, "NOMECLATURA": "C1", "SE_ANNO_CAD_DATA": null, "SHAPE.AREA": 0, "SHAPE.LEN": 0}
+  ex: {"OBJECTID": 2, "PAGENUMBER": 2, "NOMECLATURA": "C2", "SE_ANNO_CAD_DATA": null, "SHAPE.AREA": 0, "SHAPE.LEN": 0}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/Quadrantes_Municipio/MapServer/3 | Quadrantes_Municipio_N4 | esriGeometryPolygon | total 2596 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('PAGENUMBER', 'PageNumber'), ('NOMECLATURA', 'Nomeclatura'), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA'), ('SHAPE.AREA', 'SHAPE.AREA'), ('SHAPE.LEN', 'SHAPE.LEN')]
+  ex: {"OBJECTID": 1, "PAGENUMBER": 1, "NOMECLATURA": "D1", "SE_ANNO_CAD_DATA": null, "SHAPE.AREA": 0, "SHAPE.LEN": 0}
+  ex: {"OBJECTID": 2, "PAGENUMBER": 2, "NOMECLATURA": "D2", "SE_ANNO_CAD_DATA": null, "SHAPE.AREA": 0, "SHAPE.LEN": 0}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/Quadrantes_Municipio/MapServer/4 | Quadrantes_Municipio_N5 | esriGeometryPolygon | total 10001 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('PAGENUMBER', 'PageNumber'), ('NOMECLATURA', 'Nomeclatura'), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA'), ('SHAPE.AREA', 'SHAPE.AREA'), ('SHAPE.LEN', 'SHAPE.LEN')]
+  ex: {"OBJECTID": 1, "PAGENUMBER": 1, "NOMECLATURA": "E1", "SE_ANNO_CAD_DATA": null, "SHAPE.AREA": 0, "SHAPE.LEN": 0}
+  ex: {"OBJECTID": 2, "PAGENUMBER": 2, "NOMECLATURA": "E2", "SE_ANNO_CAD_DATA": null, "SHAPE.AREA": 0, "SHAPE.LEN": 0}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SIGLONSistemaHidricoPublico/MapServer/0 | Hidrografia | esriGeometryPolyline | total 3262 | maxRecord 2000 | caps Map,Query,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('NOMERIO', 'Nome do rio'), ('OBSERVACOES', 'Observações'), ('ORDEM', 'Ordem'), ('SUBBACIA', 'Sub-bacia'), ('SUBBACIA2', 'subBacia2'), ('CLASSEENQUADRAMENTO', 'Classe de enquadramento'), ('SHAPE', 'SHAPE'), ('SHAPE.LEN', 'SHAPE.LEN'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "NOMERIO": null, "OBSERVACOES": null, "ORDEM": null, "SUBBACIA": "Rio Apucarana", "SUBBACIA2": null, "CLASSEENQUADRAMENTO": null, "SHAPE.LEN": 0}
+  ex: {"OBJECTID": 2, "NOMERIO": "Rio do Meio", "OBSERVACOES": null, "ORDEM": null, "SUBBACIA": "Rio Apucarana", "SUBBACIA2": null, "CLASSEENQUADRAMENTO": null, "SHAPE.LEN": 0}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SIGLONSistemaHidricoPublico/MapServer/1 | Nascentes | esriGeometryPoint | total 3415 | maxRecord 2000 | caps Map,Query,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('NOMERIO', 'nomeRio'), ('OBSERVACOES', 'Observações'), ('ORDEM', 'ordem'), ('SUBBACIA', 'subBacia'), ('SUBBACIA2', 'Sub-bacia 2'), ('CLASSEENQUADRAMENTO', 'Classe de enquadramento'), ('X', 'x'), ('Y', 'y'), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "NOMERIO": "Córrego do Pica-Pau", "OBSERVACOES": " ", "ORDEM": 1, "SUBBACIA": "Ribeirão Três Bocas", "SUBBACIA2": 7, "CLASSEENQUADRAMENTO": "Classe 2", "X": 486237.254, "Y": 7418605.0275, "SE_ANNO_CAD_DATA": null}
+  ex: {"OBJECTID": 2, "NOMERIO": " ", "OBSERVACOES": " ", "ORDEM": 1, "SUBBACIA": "Ribeirão Três Bocas", "SUBBACIA2": 7, "CLASSEENQUADRAMENTO": "Classe 2", "X": 489234.8014, "Y": 7418453.6234, "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SIGLONSistemaHidricoPublico/MapServer/2 | Bacias Hidrográficas | esriGeometryPolygon | total 21 | maxRecord 2000 | caps Map,Query,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('NOME', 'Nome'), ('BACIAGERAL', 'Bacia Geral'), ('AREAKM2', 'Área km²'), ('ALTITUDEMONTANTE', 'Altitude Montante'), ('ALTITUDEJUSANTE', 'Altitude Jusante'), ('ALTURABACIA', 'Altura da Bacia'), ('ALTMONTANTERIOPRINCIPAL', 'Altitude montante do rio principal'), ('ALTJUSANTERIOPRINCIPAL', 'Altitude jusante do rio principal'), ('ALTURARIOPRINCIPAL', 'Altura do rio principal'), ('SHAPE', 'SHAPE'), ('SHAPE.AREA', 'SHAPE.AREA'), ('SHAPE.LEN', 'SHAPE.LEN'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "NOME": "Ribeirão Jacutinga", "BACIAGERAL": 4, "AREAKM2": 159.83354801, "ALTITUDEMONTANTE": 680.0, "ALTITUDEJUSANTE": 347.0, "ALTURABACIA": 333.0, "ALTMONTANTERIOPRINCIPAL": 566.0, "ALTJUSANTERIOPRINCIPAL": 340.0, "ALTURARIOPRINCIPAL": 226.0, "SHAPE.AREA": 0, "SHAPE.LEN": 0, "SE_ANNO_CAD_DATA": null}
+  ex: {"OBJECTID": 2, "NOME": "Ribeirão do Limoeiro", "BACIAGERAL": 6, "AREAKM2": 46.3737805, "ALTITUDEMONTANTE": 585.0, "ALTITUDEJUSANTE": 360.0, "ALTURABACIA": 225.0, "ALTMONTANTERIOPRINCIPAL": 546.0, "ALTJUSANTERIOPRINCIPAL": 361.0, "ALTURARIOPRINCIPAL": 185.0, "SHAPE.AREA": 0, "SHAPE.LEN": 0, "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SIGLONSistemaHidricoPublico/MapServer/3 | Mananciais de Abastecimento | esriGeometryPolygon | total 2 | maxRecord 2000 | caps Map,Query,Data
+  campos: [('OBJECTID_1', 'OBJECTID_1'), ('OBJECTID', 'OBJECTID'), ('MANANCIAL', 'MANANCIAL'), ('SHAPE_LENG', 'SHAPE_LENG'), ('SHAPE', 'SHAPE'), ('SHAPE.AREA', 'SHAPE.AREA'), ('SHAPE.LEN', 'SHAPE.LEN'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID_1": 1, "OBJECTID": 1, "MANANCIAL": "Ribeirão Jacutinga", "SHAPE_LENG": 52844.1754914, "SHAPE.AREA": 0, "SHAPE.LEN": 0, "SE_ANNO_CAD_DATA": null}
+  ex: {"OBJECTID_1": 2, "OBJECTID": 2, "MANANCIAL": "Ribeirão Cafezal", "SHAPE_LENG": 18816.4996524, "SHAPE.AREA": 0, "SHAPE.LEN": 0, "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SaudeUnidadesBasicasAbrangenciaPublico/MapServer/0 | Unidades de Saúde | esriGeometryPoint | total 54 | maxRecord 2000 | caps Map,Query,Data
+  campos: [('OBJECTID_1', 'OBJECTID_1'), ('OBJECTID', 'OBJECTID'), ('UBS', 'UBS'), ('NOME', 'NOME'), ('ENDEREÇO', 'ENDEREÇO'), ('TELEFONE', 'TELEFONE'), ('ABRANGÊNC', 'ABRANGÊNC'), ('REGIÃO', 'REGIÃO'), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID_1": 1, "OBJECTID": 1, "UBS": "Guairacá", "NOME": " ", "ENDEREÇO": "Rua Principal, 310 – Distrito de Guairacá - CEP:86120-000", "TELEFONE": "(43)3398-6023", "ABRANGÊNC": "Patrimônio Guairacá", "REGIÃO": "Rural", "SE_ANNO_CAD_DATA": null}
+  ex: {"OBJECTID_1": 2, "OBJECTID": 2, "UBS": "Guaravera", "NOME": "Cláudio Roverato de Bonato", "ENDEREÇO": "Rua Bahia s/nº - CEP: 86.120-000 - Distrito de Guaravera", "TELEFONE": "(43) 3398-3161", "ABRANGÊNC": "Guaravera", "REGIÃO": "Rural", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SaudeUnidadesBasicasAbrangenciaPublico/MapServer/1 | Área de Abrangência - UBS | esriGeometryPolygon | total 42 | maxRecord 2000 | caps Map,Query,Data
+  campos: [('OBJECTID_1', 'OBJECTID_1'), ('OBJECTID', 'objectid'), ('UBS', 'Unidade básica de saúde'), ('ENDERECO', 'Endereço'), ('TELEFONE', 'Telefone'), ('SHAPE', 'SHAPE'), ('SHAPE.AREA', 'SHAPE.AREA'), ('SHAPE.LEN', 'SHAPE.LEN'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID_1": 1, "OBJECTID": 6, "UBS": "UNIÃO DA VITÓRIA", "ENDERECO": "Rua 19 de abril, 95", "TELEFONE": "3379-0765", "SHAPE.AREA": 0, "SHAPE.LEN": 0, "SE_ANNO_CAD_DATA": null}
+  ex: {"OBJECTID_1": 2, "OBJECTID": 12, "UBS": "SAN IZIDRO/SAN FERNANDO", "ENDERECO": "R. Maria José Carneiro, 85", "TELEFONE": "3379-0761", "SHAPE.AREA": 0, "SHAPE.LEN": 0, "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/0 | Serviços | None | total {'error': {'code': 400, 'message': 'Invalid or missing input parameters.', 'details': []}} | maxRecord None | caps Query,Map
+  campos: []
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/1 | Centro POP | esriGeometryPoint | total 1 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SERVIÇO', 'SERVIÇO'), ('UNIDADE', 'UNIDADE'), ('BAIRRO', 'BAIRRO'), ('TERRITÓRIO', 'TERRITÓRIO'), ('MICROTERRITÓRIO', 'MICROTERRITÓRIO'), ('ENDEREÇO', 'ENDEREÇO'), ('CIDADE', 'CIDADE'), ('CEP', 'CEP'), ('TELEFONE', 'TELEFONE'), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SERVIÇO": "SERVIÇO ESPECIALIZADO PARA PESSOAS EM SITUAÇÃO DE RUA", "UNIDADE": "Centro POP", "BAIRRO": "Centro", "TERRITÓRIO": "LESTE", "MICROTERRITÓRIO": "VI", "ENDEREÇO": "R. Dib Llibos, 25", "CIDADE": "Londrina, PR", "CEP": "86039-010", "TELEFONE": "3378-0417", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/2 | Programa Cursos Livre Formacao | esriGeometryPoint | total 2 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SERVIÇO', 'SERVIÇO'), ('UNIDADE', 'UNIDADE'), ('BAIRRO', 'BAIRRO'), ('TERRITÓRIO', 'TERRITÓRIO'), ('MICROTERRITÓRIO', 'MICROTERRITÓRIO'), ('ENDEREÇO', 'ENDEREÇO'), ('CIDADE', 'CIDADE'), ('CEP', 'CEP'), ('TELEFONE', 'TELEFONE'), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SERVIÇO": "PROGRAMAS DE CURSOS LIVRES DE FORMAÇÃO PROFISSIONAL", "UNIDADE": "Guarda Mirim", "BAIRRO": "Aeroporto ", "TERRITÓRIO": "LESTE", "MICROTERRITÓRIO": "V", "ENDEREÇO": "R. Orestes Medeiros Pullin, 94", "CIDADE": "Londrina, PR", "CEP": "86038-010", "TELEFONE": "3375-0530", "SE_ANNO_CAD_DATA": null}
+  ex: {"OBJECTID": 2, "SERVIÇO": "PROGRAMAS DE CURSOS LIVRES DE FORMAÇÃO PROFISSIONAL", "UNIDADE": "EPESMEL ", "BAIRRO": "Parque das Industrias Leves", "TERRITÓRIO": "LESTE", "MICROTERRITÓRIO": "IV", "ENDEREÇO": "R. Angelina Ricci Vezozzo, 85", "CIDADE": "Londrina, PR", "CEP": "86030-340", "TELEFONE": "3325-4128", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/3 | Smas Programa de Aprendizagem Profissional | esriGeometryPoint | total 3 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SERVIÇO', 'SERVIÇO'), ('UNIDADE', 'UNIDADE'), ('TERRITÓRIO', 'TERRITÓRIO'), ('MICROTERRITÓRIO', 'MICROTERRITÓRIO'), ('ENDEREÇO', 'ENDEREÇO'), ('BAIRRO', 'BAIRRO'), ('CEP', 'CEP'), ('CIDADE', 'CIDADE'), ('TELEFONE', 'TELEFONE'), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SERVIÇO": "Programa de Aprendizagem Profissional", "UNIDADE": "Guarda Mirim", "TERRITÓRIO": "LESTE", "MICROTERRITÓRIO": "V", "ENDEREÇO": "R. Orestes Medeiros Pullin, 94", "BAIRRO": "Aeroporto", "CEP": "86038-010", "CIDADE": "Londrina, PR", "TELEFONE": "3375-0530", "SE_ANNO_CAD_DATA": null}
+  ex: {"OBJECTID": 2, "SERVIÇO": "Programa de Aprendizagem Profissional", "UNIDADE": "EPESMEL ", "TERRITÓRIO": "LESTE", "MICROTERRITÓRIO": "IV", "ENDEREÇO": "R. Angelina Ricci Vezozzo, 85", "BAIRRO": "Pq. das Indústrias Leves", "CEP": "86030-340", "CIDADE": "Londrina, PR", "TELEFONE": "3325-4128", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/4 | Prog Atendim e Acompanham de Migrantes Refugiados Apatridas e Familias | esriGeometryPoint | total 1 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SERVIÇO', 'SERVIÇO'), ('UNIDADE', 'UNIDADE'), ('TERRITÓRIO', 'TERRITÓRIO'), ('MICROTERRITÓRIO', 'MICROTERRITÓRIO'), ('ENDEREÇO', 'ENDEREÇO'), ('BAIRRO', 'BAIRRO'), ('CEP', 'CEP'), ('CIDADE', 'CIDADE'), ('TELEFONE', 'TELEFONE'), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SERVIÇO": "Programa de Atendimento e Acompanhamento de Migrantes, Refugiados, Apátridas e suas Famílias", "UNIDADE": "Cáritas Arquediocesana de Londrina", "TERRITÓRIO": "OESTE B", "MICROTERRITÓRIO": "IV", "ENDEREÇO": "R. Dom Bosco, 145", "BAIRRO": "Quebec", "CEP": "86060-340", "CIDADE": "Londrina, PR", "TELEFONE": "(43) 3338-7252", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/5 | Programa Guarda Subsidiada de Londrina | esriGeometryPoint | total 1 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SERVIÇO', 'SERVIÇO'), ('UNIDADE', 'UNIDADE'), ('TERRITÓRIO', 'TERRITÓRIO'), ('MICROTERRITÓRIO', 'MICROTERRITÓRIO'), ('ENDEREÇO', 'ENDEREÇO'), ('BAIRRO', 'BAIRRO'), ('CEP', 'CEP'), ('CIDADE', 'CIDADE'), ('TELEFONE', 'TELEFONE'), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SERVIÇO": "Programa Guarda Subsidada de Londrina", "UNIDADE": "Guarda Subsidiada", "TERRITÓRIO": "CENTRO B", "MICROTERRITÓRIO": "II", "ENDEREÇO": "R. Raposo Tavares, 828", "BAIRRO": "Vila Larsen", "CEP": "86187-090", "CIDADE": "Londrina, PR", "TELEFONE": "3378-0570", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/6 | Programa Movimenta CRAS | esriGeometryPoint | total 11 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SERVIÇO', 'SERVIÇO'), ('UNIDADE', 'UNIDADE'), ('TERRITÓRIO', 'TERRITÓRIO'), ('MICROTERRITÓRIO', 'MICROTERRITÓRIO'), ('ENDEREÇO', 'ENDEREÇO'), ('BAIRRO', 'BAIRRO'), ('CEP', 'CEP'), ('CIDADE', 'CIDADE'), ('TELEFONE', 'TELEFONE'), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SERVIÇO": "Programa Movimenta CRAS", "UNIDADE": "EPESMEL", "TERRITÓRIO": "LESTE", "MICROTERRITÓRIO": "IV", "ENDEREÇO": "R. Angelina Ricci Vezozzo, 85", "BAIRRO": "Indústrias Leves ", "CEP": "86030-340", "CIDADE": "Londrina, PR", "TELEFONE": "(43) 3325-4128 ", "SE_ANNO_CAD_DATA": null}
+  ex: {"OBJECTID": 2, "SERVIÇO": "Programa Movimenta CRAS", "UNIDADE": "CRAS Centro A", "TERRITÓRIO": "CENTRO A", "MICROTERRITÓRIO": "I", "ENDEREÇO": "R. Ermelindo Leão, 270 ", "BAIRRO": "Vila Casoni ", "CEP": "86030-030", "CIDADE": "Londrina, PR", "TELEFONE": "(43) 3378-0393 ", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/7 | Programa Municipal de Economia Solidaria | esriGeometryPoint | total 4 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SERVIÇO', 'SERVIÇO'), ('UNIDADE', 'UNIDADE'), ('TERRITÓRIO', 'TERRITÓRIO'), ('MICROTERRITÓRIO', 'MICROTERRITÓRIO'), ('ENDEREÇO', 'ENDEREÇO'), ('BAIRRO', 'BAIRRO'), ('CEP', 'CEP'), ('CIDADE', 'CIDADE'), ('TELEFONE', 'TELEFONE'), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SERVIÇO": "Programa Municipal de Economia Solidária", "UNIDADE": "Centro Público de Economia Solidária", "TERRITÓRIO": "CENTRO B", "MICROTERRITÓRIO": "II", "ENDEREÇO": "Av. Rio de Janeiro, 1278", "BAIRRO": "Centro", "CEP": "86010-150", "CIDADE": "Londrina, PR", "TELEFONE": "3378-0577", "SE_ANNO_CAD_DATA": null}
+  ex: {"OBJECTID": 2, "SERVIÇO": "Programa Municipal de Economia Solidária", "UNIDADE": "Centro Público de Economia Solidária Café e Arte", "TERRITÓRIO": "CENTRO A", "MICROTERRITÓRIO": "III", "ENDEREÇO": "Pç Sete de Setembro", "BAIRRO": "Centro", "CEP": "86010-430", "CIDADE": "Londrina, PR", "TELEFONE": "3378-0423", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/8 | Programa Oficinas Arte Educacao | esriGeometryPoint | total 1 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SERVIÇO', 'SERVIÇO'), ('UNIDADE', 'UNIDADE'), ('BAIRRO', 'BAIRRO'), ('TERRITÓRIO', 'TERRITÓRIO'), ('MICROTERRITÓRIO', 'MICROTERRITÓRIO'), ('ENDEREÇO', 'ENDEREÇO'), ('CIDADE', 'CIDADE'), ('CEP', 'CEP'), ('TELEFONE', 'TELEFONE'), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SERVIÇO": "PROGRAMA OFICINAS DE ARTE E EDUCAÇÃO", "UNIDADE": "Associação Londrinense de Circo", "BAIRRO": "Cj. Vivi Xavier", "TERRITÓRIO": "NORTE B", "MICROTERRITÓRIO": "VI", "ENDEREÇO": "Av. Saul Elkind, 790", "CIDADE": "Londrina, PR", "CEP": "86088-070", "TELEFONE": "3322-3708", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/9 | Projeto de Inclusao Produtiva | esriGeometryPoint | total 2 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SERVIÇO', 'SERVIÇO'), ('UNIDADE', 'UNIDADE'), ('TERRITÓRIO', 'TERRITÓRIO'), ('MICROTERRITÓRIO', 'MICROTERRITÓRIO'), ('ENDEREÇO', 'ENDEREÇO'), ('BAIRRO', 'BAIRRO'), ('CEP', 'CEP'), ('CIDADE', 'CIDADE'), ('TELEFONE', 'TELEFONE'), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SERVIÇO": "Projeto de Inclusão Produtiva", "UNIDADE": "Centro Público de Economia Solidária", "TERRITÓRIO": "CENTRO A", "MICROTERRITÓRIO": "III", "ENDEREÇO": "Av. Rio de Janeiro, 1278", "BAIRRO": "Centro", "CEP": "86010-150", "CIDADE": "Londrina, PR", "TELEFONE": null, "SE_ANNO_CAD_DATA": null}
+  ex: {"OBJECTID": 2, "SERVIÇO": "Projeto de Inclusão Produtiva", "UNIDADE": "Clube das Mães Unidas", "TERRITÓRIO": "LESTE", "MICROTERRITÓRIO": "III", "ENDEREÇO": "R. Roseiral, 77", "BAIRRO": "Vila Ricardo", "CEP": "86035-330", "CIDADE": "Londrina, PR", "TELEFONE": null, "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/10 | Sede Administrativa | esriGeometryPoint | total 1 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SERVIÇO', 'SERVIÇO'), ('UNIDADE', 'UNIDADE'), ('BAIRRO', 'BAIRRO'), ('TERRITÓRIO', 'TERRITÓRIO'), ('MICROTERRITÓRIO', 'MICROTERRITÓRIO'), ('ENDEREÇO', 'ENDEREÇO'), ('CIDADE', 'CIDADE'), ('CEP', 'CEP'), ('TELEFONE', 'TELEFONE'), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SERVIÇO": "Sede Administrativa", "UNIDADE": "SMAS", "BAIRRO": "Vila Ipiranga", "TERRITÓRIO": "CENTRO B", "MICROTERRITÓRIO": "II", "ENDEREÇO": "Av. Juscelino Kubitscheck, 2896", "CIDADE": "Londrina-PR", "CEP": "86010-540", "TELEFONE": "3378-0370", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/11 | Servico de Acolhimento em Familia Acolhedora | esriGeometryPoint | total 2 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SERVIÇO', 'SERVIÇO'), ('UNIDADE', 'UNIDADE'), ('TERRITÓRIO', 'TERRITÓRIO'), ('MICROTERRITÓRIO', 'MICROTERRITÓRIO'), ('ENDEREÇO', 'ENDEREÇO'), ('BAIRRO', 'BAIRRO'), ('CEP', 'CEP'), ('CIDADE', 'CIDADE'), ('TELEFONE', 'TELEFONE'), ('COL_K', 'COL_K'), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SERVIÇO": "Serviço de Acolhimento em Família Acolhedora", "UNIDADE": "Acolhimento Familiar", "TERRITÓRIO": "CENTRO B", "MICROTERRITÓRIO": "II", "ENDEREÇO": "Rua Raposo Tavares, 828", "BAIRRO": "Vila Larsen", "CEP": "86010-580", "CIDADE": "Londrina, PR", "TELEFONE": "(43) 9993-3366 ", "COL_K": null, "SE_ANNO_CAD_DATA": null}
+  ex: {"OBJECTID": 2, "SERVIÇO": "Serviço de Acolhimento em Família Acolhedora", "UNIDADE": "Acolhimento Familiar", "TERRITÓRIO": "CENTRO A", "MICROTERRITÓRIO": "I", "ENDEREÇO": "R. Maranhão, 65", "BAIRRO": "Centro", "CEP": "86010-410", "CIDADE": "Londrina, PR", "TELEFONE": null, "COL_K": null, "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/12 | Servico de Convivencia e Fortalecimento de Vinculos | esriGeometryPoint | total 25 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SERVIÇO', 'SERVIÇO'), ('UNIDADE', 'UNIDADE'), ('TERRITÓRIO', 'TERRITÓRIO'), ('MICROTERRITÓRIO', 'MICROTERRITÓRIO'), ('ENDEREÇO', 'ENDEREÇO'), ('BAIRRO', 'BAIRRO'), ('CEP', 'CEP'), ('CIDADE', 'CIDADE'), ('TELEFONE', 'TELEFONE'), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SERVIÇO": "Serviço de Convivência e Fortalecimento de Vínculos", "UNIDADE": "Guarda Mirim", "TERRITÓRIO": "CENTRO A", "MICROTERRITÓRIO": "IV", "ENDEREÇO": "R. Atílio Scudeler, 283", "BAIRRO": " Vila Recreio ", "CEP": "86025-080", "CIDADE": "Londrina, PR", "TELEFONE": "(43) 3375-0537", "SE_ANNO_CAD_DATA": null}
+  ex: {"OBJECTID": 2, "SERVIÇO": "Serviço de Convivência e Fortalecimento de Vínculos", "UNIDADE": "ADRA Sul", "TERRITÓRIO": "CENTRO A", "MICROTERRITÓRIO": "III", "ENDEREÇO": "R. Natal, 42 ", "BAIRRO": "Centro Histórico ", "CEP": "86020-230", "CIDADE": "Londrina, PR", "TELEFONE": "(43) 3336-3474", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/13 | Servico de Med Socioeduca em Meio Aberto Lib Assistida Prest Servico Com | esriGeometryPoint | total 1 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SERVIÇO', 'SERVIÇO'), ('UNIDADE', 'UNIDADE'), ('TERRITÓRIO', 'TERRITÓRIO'), ('MICROTERRITÓRIO', 'MICROTERRITÓRIO'), ('ENDEREÇO', 'ENDEREÇO'), ('BAIRRO', 'BAIRRO'), ('CEP', 'CEP'), ('CIDADE', 'CIDADE'), ('TELEFONE', 'TELEFONE'), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SERVIÇO": "Serviço de Medidas Socioeducativas em Meio Aberto de Liberdade Assistida e de Prestação de Seviço à Comunidade", "UNIDADE": "Medidas Socioeducativas", "TERRITÓRIO": "CENTRO B", "MICROTERRITÓRIO": "II", "ENDEREÇO": "R. Raposo Tavares, 828", "BAIRRO": "Vila Larsen", "CEP": "86010-580", "CIDADE": "Londrina, PR", "TELEFONE": "(43) 3378-0386 ", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/14 | Servico de Protecao e Atendimento Especializado a Familia e Individuos | esriGeometryPoint | total 3 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SERVIÇO', 'SERVIÇO'), ('UNIDADE', 'UNIDADE'), ('TERRITÓRIO', 'TERRITÓRIO'), ('MICROTERRITÓRIO', 'MICROTERRITÓRIO'), ('ENDEREÇO', 'ENDEREÇO'), ('BAIRRO', 'BAIRRO'), ('CEP', 'CEP'), ('CIDADE', 'CIDADE'), ('TELEFONE', 'TELEFONE'), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SERVIÇO": "Serviço de Proteção e Atendimento Especializado a Famílias e Indivíduos", "UNIDADE": "CREAS Centro", "TERRITÓRIO": "CENTRO A", "MICROTERRITÓRIO": "II", "ENDEREÇO": "Av. Rio de Janeiro, 1288", "BAIRRO": "Centro", "CEP": "86010-150", "CIDADE": "Londrina, PR", "TELEFONE": "(43) 3378-0563", "SE_ANNO_CAD_DATA": null}
+  ex: {"OBJECTID": 2, "SERVIÇO": "Serviço de Proteção e Atendimento Especializado a Famílias e Indivíduos", "UNIDADE": "CREAS Norte", "TERRITÓRIO": "NORTE A", "MICROTERRITÓRIO": "III", "ENDEREÇO": "Av. Café Solúvel, 130", "BAIRRO": "Pq. Residencial do Café", "CEP": "86081-310", "CIDADE": "Londrina, PR", "TELEFONE": "(43) 3378-0304 ", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/15 | Servico de Protecao e Atendimento Integral a Familia | esriGeometryPoint | total 10 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SERVIÇO', 'SERVIÇO'), ('UNIDADE', 'UNIDADE'), ('TERRITÓRIO', 'TERRITÓRIO'), ('MICROTERRITÓRIO', 'MICROTERRITÓRIO'), ('ENDEREÇO', 'ENDEREÇO'), ('BAIRRO', 'BAIRRO'), ('CEP', 'CEP'), ('CIDADE', 'CIDADE'), ('TELEFONE', 'TELEFONE '), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SERVIÇO": "Serviço de Proteção e Atendimento Integral à Família", "UNIDADE": "CRAS Centro A", "TERRITÓRIO": "CENTRO A", "MICROTERRITÓRIO": "I", "ENDEREÇO": "R. Ermelindo Leão, 270 ", "BAIRRO": "Vila Casoni ", "CEP": "86030-030", "CIDADE": "Londrina, PR", "TELEFONE": "(43) 3378-0393 ", "SE_ANNO_CAD_DATA": null}
+  ex: {"OBJECTID": 2, "SERVIÇO": "Serviço de Proteção e Atendimento Integral à Família", "UNIDADE": "CRAS Centro B", "TERRITÓRIO": "CENTRO B", "MICROTERRITÓRIO": "I", "ENDEREÇO": "R. Maria José Carneiro, 55", "BAIRRO": "Califórnia", "CEP": "86040-580", "CIDADE": "Londrina, PR", "TELEFONE": "(43) 3378-0438 ", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/16 | Servico de Protecao Social Basica no Domicilio para Pessoas Com Deficiencia e Idosas | esriGeometryPoint | total 1 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SERVIÇO', 'SERVIÇO'), ('UNIDADE', 'UNIDADE'), ('TERRITÓRIO', 'TERRITÓRIO'), ('MICROTERRITÓRIO', 'MICROTERRITÓRIO'), ('ENDEREÇO', 'ENDEREÇO'), ('BAIRRO', 'BAIRRO'), ('CEP', 'CEP'), ('CIDADE', 'CIDADE'), ('TELEFONE', 'TELEFONE'), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SERVIÇO": "Serviço de Proteção Social Básica no Domícilio para Pessoas com Deficiência e Idosas", "UNIDADE": "Associação Flávia Cristina", "TERRITÓRIO": "NORTE A", "MICROTERRITÓRIO": "I", "ENDEREÇO": "Av. Saul Elkind, 5000", "BAIRRO": "Parigot de Souza ", "CEP": "86082-000", "CIDADE": "Londrina, PR", "TELEFONE": "(43) 3327-4828", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/17 | Servico de Protecao Social Especial para Pessoas com Deficiencia Idosas e Suas FamIlias | esriGeometryPoint | total 1 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SERVIÇO', 'SERVIÇO'), ('UNIDADE', 'UNIDADE'), ('TERRITÓRIO', 'TERRITÓRIO'), ('MICROTERRITÓRIO', 'MICROTERRITÓRIO'), ('ENDEREÇO', 'ENDEREÇO'), ('BAIRRO', 'BAIRRO'), ('CEP', 'CEP'), ('CIDADE', 'CIDADE'), ('TELEFONE', 'TELEFONE'), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SERVIÇO": "Serviço de Proteção Social Especial para Pessoas com Deficiência, Idosas e suas Famílias", "UNIDADE": "Associação Flávia Cristina", "TERRITÓRIO": "NORTE A", "MICROTERRITÓRIO": "I", "ENDEREÇO": "Av. Saul Elkind, 5000", "BAIRRO": "Parigot de Souza ", "CEP": "86082-000", "CIDADE": "Londrina, PR", "TELEFONE": "(43) 3327-4828", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/18 | Servico Especializado para Pessoas em Situacao de Rua | esriGeometryPoint | total 1 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SERVIÇO', 'SERVIÇO'), ('UNIDADE', 'UNIDADE'), ('TERRITÓRIO', 'TERRITÓRIO'), ('MICROTERRITÓRIO', 'MICROTERRITÓRIO'), ('ENDEREÇO', 'ENDEREÇO'), ('BAIRRO', 'BAIRRO'), ('CEP', 'CEP'), ('CIDADE', 'CIDADE'), ('TELEFONE', 'TELEFONE'), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SERVIÇO": "Serviço Especializado para Pessoas em Situação de Rua", "UNIDADE": "Centro POP", "TERRITÓRIO": "LESTE", "MICROTERRITÓRIO": "II", "ENDEREÇO": "R. Dib Llibos, 25", "BAIRRO": " Centro ", "CEP": "86039-010", "CIDADE": "Londrina, PR", "TELEFONE": "(43) 3378-0417", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/19 | Servico de Protecao Social Adolesc Cumprim Medida Socioeducativa LAPS Com | esriGeometryPoint | total 1 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SERVIÇO', 'SERVIÇO'), ('UNIDADE', 'UNIDADE'), ('BAIRRO', 'BAIRRO'), ('TERRITÓRIO', 'TERRITÓRIO'), ('MICROTERRITÓRIO', 'MICROTERRITÓRIO'), ('ENDEREÇO', 'ENDEREÇO'), ('CIDADE', 'CIDADE'), ('CEP', 'CEP'), ('TELEFONE', 'TELEFONE'), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SERVIÇO": "SERVIÇO DE MEDIDAS SOCIEDUCATIVAS EM MEIO ABERTO DE LIBERDADE ASSISTIDA E DE PRESTAÇÃO DE SERVIÇO A COMUNIDADE", "UNIDADE": "Medidas Socioeducativas", "BAIRRO": "Vila Larsen", "TERRITÓRIO": "CENTRO B", "MICROTERRITÓRIO": "II", "ENDEREÇO": "R. Raposo Tavares, 828", "CIDADE": "Londrina, PR", "CEP": "86010-580", "TELEFONE": "3378-0386", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/20 | Unidades CRAS | esriGeometryPoint | total 10 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SERVIÇO', 'SERVIÇO'), ('UNIDADE', 'UNIDADE'), ('TERRITÓRIO', 'TERRITÓRIO'), ('MICROTERRITÓRIO', 'MICROTERRITÓRIO'), ('BAIRRO', 'BAIRRO'), ('ENDEREÇO', 'ENDEREÇO'), ('CIDADE', 'CIDADE'), ('CEP', 'CEP'), ('TELEFONE', 'TELEFONE'), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SERVIÇO": "Programa de Proteção e Atenção Integral à Família", "UNIDADE": "CRAS Centro A", "TERRITÓRIO": "CENTRO A", "MICROTERRITÓRIO": "I", "BAIRRO": "Jardim Parque das Águias", "ENDEREÇO": "R. Ermelindo Leão, 270 ", "CIDADE": "Londrina, PR", "CEP": "86030-030", "TELEFONE": "3378-0393/3378-0419", "SE_ANNO_CAD_DATA": null}
+  ex: {"OBJECTID": 2, "SERVIÇO": "Programa de Proteção e Atenção Integral à Família", "UNIDADE": "CRAS Centro B", "TERRITÓRIO": "CENTRO B", "MICROTERRITÓRIO": "I", "BAIRRO": "Jardim San Izidro", "ENDEREÇO": "R. Maria José Carneiro, 55", "CIDADE": "Londrina, PR", "CEP": "86040-580", "TELEFONE": "3378-0438/3378-0428", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/21 | Unidades CREAS | esriGeometryPoint | total 3 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SERVIÇO', 'SERVIÇO'), ('UNIDADE', 'UNIDADE'), ('BAIRRO', 'BAIRRO'), ('TERRITÓRIO', 'TERRITÓRIO'), ('MICROTERRITÓRIO', 'MICROTERRITÓRIO'), ('ENDEREÇO', 'ENDEREÇO'), ('CIDADE', 'CIDADE'), ('CEP', 'CEP'), ('TELEFONE', 'TELEFONE'), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SERVIÇO": "Serviço de Proteção e Atendimento Especializado a Famílias e Indivíduos ", "UNIDADE": "CREAS Centro", "BAIRRO": "Centro", "TERRITÓRIO": "CENTRO A", "MICROTERRITÓRIO": "II", "ENDEREÇO": "Av. Rio de Janeiro, 1288", "CIDADE": "Londrina, PR", "CEP": "86010-150", "TELEFONE": "3378-0563", "SE_ANNO_CAD_DATA": null}
+  ex: {"OBJECTID": 2, "SERVIÇO": "Serviço de Proteção e Atendimento Especializado a Famílias e Indivíduos ", "UNIDADE": "CREAS Norte", "BAIRRO": "Res. Do Café", "TERRITÓRIO": "NORTE A", "MICROTERRITÓRIO": "III", "ENDEREÇO": "Av. Café Solúvel, 130", "CIDADE": "Londrina, PR", "CEP": "86081-310", "TELEFONE": "3378-0304", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/22 | Territórios | None | total {'error': {'code': 400, 'message': 'Invalid or missing input parameters.', 'details': []}} | maxRecord None | caps Query,Map
+  campos: []
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/23 | Território CRAS - Centro A | esriGeometryPolygon | total 1 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SHAPE', 'Shape'), ('SHAPE.AREA', 'SHAPE.AREA'), ('SHAPE.LEN', 'SHAPE.LEN'), ('TERRITORIO', 'Territorio'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SHAPE.AREA": 0, "SHAPE.LEN": 0, "TERRITORIO": "CRAS Centro A", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/24 | Território CRAS - Centro B | esriGeometryPolygon | total 1 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SHAPE', 'Shape'), ('SHAPE.AREA', 'SHAPE.AREA'), ('SHAPE.LEN', 'SHAPE.LEN'), ('TERRITORIO', 'Territorio'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SHAPE.AREA": 0, "SHAPE.LEN": 0, "TERRITORIO": "CRAS Centro B", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/25 | Território CRAS -  Leste | esriGeometryPolygon | total 1 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SHAPE', 'Shape'), ('SHAPE.AREA', 'SHAPE.AREA'), ('SHAPE.LEN', 'SHAPE.LEN'), ('TERRITORIO', 'Territorio'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SHAPE.AREA": 0, "SHAPE.LEN": 0, "TERRITORIO": "CRAS Leste", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/26 | Território CRAS - Norte A | esriGeometryPolygon | total 1 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SHAPE', 'Shape'), ('SHAPE.AREA', 'SHAPE.AREA'), ('SHAPE.LEN', 'SHAPE.LEN'), ('TERRITORIO', 'Territorio'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SHAPE.AREA": 0, "SHAPE.LEN": 0, "TERRITORIO": "CRAS Norte A", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/27 | Território CRAS - Norte B | esriGeometryPolygon | total 1 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SHAPE', 'Shape'), ('SHAPE.AREA', 'SHAPE.AREA'), ('SHAPE.LEN', 'SHAPE.LEN'), ('TERRITORIO', 'Territorio'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SHAPE.AREA": 0, "SHAPE.LEN": 0, "TERRITORIO": "CRAS Norte B", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/28 | Território CRAS - Oeste A | esriGeometryPolygon | total 1 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SHAPE', 'Shape'), ('SHAPE.AREA', 'SHAPE.AREA'), ('SHAPE.LEN', 'SHAPE.LEN'), ('TERRITORIO', 'Territorio'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SHAPE.AREA": 0, "SHAPE.LEN": 0, "TERRITORIO": "CRAS Oeste A", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/29 | Território CRAS - Oeste B | esriGeometryPolygon | total 1 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SHAPE', 'Shape'), ('SHAPE.AREA', 'SHAPE.AREA'), ('SHAPE.LEN', 'SHAPE.LEN'), ('TERRITORIO', 'Territorio'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SHAPE.AREA": 0, "SHAPE.LEN": 0, "TERRITORIO": "CRAS Oeste B", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/30 | Território CRAS - Sul A | esriGeometryPolygon | total 1 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SHAPE', 'Shape'), ('SHAPE.AREA', 'SHAPE.AREA'), ('SHAPE.LEN', 'SHAPE.LEN'), ('TERRITORIO', 'Territorio'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SHAPE.AREA": 0, "SHAPE.LEN": 0, "TERRITORIO": "CRAS Sul A", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/31 | Território CRAS - Sul B | esriGeometryPolygon | total 1 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SHAPE', 'Shape'), ('SHAPE.AREA', 'SHAPE.AREA'), ('SHAPE.LEN', 'SHAPE.LEN'), ('TERRITORIO', 'Territorio'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SHAPE.AREA": 0, "SHAPE.LEN": 0, "TERRITORIO": "CRAS Sul B", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/32 | Território CRAS - Rural | esriGeometryPolygon | total 1 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('SHAPE', 'Shape'), ('SHAPE.AREA', 'SHAPE.AREA'), ('SHAPE.LEN', 'SHAPE.LEN'), ('TERRITORIO', 'Territorio'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "SHAPE.AREA": 0, "SHAPE.LEN": 0, "TERRITORIO": "CRAS Rural", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/33 | Territórios - CREAS | esriGeometryPolygon | total 3 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('CREAS', 'CREAS'), ('SHAPE', 'Shape'), ('SHAPE.AREA', 'SHAPE.AREA'), ('SHAPE.LEN', 'SHAPE.LEN'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "CREAS": "Centro", "SHAPE.AREA": 0, "SHAPE.LEN": 0, "SE_ANNO_CAD_DATA": null}
+  ex: {"OBJECTID": 2, "CREAS": "Oeste", "SHAPE.AREA": 0, "SHAPE.LEN": 0, "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmasInformGerais/MapServer/34 | Territórios - CRAS | esriGeometryPolygon | total 40 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('CRAS', 'CRAS'), ('MICROTERRITORIO', 'Microterritório'), ('SHAPE', 'Shape'), ('SHAPE.AREA', 'SHAPE.AREA'), ('SHAPE.LEN', 'SHAPE.LEN'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 2, "CRAS": "NORTE A", "MICROTERRITORIO": "I", "SHAPE.AREA": 0, "SHAPE.LEN": 0, "SE_ANNO_CAD_DATA": null}
+  ex: {"OBJECTID": 4, "CRAS": "NORTE A", "MICROTERRITORIO": "II", "SHAPE.AREA": 0, "SHAPE.LEN": 0, "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmeEducacaoPublico/MapServer/0 | CEIs - Centros de Educação Infantil | esriGeometryPoint | total 64 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('ESTABELECI', 'ESTABELECI'), ('ENDERECO', 'ENDERECO'), ('BAIRRO', 'BAIRRO'), ('TELEFONE', 'TELEFONE'), ('VAGASP5', 'vagasp5'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "ESTABELECI": "Alaide Fausto de Souza", "ENDERECO": "Rua Capiberibe, 63", "BAIRRO": "Vila Nova", "TELEFONE": "3329-1140", "VAGASP5": null, "SE_ANNO_CAD_DATA": null}
+  ex: {"OBJECTID": 2, "ESTABELECI": "AMPAS", "ENDERECO": "Rua Vergilio Perin, 905", "BAIRRO": "C.H. Aquiles Stenghel", "TELEFONE": "3336-6465", "VAGASP5": null, "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmeEducacaoPublico/MapServer/1 | CMEIs - Centros Mun. de Educação Infantil | esriGeometryPoint | total 31 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('CENTRO_MUN', 'CENTRO_MUN'), ('ENDERECO', 'ENDERECO'), ('TELEFONE', 'TELEFONE'), ('DIRETORA', 'DIRETORA'), ('BAIRRO', 'BAIRRO'), ('CEP', 'CEP'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "CENTRO_MUN": "MARLI MARQUES AGOSTINHO", "ENDERECO": "RUA AMAPÁ, 400", "TELEFONE": "3398-3991", "DIRETORA": "TATIANE DE SOUZA MACHADO", "BAIRRO": "DISTR. DE GUARAVERA", "CEP": "86120-000", "SE_ANNO_CAD_DATA": null}
+  ex: {"OBJECTID": 2, "CENTRO_MUN": "JOÃO RAMPAZZO ", "ENDERECO": "RUA GENERAL OZORIO, 372", "TELEFONE": "3398-9900", "DIRETORA": "EDNA MARIA DA CUNHA FONSECA", "BAIRRO": "DISTRITO DE SÃO LUIS", "CEP": "86117-000", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmeEducacaoPublico/MapServer/2 | Escolas Municipais | esriGeometryPoint | total 89 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('NOME', 'NOME'), ('ENDERECO', 'ENDERECO'), ('NUMERO', 'NUMERO'), ('BAIRRO', 'BAIRRO'), ('FONE', 'FONE'), ('RURAL', 'RURAL'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "NOME": "HIKOMA UDIHARA, E. M.", "ENDERECO": "Rua Orlando Silva", "NUMERO": 762, "BAIRRO": "Vila Isabel", "FONE": "3375-0135", "RURAL": " ", "SE_ANNO_CAD_DATA": null}
+  ex: {"OBJECTID": 2, "NOME": "EGIDIO DOMINGOS BRUNETTO, E. M. DO CAMPO", "ENDERECO": "Assentamento Eli Vive II", "NUMERO": null, "BAIRRO": "Lerroville", "FONE": "3398-2951", "RURAL": "RURAL", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmeEducacaoPublico/MapServer/3 | Colégios Estaduais | esriGeometryPoint | total 76 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('NOME', 'Nome'), ('TIPO_LOGRADOURO', 'Tipo logradouro'), ('LOGRADOURO', 'Logradouro'), ('NUMEROLOG', 'numerolog'), ('E_MAIL', 'E-mail'), ('CEP', 'CEP'), ('BAIRRO', 'bairro'), ('CIDADE', 'cidade'), ('SHAPE', 'SHAPE'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "NOME": "2 COLEGIO DA POLICIA MILITAR DO PARANA", "TIPO_LOGRADOURO": "RUA", "LOGRADOURO": "DOS EUCALIPTOS", "NUMEROLOG": 215, "E_MAIL": "lda2cpm@seed.pr.gov.br", "CEP": "86.071-110", "BAIRRO": "JARDIM LEONOR", "CIDADE": "Londrina-PR", "SE_ANNO_CAD_DATA": null}
+  ex: {"OBJECTID": 2, "NOME": "CAP UEL JOSE ALOISIO ARAGAO", "TIPO_LOGRADOURO": "RUA", "LOGRADOURO": "PIAUI", "NUMEROLOG": 720, "E_MAIL": "ldajosearagao@seed.pr.gov.br", "CEP": "86.020-390", "BAIRRO": "CENTRO", "CIDADE": "Londrina-PR", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmeEducacaoPublico/MapServer/6 | Área de Abrangência Mun - 1º ao 5º ano | esriGeometryPolygon | total 77 | maxRecord 2000 | caps Query,Map,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('NOME', 'nome'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 1, "NOME": "MARIA SHIRLEY BARNABE LYRA, E. M.", "SE_ANNO_CAD_DATA": null}
+  ex: {"OBJECTID": 2, "NOME": "MOACYR TEIXEIRA, E. M. PROFESSOR", "SE_ANNO_CAD_DATA": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/Publico/SmopArruamento/MapServer/0 | Arruamento | esriGeometryPolyline | total 6183 | maxRecord 2000 | caps Map,Query,Data
+  campos: [('OBJECTID', 'OBJECTID'), ('NOME', 'nome'), ('GEOMETRIAAPROXIMADA', 'Geometria Aproximada'), ('REVESTIMENTO', 'Revestimento'), ('OPERACIONAL', 'Operacional'), ('SITUACAOFISICA', 'Situação física'), ('NRFAIXAS', 'Número de faixas'), ('CANTEIRODIVISORIO', 'Canteiro divisório'), ('TRAFEGO', 'Trafego'), ('CODLOG', 'Código do logradouro'), ('LEI', 'Lei'), ('PAVIMENTO', 'Pavimento'), ('LARGURA', 'Largura'), ('PERFIL', 'Perfil'), ('CATEGORIA', 'Categoria'), ('LOCALIDADE', 'Localidade'), ('SE_ANNO_CAD_DATA', 'SE_ANNO_CAD_DATA')]
+  ex: {"OBJECTID": 2, "NOME": null, "GEOMETRIAAPROXIMADA": 1, "REVESTIMENTO": 0, "OPERACIONAL": 0, "SITUACAOFISICA": 0, "NRFAIXAS": null, "CANTEIRODIVISORIO": 0, "TRAFEGO": 0, "CODLOG": " ", "LEI": " ", "PAVIMENTO": "-", "LARGURA": " ", "PERFIL": " ", "CATEGORIA": "ARRUAMENTO", "LOCALIDADE": "LONDRINA", "SE_ANNO_CAD_DATA": null}
+  ex: {"OBJECTID": 3, "NOME": null, "GEOMETRIAAPROXIMADA": 1, "REVESTIMENTO": 3, "OPERACIONAL": 1, "SITUACAOFISICA": 5, "NRFAIXAS": null, "CANTEIRODIVISORIO": 2, "TRAFEGO": 1, "CODLOG": null, "LEI": null, "PAVIMENTO": null, "LARGURA": null, "PERFIL": null, "CATEGORIA": null, "LOCALIDADE": null}
+
+### https://geo.londrina.pr.gov.br/server/rest/services/SMOP/SmopPontosdeReferênciaMarcos_Geodésicos/MapServer | None | None | total {'_erro': "'ascii' codec can't encode character '\\xea' in position 48: ordinal not in range(128)"} | maxRecord None | caps None
+  campos: []
+
+### https://geo.londrina.pr.gov.br/server/rest/services/SMPM/SmpmLocaisEquipamentos/MapServer | None | None | total {'currentVersion': 11.3, 'cimVersion': '3.3.0', 'serviceDescription': '', 'mapName': 'SMPM - Locais de Atendimento à Mulher', 'description': '', 'copyrightText': '', 'supportsDynamicLayers': True, 'layers': [], 'tables': [], 'spatialReference': {'wkid': 31982, 'latestWkid': 31982, 'xyTolerance': 0.001, 'zTolerance': 0.001, 'mTolerance': 0.001, 'falseX': -5120900, 'falseY': 1900, 'xyUnits': 10000, 'falseZ': -100000, 'zUnits': 10000, 'falseM': -100000, 'mUnits': 10000}, 'singleFusedMapCache': False, 'initialExtent': {'xmin': 479253.8748541071, 'ymin': 7416579.68935306, 'xmax': 488833.0100908592, 'ymax': 7423825.221388888, 'spatialReference': {'wkid': 31982, 'latestWkid': 31982, 'xyTolerance': 0.001, 'zTolerance': 0.001, 'mTolerance': 0.001, 'falseX': -5120900, 'falseY': 1900, 'xyUnits': 10000, 'falseZ': -100000, 'zUnits': 10000, 'falseM': -100000, 'mUnits': 10000}}, 'fullExtent': {'xmin': 'NaN', 'ymin': 'NaN', 'xmax': 'NaN', 'ymax': 'NaN', 'spatialReference': {'wkid': 31982, 'latestWkid': 31982, 'xyTolerance': 0.001, 'zTolerance': 0.001, 'mTolerance': 0.001, 'falseX': -5120900, 'falseY': 1900, 'xyUnits': 10000, 'falseZ': -100000, 'zUnits': 10000, 'falseM': -100000, 'mUnits': 10000}}, 'datesInUnknownTimezone': False, 'minScale': 0, 'maxScale': 0, 'units': 'esriMeters', 'supportedImageFormatTypes': 'PNG32,PNG24,PNG,JPG,DIB,TIFF,EMF,PS,PDF,GIF,SVG,SVGZ,BMP', 'documentInfo': {'Title': 'SMPM - Locais de Atendimento à Mulher', 'Author': '', 'Comments': '', 'Subject': '', 'Category': '', 'Version': '2.9.0', 'AntialiasingMode': 'Fast', 'TextAntialiasingMode': 'Force', 'Keywords': 'CAM,COM,SMPM,Secretaria de Mulher,Prefeitura de Londrina,SIGLON'}, 'supportsQueryDomains': True, 'capabilities': 'Query,Map,Data', 'supportedQueryFormats': 'JSON, geoJSON, PBF', 'exportTilesAllowed': False, 'referenceScale': 0.0, 'datumTransformations': [{'geoTransforms': [{'wkid': 15894, 'latestWkid': 15894, 'transformForward': False, 'name': 'SIRGAS_2000_To_WGS_1984_1'}]}, {'geoTransforms': [{'wkid': 15894, 'latestWkid': 15894, 'transformForward': True, 'name': 'SIRGAS_2000_To_WGS_1984_1'}]}], 'supportsDatumTransformation': True, 'archivingInfo': {'supportsHistoricMoment': False}, 'supportsClipping': True, 'supportsSpatialFilter': True, 'supportsTimeRelation': True, 'supportsQueryDataElements': True, 'mapUnits': {'uwkid': 9001}, 'maxRecordCount': 2000, 'maxImageHeight': 4096, 'maxImageWidth': 4096, 'supportedExtensions': '', 'serviceItemId': 'e5e6bde4c0e0427f86cbeb8a2d1d229e'} | maxRecord 2000 | caps Query,Map,Data
+  campos: []
+
+### https://geo.londrina.pr.gov.br/server/rest/services/abe_limites/Divisão_Territorial/MapServer | None | None | total {'_erro': "'ascii' codec can't encode character '\\xe3' in position 43: ordinal not in range(128)"} | maxRecord None | caps None
+  campos: []
+
+### https://geo.londrina.pr.gov.br/server/rest/services/abertos_sist_transporte/Aeródromos/MapServer | None | None | total {'_erro': "'ascii' codec can't encode character '\\xf3' in position 53: ordinal not in range(128)"} | maxRecord None | caps None
+  campos: []
+
+### https://geo.londrina.pr.gov.br/server/rest/services/abertos_sist_transporte/Sistema_Viário_VIGENTE/MapServer | None | None | total {'_erro': "'ascii' codec can't encode character '\\xe1' in position 60: ordinal not in range(128)"} | maxRecord None | caps None
+  campos: []
