@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: mkdir -p data/_diag && (python3 tools/catalogo_londrina.py > data/_diag/catalogo_londrina.txt 2>&1; true)
+      - run: mkdir -p data/_diag && (python3 tools/descobrir_londrina.py 2ebe100e9751469995f67324b75bcf01 > data/_diag/geolondrina_licencas.txt 2>&1; true)
       - run: |
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/_diag; git commit -q -m "Catálogo GeoLondrina" || true; git pull -q --rebase origin main || true; git push

@@ -57,6 +57,7 @@ with open(f'{tmp}/glebas.geojsonl', 'w') as fg:
         fg.write(json.dumps({'type': 'Feature', 'tippecanoe': {'minzoom': 12}, 'geometry': mapping(g), 'properties': {'nome': f"Lote {limpa(p.get('LOTE')) or '?'} – Gleba {limpa(p.get('GLEBA')) or '?'}", 'Gleba': limpa(p.get('GLEBA')), 'Área (m²)': round(area_m2(g))}}, ensure_ascii=False) + '\n')
 # lotes urbanos
 n = 0; sem_zona = 0
+os.makedirs('data/_diag', exist_ok=True); amostra = open('data/_diag/lotes_amostra_centro.geojsonl', 'w')
 from collections import Counter
 cz = Counter()
 with open(f'{tmp}/lotes.geojsonl', 'w') as fo:
@@ -72,7 +73,9 @@ with open(f'{tmp}/lotes.geojsonl', 'w') as fo:
         props = {'nome': f'Quadra {q}, Lote {l}', 'Loteamento': limpa(p.get('NOME_LOTE')) or '', 'Quadra': q, 'Lote': l,
                  'Código do loteamento': p.get('CODLOT'), 'Área aproximada (m²)': round(area_m2(g)), 'Zoneamento': z}
         fo.write(json.dumps({'type': 'Feature', 'tippecanoe': {'minzoom': 14}, 'geometry': mapping(g), 'properties': {k: v for k, v in props.items() if v not in ('', None)}}, ensure_ascii=False) + '\n')
+        if -51.166 < c.x < -51.159 and -23.314 < c.y < -23.307: amostra.write(json.dumps({'type': 'Feature', 'geometry': mapping(g), 'properties': props}, ensure_ascii=False) + '\n')
         n += 1
+amostra.close()
 print('lotes', n, 'sem zona', sem_zona, cz.most_common(15), flush=True)
 json.dump({'atualizado': time.strftime('%d/%m/%Y'), 'lotes': n, 'zonas': dict(cz.most_common())}, open('data/urbano/resumo.json', 'w'), ensure_ascii=False)
 shutil.rmtree('data/urbano/tiles', ignore_errors=True)
