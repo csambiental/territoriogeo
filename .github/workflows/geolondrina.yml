@@ -1,12 +1,22 @@
 name: GeoLondrina (lotes)
-on: { workflow_dispatch: {} }
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: '37 10 3 * *'
 permissions: { contents: write }
 jobs:
   lotes:
     runs-on: ubuntu-latest
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
-      - run: pip install shapely -q && mkdir -p data/_diag data/urbano && (if [ -f tools/baixar_lotes.py ]; then python3 tools/baixar_lotes.py > data/_diag/lotes.txt 2>&1; else python3 tools/descobrir_londrina.py > data/_diag/geolondrina.txt 2>&1; fi; true)
       - run: |
+          mkdir -p data/_diag data/urbano
+          pip install shapely pyproj -q
+          (sudo apt-get update -qq && sudo apt-get install -y -qq tippecanoe) || (git clone -q --depth 1 https://github.com/felt/tippecanoe.git /tmp/tc && make -C /tmp/tc -j4 -s && sudo make -C /tmp/tc install -s)
+          tippecanoe --version
+      - run: python3 tools/baixar_lotes.py 2>&1 | tee data/_diag/lotes.txt
+      - if: always()
+        run: |
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/_diag data/urbano; git commit -m "GeoLondrina: dados atualizados" || true; git pull --rebase origin main || true; git push
+          git add data/_diag data/urbano; git commit -q -m "GeoLondrina: lotes urbanos e zoneamento atualizados" || true; git pull -q --rebase origin main || true; git push
