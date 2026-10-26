@@ -1,1 +1,17 @@
-[]
+[
+ {
+  "bacia": "Rios Pirapó, Paranapanema 3 e Paranapanema 4",
+  "arquivo": "data/bacias/rios_rios_pirapo_paranapanema_3_e_paranapanema_4.geojson",
+  "rios": 232
+ },
+ {
+  "bacia": "Alto Ivaí",
+  "arquivo": "data/bacias/rios_alto_ivai.geojson",
+  "rios": 123
+ },
+ {
+  "bacia": "Rio Tibagi",
+  "arquivo": "data/bacias/rios_rio_tibagi.geojson",
+  "rios": 164
+ }
+]
