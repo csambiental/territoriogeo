@@ -501,3 +501,22 @@ table.ind tr.pos td { color: #1d6b3e; font-weight: 600; }
 .termos-lista li, .termos-fontes li { margin-bottom: 4px; }
 #cardTermos h3 { font-size: .85rem; margin: 8px 0 4px; }
 .footnote a { color: inherit; }
+
+/* licenças */
+.lic-grupos { display: flex; flex-direction: column; gap: 6px; margin: 4px 0 12px; font-size: .78rem; }
+.lic-g { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; }
+.lic-g span i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; }
+.lic-barra { grid-column: 1 / -1; height: 5px; background: #e9ecea; border-radius: 999px; overflow: hidden; }
+.lic-barra span { display: block; height: 100%; }
+.lic-filtros { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
+.lic-filtros button { border: 1px solid var(--borda); background: var(--painel); border-radius: 999px; padding: 4px 10px; font: inherit; font-size: .75rem; cursor: pointer; }
+.lic-filtros button.ativo { background: var(--verde); border-color: var(--verde); color: #fff; }
+.lic-item { border: 1px solid var(--borda); border-radius: 8px; padding: 8px 10px; margin-bottom: 6px; font-size: .78rem; }
+.lic-topo { display: flex; gap: 8px; align-items: flex-start; }
+.lic-topo strong { font-size: .8rem; overflow-wrap: anywhere; }
+.lic-mod { color: #fff; border-radius: 4px; padding: 1px 6px; font-size: .68rem; font-weight: 700; flex: 0 0 auto; }
+.lic-ativ { color: var(--texto); margin: 3px 0; }
+.lic-meta { color: var(--texto-suave); font-size: .72rem; }
+.lic-alerta { color: #c62828; font-weight: 600; }
+.lic-mapa { border: 0; background: none; color: var(--verde); font: inherit; font-weight: 600; cursor: pointer; padding: 0 0 0 4px; }
+#licLista { max-height: 460px; overflow-y: auto; padding-right: 4px; }

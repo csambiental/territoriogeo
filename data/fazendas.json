@@ -273,6 +273,65 @@
    "fonte": "SIGEF/INCRA – serviço público do IAT-PR"
   },
   {
+   "id": "licencas",
+   "secao": "Licenciamento",
+   "nome": "Licenças ambientais (IAT) localizadas",
+   "arquivo": "data/iat/licencas_localizadas.geojson",
+   "geometria": "ponto",
+   "icone": "dot",
+   "cor": "#1565c0",
+   "cor_por": "grupo",
+   "cores": {
+    "Licença de Operação": "#1565c0",
+    "Licença Simplificada": "#26a69a",
+    "Licença por Adesão e Compromisso": "#7e57c2",
+    "Licença Prévia / de Instalação": "#ef6c00",
+    "Dispensa de licenciamento": "#9e9e9e",
+    "Autorização Ambiental": "#c2185b"
+   },
+   "rotulo_campo": "nome",
+   "rotulo_minzoom": 14,
+   "clicavel": true,
+   "prioridade": true,
+   "campos": [
+    "Atividade",
+    "Atividade específica",
+    "Modalidade",
+    "Nº do documento",
+    "Emissão",
+    "Validade",
+    "Protocolo",
+    "Localização"
+   ],
+   "legenda_itens": [
+    {
+     "rotulo": "Licença de Operação",
+     "cor": "#1565c0"
+    },
+    {
+     "rotulo": "Licença Simplificada",
+     "cor": "#26a69a"
+    },
+    {
+     "rotulo": "Licença por Adesão e Compromisso",
+     "cor": "#7e57c2"
+    },
+    {
+     "rotulo": "Licença Prévia / de Instalação",
+     "cor": "#ef6c00"
+    },
+    {
+     "rotulo": "Dispensa de licenciamento",
+     "cor": "#9e9e9e"
+    },
+    {
+     "rotulo": "Autorização Ambiental",
+     "cor": "#c2185b"
+    }
+   ],
+   "fonte": "IAT-PR – consulta pública de processos de licenciamento; localização pela outorga SIGARH"
+  },
+  {
    "id": "barragens",
    "secao": "Hidrografia",
    "nome": "Barragens cadastradas (IAT)",
@@ -396,6 +455,11 @@
     "link": "https://geopr.iat.pr.gov.br/portal/apps/experiencebuilder/experience/?id=8cf1eaa023fa40e88549e4f727f1812f"
    },
    {
+    "nome": "IAT-PR – consulta pública de processos de licenciamento ambiental",
+    "detalhe": "planilha de 25/10/2026; localização aproximada pela outorga de água (SIGARH) do mesmo empreendimento",
+    "link": "https://geopr.iat.pr.gov.br/"
+   },
+   {
     "nome": "MapBiomas – Cobertura e uso da terra 10 m (Coleção 2, 2023)",
     "detalhe": "CC-BY 4.0",
     "link": "https://brasil.mapbiomas.org/"
@@ -419,5 +483,19 @@
    "url": "https://lp-biosimos.vercel.app/",
    "texto": "Conheça o Instituto Biosimos"
   }
+ },
+ "licencas": {
+  "arquivo": "data/iat/licencas_londrina.json",
+  "camada": "licencas",
+  "cores": {
+   "Licença de Operação": "#1565c0",
+   "Licença Simplificada": "#26a69a",
+   "Licença por Adesão e Compromisso": "#7e57c2",
+   "Licença Prévia / de Instalação": "#ef6c00",
+   "Dispensa de licenciamento": "#9e9e9e",
+   "Autorização Ambiental": "#c2185b"
+  },
+  "titulo": "Licenças ambientais em Londrina",
+  "subtitulo": "Licenças, dispensas e autorizações vigentes emitidas pelo IAT (consulta pública). Nomes de pessoas físicas e MEI não são exibidos."
  }
 }

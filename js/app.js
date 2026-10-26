@@ -123,6 +123,62 @@ function renderTermos() {
     if (typeof prepararCartoes === 'function') prepararCartoes();
 }
 
+// ---------- quadro de licenças ambientais (lista pesquisável) ----------
+async function renderLicencas() {
+    const cfg = dadosGerais.licencas, el = document.getElementById('cardLicencas');
+    if (!cfg || !el) return;
+    let d;
+    try { d = await (await fetch(cfg.arquivo, { cache: 'no-cache' })).json(); } catch (e) { return; }
+    const L = d.licencas, cores = cfg.cores || {};
+    const vence = L.filter(x => x.situacao === 'Vence em até 6 meses').length, noMapa = L.filter(x => x.no_mapa).length;
+    const grupos = Object.entries(L.reduce((a, x) => (a[x.grupo] = (a[x.grupo] || 0) + 1, a), {})).sort((a, b) => b[1] - a[1]);
+    el.hidden = false;
+    el.innerHTML = `<h2>${esc(cfg.titulo || 'Licenças ambientais')}</h2>
+        <p class="hint">${esc(cfg.subtitulo || '')}</p>
+        <div class="kpis"><div class="kpi"><span class="kpi-value">${L.length.toLocaleString('pt-BR')}</span><span class="kpi-label">licenças vigentes</span></div>
+        <div class="kpi"><span class="kpi-value">${vence}</span><span class="kpi-label">vencem em até 6 meses</span></div>
+        <div class="kpi"><span class="kpi-value">${noMapa}</span><span class="kpi-label">localizadas no mapa</span></div></div>
+        <div class="lic-grupos">${grupos.map(([g, n]) => `<div class="lic-g"><span><i style="background:${cores[g] || '#888'}"></i>${esc(g)}</span><b>${n.toLocaleString('pt-BR')}</b>
+            <div class="lic-barra"><span style="width:${(100 * n / L.length).toFixed(1)}%;background:${cores[g] || '#888'}"></span></div></div>`).join('')}</div>
+        <input type="search" class="farm-search" id="licBusca" placeholder="Buscar por empresa, atividade ou protocolo">
+        <div class="lic-filtros"><button type="button" data-f="" class="ativo">Todas</button><button type="button" data-f="vence">Vencem em 6 meses</button><button type="button" data-f="mapa">No mapa</button></div>
+        <div id="licLista"></div>`;
+    let filtro = '';
+    const lista = el.querySelector('#licLista'), busca = el.querySelector('#licBusca');
+    const desenhar = () => {
+        const q = semAcento(busca.value.trim());
+        let r = L.filter(x => (!filtro || (filtro === 'vence' ? x.situacao === 'Vence em até 6 meses' : x.no_mapa)) &&
+            (!q || semAcento(`${x.nome} ${x.atividade} ${x.especifica} ${x.protocolo} ${x.modalidade}`).includes(q)));
+        const tot = r.length; r = r.slice(0, 40);
+        lista.innerHTML = `<p class="hint">${tot.toLocaleString('pt-BR')} resultado${tot === 1 ? '' : 's'}${tot > 40 ? ' – mostrando os 40 que vencem primeiro' : ''}</p>` +
+            r.map(x => `<div class="lic-item"><div class="lic-topo"><span class="lic-mod" style="background:${cores[x.grupo] || '#888'}">${esc(x.modalidade)}</span>
+                <strong>${esc(x.nome)}</strong></div>
+                <div class="lic-ativ">${esc(x.atividade)}${x.especifica && x.especifica !== x.atividade ? ` – ${esc(x.especifica)}` : ''}</div>
+                <div class="lic-meta">Doc. ${esc(x.documento)} · emitida ${esc(x.emissao)} · <span class="${x.situacao !== 'Vigente' ? 'lic-alerta' : ''}">válida até ${esc(x.validade)}</span> · prot. ${esc(x.protocolo)}
+                ${x.no_mapa ? `<button type="button" class="lic-mapa" data-p="${esc(x.protocolo)}">📍 ver no mapa</button>` : ''}</div></div>`).join('');
+        lista.querySelectorAll('.lic-mapa').forEach(b => b.addEventListener('click', () => mostrarLicenca(b.dataset.p)));
+    };
+    busca.addEventListener('input', desenhar);
+    el.querySelectorAll('.lic-filtros button').forEach(b => b.addEventListener('click', () => {
+        el.querySelectorAll('.lic-filtros button').forEach(o => o.classList.toggle('ativo', o === b)); filtro = b.dataset.f; desenhar();
+    }));
+    desenhar();
+    if (typeof prepararCartoes === 'function') prepararCartoes();
+}
+async function mostrarLicenca(protocolo) {
+    const o = (dadosGerais.camadas_opcionais || []).find(x => x.id === dadosGerais.licencas.camada);
+    if (!o) return;
+    if (!opcionaisAtivas.has(o.id)) document.querySelector(`.camada-row[data-id="${o.id}"]`)?.click();
+    for (let i = 0; i < 40 && !opcionaisData[o.id]; i++) await new Promise(r => setTimeout(r, 100));
+    const f = (opcionaisData[o.id]?.features || []).find(x => x.properties.Protocolo === protocolo);
+    if (!f) return;
+    map.flyTo({ center: f.geometry.coordinates, zoom: 15 });
+    const p = f.properties;
+    map.once('moveend', () => new mapboxgl.Popup({ maxWidth: '320px' }).setLngLat(f.geometry.coordinates)
+        .setHTML(`<div class="popup"><h3>${esc(p.nome)}</h3><dl class="popup-dl">${camposDe(o, p).map(k => `<dt>${esc(k)}</dt><dd>${esc(p[k])}</dd>`).join('')}</dl><p class="popup-hint">Fonte: ${esc(o.fonte || '')}</p></div>`).addTo(map));
+    if (window.matchMedia('(max-width: 800px)').matches) document.getElementById('map').scrollIntoView({ behavior: 'smooth' });
+}
+
 // ---------- painel lateral ----------
 let dadosGerais = {};
 function renderResumo() {
@@ -1090,6 +1146,7 @@ async function iniciar() {
     renderResumo();
     renderFiltroEtapa();
     renderTermos();
+    renderLicencas();
     renderModosCor();
     renderIndicadoresExternos();
     renderOpcionais();
