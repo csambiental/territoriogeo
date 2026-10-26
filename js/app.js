@@ -410,13 +410,30 @@ function renderBuscaCamada() {
     const feats = (camadasData[c.id] || {}).features || [];
     const desenhar = () => {
         const q = busca.value.trim().toUpperCase().replace(/[.\s]/g, '');
-        if (q.length < 3) { lista.innerHTML = `<p class="hint">${feats.length.toLocaleString('pt-BR')} imóveis no mapa. Digite parte do número do CAR (ex.: 4113700-2F) ou clique num imóvel no mapa.</p>`; return; }
-        const achados = feats.filter(f => f.properties.nome.toUpperCase().replace(/[.\s]/g, '').includes(q)).slice(0, 12);
-        lista.innerHTML = achados.length ? achados.map((f, i) => `<button type="button" class="busca-item" data-i="${feats.indexOf(f)}">
+        const nivel = lista.dataset.nivel || '';
+        const chips = (dadosGerais.busca_niveis || []).map(n => {
+            const tot = feats.filter(f => f.properties.pendencia_nivel === n).length;
+            return `<button type="button" class="busca-chip${n === nivel ? ' ativo' : ''}" data-n="${esc(n)}">${esc(n)} (${tot})</button>`;
+        }).join('');
+        let achados;
+        if (nivel) {
+            achados = feats.filter(f => f.properties.pendencia_nivel === nivel && (q.length < 3 || f.properties.nome.toUpperCase().replace(/[.\s]/g, '').includes(q)))
+                .sort((a, b) => (b.properties.pendencias_n || 0) - (a.properties.pendencias_n || 0) || parseFloat((b.properties['Área (ha)'] || '0').replace('.', '').replace(',', '.')) - parseFloat((a.properties['Área (ha)'] || '0').replace('.', '').replace(',', '.'))).slice(0, 40);
+        } else if (q.length < 3) {
+            lista.innerHTML = (chips ? `<div class="busca-chips">${chips}</div>` : '') + `<p class="hint">${feats.length.toLocaleString('pt-BR')} imóveis no mapa. Digite parte do número do CAR (ex.: 4113700-2F) ou clique num imóvel no mapa.</p>`;
+            ligarChips(); return;
+        } else achados = feats.filter(f => f.properties.nome.toUpperCase().replace(/[.\s]/g, '').includes(q)).slice(0, 12);
+        lista.innerHTML = (chips ? `<div class="busca-chips">${chips}</div>` : '') + (achados.length ? achados.map((f, i) => `<button type="button" class="busca-item" data-i="${feats.indexOf(f)}">
             <span class="swatch" style="background:${(c.cores || {})[f.properties[c.cor_por]] || '#777'}"></span><span class="mono">${esc(f.properties.nome)}</span>
-            <span class="farm-meta">${esc(f.properties['Área (ha)'] || '')} ha</span></button>`).join('') : '<p class="hint">Nenhum imóvel encontrado.</p>';
+            <span class="farm-meta">${esc(f.properties['Área (ha)'] || '')} ha${f.properties.pendencias_n ? ` · ${f.properties.pendencias_n} pend.` : ''}</span></button>`).join('') : '<p class="hint">Nenhum imóvel encontrado.</p>');
+        ligarChips();
         lista.querySelectorAll('.busca-item').forEach(b => b.addEventListener('click', () => mostrarFeicao(c, feats[Number(b.dataset.i)])));
     };
+    function ligarChips() {
+        lista.querySelectorAll('.busca-chip').forEach(b => b.addEventListener('click', () => {
+            lista.dataset.nivel = lista.dataset.nivel === b.dataset.n ? '' : b.dataset.n; desenhar();
+        }));
+    }
     busca.oninput = desenhar; desenhar();
 }
 function renderModosCor() {

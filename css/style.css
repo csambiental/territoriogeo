@@ -520,3 +520,8 @@ table.ind tr.pos td { color: #1d6b3e; font-weight: 600; }
 .lic-alerta { color: #c62828; font-weight: 600; }
 .lic-mapa { border: 0; background: none; color: var(--verde); font: inherit; font-weight: 600; cursor: pointer; padding: 0 0 0 4px; }
 #licLista { max-height: 460px; overflow-y: auto; padding-right: 4px; }
+
+.busca-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.busca-chip { border: 1px solid var(--borda); background: var(--painel); border-radius: 999px; padding: 4px 10px; font: inherit; font-size: .75rem; cursor: pointer; }
+.busca-chip.ativo { background: #c62828; border-color: #c62828; color: #fff; }
+#farmList { max-height: 520px; overflow-y: auto; }

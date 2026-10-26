@@ -24,7 +24,7 @@
    "rotulo": "analisados e em conformidade"
   }
  ],
- "lista_titulo": "Buscar imóvel rural",
+ "lista_titulo": "Buscar imóvel rural / pendências",
  "programa": {
   "titulo": "O projeto",
   "texto": "Mapa territorial do município de Londrina com todos os imóveis rurais inscritos no CAR, a hidrografia oficial (bacias do Tibagi e do Pirapó/Paranapanema, microbacias e rios catalogados) e indicadores ambientais por imóvel e por microbacia. Base para diagnóstico, planejamento e acompanhamento de projetos da CS no município.",
@@ -49,6 +49,10 @@
     "nome": "Etapa 4",
     "texto": "– APP, Reserva Legal e déficit/ativo por imóvel (camadas do SICAR)",
     "classe": "andamento"
+   },
+   {
+    "nome": "Pendências",
+    "texto": "– indicador por imóvel (CAR, alertas, vegetação nativa e SIGEF): 236 com prioridade alta, 367 média, 2.220 em atenção (CAR sem análise) e 1.330 sem pendência identificada. Caráter indicativo."
    }
   ],
   "documentos": [],
@@ -131,7 +135,8 @@
     "Inscrição",
     "Última atualização",
     "Alertas MapBiomas",
-    "Área de alertas (ha)"
+    "Área de alertas (ha)",
+    "Georreferenciamento SIGEF"
    ],
    "cor_por_opcoes": [
     {
@@ -168,10 +173,23 @@
       "20% ou mais": "#2e7d32",
       "Sem dado": "#9e9e9e"
      }
+    },
+    {
+     "campo": "pendencia_nivel",
+     "rotulo": "Pendências",
+     "titulo": "Imóveis rurais – pendências ambientais (indicativo)",
+     "cores": {
+      "Prioridade alta": "#c62828",
+      "Prioridade média": "#ef6c00",
+      "Atenção": "#fdd835",
+      "Sem pendência identificada": "#43a047",
+      "Cancelado": "#9e9e9e"
+     }
     }
    ],
    "categorias_ativaveis": true,
    "campos_prefixos": [
+    "Pendência",
     "MapBiomas"
    ]
   }
@@ -552,6 +570,7 @@
   "avisos": [
    "Não são exibidos nomes de proprietários, CPF ou CNPJ. Número do CAR, matrícula e código SIGEF vêm das consultas públicas oficiais.",
    "Alertas de desmatamento do MapBiomas não são autuação nem infração: indicam supressão de vegetação detectada por satélite, que pode estar autorizada, em análise ou já regularizada.",
+   "O indicador de pendências é uma triagem automática a partir de bases públicas e não constitui laudo, autuação ou conclusão sobre a situação do imóvel; depende de verificação técnica e documental.",
    "A situação do CAR e a cobertura do solo refletem a data de cada base e podem estar desatualizadas.",
    "Os percentuais de vegetação nativa vêm de imagens de satélite (MapBiomas) e não substituem a APP e a Reserva Legal declaradas no CAR."
   ],
@@ -618,5 +637,9 @@
   },
   "titulo": "Licenças ambientais em Londrina",
   "subtitulo": "Licenças, dispensas e autorizações vigentes emitidas pelo IAT (consulta pública). Nomes de pessoas físicas e MEI não são exibidos."
- }
+ },
+ "busca_niveis": [
+  "Prioridade alta",
+  "Prioridade média"
+ ]
 }
