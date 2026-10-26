@@ -5,15 +5,26 @@ def get(u, **q):
     q.setdefault('f', 'json')
     u = u + ('&' if '?' in u else '?') + urllib.parse.urlencode(q)
     try:
-        return json.load(urllib.request.urlopen(urllib.request.Request(u, headers={'User-Agent': 'Mozilla/5.0'}), timeout=60))
+        return json.load(urllib.request.urlopen(urllib.request.Request(u, headers={'User-Agent': 'Mozilla/5.0'}), timeout=25))
     except Exception as e:
         return {'_erro': str(e)}
-app = get(f'{P}/sharing/rest/content/items/5360a454d15146a3bcf4ebdbe8e49e03/data')
-print('APP', json.dumps(app)[:1500])
-wm = app.get('map', {}).get('itemId') if isinstance(app.get('map'), dict) else None
-print('WEBMAP', wm)
-urls = set()
-if wm:
+import re
+ITENS = sys.argv[1:] or ['5360a454d15146a3bcf4ebdbe8e49e03', '2ebe100e9751469995f67324b75bcf01']
+urls = set(); vistos = set(); fila = list(ITENS); webmaps = []
+while fila:
+    i = fila.pop(0)
+    if i in vistos or len(vistos) > 25: continue
+    vistos.add(i)
+    info = get(f'{P}/sharing/rest/content/items/{i}')
+    print('\nITEM', i, info.get('type'), '|', info.get('title'), '|', info.get('url'), '|', (info.get('snippet') or '')[:200], info.get('_erro', ''))
+    if info.get('url') and 'rest/services' in str(info.get('url')): urls.add(info['url'])
+    if info.get('type') == 'Web Map': webmaps.append(i); continue
+    d = get(f'{P}/sharing/rest/content/items/{i}/data')
+    txt = json.dumps(d)
+    print('  data:', txt[:1200])
+    for u in re.findall(r'https?://[^"\\ ]+/rest/services/[^"\\ ]+', txt): urls.add(u)
+    for j in set(re.findall(r'\b[0-9a-f]{32}\b', txt)): fila.append(j)
+for wm in webmaps:
     d = get(f'{P}/sharing/rest/content/items/{wm}/data')
     def walk(ls, pre=''):
         for l in ls or []:
