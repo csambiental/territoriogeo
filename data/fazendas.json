@@ -57,6 +57,10 @@
    {
     "nome": "Cadastro urbano",
     "texto": "– 173.677 lotes urbanos com quadra, loteamento e zona de uso do solo (Lei 12.236/2015), 778 loteamentos, perímetros urbanos, bairros e regiões oficiais (Prefeitura/IPPUL) (concluída)"
+   },
+   {
+    "nome": "IBAMA",
+    "texto": "– áreas embargadas pelo IBAMA em Londrina (dados abertos, atualização mensal), cruzadas com os imóveis do CAR no indicador de pendências (concluída)"
    }
   ],
   "documentos": [],
@@ -140,7 +144,8 @@
     "Última atualização",
     "Alertas MapBiomas",
     "Área de alertas (ha)",
-    "Georreferenciamento SIGEF"
+    "Georreferenciamento SIGEF",
+    "Embargo IBAMA"
    ],
    "cor_por_opcoes": [
     {
@@ -293,6 +298,49 @@
     "Parcela SIGEF"
    ],
    "fonte": "SIGEF/INCRA – serviço público do IAT-PR"
+  },
+  {
+   "id": "embargos-ibama",
+   "secao": "Fiscalização (IBAMA)",
+   "nome": "Áreas embargadas pelo IBAMA",
+   "arquivo": "data/ibama/embargos_londrina.geojson",
+   "icone": "fill",
+   "cor": "#d50000",
+   "cor_por": "situacao",
+   "cores": {
+    "Embargo vigente": "#d50000",
+    "Desembargado": "#9e9e9e"
+   },
+   "largura": 2.2,
+   "halo": true,
+   "preenchimento": 0.35,
+   "clicavel": true,
+   "prioridade": true,
+   "enquadrar": true,
+   "campos": [
+    "situacao",
+    "Data do embargo",
+    "Embargado",
+    "Imóvel",
+    "Área embargada (ha)",
+    "Tipo de área",
+    "Motivo",
+    "Auto de infração",
+    "Processo",
+    "Desembargo",
+    "Localização"
+   ],
+   "legenda_itens": [
+    {
+     "rotulo": "Embargo vigente",
+     "cor": "#d50000"
+    },
+    {
+     "rotulo": "Desembargado",
+     "cor": "#9e9e9e"
+    }
+   ],
+   "fonte": "IBAMA – dados abertos, Fiscalização: termo de embargo (atualização mensal). Pessoas físicas sem polígono não são exibidas."
   },
   {
    "id": "licencas",

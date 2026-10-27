@@ -41,13 +41,15 @@ for r in rows:
     if g is None or not (no_mun or g.intersects(mun)): continue
     if not g.is_valid: g = g.buffer(0)
     nome = (r.get('NOME_EMBARGADO') or '').strip()
+    pj = bool(PJ.search(sa(nome)))
+    if not pj and aproximado: continue   # pessoa física sem polígono = ponto do endereço (geralmente residência): não publica
     desemb = (r.get('SIT_DESEMBARGO') or '').upper() == 'S'
     props = {'nome': f"Embargo IBAMA nº {r.get('NUM_TAD')}{(' ' + r.get('SER_TAD')) if r.get('SER_TAD') else ''}",
              'situacao': 'Desembargado' if desemb else 'Embargo vigente',
              'Data do embargo': br(r.get('DAT_EMBARGO')),
-             'Embargado': nome if PJ.search(sa(nome)) else 'Pessoa física (consultar no IBAMA)',
+             'Embargado': nome if pj else 'Pessoa física (consultar no IBAMA)',
              'Imóvel': (r.get('NOME_IMOVEL') or '').strip(), 'Área embargada (ha)': (r.get('QTD_AREA_EMBARGADA') or '').strip(),
-             'Tipo de área': (r.get('TIPO_AREA') or '').strip(), 'Motivo': re.sub(r'\s+', ' ', (r.get('DES_TAD') or '').strip())[:400],
+             'Tipo de área': (r.get('TIPO_AREA') or '').strip(), 'Motivo': (lambda m: m if pj or not nome else re.sub(re.escape(nome), '[embargado]', m, flags=re.I))(re.sub(r'\s+', ' ', (r.get('DES_TAD') or '').strip()))[:400],
              'Auto de infração': (r.get('NUM_AUTO_INFRACAO') or '').strip(), 'Processo': (r.get('NUM_PROCESSO') or '').strip(),
              'Desembargo': (br(r.get('DAT_DESEMBARGO')) + ' – ' + (r.get('TIPO_DESEMBARGO') or '')).strip(' –') if desemb else '',
              'Localização': 'Aproximada – ponto do termo (raio de 60 m)' if aproximado else 'Polígono da área embargada',

@@ -251,7 +251,8 @@ function desenharOpcional(o) {
         return;
     }
     map.addSource(`op-${o.id}`, { type: 'geojson', data: g });
-    if (o.preenchimento) map.addLayer({ id: `op-${o.id}-fill`, type: 'fill', source: `op-${o.id}`, paint: { 'fill-color': o.cor, 'fill-opacity': o.preenchimento } }, antes);
+    const corP = o.cor_por && o.cores ? ['match', ['get', o.cor_por], ...Object.entries(o.cores).flat(), o.cor || '#777777'] : o.cor;
+    if (o.preenchimento) map.addLayer({ id: `op-${o.id}-fill`, type: 'fill', source: `op-${o.id}`, paint: { 'fill-color': corP, 'fill-opacity': o.preenchimento } }, antes);
     if (o.halo) map.addLayer({ id: `op-${o.id}-halo`, type: 'line', source: `op-${o.id}`, paint: { 'line-color': '#000000', 'line-width': (o.largura || 1.5) + 2.5, 'line-opacity': 0.4 } }, antes);
     if (o.clicavel && o.geometria !== 'linha') map.addLayer({ id: `op-${o.id}-hit`, type: 'fill', source: `op-${o.id}`, paint: { 'fill-color': '#000000', 'fill-opacity': 0.01 } }, antes);
     const largura = o.geometria === 'linha'
@@ -259,7 +260,7 @@ function desenharOpcional(o) {
         : (o.largura || 1.5);
     map.addLayer({ id: `op-${o.id}`, type: 'line', source: `op-${o.id}`,
         layout: { 'line-join': 'round', 'line-cap': 'round' },
-        paint: { 'line-color': o.cor, 'line-width': largura, 'line-opacity': o.opacidade ?? 0.95, ...(o.tracejado ? { 'line-dasharray': o.tracejado } : {}) } }, antes);
+        paint: { 'line-color': corP, 'line-width': largura, 'line-opacity': o.opacidade ?? 0.95, ...(o.tracejado ? { 'line-dasharray': o.tracejado } : {}) } }, antes);
     if (o.geometria === 'linha' && o.rotulo_campo) try {
         map.addLayer({ id: `op-${o.id}-nome`, type: 'symbol', source: `op-${o.id}`, minzoom: o.rotulo_minzoom || 9,
             layout: { 'symbol-placement': 'line', 'text-field': ['get', o.rotulo_campo], 'text-size': 11.5, 'symbol-spacing': 350,
