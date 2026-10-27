@@ -7,7 +7,7 @@ imv = json.load(open('data/car/imoveis_londrina.geojson'))
 sig = [shape(f['geometry']).buffer(0) for f in json.load(open('data/fundiario/sigef_londrina.geojson'))['features']]
 arv = STRtree(sig)
 import os
-emb = [f for f in json.load(open('data/ibama/embargos_londrina.geojson'))['features'] if f['properties'].get('situacao') == 'Embargo vigente'] if os.path.exists('data/ibama/embargos_londrina.geojson') else []
+emb = [f for f in json.load(open('data/ibama/embargos_londrina.geojson'))['features'] if f['properties'].get('Situação') == 'Embargo vigente'] if os.path.exists('data/ibama/embargos_londrina.geojson') else []
 embg = [shape(f['geometry']).buffer(0) for f in emb]; earv = STRtree(embg) if embg else None
 num = lambda t: float(str(t or '0').replace('.', '').replace(',', '.') or 0)
 cont = Counter(); classes = Counter()

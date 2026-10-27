@@ -306,7 +306,7 @@
    "arquivo": "data/ibama/embargos_londrina.geojson",
    "icone": "fill",
    "cor": "#d50000",
-   "cor_por": "situacao",
+   "cor_por": "Situação",
    "cores": {
     "Embargo vigente": "#d50000",
     "Desembargado": "#9e9e9e"
@@ -318,7 +318,7 @@
    "prioridade": true,
    "enquadrar": true,
    "campos": [
-    "situacao",
+    "Situação",
     "Data do embargo",
     "Embargado",
     "Imóvel",

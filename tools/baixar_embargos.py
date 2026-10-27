@@ -45,7 +45,7 @@ for r in rows:
     if not pj and aproximado: continue   # pessoa física sem polígono = ponto do endereço (geralmente residência): não publica
     desemb = (r.get('SIT_DESEMBARGO') or '').upper() == 'S'
     props = {'nome': f"Embargo IBAMA nº {r.get('NUM_TAD')}{(' ' + r.get('SER_TAD')) if r.get('SER_TAD') else ''}",
-             'situacao': 'Desembargado' if desemb else 'Embargo vigente',
+             'Situação': 'Desembargado' if desemb else 'Embargo vigente',
              'Data do embargo': br(r.get('DAT_EMBARGO')),
              'Embargado': nome if pj else 'Pessoa física (consultar no IBAMA)',
              'Imóvel': (r.get('NOME_IMOVEL') or '').strip(), 'Área embargada (ha)': (r.get('QTD_AREA_EMBARGADA') or '').strip(),
@@ -57,5 +57,5 @@ for r in rows:
     feats.append({'type': 'Feature', 'geometry': mapping(g), 'properties': {k: v for k, v in props.items() if v}})
 json.dump({'type': 'FeatureCollection', 'features': feats}, open('data/ibama/embargos_londrina.geojson', 'w'), ensure_ascii=False, separators=(',', ':'))
 from collections import Counter
-print('linhas Brasil', len(rows), '| Londrina', len(feats), Counter(f['properties']['situacao'] for f in feats), Counter(f['properties']['Localização'][:10] for f in feats))
+print('linhas Brasil', len(rows), '| Londrina', len(feats), Counter(f['properties']['Situação'] for f in feats), Counter(f['properties']['Localização'][:10] for f in feats))
 print('amostra WKT:', amostra_wkt)
