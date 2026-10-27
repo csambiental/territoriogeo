@@ -1,12 +1,17 @@
-name: Catálogo IBAMA
-on: { workflow_dispatch: {} }
+name: IBAMA (embargos)
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: '23 11 5 * *'
 permissions: { contents: write }
 jobs:
   ib:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: mkdir -p data/_diag && (python3 tools/ibama_pr.py > data/_diag/ibama_pr.txt 2>&1; true)
+      - run: |
+          pip install shapely pyproj -q; mkdir -p data/_diag data/ibama
+          (python3 tools/baixar_embargos.py && python3 tools/processar_pendencias.py) > data/_diag/embargos.txt 2>&1 || true
       - run: |
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/_diag; git commit -q -m "Catálogo IBAMA" || true; git pull -q --rebase origin main || true; git push
+          git add data/_diag data/ibama data/car; git commit -q -m "IBAMA: embargos de Londrina atualizados" || true; git pull -q --rebase origin main || true; git push
