@@ -1,6 +1,6 @@
 /home/runner/work/territoriogeo/territoriogeo/tools/baixar_embargos.py:39: DeprecationWarning: The 'shapely.ops.transform()' function is deprecated. Use 'shapely.transform()' or 'shapely.transform_coordseq()' instead. See https://shapely.readthedocs.io/en/latest/manual.html#shapely.ops.transform for more details.
   g = transform(geo, transform(utm, Point(lon, lat)).buffer(60)); aproximado = True
-linhas Brasil 116954 | Londrina 16 Counter({'Embargo vigente': 12, 'Desembargado': 4}) Counter({'Aproximada': 13, 'Polígono d': 3})
+linhas Brasil 116954 | Londrina 7 Counter({'Embargo vigente': 4, 'Desembargado': 3}) Counter({'Aproximada': 4, 'Polígono d': 3})
 amostra WKT: MULTIPOLYGON (((-38.336 -4.8633, -38.3347 -4.8724, -38.3325 -4.8734, -38.3314 -4.8729, -38.3312 -4.8739, -38.3304 -4.874
-Counter({'Atenção': 2219, 'Sem pendência identificada': 1330, 'Prioridade média': 365, 'Prioridade alta': 239, 'Cancelado': 82})
-[('CAR ainda sem análise do órgão', 2333), ('CAR analisado: notificação do órgão sem resposta', 361), ('Vegetação nativa', 333), ('Imóvel acima', 231), ('CAR analisado: regularização ambiental pendente', 127), ('alerta(s)', 14), ('Área embargada pelo IBAMA', 3)]
+Counter({'Atenção': 2220, 'Sem pendência identificada': 1330, 'Prioridade média': 367, 'Prioridade alta': 236, 'Cancelado': 82})
+[('CAR ainda sem análise do órgão', 2333), ('CAR analisado: notificação do órgão sem resposta', 361), ('Vegetação nativa', 333), ('Imóvel acima', 231), ('CAR analisado: regularização ambiental pendente', 127), ('alerta(s)', 14)]
