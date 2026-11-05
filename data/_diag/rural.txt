@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "rasterio/_base.pyx", line 311, in rasterio._base.DatasetBase.__init__
+  File "rasterio/_base.pyx", line 222, in rasterio._base.open_dataset
+  File "rasterio/_err.pyx", line 359, in rasterio._err.exc_wrap_pointer
+rasterio._err.CPLE_HttpResponseError: HTTP response code: 403
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/work/territoriogeo/territoriogeo/tools/rural_microbacias.py", line 15, in <module>
+    with rasterio.open('/vsicurl/' + TIF) as src:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/rasterio/env.py", line 463, in wrapper
+    return f(*args, **kwds)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/rasterio/__init__.py", line 356, in open
+    dataset = DatasetReader(path, driver=driver, sharing=sharing, **kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "rasterio/_base.pyx", line 313, in rasterio._base.DatasetBase.__init__
+rasterio.errors.RasterioIOError: HTTP response code: 403

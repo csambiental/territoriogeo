@@ -28,6 +28,28 @@
 "geometry": {
 "type": "Point",
 "coordinates": [
+-51.1234046,
+-23.3269128
+]
+},
+"properties": {
+"nome": "Árvore bloqueia rotatória do HU",
+"tipo": "Queda de árvore",
+"Data": "04/02/2025",
+"Bairro": "Zona sul",
+"Local": "Avenida Robert Koch",
+"Descrição": "Árvore caída bloqueou a rotatória de acesso ao Hospital Universitário.",
+"Fonte": "Paiquerê FM",
+"Localização": "aproximada (via/bairro citado na notícia)",
+"link": "https://paiquerefm.com.br/chuva-intensa-em-londrina-causa-alagamentos-queda-de-arvore-e-bloqueios-em-vias/",
+"link_texto": "Ver notícia ↗"
+}
+},
+{
+"type": "Feature",
+"geometry": {
+"type": "Point",
+"coordinates": [
 -51.202701,
 -23.2684057
 ]
