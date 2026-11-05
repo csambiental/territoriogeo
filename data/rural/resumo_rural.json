@@ -6,7 +6,8 @@
  "varzeas_pct": 8.5,
  "agro_pct": 76.9,
  "niveis": {
-  "Alta": 119,
-  "Média": 57
+  "Alta": 59,
+  "Média": 59,
+  "Baixa": 58
  }
 }

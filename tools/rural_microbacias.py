@@ -45,10 +45,11 @@ for f in json.load(open('data/base/microbacias.geojson'))['features']:
     p = {'nome': f['properties'].get('nome'), 'Rio': f['properties'].get('rio'), 'Área rural na microbacia (ha)': round(area),
          'Vegetação nativa (%)': round(nat, 1), 'Uso agropecuário (%)': round(agro, 1), 'Relevo ondulado ou mais (≥ 8%) (%)': round(d8, 1),
          'Relevo forte ondulado (≥ 20%) (%)': round(d20, 1), 'Várzeas – até 2 m acima do córrego (%)': round(varz, 1), 'indice': round(idx)}
-    p['Vulnerabilidade climática'] = 'Alta' if idx >= 60 else 'Média' if idx >= 40 else 'Baixa'
     out.append({'type': 'Feature', 'geometry': mapping(g), 'properties': p})
     tot['area'] += area; tot['nativa'] += nat * area; tot['decl20'] += d20 * area; tot['varzea'] += varz * area; tot['agro'] += agro * area
 out.sort(key=lambda x: -x['properties']['indice'])
+# classes relativas (terços) – o índice compara as microbacias do próprio município
+for i, x in enumerate(out): x['properties']['Vulnerabilidade climática'] = 'Alta' if i < len(out) / 3 else 'Média' if i < 2 * len(out) / 3 else 'Baixa'
 for i, x in enumerate(out): x['properties']['Ranking'] = f'{i + 1}ª de {len(out)}'; x['properties']['Índice (0–100)'] = x['properties'].pop('indice')
 json.dump({'type': 'FeatureCollection', 'features': out}, open('data/rural/microbacias_rurais.geojson', 'w'), ensure_ascii=False, separators=(',', ':'))
 from collections import Counter

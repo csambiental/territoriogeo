@@ -1174,18 +1174,18 @@ toggle.addEventListener('click', () => {
 function svgSerie(serie, campo, { tipo = 'barra', cor = '#215c4c', altura = 120, unidade = '', tendencia = false } = {}) {
     const W = 300, H = altura, m = { e: 30, d: 6, t: 8, b: 18 };
     const xs = serie.map(s => s.ano), ys = serie.map(s => s[campo]);
-    const ymin = tipo === 'barra' ? 0 : Math.floor(Math.min(...ys) - 0.3), ymax = Math.ceil(Math.max(...ys) * (tipo === 'barra' ? 1.08 : 1) + (tipo === 'barra' ? 0 : 0.3));
+    const ymin = tipo === 'barra' ? Math.min(0, Math.floor(Math.min(...ys) * 1.08)) : Math.floor(Math.min(...ys) - 0.3), ymax = Math.ceil(Math.max(...ys) * (tipo === 'barra' ? 1.08 : 1) + (tipo === 'barra' ? 0 : 0.3));
     const X = i => m.e + (i + 0.5) * (W - m.e - m.d) / xs.length, Y = v => H - m.b - (v - ymin) / (ymax - ymin || 1) * (H - m.t - m.b);
     const bw = Math.max(1.5, (W - m.e - m.d) / xs.length - 1.2);
     let corpo = '';
-    if (tipo === 'barra') corpo = ys.map((v, i) => `<rect x="${(X(i) - bw / 2).toFixed(1)}" y="${Y(v).toFixed(1)}" width="${bw.toFixed(1)}" height="${(Y(ymin) - Y(v)).toFixed(1)}" fill="${cor}" rx="1"><title>${xs[i]}: ${v}${unidade}</title></rect>`).join('');
+    if (tipo === 'barra') corpo = ys.map((v, i) => `<rect x="${(X(i) - bw / 2).toFixed(1)}" y="${Y(Math.max(v, 0)).toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.abs(Y(0) - Y(v)).toFixed(1)}" fill="${v < 0 ? '#e57373' : cor}" rx="1"><title>${xs[i]}: ${v}${unidade}</title></rect>`).join('');
     else corpo = `<polyline fill="none" stroke="${cor}" stroke-width="2" points="${ys.map((v, i) => `${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(' ')}"/>` + ys.map((v, i) => `<circle cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="2.4" fill="${cor}"><title>${xs[i]}: ${v}${unidade}</title></circle>`).join('');
     if (tendencia) {
         const n = xs.length, mx = (n - 1) / 2, my = ys.reduce((a, b) => a + b, 0) / n;
         const b = ys.reduce((a, y, i) => a + (i - mx) * (y - my), 0) / ys.reduce((a, _, i) => a + (i - mx) ** 2, 0);
         corpo += `<line x1="${X(0)}" y1="${Y(my - b * mx)}" x2="${X(n - 1)}" y2="${Y(my + b * (n - 1 - mx))}" stroke="#d84315" stroke-width="1.6" stroke-dasharray="4 3"/>`;
     }
-    const eixoY = [ymin, (ymin + ymax) / 2, ymax].map(v => `<text x="${m.e - 4}" y="${Y(v) + 3}" text-anchor="end" class="ax">${Number.isInteger(v) ? v : v.toFixed(1)}</text><line x1="${m.e}" x2="${W - m.d}" y1="${Y(v)}" y2="${Y(v)}" class="gr"/>`).join('');
+    const eixoY = (ymin < 0 ? [ymin, 0, ymax] : [ymin, (ymin + ymax) / 2, ymax]).map(v => `<text x="${m.e - 4}" y="${Y(v) + 3}" text-anchor="end" class="ax">${Number.isInteger(v) ? v : v.toFixed(1)}</text><line x1="${m.e}" x2="${W - m.d}" y1="${Y(v)}" y2="${Y(v)}" class="gr"/>`).join('');
     const eixoX = xs.map((a, i) => (a % 10 === 0 || i === xs.length - 1) ? `<text x="${X(i)}" y="${H - 4}" text-anchor="middle" class="ax">${a}</text>` : '').join('');
     return `<svg viewBox="0 0 ${W} ${H}" class="graf" role="img">${eixoY}${corpo}${eixoX}</svg>`;
 }
@@ -1231,12 +1231,12 @@ async function renderClima() {
         <p class="hint">Indicadores agroclimáticos para a zona rural de Londrina (mesma série).</p>
         <div class="clima-kpis">
             <div><b>${fmt(r.geadas_1981_1990, 1)} → ${fmt(k('geadas'), 1)}</b><span>dias/ano com risco de geada (mínima ≤ 3 °C)</span></div>
-            <div><b>${fmt(r.veranico_1981_1990, 0)} → ${fmt(k('veranico'), 0)}</b><span>dias no maior veranico da safra de verão (out–mar, sem chuva ≥ 1 mm)</span></div>
+            <div><b>${r.balanco_1981_1990 > 0 ? '+' : ''}${fmt(r.balanco_1981_1990, 0)} → ${k('balanco') > 0 ? '+' : ''}${fmt(k('balanco'), 0)} mm</b><span>balanço hídrico médio do ano (chuva − evapotranspiração)</span></div>
             <div><b>${fmt(r.dias35safra_1981_1990, 1)} → ${fmt(k('dias35safra'), 1)}</b><span>dias ≥ 35 °C na safra (estresse térmico nas lavouras)</span></div>
         </div>
         <h3>Dias com risco de geada (mínima ≤ 3 °C)</h3>${svgSerie(s, 'geadas', { cor: '#4fc3f7', unidade: ' dias', altura: 100, tendencia: true })}
         <h3>Maior veranico da safra de verão (dias seguidos sem chuva)</h3>${svgSerie(s, 'veranico_max', { cor: '#a1887f', unidade: ' dias', altura: 100, tendencia: true })}
-        <h3>Balanço hídrico anual (chuva − evapotranspiração, mm)</h3>${svgSerie(s, 'balanco_hidrico', { cor: '#26a69a', unidade: ' mm', altura: 110, tendencia: true })}
+        <h3>Balanço hídrico anual (chuva − evapotranspiração, mm)</h3><p class="hint">Em vermelho, anos em que a evaporação potencial superou a chuva.</p>${svgSerie(s, 'balanco_hidrico', { cor: '#26a69a', unidade: ' mm', altura: 110, tendencia: true })}
         <h3>Chuvas erosivas (≥ 30 mm em um dia)</h3>${svgSerie(s, 'dias_chuva_30', { cor: '#6d4c41', unidade: ' dias', altura: 100, tendencia: true })}` : ''}
         <p class="hint">Linha tracejada = tendência. Reanálise climática (modelo + observações), com resolução de ~25 km: mostra a tendência regional; valores de estações locais podem diferir.</p>`;
 }
@@ -1269,17 +1269,17 @@ async function renderRural() {
         <div class="clima-kpis">
             <div><b>${fmt(r.vegetacao_nativa_pct, 1)}%</b><span>de vegetação nativa na zona rural</span></div>
             <div><b>${fmt(r.relevo_forte_pct, 1)}%</b><span>em relevo forte ondulado (≥ 20%) – mais erosão com chuva forte</span></div>
-            <div><b>${r.niveis['Alta'] || 0} de ${r.microbacias}</b><span>microbacias rurais com vulnerabilidade alta</span></div>
+            <div><b>${fmt(r.varzeas_pct, 1)}%</b><span>em várzeas baixas (até 2 m acima do córrego) – alagam e encharcam primeiro</span></div>
         </div>
         <h3>Microbacias mais vulneráveis</h3>
-        <ol class="ranking">${fs.slice(0, 10).map((f, i) => `<li><button type="button" class="rk" data-i="${i}"><span class="rk-n">${esc(f.properties.nome || f.properties.Rio || 'Microbacia')}</span>
+        <ol class="ranking">${(() => { const vistos = new Set(); return fs.map((f, i) => [f, i]).filter(([f]) => { const n = f.properties.nome; if (vistos.has(n) || f.properties['Área rural na microbacia (ha)'] < 150) return false; vistos.add(n); return true; }).slice(0, 10); })().map(([f, i]) => `<li><button type="button" class="rk" data-i="${i}"><span class="rk-n">${esc(f.properties.nome || f.properties.Rio || 'Microbacia')}</span>
         <span class="rk-v" style="color:${cor[f.properties['Vulnerabilidade climática']]}">${f.properties['Índice (0–100)']} <small>(${esc(f.properties['Vulnerabilidade climática'])})</small></span></button></li>`).join('')}</ol>
-        <p class="hint">Índice 0–100: relevo declivoso (40%), pouca vegetação nativa (35%) e várzeas baixas (25%). Indica onde chuvas intensas e secas tendem a causar mais erosão, assoreamento e perdas.</p>`;
+        <p class="hint">Índice 0–100: relevo declivoso (40%), pouca vegetação nativa (35%) e várzeas baixas (25%); classes alta/média/baixa = terços das microbacias do município. Lista com microbacias de mais de 150 ha. Indica onde chuvas intensas e secas tendem a causar mais erosão, assoreamento e perdas.</p>`;
     card.querySelectorAll('.rk').forEach(b => b.addEventListener('click', () => {
         const f = fs[+b.dataset.i];
-        map.fitBounds(boundsDe({ type: 'FeatureCollection', features: [f] }), { padding: 80, duration: 900, maxZoom: 13.5 });
         const bt = document.querySelector(`.camada-row[data-id="${cfg.camada}"]`);
         if (bt && !opcionaisAtivas.has(cfg.camada)) bt.click();
+        setTimeout(() => map.fitBounds(boundsDe({ type: 'FeatureCollection', features: [f] }), { padding: 80, duration: 900, maxZoom: 13.5 }), 300);
     }));
 }
 function renderImpactos() {
