@@ -1206,6 +1206,7 @@ function svgRosa(rosa) {
     const leg = rosa.faixas_kmh.map((f, i) => `<span><i style="background:${cores[i]}"></i>${f}</span>`).join('');
     return `<svg viewBox="0 0 180 180" class="graf rosa">${g}</svg><div class="leg-rosa">${leg} <small>km/h (vento máximo do dia)</small></div>`;
 }
+const medPer = (s, c, a0, a1) => { const v = s.filter(x => x.ano >= a0 && x.ano <= a1).map(x => x[c]); return v.reduce((a, b) => a + b, 0) / v.length; };
 async function renderClima() {
     const card = document.getElementById('cardClima');
     if (!card || !dadosGerais.painel_clima) return;
@@ -1218,7 +1219,7 @@ async function renderClima() {
         <div class="clima-kpis">
             <div><b>+${fmt(r.tendencia_temp_decada, 2)} °C</b><span>por década na temperatura média</span></div>
             <div><b>${fmt(r.dias32_1981_1990, 0)} → ${fmt(k('dias32'), 0)}</b><span>dias/ano com máxima ≥ 32 °C (1981–90 → ${ult - 9}–${String(ult).slice(2)})</span></div>
-            <div><b>${fmt(r.chuva50_1981_1990, 1)} → ${fmt(k('chuva50'), 1)}</b><span>dias/ano com chuva ≥ 50 mm</span></div>
+            <div><b>${fmt(medPer(s, 'noites_quentes', ini, ini + 9), 0)} → ${fmt(medPer(s, 'noites_quentes', ult - 9, ult), 0)}</b><span>noites quentes por ano (mínima ≥ 22 °C)</span></div>
         </div>
         <h3>Temperatura média anual (°C)</h3>${svgSerie(s, 'temp_media', { tipo: 'linha', cor: '#d84315', unidade: ' °C', tendencia: true })}
         <h3>Dias de calor (máxima ≥ 32 °C)</h3>${svgSerie(s, 'dias_32', { cor: '#ef6c00', unidade: ' dias', tendencia: true })}
@@ -1227,6 +1228,25 @@ async function renderClima() {
         <h3>De onde vem o vento (${esc(d.rosa_ventos.periodo)})</h3>${svgRosa(d.rosa_ventos)}
         <details class="clima-top"><summary>Maiores chuvas em um dia (${ini}–${ult})</summary><ol>${d.maiores_chuvas.map(c => `<li>${c.data.split('-').reverse().join('/')} – <b>${fmt(c.mm, 1)} mm</b></li>`).join('')}</ol></details>
         <p class="hint">Linha tracejada = tendência. Reanálise climática (modelo + observações), com resolução de ~25 km: mostra a tendência regional; valores de estações locais podem diferir.</p>`;
+}
+async function renderRanking() {
+    const card = document.getElementById('cardRanking'), cfg = dadosGerais.ranking_bairros;
+    if (!card || !cfg) return;
+    let g; try { g = await (await fetch(cfg.arquivo, { cache: 'no-cache' })).json(); } catch { return; }
+    const fs = g.features, campo = cfg.campo, dif = cfg.campo_diferenca;
+    const item = (f, i, quente) => `<li><button type="button" class="rk" data-i="${i}"><span class="rk-n">${esc(f.properties.nome)}</span>
+        <span class="rk-v ${quente ? 'q' : 'f'}">${fmt(f.properties[campo], 1)} °C <small>(${f.properties[dif] > 0 ? '+' : ''}${fmt(f.properties[dif], 1)})</small></span></button></li>`;
+    card.hidden = false;
+    card.innerHTML = `<h2>${esc(cfg.titulo)}</h2><p class="hint">${esc(cfg.texto)}</p>
+        <h3>Mais quentes</h3><ol class="ranking">${fs.slice(0, 10).map((f, i) => item(f, i, true)).join('')}</ol>
+        <h3>Mais frescos</h3><ol class="ranking" start="${fs.length - 4}">${fs.slice(-5).map((f, i) => item(f, fs.length - 5 + i, false)).join('')}</ol>`;
+    card.querySelectorAll('.rk').forEach(b => b.addEventListener('click', () => {
+        const f = fs[+b.dataset.i];
+        map.fitBounds(boundsDe({ type: 'FeatureCollection', features: [f] }), { padding: 80, duration: 900, maxZoom: 13.6 });
+        const o = (dadosGerais.camadas_opcionais || []).find(x => x.id === cfg.camada);
+        const bt = o && document.querySelector(`.camada-row[data-id="${o.id}"]`);
+        if (bt && !opcionaisAtivas.has(o.id)) bt.click();
+    }));
 }
 function renderImpactos() {
     const card = document.getElementById('cardImpactos'), cfg = dadosGerais.impactos;
@@ -1285,7 +1305,9 @@ async function iniciar() {
     renderTermos();
     renderLicencas();
     renderClima();
+    renderRanking();
     renderImpactos();
+    if (fazendas.length || dados.busca_camada) document.getElementById('cardLista')?.removeAttribute('hidden');
     renderModosCor();
     renderIndicadoresExternos();
     renderOpcionais();

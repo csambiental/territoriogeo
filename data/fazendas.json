@@ -16,12 +16,12 @@
    "rotulo": "temperatura média (1981–90 → 2016–25)"
   },
   {
-   "valor": "40 dias",
-   "rotulo": "por ano com máxima ≥ 32 °C (eram 8)"
+   "valor": "8 → 40",
+   "rotulo": "dias por ano com máxima ≥ 32 °C"
   },
   {
-   "valor": "+5 °C",
-   "rotulo": "diferença entre bairros mais quentes e média urbana"
+   "valor": "8,6 °C",
+   "rotulo": "de diferença na superfície entre o bairro mais quente e o mais fresco"
   }
  ],
  "lista_titulo": "Bairros",
@@ -364,5 +364,13 @@
    "url": "https://lp-biosimos.vercel.app/",
    "texto": "Conheça o Instituto Biosimos"
   }
+ },
+ "ranking_bairros": {
+  "arquivo": "data/calor/bairros_calor.geojson",
+  "camada": "bairros-calor",
+  "campo": "Temperatura média da superfície (°C)",
+  "campo_diferenca": "Diferença para a média urbana (°C)",
+  "titulo": "Bairros mais quentes e mais frescos",
+  "texto": "Temperatura média da superfície nos verões recentes (satélite Landsat) e diferença para a média da área urbana. Clique para ver o bairro."
  }
 }

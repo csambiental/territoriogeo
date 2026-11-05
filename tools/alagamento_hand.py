@@ -30,7 +30,7 @@ img = np.zeros(dem.shape + (4,), 'uint8')
 for k, (lo, hi) in enumerate([(-1, 1), (1, 2), (2, 3), (3, 5)]):
     m = (h > lo) & (h <= hi) & ~fora; img[m] = cores[k]
 Image.fromarray(img, 'RGBA').save('data/alagamento/hand.png', optimize=True)
-s, w, n, e = rasterio.transform.array_bounds(*dem.shape, tr)
+w, s, e, n = rasterio.transform.array_bounds(*dem.shape, tr)  # (oeste, sul, leste, norte)
 json.dump({'imagem': 'data/alagamento/hand.png', 'cantos': [[w, n], [e, n], [e, s], [w, s]], 'limiar_canal_celulas': LIM, 'fonte': 'Copernicus DEM GLO-30 (ESA)'}, open('data/alagamento/hand.json', 'w'))
 # rede de drenagem modelada (para rótulo/linha)
 rede = grid.extract_river_network(fdir, acc > 2000)

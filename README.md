@@ -1,0 +1,14 @@
+# Clima Londrina – Instituto Biosimos
+
+Mapa de livre acesso com dados públicos sobre o clima de Londrina: série histórica (temperatura, dias de calor, chuva forte, rajadas e ventos), ilhas de calor e vegetação por satélite, áreas baixas sujeitas a alagamento e registros de impactos climáticos (alagamentos, quedas de árvores, vendavais).
+
+## Como os dados são atualizados
+A rotina **Atualizar dados climáticos** (aba Actions) roda todo mês e pode ser disparada manualmente:
+- `tools/clima_historico.py` – ERA5 via Open-Meteo (1981 em diante)
+- `tools/calor_vegetacao.py` – Landsat 8/9 (USGS), mediana dos verões recentes
+- `tools/alagamento_hand.py` – Copernicus DEM GLO-30, modelo HAND
+- `tools/geocodificar_impactos.py` – registros de impactos
+- `tools/atualizar_resumo.py` – números do topo do painel
+
+## Como incluir um impacto registrado
+Acrescente uma linha em `data/impactos/registros_base.csv` (data, tipo, título, local, bairro, descrição, fonte, link). Para localização exata, inclua as colunas `latitude` e `longitude`. Tipos: Alagamento, Queda de árvore, Vendaval, Calor extremo, Granizo, Erosão / deslizamento.

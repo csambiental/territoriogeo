@@ -1,6 +1,6 @@
 :root {
-    --verde: #1f5e3a;
-    --verde-escuro: #163f28;
+    --verde: #215c4c;
+    --verde-escuro: #133d30;
     --fundo: #f3f5f2;
     --painel: #ffffff;
     --texto: #1d2a22;
@@ -543,3 +543,11 @@ table.ind tr.pos td { color: #1d6b3e; font-weight: 600; }
 .imp-tipos { list-style: none; padding: 0; margin: 6px 0 10px; display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: .78rem; }
 .imp-tipos i { border-radius: 50%; }
 @media (prefers-color-scheme: dark) { .clima-kpis div { background: rgba(255,255,255,.06); } .clima-kpis b { color: #8fd0a8; } .clima-kpis span { color: #b9c8c1; } }
+
+.ranking { margin: 4px 0 8px; padding-left: 22px; font-size: .8rem; }
+.ranking li { margin: 1px 0; }
+.rk { display: flex; justify-content: space-between; gap: 8px; width: 100%; background: none; border: 0; padding: 3px 4px; border-radius: 6px; font: inherit; color: inherit; cursor: pointer; text-align: left; }
+.rk:hover { background: rgba(33,92,76,.08); }
+.rk-v { white-space: nowrap; font-weight: 600; } .rk-v.q { color: #c62828; } .rk-v.f { color: #1565c0; } .rk-v small { font-weight: 400; opacity: .8; }
+#cardRanking h3 { font-size: .78rem; margin: 8px 0 2px; color: var(--texto-suave); }
+.topbar { border-image: linear-gradient(90deg, #0080c9, #62c6f1 30%, #559a35 65%, #215c4c) 1; }

@@ -52,9 +52,10 @@ t4, w4, h4 = calculate_default_transform(crs, 'EPSG:4326', W, H, *tb)
 def para4326(a):
     o = np.full((h4, w4), np.nan, 'float32'); reproject(a, o, src_transform=dst_t, src_crs=crs, dst_transform=t4, dst_crs='EPSG:4326', resampling=Resampling.bilinear, src_nodata=np.nan, dst_nodata=np.nan); return o
 lst4, ndvi4 = para4326(lst), para4326(ndvi)
-fora = geometry_mask([mapping(mun)], (h4, w4), t4, invert=False)
-b4 = rasterio.transform.array_bounds(h4, w4, t4)  # (south, west, north, east)
-coords = [[b4[1], b4[2]], [b4[3], b4[2]], [b4[3], b4[0]], [b4[1], b4[0]]]
+area_estudo = sede.buffer(0.02).intersection(mun)   # sede urbana + 2 km
+fora = geometry_mask([mapping(area_estudo)], (h4, w4), t4, invert=False)
+W_, S_, E_, N_ = rasterio.transform.array_bounds(h4, w4, t4)  # (oeste, sul, leste, norte)
+coords = [[W_, N_], [E_, N_], [E_, S_], [W_, S_]]
 def colorir(a, vmin, vmax, paleta, alfa=200):
     x = np.clip((a - vmin) / (vmax - vmin), 0, 1); idx = np.nan_to_num(x * (len(paleta) - 1)).astype(int)
     pal = np.array(paleta, 'uint8'); rgb = pal[idx]; al = np.where(np.isfinite(a) & ~fora, alfa, 0).astype('uint8')
