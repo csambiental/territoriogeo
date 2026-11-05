@@ -1,0 +1,713 @@
+{
+ "resumo": {
+  "periodo": "1981–2025",
+  "fonte": "ERA5 (ECMWF/Copernicus) via Open-Meteo – célula de ~25 km sobre Londrina",
+  "tendencia_temp_decada": 0.29,
+  "tendencia_dias32_decada": 8.74,
+  "tendencia_chuva50_decada": -0.04,
+  "dias32_1981_1990": 8.3,
+  "dias32_2016_2025": 40.1,
+  "temp_1981_1990": 20.5,
+  "temp_2016_2025": 21.6,
+  "chuva50_1981_1990": 1.5,
+  "chuva50_2016_2025": 1.5
+ },
+ "serie": [
+  {
+   "ano": 1981,
+   "temp_media": 20.27,
+   "tmax_media": 25.42,
+   "dias_32": 7,
+   "dias_35": 0,
+   "noites_quentes": 0,
+   "chuva_total": 1375,
+   "dias_chuva_50": 1,
+   "chuva_max_dia": 50.8,
+   "dias_rajada_60": 0,
+   "rajada_max": 59.0
+  },
+  {
+   "ano": 1982,
+   "temp_media": 20.31,
+   "tmax_media": 25.09,
+   "dias_32": 0,
+   "dias_35": 0,
+   "noites_quentes": 0,
+   "chuva_total": 1815,
+   "dias_chuva_50": 2,
+   "chuva_max_dia": 65.4,
+   "dias_rajada_60": 2,
+   "rajada_max": 86.8
+  },
+  {
+   "ano": 1983,
+   "temp_media": 20.28,
+   "tmax_media": 24.6,
+   "dias_32": 0,
+   "dias_35": 0,
+   "noites_quentes": 0,
+   "chuva_total": 2481,
+   "dias_chuva_50": 4,
+   "chuva_max_dia": 68.4,
+   "dias_rajada_60": 2,
+   "rajada_max": 68.4
+  },
+  {
+   "ano": 1984,
+   "temp_media": 21.17,
+   "tmax_media": 26.39,
+   "dias_32": 15,
+   "dias_35": 0,
+   "noites_quentes": 7,
+   "chuva_total": 1296,
+   "dias_chuva_50": 1,
+   "chuva_max_dia": 89.7,
+   "dias_rajada_60": 2,
+   "rajada_max": 74.5
+  },
+  {
+   "ano": 1985,
+   "temp_media": 21.04,
+   "tmax_media": 26.52,
+   "dias_32": 24,
+   "dias_35": 8,
+   "noites_quentes": 6,
+   "chuva_total": 1147,
+   "dias_chuva_50": 0,
+   "chuva_max_dia": 45.3,
+   "dias_rajada_60": 2,
+   "rajada_max": 70.9
+  },
+  {
+   "ano": 1986,
+   "temp_media": 20.87,
+   "tmax_media": 25.94,
+   "dias_32": 12,
+   "dias_35": 0,
+   "noites_quentes": 4,
+   "chuva_total": 1662,
+   "dias_chuva_50": 0,
+   "chuva_max_dia": 43.0,
+   "dias_rajada_60": 1,
+   "rajada_max": 64.8
+  },
+  {
+   "ano": 1987,
+   "temp_media": 20.41,
+   "tmax_media": 25.42,
+   "dias_32": 1,
+   "dias_35": 0,
+   "noites_quentes": 1,
+   "chuva_total": 1863,
+   "dias_chuva_50": 3,
+   "chuva_max_dia": 58.7,
+   "dias_rajada_60": 1,
+   "rajada_max": 65.2
+  },
+  {
+   "ano": 1988,
+   "temp_media": 20.66,
+   "tmax_media": 25.75,
+   "dias_32": 14,
+   "dias_35": 3,
+   "noites_quentes": 7,
+   "chuva_total": 1346,
+   "dias_chuva_50": 0,
+   "chuva_max_dia": 43.8,
+   "dias_rajada_60": 0,
+   "rajada_max": 57.2
+  },
+  {
+   "ano": 1989,
+   "temp_media": 19.82,
+   "tmax_media": 24.63,
+   "dias_32": 2,
+   "dias_35": 0,
+   "noites_quentes": 0,
+   "chuva_total": 1990,
+   "dias_chuva_50": 2,
+   "chuva_max_dia": 79.9,
+   "dias_rajada_60": 2,
+   "rajada_max": 61.9
+  },
+  {
+   "ano": 1990,
+   "temp_media": 20.44,
+   "tmax_media": 25.25,
+   "dias_32": 8,
+   "dias_35": 0,
+   "noites_quentes": 8,
+   "chuva_total": 1907,
+   "dias_chuva_50": 2,
+   "chuva_max_dia": 91.7,
+   "dias_rajada_60": 1,
+   "rajada_max": 60.1
+  },
+  {
+   "ano": 1991,
+   "temp_media": 20.5,
+   "tmax_media": 25.38,
+   "dias_32": 1,
+   "dias_35": 0,
+   "noites_quentes": 0,
+   "chuva_total": 1773,
+   "dias_chuva_50": 2,
+   "chuva_max_dia": 58.4,
+   "dias_rajada_60": 2,
+   "rajada_max": 74.2
+  },
+  {
+   "ano": 1992,
+   "temp_media": 20.26,
+   "tmax_media": 24.76,
+   "dias_32": 1,
+   "dias_35": 0,
+   "noites_quentes": 1,
+   "chuva_total": 1868,
+   "dias_chuva_50": 3,
+   "chuva_max_dia": 68.4,
+   "dias_rajada_60": 2,
+   "rajada_max": 70.9
+  },
+  {
+   "ano": 1993,
+   "temp_media": 20.32,
+   "tmax_media": 25.17,
+   "dias_32": 8,
+   "dias_35": 0,
+   "noites_quentes": 2,
+   "chuva_total": 1984,
+   "dias_chuva_50": 2,
+   "chuva_max_dia": 82.7,
+   "dias_rajada_60": 0,
+   "rajada_max": 58.7
+  },
+  {
+   "ano": 1994,
+   "temp_media": 20.79,
+   "tmax_media": 25.84,
+   "dias_32": 10,
+   "dias_35": 0,
+   "noites_quentes": 1,
+   "chuva_total": 1636,
+   "dias_chuva_50": 0,
+   "chuva_max_dia": 45.8,
+   "dias_rajada_60": 2,
+   "rajada_max": 70.9
+  },
+  {
+   "ano": 1995,
+   "temp_media": 20.68,
+   "tmax_media": 25.66,
+   "dias_32": 4,
+   "dias_35": 0,
+   "noites_quentes": 1,
+   "chuva_total": 1824,
+   "dias_chuva_50": 2,
+   "chuva_max_dia": 59.6,
+   "dias_rajada_60": 1,
+   "rajada_max": 67.3
+  },
+  {
+   "ano": 1996,
+   "temp_media": 20.31,
+   "tmax_media": 25.13,
+   "dias_32": 0,
+   "dias_35": 0,
+   "noites_quentes": 0,
+   "chuva_total": 1878,
+   "dias_chuva_50": 2,
+   "chuva_max_dia": 92.9,
+   "dias_rajada_60": 1,
+   "rajada_max": 68.0
+  },
+  {
+   "ano": 1997,
+   "temp_media": 20.55,
+   "tmax_media": 25.34,
+   "dias_32": 6,
+   "dias_35": 0,
+   "noites_quentes": 5,
+   "chuva_total": 2351,
+   "dias_chuva_50": 4,
+   "chuva_max_dia": 115.2,
+   "dias_rajada_60": 3,
+   "rajada_max": 69.5
+  },
+  {
+   "ano": 1998,
+   "temp_media": 20.54,
+   "tmax_media": 25.07,
+   "dias_32": 0,
+   "dias_35": 0,
+   "noites_quentes": 12,
+   "chuva_total": 2277,
+   "dias_chuva_50": 3,
+   "chuva_max_dia": 63.4,
+   "dias_rajada_60": 0,
+   "rajada_max": 59.8
+  },
+  {
+   "ano": 1999,
+   "temp_media": 20.29,
+   "tmax_media": 25.35,
+   "dias_32": 7,
+   "dias_35": 0,
+   "noites_quentes": 0,
+   "chuva_total": 1415,
+   "dias_chuva_50": 1,
+   "chuva_max_dia": 57.4,
+   "dias_rajada_60": 2,
+   "rajada_max": 73.4
+  },
+  {
+   "ano": 2000,
+   "temp_media": 20.41,
+   "tmax_media": 25.42,
+   "dias_32": 4,
+   "dias_35": 0,
+   "noites_quentes": 3,
+   "chuva_total": 1710,
+   "dias_chuva_50": 3,
+   "chuva_max_dia": 94.3,
+   "dias_rajada_60": 0,
+   "rajada_max": 59.4
+  },
+  {
+   "ano": 2001,
+   "temp_media": 20.64,
+   "tmax_media": 25.53,
+   "dias_32": 1,
+   "dias_35": 0,
+   "noites_quentes": 0,
+   "chuva_total": 1718,
+   "dias_chuva_50": 1,
+   "chuva_max_dia": 93.6,
+   "dias_rajada_60": 1,
+   "rajada_max": 70.6
+  },
+  {
+   "ano": 2002,
+   "temp_media": 21.67,
+   "tmax_media": 26.79,
+   "dias_32": 13,
+   "dias_35": 0,
+   "noites_quentes": 2,
+   "chuva_total": 1444,
+   "dias_chuva_50": 1,
+   "chuva_max_dia": 58.7,
+   "dias_rajada_60": 1,
+   "rajada_max": 60.1
+  },
+  {
+   "ano": 2003,
+   "temp_media": 20.58,
+   "tmax_media": 25.83,
+   "dias_32": 7,
+   "dias_35": 0,
+   "noites_quentes": 1,
+   "chuva_total": 1584,
+   "dias_chuva_50": 1,
+   "chuva_max_dia": 63.9,
+   "dias_rajada_60": 1,
+   "rajada_max": 65.2
+  },
+  {
+   "ano": 2004,
+   "temp_media": 20.33,
+   "tmax_media": 25.34,
+   "dias_32": 12,
+   "dias_35": 1,
+   "noites_quentes": 0,
+   "chuva_total": 1487,
+   "dias_chuva_50": 0,
+   "chuva_max_dia": 46.8,
+   "dias_rajada_60": 2,
+   "rajada_max": 66.6
+  },
+  {
+   "ano": 2005,
+   "temp_media": 20.9,
+   "tmax_media": 25.92,
+   "dias_32": 10,
+   "dias_35": 0,
+   "noites_quentes": 7,
+   "chuva_total": 1447,
+   "dias_chuva_50": 0,
+   "chuva_max_dia": 48.7,
+   "dias_rajada_60": 2,
+   "rajada_max": 75.2
+  },
+  {
+   "ano": 2006,
+   "temp_media": 20.96,
+   "tmax_media": 26.15,
+   "dias_32": 9,
+   "dias_35": 0,
+   "noites_quentes": 5,
+   "chuva_total": 1260,
+   "dias_chuva_50": 0,
+   "chuva_max_dia": 48.9,
+   "dias_rajada_60": 0,
+   "rajada_max": 56.2
+  },
+  {
+   "ano": 2007,
+   "temp_media": 21.18,
+   "tmax_media": 26.36,
+   "dias_32": 14,
+   "dias_35": 0,
+   "noites_quentes": 0,
+   "chuva_total": 1548,
+   "dias_chuva_50": 1,
+   "chuva_max_dia": 52.7,
+   "dias_rajada_60": 2,
+   "rajada_max": 64.8
+  },
+  {
+   "ano": 2008,
+   "temp_media": 20.3,
+   "tmax_media": 25.31,
+   "dias_32": 9,
+   "dias_35": 0,
+   "noites_quentes": 1,
+   "chuva_total": 1422,
+   "dias_chuva_50": 2,
+   "chuva_max_dia": 73.5,
+   "dias_rajada_60": 0,
+   "rajada_max": 58.7
+  },
+  {
+   "ano": 2009,
+   "temp_media": 20.67,
+   "tmax_media": 25.36,
+   "dias_32": 2,
+   "dias_35": 0,
+   "noites_quentes": 0,
+   "chuva_total": 2062,
+   "dias_chuva_50": 1,
+   "chuva_max_dia": 53.3,
+   "dias_rajada_60": 3,
+   "rajada_max": 80.3
+  },
+  {
+   "ano": 2010,
+   "temp_media": 20.34,
+   "tmax_media": 25.25,
+   "dias_32": 4,
+   "dias_35": 0,
+   "noites_quentes": 3,
+   "chuva_total": 1687,
+   "dias_chuva_50": 2,
+   "chuva_max_dia": 79.8,
+   "dias_rajada_60": 0,
+   "rajada_max": 54.7
+  },
+  {
+   "ano": 2011,
+   "temp_media": 20.47,
+   "tmax_media": 25.63,
+   "dias_32": 7,
+   "dias_35": 0,
+   "noites_quentes": 0,
+   "chuva_total": 1506,
+   "dias_chuva_50": 1,
+   "chuva_max_dia": 66.7,
+   "dias_rajada_60": 1,
+   "rajada_max": 70.6
+  },
+  {
+   "ano": 2012,
+   "temp_media": 21.22,
+   "tmax_media": 26.32,
+   "dias_32": 17,
+   "dias_35": 0,
+   "noites_quentes": 8,
+   "chuva_total": 1624,
+   "dias_chuva_50": 4,
+   "chuva_max_dia": 78.0,
+   "dias_rajada_60": 3,
+   "rajada_max": 79.6
+  },
+  {
+   "ano": 2013,
+   "temp_media": 20.43,
+   "tmax_media": 25.3,
+   "dias_32": 4,
+   "dias_35": 0,
+   "noites_quentes": 5,
+   "chuva_total": 1743,
+   "dias_chuva_50": 1,
+   "chuva_max_dia": 64.0,
+   "dias_rajada_60": 3,
+   "rajada_max": 72.7
+  },
+  {
+   "ano": 2014,
+   "temp_media": 21.18,
+   "tmax_media": 26.15,
+   "dias_32": 22,
+   "dias_35": 2,
+   "noites_quentes": 7,
+   "chuva_total": 1395,
+   "dias_chuva_50": 1,
+   "chuva_max_dia": 53.8,
+   "dias_rajada_60": 0,
+   "rajada_max": 58.7
+  },
+  {
+   "ano": 2015,
+   "temp_media": 21.31,
+   "tmax_media": 26.11,
+   "dias_32": 19,
+   "dias_35": 0,
+   "noites_quentes": 9,
+   "chuva_total": 2142,
+   "dias_chuva_50": 3,
+   "chuva_max_dia": 68.0,
+   "dias_rajada_60": 2,
+   "rajada_max": 64.8
+  },
+  {
+   "ano": 2016,
+   "temp_media": 20.73,
+   "tmax_media": 25.94,
+   "dias_32": 11,
+   "dias_35": 0,
+   "noites_quentes": 7,
+   "chuva_total": 1535,
+   "dias_chuva_50": 1,
+   "chuva_max_dia": 69.3,
+   "dias_rajada_60": 2,
+   "rajada_max": 63.4
+  },
+  {
+   "ano": 2017,
+   "temp_media": 21.4,
+   "tmax_media": 26.73,
+   "dias_32": 23,
+   "dias_35": 0,
+   "noites_quentes": 6,
+   "chuva_total": 1438,
+   "dias_chuva_50": 2,
+   "chuva_max_dia": 61.7,
+   "dias_rajada_60": 2,
+   "rajada_max": 62.6
+  },
+  {
+   "ano": 2018,
+   "temp_media": 21.39,
+   "tmax_media": 26.77,
+   "dias_32": 12,
+   "dias_35": 0,
+   "noites_quentes": 9,
+   "chuva_total": 1087,
+   "dias_chuva_50": 1,
+   "chuva_max_dia": 96.6,
+   "dias_rajada_60": 1,
+   "rajada_max": 61.9
+  },
+  {
+   "ano": 2019,
+   "temp_media": 22.24,
+   "tmax_media": 28.1,
+   "dias_32": 57,
+   "dias_35": 11,
+   "noites_quentes": 22,
+   "chuva_total": 1035,
+   "dias_chuva_50": 1,
+   "chuva_max_dia": 52.5,
+   "dias_rajada_60": 0,
+   "rajada_max": 58.3
+  },
+  {
+   "ano": 2020,
+   "temp_media": 21.63,
+   "tmax_media": 27.57,
+   "dias_32": 45,
+   "dias_35": 10,
+   "noites_quentes": 11,
+   "chuva_total": 1093,
+   "dias_chuva_50": 1,
+   "chuva_max_dia": 65.6,
+   "dias_rajada_60": 3,
+   "rajada_max": 74.9
+  },
+  {
+   "ano": 2021,
+   "temp_media": 21.36,
+   "tmax_media": 27.38,
+   "dias_32": 51,
+   "dias_35": 7,
+   "noites_quentes": 6,
+   "chuva_total": 1138,
+   "dias_chuva_50": 1,
+   "chuva_max_dia": 54.9,
+   "dias_rajada_60": 2,
+   "rajada_max": 63.0
+  },
+  {
+   "ano": 2022,
+   "temp_media": 20.73,
+   "tmax_media": 26.44,
+   "dias_32": 22,
+   "dias_35": 2,
+   "noites_quentes": 7,
+   "chuva_total": 1689,
+   "dias_chuva_50": 3,
+   "chuva_max_dia": 58.1,
+   "dias_rajada_60": 0,
+   "rajada_max": 48.2
+  },
+  {
+   "ano": 2023,
+   "temp_media": 21.6,
+   "tmax_media": 27.32,
+   "dias_32": 40,
+   "dias_35": 8,
+   "noites_quentes": 11,
+   "chuva_total": 1661,
+   "dias_chuva_50": 4,
+   "chuva_max_dia": 65.5,
+   "dias_rajada_60": 1,
+   "rajada_max": 63.4
+  },
+  {
+   "ano": 2024,
+   "temp_media": 23.03,
+   "tmax_media": 29.16,
+   "dias_32": 76,
+   "dias_35": 21,
+   "noites_quentes": 24,
+   "chuva_total": 1343,
+   "dias_chuva_50": 1,
+   "chuva_max_dia": 51.9,
+   "dias_rajada_60": 0,
+   "rajada_max": 59.4
+  },
+  {
+   "ano": 2025,
+   "temp_media": 21.9,
+   "tmax_media": 27.53,
+   "dias_32": 64,
+   "dias_35": 9,
+   "noites_quentes": 27,
+   "chuva_total": 1355,
+   "dias_chuva_50": 0,
+   "chuva_max_dia": 41.1,
+   "dias_rajada_60": 3,
+   "rajada_max": 76.7
+  }
+ ],
+ "rosa_ventos": {
+  "faixas_kmh": [
+   "< 15",
+   "15–25",
+   "25–35",
+   "≥ 35"
+  ],
+  "setores": [
+   "N",
+   "NE",
+   "L",
+   "SE",
+   "S",
+   "SO",
+   "O",
+   "NO"
+  ],
+  "percentual": {
+   "N": [
+    3.3,
+    3.7,
+    0.1,
+    0.0
+   ],
+   "NE": [
+    6.8,
+    3.5,
+    0.0,
+    0.0
+   ],
+   "L": [
+    23.4,
+    13.6,
+    0.1,
+    0.0
+   ],
+   "SE": [
+    16.9,
+    3.8,
+    0.0,
+    0.0
+   ],
+   "S": [
+    6.2,
+    1.5,
+    0.0,
+    0.0
+   ],
+   "SO": [
+    4.6,
+    2.4,
+    0.1,
+    0.0
+   ],
+   "O": [
+    2.7,
+    2.3,
+    0.1,
+    0.0
+   ],
+   "NO": [
+    2.1,
+    2.4,
+    0.4,
+    0.0
+   ]
+  },
+  "periodo": "2016–2025"
+ },
+ "maiores_chuvas": [
+  {
+   "data": "1997-11-28",
+   "mm": 115.2
+  },
+  {
+   "data": "1997-01-22",
+   "mm": 111.8
+  },
+  {
+   "data": "2018-08-03",
+   "mm": 96.6
+  },
+  {
+   "data": "2000-02-13",
+   "mm": 94.3
+  },
+  {
+   "data": "2001-12-13",
+   "mm": 93.6
+  },
+  {
+   "data": "1996-09-08",
+   "mm": 92.9
+  },
+  {
+   "data": "1990-03-20",
+   "mm": 91.7
+  },
+  {
+   "data": "1984-12-14",
+   "mm": 89.7
+  },
+  {
+   "data": "1997-06-14",
+   "mm": 85.0
+  },
+  {
+   "data": "1993-01-11",
+   "mm": 82.7
+  }
+ ]
+}

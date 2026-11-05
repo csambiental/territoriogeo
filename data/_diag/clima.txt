@@ -1,0 +1,13 @@
+{
+ "periodo": "1981–2025",
+ "fonte": "ERA5 (ECMWF/Copernicus) via Open-Meteo – célula de ~25 km sobre Londrina",
+ "tendencia_temp_decada": 0.29,
+ "tendencia_dias32_decada": 8.74,
+ "tendencia_chuva50_decada": -0.04,
+ "dias32_1981_1990": 8.3,
+ "dias32_2016_2025": 40.1,
+ "temp_1981_1990": 20.5,
+ "temp_2016_2025": 21.6,
+ "chuva50_1981_1990": 1.5,
+ "chuva50_2016_2025": 1.5
+}

@@ -1,1 +1,225 @@
-{"type": "FeatureCollection", "features": []}
+{
+"type": "FeatureCollection",
+"features": [
+{
+"type": "Feature",
+"geometry": {
+"type": "Point",
+"coordinates": [
+-51.2129817,
+-23.3254771
+]
+},
+"properties": {
+"nome": "Árvore cai sobre veículo",
+"tipo": "Queda de árvore",
+"Data": "04/02/2025",
+"Bairro": "Columbia (zona oeste)",
+"Local": "Rua Sidney Miller",
+"Descrição": "Árvore caiu sobre um veículo durante chuva intensa; SEMA acionada.",
+"Fonte": "Paiquerê FM",
+"Localização": "aproximada (via/bairro citado na notícia)",
+"link": "https://paiquerefm.com.br/chuva-intensa-em-londrina-causa-alagamentos-queda-de-arvore-e-bloqueios-em-vias/",
+"link_texto": "Ver notícia ↗"
+}
+},
+{
+"type": "Feature",
+"geometry": {
+"type": "Point",
+"coordinates": [
+-51.202701,
+-23.2684057
+]
+},
+"properties": {
+"nome": "Alagamento na Rua Gregório de Souza Vacário",
+"tipo": "Alagamento",
+"Data": "04/02/2025",
+"Bairro": "Maria Celina (zona norte)",
+"Local": "Rua Gregório de Souza Vacário",
+"Descrição": "Rua alagada; vistoria da Defesa Civil.",
+"Fonte": "Paiquerê FM",
+"Localização": "aproximada (via/bairro citado na notícia)",
+"link": "https://paiquerefm.com.br/chuva-intensa-em-londrina-causa-alagamentos-queda-de-arvore-e-bloqueios-em-vias/",
+"link_texto": "Ver notícia ↗"
+}
+},
+{
+"type": "Feature",
+"geometry": {
+"type": "Point",
+"coordinates": [
+-51.1730348,
+-23.329795
+]
+},
+"properties": {
+"nome": "Alagamento em frente ao Lago Igapó",
+"tipo": "Alagamento",
+"Data": "04/02/2025",
+"Bairro": "Centro / Lago Igapó",
+"Local": "Rua Bento Munhoz da Rocha Neto",
+"Descrição": "Acúmulo de água na via em frente ao lago.",
+"Fonte": "Paiquerê FM",
+"Localização": "aproximada (via/bairro citado na notícia)",
+"link": "https://paiquerefm.com.br/chuva-intensa-em-londrina-causa-alagamentos-queda-de-arvore-e-bloqueios-em-vias/",
+"link_texto": "Ver notícia ↗"
+}
+},
+{
+"type": "Feature",
+"geometry": {
+"type": "Point",
+"coordinates": [
+-51.1808956,
+-23.2927749
+]
+},
+"properties": {
+"nome": "Avenida Brasília bloqueada (Rodocentro)",
+"tipo": "Alagamento",
+"Data": "04/02/2025",
+"Bairro": "Rodocentro (zona leste)",
+"Local": "Avenida Brasília",
+"Descrição": "Via totalmente bloqueada pelo acúmulo de água.",
+"Fonte": "Paiquerê FM",
+"Localização": "aproximada (via/bairro citado na notícia)",
+"link": "https://paiquerefm.com.br/chuva-intensa-em-londrina-causa-alagamentos-queda-de-arvore-e-bloqueios-em-vias/",
+"link_texto": "Ver notícia ↗"
+}
+},
+{
+"type": "Feature",
+"geometry": {
+"type": "Point",
+"coordinates": [
+-51.1650216,
+-23.3039254
+]
+},
+"properties": {
+"nome": "Bloqueio parcial na Av. Arcebispo Dom Geraldo Fernandes",
+"tipo": "Alagamento",
+"Data": "04/02/2025",
+"Bairro": "Centro",
+"Local": "Avenida Arcebispo Dom Geraldo Fernandes",
+"Descrição": "Via parcialmente bloqueada pela água.",
+"Fonte": "Paiquerê FM",
+"Localização": "aproximada (via/bairro citado na notícia)",
+"link": "https://paiquerefm.com.br/chuva-intensa-em-londrina-causa-alagamentos-queda-de-arvore-e-bloqueios-em-vias/",
+"link_texto": "Ver notícia ↗"
+}
+},
+{
+"type": "Feature",
+"geometry": {
+"type": "Point",
+"coordinates": [
+-51.1919629,
+-23.2986228
+]
+},
+"properties": {
+"nome": "Bloqueio parcial na Avenida Tiradentes",
+"tipo": "Alagamento",
+"Data": "04/02/2025",
+"Bairro": "Leonor (zona oeste)",
+"Local": "Avenida Tiradentes",
+"Descrição": "Via parcialmente bloqueada pela água.",
+"Fonte": "Paiquerê FM",
+"Localização": "aproximada (via/bairro citado na notícia)",
+"link": "https://paiquerefm.com.br/chuva-intensa-em-londrina-causa-alagamentos-queda-de-arvore-e-bloqueios-em-vias/",
+"link_texto": "Ver notícia ↗"
+}
+},
+{
+"type": "Feature",
+"geometry": {
+"type": "Point",
+"coordinates": [
+-51.1734519,
+-23.2961365
+]
+},
+"properties": {
+"nome": "Alagamento na trincheira Leste-Oeste x Rio Branco",
+"tipo": "Alagamento",
+"Data": "17/11/2025",
+"Bairro": "Centro",
+"Local": "Avenida Rio Branco",
+"Descrição": "Água cobriu a ciclofaixa e parte da pista na trincheira entre as avenidas Leste-Oeste e Rio Branco.",
+"Fonte": "Bonde",
+"Localização": "aproximada (via/bairro citado na notícia)",
+"link": "https://www.bonde.com.br/bondenews/londrina/chuva-provoca-pontos-de-alagamento-em-londrina-nesta-segunda-feira",
+"link_texto": "Ver notícia ↗"
+}
+},
+{
+"type": "Feature",
+"geometry": {
+"type": "Point",
+"coordinates": [
+-51.1385671,
+-23.3080209
+]
+},
+"properties": {
+"nome": "Vendaval derruba árvores no Jardim Interlagos",
+"tipo": "Vendaval",
+"Data": "17/02/2026",
+"Bairro": "Jardim Interlagos (zona leste)",
+"Local": "Rua Flor de Abril",
+"Descrição": "Troncos e galhos bloquearam a rua após vendaval; casas destelhadas na zona leste.",
+"Fonte": "Bonde",
+"Localização": "aproximada (via/bairro citado na notícia)",
+"link": "https://www.bonde.com.br/bondenews/londrina/vendaval-destelha-casas-e-derruba-arvores-na-zona-leste-de-londrina",
+"link_texto": "Ver notícia ↗"
+}
+},
+{
+"type": "Feature",
+"geometry": {
+"type": "Point",
+"coordinates": [
+-51.1355461,
+-23.2986841
+]
+},
+"properties": {
+"nome": "Árvore cai sobre portão no Jardim Ideal",
+"tipo": "Queda de árvore",
+"Data": "17/02/2026",
+"Bairro": "Jardim Ideal (zona leste)",
+"Local": "Jardim Ideal",
+"Descrição": "Árvore caiu sobre o portão de uma casa durante o vendaval.",
+"Fonte": "Bonde",
+"Localização": "aproximada (via/bairro citado na notícia)",
+"link": "https://www.bonde.com.br/bondenews/londrina/vendaval-destelha-casas-e-derruba-arvores-na-zona-leste-de-londrina",
+"link_texto": "Ver notícia ↗"
+}
+},
+{
+"type": "Feature",
+"geometry": {
+"type": "Point",
+"coordinates": [
+-51.1459791,
+-23.3334526
+]
+},
+"properties": {
+"nome": "Alagamento recorrente na Rua Charles Lindemberg",
+"tipo": "Alagamento",
+"Data": "11/10/2026",
+"Bairro": "Zona leste (acesso ao Cambezinho)",
+"Local": "Rua Charles Lindemberg",
+"Descrição": "Pontos de alagamento nos dois lados da pista em dias de chuva; problema antigo ligado a bueiros e galerias entupidos e ao assoreamento do córrego Cambezinho.",
+"Fonte": "Tarobá",
+"Localização": "aproximada (via/bairro citado na notícia)",
+"link": "https://taroba.com.br/noticias/cidade/rua-na-zona-leste-de-londrina-registra-alagamentos-durante-chuvas",
+"link_texto": "Ver notícia ↗"
+}
+}
+]
+}
