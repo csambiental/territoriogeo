@@ -1,0 +1,12 @@
+{
+ "microbacias": 176,
+ "area_rural_ha": 142078,
+ "vegetacao_nativa_pct": 22.1,
+ "relevo_forte_pct": 19.0,
+ "varzeas_pct": 8.5,
+ "agro_pct": 76.9,
+ "niveis": {
+  "Alta": 119,
+  "Média": 57
+ }
+}
