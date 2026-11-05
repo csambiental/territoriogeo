@@ -1282,6 +1282,47 @@ async function renderRural() {
         setTimeout(() => map.fitBounds(boundsDe({ type: 'FeatureCollection', features: [f] }), { padding: 80, duration: 900, maxZoom: 13.5 }), 300);
     }));
 }
+async function renderZarc() {
+    const card = document.getElementById('cardZarc'), cfg = dadosGerais.painel_zarc;
+    if (!card || !cfg) return;
+    let z; try { z = await (await fetch(cfg.arquivo, { cache: 'no-cache' })).json(); } catch { return; }
+    const nomes = Object.keys(z.culturas), MES = 'JFMAMJJASOND';
+    const corR = { 20: '#1b7a3d', 30: '#9ccc65', 40: '#ffb74d' };
+    const est = { cult: nomes.includes('Soja') ? 'Soja' : nomes[0], ciclo: '', nm: '' };
+    const opts = (vals, sel) => vals.map(v => `<option${v === sel ? ' selected' : ''}>${esc(v)}</option>`).join('');
+    const uniq = a => [...new Set(a)];
+    function desenhar() {
+        const c = z.culturas[est.cult], ciclos = uniq(c.linhas.map(l => l.ciclo)).sort(), nms = uniq(c.linhas.map(l => l.nm)).filter(Boolean).sort();
+        if (!ciclos.includes(est.ciclo)) est.ciclo = ciclos[Math.min(1, ciclos.length - 1)];
+        if (nms.length && !nms.includes(est.nm)) est.nm = nms[nms.length - 1]; if (!nms.length) est.nm = '';
+        const linhas = c.linhas.filter(l => l.ciclo === est.ciclo && l.nm === est.nm).sort((a, b) => a.solo.localeCompare(b.solo, 'pt', { numeric: true }));
+        const usados = linhas.reduce((u, l) => u.map((x, i) => x || l.dec[i] > 0), Array(36).fill(false));
+        // janela pode atravessar a virada do ano (ex.: milho safrinha dez→mar): começa logo após o maior intervalo sem plantio
+        let melhor = { ini: 0, n: 0 };
+        for (let i = 0; i < 36; i++) { if (usados[i]) continue; let n = 0; while (n < 36 && !usados[(i + n) % 36]) n++; if (n > melhor.n) melhor = { ini: i, n }; }
+        const idx = [];
+        if (melhor.n === 0) for (let i = 0; i < 36; i++) idx.push(i);
+        else { const ini = (melhor.ini + melhor.n - 1) % 36, tam = Math.min(36, 36 - melhor.n + 2); for (let k = 0; k < tam; k++) idx.push((ini + k) % 36); }
+        const nomeDec = i => `${['1º', '2º', '3º'][i % 3]} decêndio de ${['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'][Math.floor(i / 3)]}`;
+        const cab = idx.map(i => `<th>${i % 3 === 0 ? MES[i / 3] : ''}</th>`).join('');
+        const corpo = linhas.map(l => `<tr><th>${esc(l.solo)}</th>${idx.map(i => `<td style="background:${corR[l.dec[i]] || '#eceff1'}" title="${nomeDec(i)}: ${l.dec[i] ? 'risco ' + l.dec[i] + '%' : 'não indicado'}"></td>`).join('')}</tr>`).join('');
+        const h = z.historico[est.cult] || [];
+        card.querySelector('.zarc-corpo').innerHTML = `
+            <div class="zarc-sel"><label>Cultura<select data-k="cult">${opts(nomes, est.cult)}</select></label>
+            <label>Ciclo<select data-k="ciclo">${opts(ciclos, est.ciclo)}</select></label>
+            ${nms.length ? `<label>Nível de manejo<select data-k="nm">${opts(nms, est.nm)}</select></label>` : ''}</div>
+            <div class="zarc-tab"><table><thead><tr><th></th>${cab}</tr></thead><tbody>${corpo}</tbody></table></div>
+            <ul class="zarc-leg"><li><i style="background:${corR[20]}"></i>risco 20%</li><li><i style="background:${corR[30]}"></i>30%</li><li><i style="background:${corR[40]}"></i>40%</li><li><i style="background:#eceff1"></i>não indicado</li></ul>
+            <p class="hint">Safra ${esc(c.safra)} · ${esc(c.portaria)}. Linhas = tipo de solo${linhas.some(l => l.solo.startsWith('AD')) ? ' pela água disponível (AD1 retém menos água … AD6 retém mais)' : ''}. ${nms.length ? 'NM1 a NM4 = níveis de manejo do solo, do básico ao mais conservacionista. ' : ''}Passe o dedo/mouse sobre a célula para ver o decêndio.</p>
+            ${h.length > 1 ? `<details class="clima-top"><summary>Como a janela mudou desde ${esc(h[0].safra)}</summary>
+            <table class="zarc-hist"><tr><th>Safra</th><th>decêndios com risco 20%</th><th>decêndios indicados</th></tr>${h.map(x => `<tr><td>${esc(x.safra)}</td><td>${x.dec20}</td><td>${x.decs}</td></tr>`).join('')}</table>
+            <p class="hint">Melhor situação entre solos e ciclos em cada safra. Mudanças podem vir de revisões do método do ZARC (novas classes de solo em 2023/24 e níveis de manejo em 2025/26), não só do clima.</p></details>` : ''}`;
+        card.querySelectorAll('.zarc-sel select').forEach(s => s.addEventListener('change', () => { est[s.dataset.k] = s.value; desenhar(); }));
+    }
+    card.hidden = false;
+    card.innerHTML = `<h2>${esc(cfg.titulo)}</h2><p class="hint">${esc(cfg.texto)}</p><div class="zarc-corpo"></div>`;
+    desenhar();
+}
 function renderImpactos() {
     const card = document.getElementById('cardImpactos'), cfg = dadosGerais.impactos;
     if (!card || !cfg) return;
@@ -1339,7 +1380,7 @@ async function iniciar() {
     renderTermos();
     renderLicencas();
     renderClima();
-    renderRanking(); renderRural();
+    renderRanking(); renderRural(); renderZarc();
     renderImpactos();
     if (fazendas.length || dados.busca_camada) document.getElementById('cardLista')?.removeAttribute('hidden');
     renderModosCor();

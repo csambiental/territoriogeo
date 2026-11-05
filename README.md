@@ -18,3 +18,4 @@ Acrescente uma linha em `data/impactos/registros_base.csv` (data, tipo, título,
 - **Declividade** (Copernicus DEM, classes Embrapa) – `tools/alagamento_hand.py` gera `data/alagamento/declividade.*`.
 - **Uso e cobertura do solo** – MapBiomas 10 m, 2023 (`data/mapbiomas`).
 - **Vulnerabilidade das microbacias rurais** – `tools/rural_microbacias.py`: índice 0–100 com relevo ≥ 8% (40%), falta de vegetação nativa (35%) e várzeas até 2 m acima do córrego (25%); classes por terços. Saída em `data/rural/`.
+- **ZARC** – `tools/zarc.py` baixa as tábuas de risco do MAPA (todas as safras), guarda as linhas de Londrina em `data/zarc/bruto/` e gera `data/zarc/zarc_londrina.json` (calendário de plantio por cultura, ciclo, solo e nível de manejo + histórico das janelas).

@@ -498,6 +498,10 @@
    {
     "nome": "MapBiomas – Coleção 10 m (beta), 2023",
     "link": "https://brasil.mapbiomas.org/"
+   },
+   {
+    "nome": "MAPA – Zoneamento Agrícola de Risco Climático (ZARC), tábuas de risco",
+    "link": "https://dados.agricultura.gov.br/dataset/tabua-de-risco-zoneamento-agricola-de-risco-climatico"
    }
   ],
   "contato": "contato@institutobiosimos.org.br",
@@ -520,5 +524,10 @@
   "arquivo": "data/rural/microbacias_rurais.geojson",
   "resumo": "data/rural/resumo_rural.json",
   "camada": "rural-vulnerab"
+ },
+ "painel_zarc": {
+  "titulo": "Calendário de plantio – ZARC",
+  "texto": "Janelas de plantio com menor risco climático em Londrina, segundo o Zoneamento Agrícola de Risco Climático do Ministério da Agricultura (base do Proagro e do seguro rural).",
+  "arquivo": "data/zarc/zarc_londrina.json"
  }
 }
