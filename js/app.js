@@ -1227,6 +1227,17 @@ async function renderClima() {
         <h3>Dias com rajadas ≥ 60 km/h</h3>${svgSerie(s, 'dias_rajada_60', { cor: '#5e35b1', unidade: ' dias', altura: 100 })}
         <h3>De onde vem o vento (${esc(d.rosa_ventos.periodo)})</h3>${svgRosa(d.rosa_ventos)}
         <details class="clima-top"><summary>Maiores chuvas em um dia (${ini}–${ult})</summary><ol>${d.maiores_chuvas.map(c => `<li>${c.data.split('-').reverse().join('/')} – <b>${fmt(c.mm, 1)} mm</b></li>`).join('')}</ol></details>
+        ${s[0].geadas !== undefined ? `<h2 class="clima-campo">E no campo?</h2>
+        <p class="hint">Indicadores agroclimáticos para a zona rural de Londrina (mesma série).</p>
+        <div class="clima-kpis">
+            <div><b>${fmt(r.geadas_1981_1990, 1)} → ${fmt(k('geadas'), 1)}</b><span>dias/ano com risco de geada (mínima ≤ 3 °C)</span></div>
+            <div><b>${fmt(r.veranico_1981_1990, 0)} → ${fmt(k('veranico'), 0)}</b><span>dias no maior veranico da safra de verão (out–mar, sem chuva ≥ 1 mm)</span></div>
+            <div><b>${fmt(r.dias35safra_1981_1990, 1)} → ${fmt(k('dias35safra'), 1)}</b><span>dias ≥ 35 °C na safra (estresse térmico nas lavouras)</span></div>
+        </div>
+        <h3>Dias com risco de geada (mínima ≤ 3 °C)</h3>${svgSerie(s, 'geadas', { cor: '#4fc3f7', unidade: ' dias', altura: 100, tendencia: true })}
+        <h3>Maior veranico da safra de verão (dias seguidos sem chuva)</h3>${svgSerie(s, 'veranico_max', { cor: '#a1887f', unidade: ' dias', altura: 100, tendencia: true })}
+        <h3>Balanço hídrico anual (chuva − evapotranspiração, mm)</h3>${svgSerie(s, 'balanco_hidrico', { cor: '#26a69a', unidade: ' mm', altura: 110, tendencia: true })}
+        <h3>Chuvas erosivas (≥ 30 mm em um dia)</h3>${svgSerie(s, 'dias_chuva_30', { cor: '#6d4c41', unidade: ' dias', altura: 100, tendencia: true })}` : ''}
         <p class="hint">Linha tracejada = tendência. Reanálise climática (modelo + observações), com resolução de ~25 km: mostra a tendência regional; valores de estações locais podem diferir.</p>`;
 }
 async function renderRanking() {
@@ -1246,6 +1257,29 @@ async function renderRanking() {
         const o = (dadosGerais.camadas_opcionais || []).find(x => x.id === cfg.camada);
         const bt = o && document.querySelector(`.camada-row[data-id="${o.id}"]`);
         if (bt && !opcionaisAtivas.has(o.id)) bt.click();
+    }));
+}
+async function renderRural() {
+    const card = document.getElementById('cardRural'), cfg = dadosGerais.painel_rural;
+    if (!card || !cfg) return;
+    let g, r; try { [g, r] = await Promise.all([cfg.arquivo, cfg.resumo].map(async u => (await fetch(u, { cache: 'no-cache' })).json())); } catch { return; }
+    const fs = g.features, cor = { Alta: '#c62828', 'Média': '#ef6c00', Baixa: '#2e7d32' };
+    card.hidden = false;
+    card.innerHTML = `<h2>${esc(cfg.titulo)}</h2><p class="hint">${esc(cfg.texto)}</p>
+        <div class="clima-kpis">
+            <div><b>${fmt(r.vegetacao_nativa_pct, 1)}%</b><span>de vegetação nativa na zona rural</span></div>
+            <div><b>${fmt(r.relevo_forte_pct, 1)}%</b><span>em relevo forte ondulado (≥ 20%) – mais erosão com chuva forte</span></div>
+            <div><b>${r.niveis['Alta'] || 0} de ${r.microbacias}</b><span>microbacias rurais com vulnerabilidade alta</span></div>
+        </div>
+        <h3>Microbacias mais vulneráveis</h3>
+        <ol class="ranking">${fs.slice(0, 10).map((f, i) => `<li><button type="button" class="rk" data-i="${i}"><span class="rk-n">${esc(f.properties.nome || f.properties.Rio || 'Microbacia')}</span>
+        <span class="rk-v" style="color:${cor[f.properties['Vulnerabilidade climática']]}">${f.properties['Índice (0–100)']} <small>(${esc(f.properties['Vulnerabilidade climática'])})</small></span></button></li>`).join('')}</ol>
+        <p class="hint">Índice 0–100: relevo declivoso (40%), pouca vegetação nativa (35%) e várzeas baixas (25%). Indica onde chuvas intensas e secas tendem a causar mais erosão, assoreamento e perdas.</p>`;
+    card.querySelectorAll('.rk').forEach(b => b.addEventListener('click', () => {
+        const f = fs[+b.dataset.i];
+        map.fitBounds(boundsDe({ type: 'FeatureCollection', features: [f] }), { padding: 80, duration: 900, maxZoom: 13.5 });
+        const bt = document.querySelector(`.camada-row[data-id="${cfg.camada}"]`);
+        if (bt && !opcionaisAtivas.has(cfg.camada)) bt.click();
     }));
 }
 function renderImpactos() {
@@ -1305,7 +1339,7 @@ async function iniciar() {
     renderTermos();
     renderLicencas();
     renderClima();
-    renderRanking();
+    renderRanking(); renderRural();
     renderImpactos();
     if (fazendas.length || dados.busca_camada) document.getElementById('cardLista')?.removeAttribute('hidden');
     renderModosCor();

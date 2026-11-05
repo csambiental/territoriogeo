@@ -551,3 +551,4 @@ table.ind tr.pos td { color: #1d6b3e; font-weight: 600; }
 .rk-v { white-space: nowrap; font-weight: 600; } .rk-v.q { color: #c62828; } .rk-v.f { color: #1565c0; } .rk-v small { font-weight: 400; opacity: .8; }
 #cardRanking h3 { font-size: .78rem; margin: 8px 0 2px; color: var(--texto-suave); }
 .topbar { border-image: linear-gradient(90deg, #0080c9, #62c6f1 30%, #559a35 65%, #215c4c) 1; }
+.clima-campo { margin-top: 18px; padding-top: 12px; border-top: 2px solid #e3ece7; color: #559a35; }

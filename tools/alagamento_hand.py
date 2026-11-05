@@ -32,6 +32,20 @@ for k, (lo, hi) in enumerate([(-1, 1), (1, 2), (2, 3), (3, 5)]):
 Image.fromarray(img, 'RGBA').save('data/alagamento/hand.png', optimize=True)
 w, s, e, n = rasterio.transform.array_bounds(*dem.shape, tr)  # (oeste, sul, leste, norte)
 json.dump({'imagem': 'data/alagamento/hand.png', 'cantos': [[w, n], [e, n], [e, s], [w, s]], 'limiar_canal_celulas': LIM, 'fonte': 'Copernicus DEM GLO-30 (ESA)'}, open('data/alagamento/hand.json', 'w'))
+# rasters intermediários para a análise rural (mesmo job)
+os.makedirs('/tmp/terreno', exist_ok=True)
+perfil = dict(driver='GTiff', height=dem.shape[0], width=dem.shape[1], count=1, dtype='float32', crs=crs, transform=tr, compress='deflate', nodata=np.nan)
+with rasterio.open('/tmp/terreno/dem.tif', 'w', **perfil) as f: f.write(dem.astype('float32'), 1)
+with rasterio.open('/tmp/terreno/hand.tif', 'w', **perfil) as f: f.write(h.astype('float32'), 1)
+# declividade (%) – pixels de 1 arco-segundo convertidos para metros
+lat0 = (bbox[1] + bbox[3]) / 2; dx = abs(tr.a) * 111320 * np.cos(np.radians(lat0)); dy = abs(tr.e) * 110540
+gy, gx = np.gradient(dem, dy, dx); decl = np.hypot(gx, gy) * 100
+with rasterio.open('/tmp/terreno/declividade.tif', 'w', **perfil) as f: f.write(decl.astype('float32'), 1)
+CL = [(0, 3, (241, 238, 210, 0)), (3, 8, (217, 240, 163, 150)), (8, 20, (254, 217, 118, 175)), (20, 45, (240, 59, 32, 195)), (45, 999, (128, 0, 38, 215))]
+im2 = np.zeros(dem.shape + (4,), 'uint8')
+for lo, hi, cor in CL: im2[(decl >= lo) & (decl < hi) & ~fora] = cor
+Image.fromarray(im2, 'RGBA').save('data/alagamento/declividade.png', optimize=True)
+json.dump({'imagem': 'data/alagamento/declividade.png', 'cantos': [[w, n], [e, n], [e, s], [w, s]], 'fonte': 'Copernicus DEM GLO-30 (ESA)'}, open('data/alagamento/declividade.json', 'w'))
 # rede de drenagem modelada (para rótulo/linha)
 rede = grid.extract_river_network(fdir, acc > 2000)
 feats = [{'type': 'Feature', 'geometry': f['geometry'], 'properties': {}} for f in rede['features'] if shape(f['geometry']).intersects(mun)]

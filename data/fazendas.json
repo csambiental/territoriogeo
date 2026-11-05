@@ -268,6 +268,142 @@
    "fonte": "Registros validados pelo Instituto Biosimos (notícias, Defesa Civil e contribuições)"
   },
   {
+   "id": "rural-vulnerab",
+   "secao": "Território rural",
+   "nome": "Vulnerabilidade climática das microbacias rurais",
+   "arquivo": "data/rural/microbacias_rurais.geojson",
+   "preenchimento": 0.5,
+   "largura": 0.8,
+   "cor": "#ffffff",
+   "clicavel": true,
+   "enquadrar": false,
+   "prioridade": false,
+   "cor_numerica": {
+    "campo": "Índice (0–100)",
+    "paradas": [
+     [
+      20,
+      "#1a9850"
+     ],
+     [
+      40,
+      "#a6d96a"
+     ],
+     [
+      50,
+      "#fee08b"
+     ],
+     [
+      60,
+      "#fc8d59"
+     ],
+     [
+      75,
+      "#d73027"
+     ]
+    ]
+   },
+   "campos": [
+    "Ranking",
+    "Vulnerabilidade climática",
+    "Índice (0–100)",
+    "Rio",
+    "Área rural na microbacia (ha)",
+    "Vegetação nativa (%)",
+    "Uso agropecuário (%)",
+    "Relevo ondulado ou mais (≥ 8%) (%)",
+    "Relevo forte ondulado (≥ 20%) (%)",
+    "Várzeas – até 2 m acima do córrego (%)"
+   ],
+   "legenda_itens": [
+    {
+     "rotulo": "baixa",
+     "cor": "#1a9850"
+    },
+    {
+     "rotulo": "média",
+     "cor": "#fee08b"
+    },
+    {
+     "rotulo": "alta",
+     "cor": "#d73027"
+    }
+   ],
+   "fonte": "Índice Biosimos: Copernicus DEM (relevo e várzeas) + MapBiomas 2023 (vegetação) + ANA (microbacias)"
+  },
+  {
+   "id": "uso-solo",
+   "secao": "Território rural",
+   "nome": "Uso e cobertura do solo (MapBiomas 2023)",
+   "arquivo": "data/mapbiomas/cobertura_2023.json",
+   "tipo": "imagem",
+   "icone": "fill",
+   "cor": "#1f8d49",
+   "opacidade": 0.8,
+   "fonte": "MapBiomas 10 m – Coleção 2 (beta), 2023",
+   "legenda_itens": [
+    {
+     "rotulo": "Vegetação nativa (20,57%)",
+     "cor": "#1f8d49"
+    },
+    {
+     "rotulo": "Agricultura (44,41%)",
+     "cor": "#e974ed"
+    },
+    {
+     "rotulo": "Pastagem (8,6%)",
+     "cor": "#edde8e"
+    },
+    {
+     "rotulo": "Silvicultura (1,48%)",
+     "cor": "#7a5900"
+    },
+    {
+     "rotulo": "Mosaico de usos (17,51%)",
+     "cor": "#ffefc3"
+    },
+    {
+     "rotulo": "Área urbanizada (6,53%)",
+     "cor": "#d4271e"
+    },
+    {
+     "rotulo": "Água (0,72%)",
+     "cor": "#2532e4"
+    },
+    {
+     "rotulo": "Outras áreas (0,18%)",
+     "cor": "#db4d4f"
+    }
+   ]
+  },
+  {
+   "id": "declividade",
+   "secao": "Território rural",
+   "nome": "Declividade – risco de erosão com chuvas intensas",
+   "tipo": "imagem",
+   "arquivo": "data/alagamento/declividade.json",
+   "opacidade": 0.8,
+   "legenda_itens": [
+    {
+     "rotulo": "suave ondulado (3–8%)",
+     "cor": "#d9f0a3"
+    },
+    {
+     "rotulo": "ondulado (8–20%)",
+     "cor": "#fed976"
+    },
+    {
+     "rotulo": "forte ondulado (20–45%)",
+     "cor": "#f03b20"
+    },
+    {
+     "rotulo": "montanhoso (> 45%)",
+     "cor": "#800026"
+    }
+   ],
+   "fonte": "Copernicus DEM GLO-30 (ESA) – classes de relevo Embrapa"
+  },
+  {
    "id": "bairros",
    "secao": "Divisão da cidade",
    "nome": "Bairros",
@@ -334,7 +470,8 @@
    "A temperatura mostrada é a da superfície (telhados, asfalto, vegetação) medida por satélite, e não a temperatura do ar; serve para comparar áreas da cidade.",
    "As áreas sujeitas a alagamento vêm de um modelo de relevo (altura acima do córrego mais próximo) e indicam suscetibilidade, não a ocorrência de alagamentos. Não consideram galerias, bueiros nem obras de drenagem.",
    "A série climática vem de reanálise (ERA5, ~25 km): mostra a tendência regional; registros de estações locais podem diferir.",
-   "Os impactos registrados passam por conferência, mas podem conter imprecisões de local ou data."
+   "Os impactos registrados passam por conferência, mas podem conter imprecisões de local ou data.",
+   "Os indicadores rurais (geada, veranico, balanço hídrico) vêm da mesma reanálise regional; o índice das microbacias é comparativo, não substitui laudo agronômico ou estudo de solo."
   ],
   "fontes": [
    {
@@ -357,6 +494,10 @@
    {
     "nome": "ANA – Base Hidrográfica Ottocodificada",
     "link": "https://metadados.snirh.gov.br/"
+   },
+   {
+    "nome": "MapBiomas – Coleção 10 m (beta), 2023",
+    "link": "https://brasil.mapbiomas.org/"
    }
   ],
   "contato": "contato@institutobiosimos.org.br",
@@ -372,5 +513,12 @@
   "campo_diferenca": "Diferença para a média urbana (°C)",
   "titulo": "Bairros mais quentes e mais frescos",
   "texto": "Temperatura média da superfície nos verões recentes (satélite Landsat) e diferença para a média da área urbana. Clique para ver o bairro."
+ },
+ "painel_rural": {
+  "titulo": "Território rural: onde o clima pesa mais",
+  "texto": "Microbacias da zona rural (fora dos perímetros urbanos) comparadas pelo relevo, pela vegetação nativa e pelas várzeas. Clique para ver no mapa.",
+  "arquivo": "data/rural/microbacias_rurais.geojson",
+  "resumo": "data/rural/resumo_rural.json",
+  "camada": "rural-vulnerab"
  }
 }
