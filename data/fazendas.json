@@ -1,0 +1,368 @@
+{
+ "cliente": {
+  "nome": "Clima Londrina",
+  "subtitulo": "Central de inteligência climática · Instituto Biosimos",
+  "selo": "Versão preliminar",
+  "centro": [
+   -51.165,
+   -23.315
+  ],
+  "zoom": 11.3
+ },
+ "atualizado_em": "2026-11-05",
+ "resumo": [
+  {
+   "valor": "+1,1 °C",
+   "rotulo": "temperatura média (1981–90 → 2016–25)"
+  },
+  {
+   "valor": "40 dias",
+   "rotulo": "por ano com máxima ≥ 32 °C (eram 8)"
+  },
+  {
+   "valor": "+5 °C",
+   "rotulo": "diferença entre bairros mais quentes e média urbana"
+  }
+ ],
+ "lista_titulo": "Bairros",
+ "painel_clima": "data/clima/clima_londrina.json",
+ "programa": {
+  "titulo": "Sobre o projeto",
+  "texto": "O Clima Londrina reúne em um só mapa dados públicos sobre calor, chuva, vento, vegetação e áreas sujeitas a alagamento na cidade, e abre espaço para registrar impactos observados pela população e pelas instituições. É a base de evidências para o plano climático do município: primeiro o diagnóstico, depois as prioridades e o investimento.",
+  "etapas": [
+   {
+    "nome": "Etapa 1",
+    "texto": "– clima histórico, ilhas de calor, vegetação e suscetibilidade a alagamento (concluída)"
+   },
+   {
+    "nome": "Etapa 2",
+    "texto": "– registros de impactos (alagamentos, quedas de árvores, vendavais), Defesa Civil e estações locais",
+    "classe": "andamento"
+   },
+   {
+    "nome": "Etapa 3",
+    "texto": "– vulnerabilidade social, saúde e carteira de projetos de adaptação",
+    "classe": "andamento"
+   }
+  ]
+ },
+ "camadas": [
+  {
+   "id": "municipio",
+   "nome": "Limite do município",
+   "arquivo": "data/base/municipio_londrina.geojson",
+   "tipo": "line",
+   "cor": "#ffffff",
+   "destaque": true
+  },
+  {
+   "id": "perimetro",
+   "nome": "Perímetros urbanos",
+   "arquivo": "data/base/perimetros_urbanos.geojson",
+   "tipo": "line",
+   "cor": "#62c6f1",
+   "linha_largura": 1.6
+  }
+ ],
+ "camadas_opcionais": [
+  {
+   "id": "calor",
+   "secao": "Calor",
+   "nome": "Ilhas de calor – temperatura da superfície",
+   "tipo": "imagem",
+   "arquivo": "data/calor/lst.json",
+   "opacidade": 0.75,
+   "suave": true,
+   "prioridade": true,
+   "legenda_itens": [
+    {
+     "rotulo": "mais fria",
+     "cor": "#4575b4"
+    },
+    {
+     "rotulo": "intermediária",
+     "cor": "#ffffbf"
+    },
+    {
+     "rotulo": "mais quente",
+     "cor": "#d73027"
+    }
+   ],
+   "fonte": "Landsat 8/9 (USGS/NASA), mediana dos verões recentes – temperatura da superfície, não do ar"
+  },
+  {
+   "id": "bairros-calor",
+   "secao": "Calor",
+   "nome": "Ranking de calor por bairro",
+   "arquivo": "data/calor/bairros_calor.geojson",
+   "preenchimento": 0.55,
+   "largura": 0.8,
+   "cor": "#ffffff",
+   "clicavel": true,
+   "enquadrar": false,
+   "cor_numerica": {
+    "campo": "Diferença para a média urbana (°C)",
+    "paradas": [
+     [
+      -4,
+      "#2c7bb6"
+     ],
+     [
+      -2,
+      "#abd9e9"
+     ],
+     [
+      0,
+      "#ffffbf"
+     ],
+     [
+      2,
+      "#fdae61"
+     ],
+     [
+      4,
+      "#d7191c"
+     ]
+    ]
+   },
+   "campos": [
+    "Ranking de calor",
+    "Temperatura média da superfície (°C)",
+    "Diferença para a média urbana (°C)",
+    "Vegetação (NDVI médio)",
+    "Área com vegetação densa (%)"
+   ],
+   "legenda_itens": [
+    {
+     "rotulo": "4 °C mais frio",
+     "cor": "#2c7bb6"
+    },
+    {
+     "rotulo": "média urbana",
+     "cor": "#ffffbf"
+    },
+    {
+     "rotulo": "4 °C mais quente",
+     "cor": "#d7191c"
+    }
+   ],
+   "fonte": "Landsat 8/9 (USGS/NASA) + bairros oficiais (IPPUL)"
+  },
+  {
+   "id": "vegetacao",
+   "secao": "Vegetação e sombra",
+   "nome": "Cobertura vegetal (NDVI)",
+   "tipo": "imagem",
+   "arquivo": "data/calor/ndvi.json",
+   "opacidade": 0.7,
+   "suave": true,
+   "legenda_itens": [
+    {
+     "rotulo": "sem vegetação",
+     "cor": "#d73027"
+    },
+    {
+     "rotulo": "vegetação rala",
+     "cor": "#fee08b"
+    },
+    {
+     "rotulo": "vegetação densa",
+     "cor": "#1a9850"
+    }
+   ],
+   "fonte": "Landsat 8/9 (USGS/NASA), índice de vegetação NDVI no verão"
+  },
+  {
+   "id": "alagamento",
+   "secao": "Água e alagamentos",
+   "nome": "Áreas baixas sujeitas a alagamento (modelo de terreno)",
+   "tipo": "imagem",
+   "arquivo": "data/alagamento/hand.json",
+   "opacidade": 0.8,
+   "legenda_itens": [
+    {
+     "rotulo": "até 1 m acima do córrego",
+     "cor": "#08306b"
+    },
+    {
+     "rotulo": "1 a 2 m",
+     "cor": "#2171b5"
+    },
+    {
+     "rotulo": "2 a 3 m",
+     "cor": "#6baed6"
+    },
+    {
+     "rotulo": "3 a 5 m",
+     "cor": "#c6dbef"
+    }
+   ],
+   "fonte": "Copernicus DEM GLO-30 (ESA) – modelo HAND; indica suscetibilidade, não ocorrência"
+  },
+  {
+   "id": "drenagem",
+   "secao": "Água e alagamentos",
+   "nome": "Rede de drenagem (córregos modelados)",
+   "arquivo": "data/alagamento/drenagem.geojson",
+   "geometria": "linha",
+   "cor": "#29b6f6",
+   "largura": 1.4,
+   "fonte": "Copernicus DEM GLO-30 – drenagem extraída do relevo"
+  },
+  {
+   "id": "rios",
+   "secao": "Água e alagamentos",
+   "nome": "Rios principais",
+   "arquivo": "data/base/rios.geojson",
+   "geometria": "linha",
+   "cor": "#0288d1",
+   "rotulo_campo": "nome",
+   "fonte": "ANA – Base Hidrográfica Ottocodificada"
+  },
+  {
+   "id": "microbacias",
+   "secao": "Água e alagamentos",
+   "nome": "Microbacias",
+   "arquivo": "data/base/microbacias.geojson",
+   "cor": "#4fc3f7",
+   "largura": 1,
+   "tracejado": [
+    2,
+    1.5
+   ],
+   "clicavel": true,
+   "campos": [
+    "rio",
+    "bacia",
+    "area_km2"
+   ],
+   "fonte": "ANA – ottobacias"
+  },
+  {
+   "id": "impactos",
+   "secao": "Impactos registrados",
+   "nome": "Impactos climáticos registrados",
+   "arquivo": "data/impactos/registros.geojson",
+   "geometria": "ponto",
+   "cor_por": "tipo",
+   "prioridade": true,
+   "cores": {
+    "Alagamento": "#1565c0",
+    "Queda de árvore": "#2e7d32",
+    "Vendaval": "#6a1b9a",
+    "Calor extremo": "#e65100",
+    "Granizo": "#00838f",
+    "Erosão / deslizamento": "#795548"
+   },
+   "cor": "#607d8b",
+   "clicavel": true,
+   "campos": [
+    "tipo",
+    "Data",
+    "Bairro",
+    "Local",
+    "Descrição",
+    "Fonte",
+    "Localização"
+   ],
+   "fonte": "Registros validados pelo Instituto Biosimos (notícias, Defesa Civil e contribuições)"
+  },
+  {
+   "id": "bairros",
+   "secao": "Divisão da cidade",
+   "nome": "Bairros",
+   "arquivo": "data/base/bairros.geojson",
+   "cor": "#ffffff",
+   "largura": 1,
+   "tracejado": [
+    2,
+    1.5
+   ],
+   "rotulo_campo": "nome",
+   "rotulo_minzoom": 13,
+   "clicavel": true,
+   "fonte": "Prefeitura de Londrina – IPPUL, divisão territorial (Lei 13.718/2023)"
+  },
+  {
+   "id": "regioes",
+   "secao": "Divisão da cidade",
+   "nome": "Regiões",
+   "arquivo": "data/base/regioes.geojson",
+   "cor": "#ff80ab",
+   "largura": 2,
+   "rotulo_campo": "nome",
+   "fonte": "Prefeitura de Londrina – IPPUL, divisão territorial (Lei 13.718/2023)"
+  }
+ ],
+ "fazendas": [],
+ "impactos": {
+  "titulo": "Registre um impacto climático",
+  "texto": "Viu um alagamento, uma queda de árvore, um vendaval ou um episódio de calor extremo em Londrina? Envie o local, a data e, se possível, uma foto. Os registros são conferidos pela equipe do Instituto antes de entrar no mapa.",
+  "tipos": [
+   {
+    "nome": "Alagamento",
+    "cor": "#1565c0"
+   },
+   {
+    "nome": "Queda de árvore",
+    "cor": "#2e7d32"
+   },
+   {
+    "nome": "Vendaval",
+    "cor": "#6a1b9a"
+   },
+   {
+    "nome": "Calor extremo",
+    "cor": "#e65100"
+   },
+   {
+    "nome": "Granizo",
+    "cor": "#00838f"
+   },
+   {
+    "nome": "Erosão / deslizamento",
+    "cor": "#795548"
+   }
+  ],
+  "email": "contato@institutobiosimos.org.br",
+  "aviso": "Não publique dados pessoais nem fotos de pessoas. Em emergência, ligue para a Defesa Civil (199) ou o Corpo de Bombeiros (193)."
+ },
+ "termos": {
+  "titulo": "Sobre os dados",
+  "texto": "Mapa de livre acesso, de caráter informativo e educativo, elaborado pelo Instituto Biosimos a partir de bases públicas. Não substitui alertas oficiais da Defesa Civil nem estudos técnicos de risco.",
+  "avisos": [
+   "A temperatura mostrada é a da superfície (telhados, asfalto, vegetação) medida por satélite, e não a temperatura do ar; serve para comparar áreas da cidade.",
+   "As áreas sujeitas a alagamento vêm de um modelo de relevo (altura acima do córrego mais próximo) e indicam suscetibilidade, não a ocorrência de alagamentos. Não consideram galerias, bueiros nem obras de drenagem.",
+   "A série climática vem de reanálise (ERA5, ~25 km): mostra a tendência regional; registros de estações locais podem diferir.",
+   "Os impactos registrados passam por conferência, mas podem conter imprecisões de local ou data."
+  ],
+  "fontes": [
+   {
+    "nome": "Landsat 8/9 – USGS/NASA (Coleção 2, nível 2)",
+    "detalhe": "acesso via Microsoft Planetary Computer",
+    "link": "https://www.usgs.gov/landsat-missions"
+   },
+   {
+    "nome": "Copernicus DEM GLO-30 – Agência Espacial Europeia",
+    "link": "https://dataspace.copernicus.eu/"
+   },
+   {
+    "nome": "ERA5 – ECMWF/Copernicus, via Open-Meteo (CC BY 4.0)",
+    "link": "https://open-meteo.com/"
+   },
+   {
+    "nome": "Prefeitura de Londrina – IPPUL (bairros, regiões e perímetros urbanos)",
+    "link": "https://geo.londrina.pr.gov.br/"
+   },
+   {
+    "nome": "ANA – Base Hidrográfica Ottocodificada",
+    "link": "https://metadados.snirh.gov.br/"
+   }
+  ],
+  "contato": "contato@institutobiosimos.org.br",
+  "site": {
+   "url": "https://lp-biosimos.vercel.app/",
+   "texto": "Conheça o Instituto Biosimos"
+  }
+ }
+}

@@ -15,6 +15,7 @@ jobs:
       - run: pip install -q "numpy<2" rasterio shapely pyproj pillow pystac-client planetary-computer pysheds
       - run: |
           mkdir -p data/_diag
+          python3 tools/geocodificar_impactos.py > data/_diag/impactos.txt 2>&1 || true
           python3 tools/clima_historico.py > data/_diag/clima.txt 2>&1 || true
           python3 tools/calor_vegetacao.py > data/_diag/calor.txt 2>&1 || true
           python3 tools/alagamento_hand.py > data/_diag/alagamento.txt 2>&1 || true
