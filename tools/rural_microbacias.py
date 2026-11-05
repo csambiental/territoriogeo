@@ -12,7 +12,8 @@ NATIVA = {3, 4, 5, 6, 11, 12, 13, 49, 50}; AGRO = {18, 19, 20, 39, 40, 41, 62, 3
 with rasterio.open('/tmp/terreno/declividade.tif') as f: decl = f.read(1); tr = f.transform; crs = f.crs; H, W = decl.shape
 with rasterio.open('/tmp/terreno/hand.tif') as f: hand = f.read(1)
 uso = np.zeros((H, W), 'uint8')
-with rasterio.open('/vsicurl/' + TIF) as src:
+env = {'GDAL_DISABLE_READDIR_ON_OPEN': 'EMPTY_DIR', 'CPL_VSIL_CURL_ALLOWED_EXTENSIONS': '.tif', 'GDAL_HTTP_MAX_RETRY': '5', 'GDAL_HTTP_RETRY_DELAY': '5'}
+with rasterio.Env(**env), rasterio.open('/vsicurl/' + TIF) as src:
     b = rasterio.transform.array_bounds(H, W, tr)  # oeste, sul, leste, norte
     win = from_bounds(*b, transform=src.transform)
     arr = src.read(1, window=win, boundless=True)
