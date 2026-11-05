@@ -7,9 +7,9 @@ rasterio._err.CPLE_HttpResponseError: HTTP response code: 403
 During handling of the above exception, another exception occurred:
 
 Traceback (most recent call last):
-  File "/home/runner/work/territoriogeo/territoriogeo/tools/rural_microbacias.py", line 15, in <module>
-    with rasterio.open('/vsicurl/' + TIF) as src:
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/territoriogeo/territoriogeo/tools/rural_microbacias.py", line 16, in <module>
+    with rasterio.Env(**env), rasterio.open('/vsicurl/' + TIF) as src:
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/rasterio/env.py", line 463, in wrapper
     return f(*args, **kwds)
            ^^^^^^^^^^^^^^^^
