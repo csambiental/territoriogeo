@@ -1,0 +1,21 @@
+name: Atualizar dados climáticos
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: '41 9 7 * *'
+permissions: { contents: write }
+jobs:
+  dados:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install -q numpy rasterio shapely pyproj pillow pystac-client planetary-computer pysheds
+      - run: |
+          mkdir -p data/_diag
+          python3 tools/clima_historico.py > data/_diag/clima.txt 2>&1 || true
+          python3 tools/calor_vegetacao.py > data/_diag/calor.txt 2>&1 || true
+          python3 tools/alagamento_hand.py > data/_diag/alagamento.txt 2>&1 || true
+      - run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data; git commit -q -m "Dados climáticos atualizados" || true; git pull -q --rebase origin main || true; git push
