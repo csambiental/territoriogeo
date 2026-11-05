@@ -67,9 +67,9 @@ p5, p95 = np.nanpercentile(lst4[np.isfinite(lst4) & ~fora], [3, 97])
 colorir(lst4, p5, p95, PAL_LST).save('data/calor/lst.png', optimize=True)
 colorir(ndvi4, 0.05, 0.85, PAL_NDVI, 185).save('data/calor/ndvi.png', optimize=True)
 datas = sorted(i.datetime.date().isoformat() for i in itens)
-meta = {'coordenadas': coords, 'cenas': len(lsts), 'periodo': f'verões {ano-3}–{ano} (dez–mar)', 'datas': datas}
-json.dump({**meta, 'min': round(float(p5), 1), 'max': round(float(p95), 1), 'unidade': '°C'}, open('data/calor/lst.json', 'w'))
-json.dump({**meta, 'min': 0.05, 'max': 0.85}, open('data/calor/ndvi.json', 'w'))
+meta = {'cantos': coords, 'cenas': len(lsts), 'periodo': f'verões {ano-3}–{ano} (dez–mar)', 'datas': datas}
+json.dump({**meta, 'imagem': 'data/calor/lst.png', 'min': round(float(p5), 1), 'max': round(float(p95), 1), 'unidade': '°C'}, open('data/calor/lst.json', 'w'))
+json.dump({**meta, 'imagem': 'data/calor/ndvi.png', 'min': 0.05, 'max': 0.85}, open('data/calor/ndvi.json', 'w'))
 # média por bairro
 bai = json.load(open('data/base/bairros.geojson')); out = []
 media_urbana = float(np.nanmean(lst4[urb]))

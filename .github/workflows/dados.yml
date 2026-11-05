@@ -10,7 +10,9 @@ jobs:
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
-      - run: pip install -q numpy rasterio shapely pyproj pillow pystac-client planetary-computer pysheds
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: pip install -q "numpy<2" rasterio shapely pyproj pillow pystac-client planetary-computer pysheds
       - run: |
           mkdir -p data/_diag
           python3 tools/clima_historico.py > data/_diag/clima.txt 2>&1 || true

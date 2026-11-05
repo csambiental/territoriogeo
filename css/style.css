@@ -525,3 +525,21 @@ table.ind tr.pos td { color: #1d6b3e; font-weight: 600; }
 .busca-chip { border: 1px solid var(--borda); background: var(--painel); border-radius: 999px; padding: 4px 10px; font: inherit; font-size: .75rem; cursor: pointer; }
 .busca-chip.ativo { background: #c62828; border-color: #c62828; color: #fff; }
 #farmList { max-height: 520px; overflow-y: auto; }
+
+/* ---------- painel do clima ---------- */
+.graf { width: 100%; height: auto; display: block; margin: 2px 0 8px; }
+.graf .ax { font-size: 9px; fill: var(--texto-suave, #6b7a74); }
+.graf .ax.b { font-weight: 700; fill: var(--texto, #1d2b26); font-size: 10px; }
+.graf .gr { stroke: rgba(120,140,130,.25); stroke-width: .6; }
+.graf.rosa { max-width: 220px; margin: 0 auto; }
+#cardClima h3 { font-size: .78rem; margin: 10px 0 2px; color: var(--texto-suave, #55645e); font-weight: 600; }
+.clima-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 8px 0; }
+.clima-kpis div { background: #f1f6f3; border-radius: 8px; padding: 8px 6px; text-align: center; }
+.clima-kpis b { display: block; font-size: 1rem; color: #215c4c; }
+.clima-kpis span { font-size: .66rem; line-height: 1.2; display: block; color: #55645e; }
+.leg-rosa { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; font-size: .7rem; }
+.leg-rosa i, .imp-tipos i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
+.clima-top ol { margin: 6px 0; padding-left: 20px; font-size: .78rem; }
+.imp-tipos { list-style: none; padding: 0; margin: 6px 0 10px; display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: .78rem; }
+.imp-tipos i { border-radius: 50%; }
+@media (prefers-color-scheme: dark) { .clima-kpis div { background: rgba(255,255,255,.06); } .clima-kpis b { color: #8fd0a8; } .clima-kpis span { color: #b9c8c1; } }

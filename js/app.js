@@ -209,6 +209,36 @@ let filtroEtapa = '';
 // ---------- camadas opcionais (botão liga/desliga): bacias, microbacias ----------
 const opcionaisData = {};
 const opcionaisAtivas = new Set();
+// GeoJSON do repositório + (opcional) planilha publicada em CSV com colunas latitude/longitude e "aprovado" = sim
+function lerCSV(txt) {
+    const linhas = []; let campo = '', linha = [], aspas = false;
+    for (let i = 0; i < txt.length; i++) {
+        const c = txt[i];
+        if (aspas) { if (c === '"' && txt[i + 1] === '"') { campo += '"'; i++; } else if (c === '"') aspas = false; else campo += c; }
+        else if (c === '"') aspas = true;
+        else if (c === ',') { linha.push(campo); campo = ''; }
+        else if (c === '\n' || c === '\r') { if (c === '\r' && txt[i + 1] === '\n') i++; linha.push(campo); linhas.push(linha); linha = []; campo = ''; }
+        else campo += c;
+    }
+    if (campo || linha.length) { linha.push(campo); linhas.push(linha); }
+    const cab = (linhas.shift() || []).map(h => h.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''));
+    return linhas.filter(l => l.some(x => x.trim())).map(l => Object.fromEntries(cab.map((h, i) => [h, (l[i] || '').trim()])));
+}
+async function carregarOpcional(o) {
+    const fc = o.arquivo ? await (await fetch(o.arquivo, { cache: 'no-cache' })).json() : { type: 'FeatureCollection', features: [] };
+    if (o.planilha_csv) {
+        try {
+            const linhas = lerCSV(await (await fetch(o.planilha_csv, { cache: 'no-cache' })).text());
+            linhas.filter(r => /^s(im)?$/i.test(r.aprovado || '')).forEach(r => {
+                const lat = parseFloat((r.latitude || '').replace(',', '.')), lon = parseFloat((r.longitude || '').replace(',', '.'));
+                if (!isFinite(lat) || !isFinite(lon)) return;
+                fc.features.push({ type: 'Feature', geometry: { type: 'Point', coordinates: [lon, lat] },
+                    properties: { nome: r.titulo || r.tipo || 'Registro', tipo: r.tipo, Data: r.data, Bairro: r.bairro, Descrição: r.descricao, Fonte: r.fonte || 'Contribuição enviada ao Biosimos', ...(r.foto ? { link: r.foto, link_texto: 'Ver foto ↗' } : {}) } });
+            });
+        } catch (err) { console.warn('Planilha de contribuições indisponível', err); }
+    }
+    return fc;
+}
 function antesDasFazendas() { return fazendas.map(f => `${f.id}-fill`).find(id => map.getLayer(id)); }
 function desenharOpcional(o) {
     const g = opcionaisData[o.id];
@@ -247,11 +277,12 @@ function desenharOpcional(o) {
     }
     if (o.tipo === 'imagem') {
         map.addSource(`op-${o.id}`, { type: 'image', url: g.imagem, coordinates: g.cantos });
-        map.addLayer({ id: `op-${o.id}`, type: 'raster', source: `op-${o.id}`, paint: { 'raster-opacity': o.opacidade ?? 0.8, 'raster-resampling': 'nearest' } }, antes);
+        map.addLayer({ id: `op-${o.id}`, type: 'raster', source: `op-${o.id}`, paint: { 'raster-opacity': o.opacidade ?? 0.8, 'raster-resampling': o.suave ? 'linear' : 'nearest' } }, antes);
         return;
     }
     map.addSource(`op-${o.id}`, { type: 'geojson', data: g });
-    const corP = o.cor_por && o.cores ? ['match', ['get', o.cor_por], ...Object.entries(o.cores).flat(), o.cor || '#777777'] : o.cor;
+    const corP = o.cor_numerica ? ['interpolate', ['linear'], ['coalesce', ['get', o.cor_numerica.campo], 0], ...o.cor_numerica.paradas.flat()]
+        : o.cor_por && o.cores ? ['match', ['get', o.cor_por], ...Object.entries(o.cores).flat(), o.cor || '#777777'] : o.cor;
     if (o.preenchimento) map.addLayer({ id: `op-${o.id}-fill`, type: 'fill', source: `op-${o.id}`, paint: { 'fill-color': corP, 'fill-opacity': o.preenchimento } }, antes);
     if (o.halo) map.addLayer({ id: `op-${o.id}-halo`, type: 'line', source: `op-${o.id}`, paint: { 'line-color': '#000000', 'line-width': (o.largura || 1.5) + 2.5, 'line-opacity': 0.4 } }, antes);
     if (o.clicavel && o.geometria !== 'linha') map.addLayer({ id: `op-${o.id}-hit`, type: 'fill', source: `op-${o.id}`, paint: { 'fill-color': '#000000', 'fill-opacity': 0.01 } }, antes);
@@ -356,7 +387,7 @@ function renderOpcionais() {
             b.classList.add('carregando');
             try {
                 if (o.tipo === 'vetor') opcionaisData[o.id] = opcionaisData[o.id] || { vetor: true };
-                else if (!opcionaisData[o.id]) opcionaisData[o.id] = await (await fetch(o.arquivo, { cache: 'no-cache' })).json();
+                else if (!opcionaisData[o.id]) opcionaisData[o.id] = await carregarOpcional(o);
                 opcionaisAtivas.add(o.id); desenharOpcional(o); aplicarVisibilidadeCamadas();
             } catch (err) { console.error(err); alertaCamada(b); }
             b.classList.remove('carregando');
@@ -1139,6 +1170,75 @@ toggle.addEventListener('click', () => {
 });
 
 // ---------- carregamento ----------
+// ---------- painel do clima (gráficos em SVG, sem bibliotecas) ----------
+function svgSerie(serie, campo, { tipo = 'barra', cor = '#215c4c', altura = 120, unidade = '', tendencia = false } = {}) {
+    const W = 300, H = altura, m = { e: 30, d: 6, t: 8, b: 18 };
+    const xs = serie.map(s => s.ano), ys = serie.map(s => s[campo]);
+    const ymin = tipo === 'barra' ? 0 : Math.floor(Math.min(...ys) - 0.3), ymax = Math.ceil(Math.max(...ys) * (tipo === 'barra' ? 1.08 : 1) + (tipo === 'barra' ? 0 : 0.3));
+    const X = i => m.e + (i + 0.5) * (W - m.e - m.d) / xs.length, Y = v => H - m.b - (v - ymin) / (ymax - ymin || 1) * (H - m.t - m.b);
+    const bw = Math.max(1.5, (W - m.e - m.d) / xs.length - 1.2);
+    let corpo = '';
+    if (tipo === 'barra') corpo = ys.map((v, i) => `<rect x="${(X(i) - bw / 2).toFixed(1)}" y="${Y(v).toFixed(1)}" width="${bw.toFixed(1)}" height="${(Y(ymin) - Y(v)).toFixed(1)}" fill="${cor}" rx="1"><title>${xs[i]}: ${v}${unidade}</title></rect>`).join('');
+    else corpo = `<polyline fill="none" stroke="${cor}" stroke-width="2" points="${ys.map((v, i) => `${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(' ')}"/>` + ys.map((v, i) => `<circle cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="2.4" fill="${cor}"><title>${xs[i]}: ${v}${unidade}</title></circle>`).join('');
+    if (tendencia) {
+        const n = xs.length, mx = (n - 1) / 2, my = ys.reduce((a, b) => a + b, 0) / n;
+        const b = ys.reduce((a, y, i) => a + (i - mx) * (y - my), 0) / ys.reduce((a, _, i) => a + (i - mx) ** 2, 0);
+        corpo += `<line x1="${X(0)}" y1="${Y(my - b * mx)}" x2="${X(n - 1)}" y2="${Y(my + b * (n - 1 - mx))}" stroke="#d84315" stroke-width="1.6" stroke-dasharray="4 3"/>`;
+    }
+    const eixoY = [ymin, (ymin + ymax) / 2, ymax].map(v => `<text x="${m.e - 4}" y="${Y(v) + 3}" text-anchor="end" class="ax">${Number.isInteger(v) ? v : v.toFixed(1)}</text><line x1="${m.e}" x2="${W - m.d}" y1="${Y(v)}" y2="${Y(v)}" class="gr"/>`).join('');
+    const eixoX = xs.map((a, i) => (a % 10 === 0 || i === xs.length - 1) ? `<text x="${X(i)}" y="${H - 4}" text-anchor="middle" class="ax">${a}</text>` : '').join('');
+    return `<svg viewBox="0 0 ${W} ${H}" class="graf" role="img">${eixoY}${corpo}${eixoX}</svg>`;
+}
+function svgRosa(rosa) {
+    const R = 70, c = 90, cores = ['#c8e6c9', '#81c784', '#388e3c', '#1b5e20'];
+    const max = Math.max(...rosa.setores.map(s => rosa.percentual[s].reduce((a, b) => a + b, 0)));
+    let g = [0.33, 0.66, 1].map(f => `<circle cx="${c}" cy="${c}" r="${R * f}" class="gr" fill="none"/>`).join('');
+    rosa.setores.forEach((s, k) => {
+        const ang = (k * 45 - 90) * Math.PI / 180, larg = 16 * Math.PI / 180; let r0 = 0;
+        rosa.percentual[s].forEach((v, f) => {
+            const r1 = r0 + v / max * R;
+            const p = (r, a) => `${(c + r * Math.cos(a)).toFixed(1)},${(c + r * Math.sin(a)).toFixed(1)}`;
+            if (v > 0) g += `<path d="M${p(r0, ang - larg)} L${p(r1, ang - larg)} A${r1},${r1} 0 0 1 ${p(r1, ang + larg)} L${p(r0, ang + larg)} A${r0},${r0} 0 0 0 ${p(r0, ang - larg)}Z" fill="${cores[f]}"><title>${s} · ${rosa.faixas_kmh[f]} km/h: ${v}% dos dias</title></path>`;
+            r0 = r1;
+        });
+        g += `<text x="${c + (R + 12) * Math.cos(ang)}" y="${c + (R + 12) * Math.sin(ang) + 4}" text-anchor="middle" class="ax b">${s}</text>`;
+    });
+    const leg = rosa.faixas_kmh.map((f, i) => `<span><i style="background:${cores[i]}"></i>${f}</span>`).join('');
+    return `<svg viewBox="0 0 180 180" class="graf rosa">${g}</svg><div class="leg-rosa">${leg} <small>km/h (vento máximo do dia)</small></div>`;
+}
+async function renderClima() {
+    const card = document.getElementById('cardClima');
+    if (!card || !dadosGerais.painel_clima) return;
+    let d; try { d = await (await fetch(dadosGerais.painel_clima, { cache: 'no-cache' })).json(); } catch { return; }
+    const r = d.resumo, s = d.serie, ult = s[s.length - 1].ano, ini = s[0].ano;
+    const k = (campo) => r[`${campo}_${ult - 9}_${ult}`];
+    card.hidden = false;
+    card.innerHTML = `<h2>O clima de Londrina está mudando</h2>
+        <p class="hint">Série ${r.periodo} · ${esc(r.fonte)}</p>
+        <div class="clima-kpis">
+            <div><b>+${fmt(r.tendencia_temp_decada, 2)} °C</b><span>por década na temperatura média</span></div>
+            <div><b>${fmt(r.dias32_1981_1990, 0)} → ${fmt(k('dias32'), 0)}</b><span>dias/ano com máxima ≥ 32 °C (1981–90 → ${ult - 9}–${String(ult).slice(2)})</span></div>
+            <div><b>${fmt(r.chuva50_1981_1990, 1)} → ${fmt(k('chuva50'), 1)}</b><span>dias/ano com chuva ≥ 50 mm</span></div>
+        </div>
+        <h3>Temperatura média anual (°C)</h3>${svgSerie(s, 'temp_media', { tipo: 'linha', cor: '#d84315', unidade: ' °C', tendencia: true })}
+        <h3>Dias de calor (máxima ≥ 32 °C)</h3>${svgSerie(s, 'dias_32', { cor: '#ef6c00', unidade: ' dias', tendencia: true })}
+        <h3>Dias de chuva forte (≥ 50 mm)</h3>${svgSerie(s, 'dias_chuva_50', { cor: '#0277bd', unidade: ' dias', altura: 100 })}
+        <h3>Dias com rajadas ≥ 60 km/h</h3>${svgSerie(s, 'dias_rajada_60', { cor: '#5e35b1', unidade: ' dias', altura: 100 })}
+        <h3>De onde vem o vento (${esc(d.rosa_ventos.periodo)})</h3>${svgRosa(d.rosa_ventos)}
+        <details class="clima-top"><summary>Maiores chuvas em um dia (${ini}–${ult})</summary><ol>${d.maiores_chuvas.map(c => `<li>${c.data.split('-').reverse().join('/')} – <b>${fmt(c.mm, 1)} mm</b></li>`).join('')}</ol></details>
+        <p class="hint">Linha tracejada = tendência. Reanálise climática (modelo + observações), com resolução de ~25 km: mostra a tendência regional; valores de estações locais podem diferir.</p>`;
+}
+function renderImpactos() {
+    const card = document.getElementById('cardImpactos'), cfg = dadosGerais.impactos;
+    if (!card || !cfg) return;
+    card.hidden = false;
+    card.innerHTML = `<h2>${esc(cfg.titulo || 'Registre um impacto climático')}</h2>
+        <p>${esc(cfg.texto || '')}</p>
+        <ul class="imp-tipos">${(cfg.tipos || []).map(t => `<li><i style="background:${t.cor}"></i>${esc(t.nome)}</li>`).join('')}</ul>
+        ${cfg.formulario ? `<a class="btn btn-solid" href="${esc(cfg.formulario)}" target="_blank" rel="noopener">Enviar um registro ↗</a>` : ''}
+        ${cfg.email ? `<a class="btn" href="mailto:${esc(cfg.email)}?subject=${encodeURIComponent('Registro de impacto climático – Londrina')}">Enviar por e-mail</a>` : ''}
+        <p class="hint">${esc(cfg.aviso || '')}</p>`;
+}
 async function iniciar() {
     const resp = await fetch('data/fazendas.json', { cache: 'no-cache' });
     const dados = await resp.json();
@@ -1184,6 +1284,8 @@ async function iniciar() {
     renderFiltroEtapa();
     renderTermos();
     renderLicencas();
+    renderClima();
+    renderImpactos();
     renderModosCor();
     renderIndicadoresExternos();
     renderOpcionais();
