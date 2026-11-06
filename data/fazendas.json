@@ -693,6 +693,37 @@
    ]
   },
   {
+   "id": "declividade",
+   "secao": "Relevo",
+   "nome": "Declividade do terreno (classes Embrapa)",
+   "tipo": "imagem",
+   "arquivo": "data/relevo/declividade.json",
+   "opacidade": 0.75,
+   "legenda_itens": [
+    {
+     "rotulo": "plano (0–3%) – sem cor",
+     "cor": "#f1eed2"
+    },
+    {
+     "rotulo": "suave ondulado (3–8%)",
+     "cor": "#d9f0a3"
+    },
+    {
+     "rotulo": "ondulado (8–20%)",
+     "cor": "#fed976"
+    },
+    {
+     "rotulo": "forte ondulado (20–45%)",
+     "cor": "#f03b20"
+    },
+    {
+     "rotulo": "montanhoso (> 45%)",
+     "cor": "#800026"
+    }
+   ],
+   "fonte": "Copernicus DEM GLO-30 (ESA), 30 m – classes de relevo da Embrapa"
+  },
+  {
    "id": "barragens",
    "secao": "Hidrografia",
    "nome": "Barragens cadastradas (IAT)",
