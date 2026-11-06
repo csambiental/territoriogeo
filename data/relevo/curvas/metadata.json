@@ -1,0 +1,15 @@
+{
+"name": "data/relevo/curvas",
+"description": "data/relevo/curvas",
+"version": "2",
+"minzoom": "10",
+"maxzoom": "15",
+"center": "-50.916138,-23.689804,15",
+"bounds": "-51.320896,-23.779467,-50.877262,-23.170962",
+"antimeridian_adjusted_bounds": "-51.320896,-23.779467,-50.877262,-23.170962",
+"type": "overlay",
+"format": "pbf",
+"generator": "tippecanoe v2.82.0",
+"generator_options": "tippecanoe -q -e data/relevo/curvas -l curvas -Z10 -z15 --no-tile-compression --drop-densest-as-needed '--simplification=2' /tmp/curvas.ndjson",
+"json": "{\"vector_layers\":[{\"id\":\"curvas\",\"description\":\"\",\"minzoom\":10,\"maxzoom\":15,\"fields\":{\"Cota (m)\":\"Number\",\"cota\":\"Number\",\"mestra\":\"Number\"}}],\"tilestats\":{\"layerCount\":1,\"layers\":[{\"layer\":\"curvas\",\"count\":2013,\"geometry\":\"LineString\",\"attributeCount\":3,\"attributes\":[{\"attribute\":\"Cota (m)\",\"count\":49,\"type\":\"number\",\"values\":[360,370,380,390,400,410,420,430,440,450,460,470,480,490,500,510,520,530,540,550,560,570,580,590,600,610,620,630,640,650,660,670,680,690,700,710,720,730,740,750,760,770,780,790,800,810,820,830,840],\"min\":360,\"max\":840},{\"attribute\":\"cota\",\"count\":49,\"type\":\"number\",\"values\":[360,370,380,390,400,410,420,430,440,450,460,470,480,490,500,510,520,530,540,550,560,570,580,590,600,610,620,630,640,650,660,670,680,690,700,710,720,730,740,750,760,770,780,790,800,810,820,830,840],\"min\":360,\"max\":840},{\"attribute\":\"mestra\",\"count\":2,\"type\":\"number\",\"values\":[0,1],\"min\":0,\"max\":1}]}]}}"
+}
