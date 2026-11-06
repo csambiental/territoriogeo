@@ -724,6 +724,67 @@
    "fonte": "Copernicus DEM GLO-30 (ESA), 30 m – classes de relevo da Embrapa"
   },
   {
+   "id": "curvas",
+   "secao": "Relevo",
+   "nome": "Curvas de nível (10 m; mestras a cada 50 m)",
+   "tipo": "vetor",
+   "tiles": "data/relevo/curvas/{z}/{x}/{y}.pbf",
+   "tiles_max": 15,
+   "camada_fonte": "curvas",
+   "so_linha": true,
+   "icone": "linha",
+   "cor": "#ff9800",
+   "cor_linha": [
+    "case",
+    [
+     "==",
+     [
+      "get",
+      "mestra"
+     ],
+     1
+    ],
+    "#ff9800",
+    "#ffcc80"
+   ],
+   "largura": [
+    "case",
+    [
+     "==",
+     [
+      "get",
+      "mestra"
+     ],
+     1
+    ],
+    1.4,
+    0.6
+   ],
+   "opacidade": 0.9,
+   "rotulo_campo": "cota",
+   "rotulo_linha": true,
+   "rotulo_minzoom": 13,
+   "rotulo_filtro": [
+    "==",
+    [
+     "get",
+     "mestra"
+    ],
+    1
+   ],
+   "fonte": "Copernicus DEM GLO-30 (ESA), 30 m – curvas geradas pelo projeto; precisão aproximada, não substitui levantamento topográfico",
+   "legenda_itens": [
+    {
+     "rotulo": "curva mestra (a cada 50 m, com cota)",
+     "cor": "#ff9800"
+    },
+    {
+     "rotulo": "curva intermediária (10 m)",
+     "cor": "#ffcc80"
+    }
+   ]
+  },
+  {
    "id": "barragens",
    "secao": "Hidrografia",
    "nome": "Barragens cadastradas (IAT)",

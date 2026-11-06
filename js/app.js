@@ -236,11 +236,13 @@ function desenharOpcional(o) {
         const sl = { source: `op-${o.id}`, 'source-layer': o.camada_fonte, ...(o.minzoom ? { minzoom: o.minzoom } : {}) };
         const cor = o.cor_por && o.cores
             ? ['match', o.cor_prefixo ? ['slice', ['get', o.cor_por], 0, o.cor_prefixo] : ['get', o.cor_por], ...Object.entries(o.cores).flat(), o.cor || '#90a4ae'] : o.cor;
-        map.addLayer({ id: `op-${o.id}-hit`, type: 'fill', ...sl, paint: { 'fill-color': cor, 'fill-opacity': o.preenchimento ?? 0.01 } }, antes);
+        if (!o.so_linha) map.addLayer({ id: `op-${o.id}-hit`, type: 'fill', ...sl, paint: { 'fill-color': cor, 'fill-opacity': o.preenchimento ?? 0.01 } }, antes);
         map.addLayer({ id: `op-${o.id}`, type: 'line', ...sl, paint: { 'line-color': o.cor_linha || cor, 'line-width': o.largura || 0.8, 'line-opacity': o.opacidade ?? 0.9 } }, antes);
         if (o.rotulo_campo) try {
             map.addLayer({ id: `op-${o.id}-nome`, type: 'symbol', ...sl, minzoom: o.rotulo_minzoom || 16,
-                layout: { 'text-field': ['get', o.rotulo_campo], 'text-size': 10.5, 'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'], 'text-max-width': 8 },
+                ...(o.rotulo_filtro ? { filter: o.rotulo_filtro } : {}),
+                layout: { 'text-field': ['get', o.rotulo_campo], 'text-size': 10.5, 'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'], 'text-max-width': 8,
+                    ...(o.rotulo_linha ? { 'symbol-placement': 'line', 'symbol-spacing': 350 } : {}) },
                 paint: { 'text-color': '#ffffff', 'text-halo-color': '#000000', 'text-halo-width': 1.3 } });
         } catch (err) { console.warn('Rótulos indisponíveis', err); }
         return;
