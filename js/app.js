@@ -423,7 +423,7 @@ function mostrarFeicao(c, f) {
     const p = f.properties, cor = (c.cores || {})[p[c.cor_por]] || '#777';
     const tabela = camposDe(c, p).map(k => `<dt>${esc(k)}</dt><dd>${esc(p[k])}</dd>`).join('');
     setTimeout(() => new mapboxgl.Popup({ maxWidth: '320px' }).setLngLat(turf.pointOnFeature(f).geometry.coordinates)
-        .setHTML(`<div class="popup"><h3 class="mono" style="font-size:.8rem">${esc(p.nome)}</h3><span class="status-badge" style="background:${cor}">${esc(p[c.cor_por])}</span><dl class="popup-dl">${tabela}</dl></div>`).addTo(map), 950);
+        .setHTML(`<div class="popup"><h3 class="mono" style="font-size:.8rem">${esc(p.nome)}</h3><span class="status-badge" style="background:${cor}">${esc(p[c.cor_por])}</span><dl class="popup-dl">${tabela}</dl>${c.id === 'imoveis' ? `<button type="button" class="btn btn-solid btn-mini rx-btn" onclick="analisarImovel('${esc(p.nome)}')">🔎 Analisar imóvel (raio-X)</button>` : ''}</div>`).addTo(map), 950);
 }
 function renderBuscaCamada() {
     const c = camadaBusca(); if (!c) return;
@@ -1088,7 +1088,7 @@ map.on('click', (e) => {
                     ${p.descricao ? `<p>${esc(p.descricao)}</p>` : ''}
                     ${tabela ? `<dl class="popup-dl">${tabela}</dl>` : ''}
                     ${(() => { const fz = p.doc_arquivo && fazendas.find(x => (x.documentos || []).some(d => d.arquivo === p.doc_arquivo)); return fz ? galeriaHtml(fz, 4) : ''; })()}
-                    ${docBotao(p.doc_titulo, p.doc_arquivo)}${docBotao(p.hist_titulo, p.hist_arquivo)}</div>`).addTo(map);
+                    ${docBotao(p.doc_titulo, p.doc_arquivo)}${docBotao(p.hist_titulo, p.hist_arquivo)}${c.id === 'imoveis' ? `<button type="button" class="btn btn-solid btn-mini rx-btn" onclick="analisarImovel('${esc(p.nome)}')">🔎 Analisar imóvel (raio-X)</button>` : ''}</div>`).addTo(map);
             return;
         }
     }

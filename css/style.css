@@ -525,3 +525,18 @@ table.ind tr.pos td { color: #1d6b3e; font-weight: 600; }
 .busca-chip { border: 1px solid var(--borda); background: var(--painel); border-radius: 999px; padding: 4px 10px; font: inherit; font-size: .75rem; cursor: pointer; }
 .busca-chip.ativo { background: #c62828; border-color: #c62828; color: #fff; }
 #farmList { max-height: 520px; overflow-y: auto; }
+/* raio-X do imóvel */
+.raiox { width: min(760px, 96vw); }
+.raiox-corpo { padding: 12px 18px; overflow-y: auto; max-height: 72vh; font-size: .86rem; }
+.raiox-corpo h3 { font-size: .92rem; margin: 14px 0 6px; color: var(--verde, #1e5a3c); }
+.rx-cab { display: flex; justify-content: space-between; gap: 12px; background: #f3f7f4; border-radius: 8px; padding: 10px 12px; }
+.rx-cod { font-size: .8rem; font-weight: 700; word-break: break-all; }
+.rx-area { text-align: right; font-size: 1rem; white-space: nowrap; }
+.rx-flags { list-style: none; padding: 0; margin: 10px 0; }
+.rx-flags li { padding: 5px 9px; border-radius: 6px; margin: 3px 0; font-weight: 600; font-size: .82rem; }
+.rx-vermelho { background: #fdecea; color: #b71c1c; } .rx-amarelo { background: #fff6dd; color: #8a5a00; } .rx-verde { background: #e7f5ec; color: #1b6b3a; }
+.rx-tab { width: 100%; border-collapse: collapse; font-size: .78rem; }
+.rx-tab th, .rx-tab td { border-bottom: 1px solid #e5ebe7; padding: 4px 6px; text-align: left; vertical-align: top; }
+.rx-tab th { background: #f3f7f4; }
+.rx-btn { margin-top: 8px; width: 100%; }
+.raiox footer { padding: 10px 18px; display: flex; justify-content: flex-end; }
