@@ -177,9 +177,24 @@ function rxRestaurar(estado) {
     ['rx-viz-rot', 'rx-inter', 'rx-viz', 'rx-alvo-linha', 'rx-alvo'].forEach(id => map.getLayer(id) && map.removeLayer(id));
     ['rx-alvo', 'rx-viz', 'rx-inter', 'rx-rot'].forEach(id => map.getSource(id) && map.removeSource(id));
 }
-async function rxCapturar() {
+async function rxCapturar(alvo) {
     await new Promise(res => { map.once('idle', res); setTimeout(res, 8000); });
-    try { return map.getCanvas().toDataURL('image/jpeg', 0.88); } catch (e) { return null; }
+    await new Promise(res => requestAnimationFrame(() => requestAnimationFrame(res)));
+    try {
+        // copia o mapa e redesenha o perímetro do imóvel por cima (garante o contorno vermelho na imagem)
+        const src = map.getCanvas(), cv = document.createElement('canvas');
+        cv.width = src.width; cv.height = src.height;
+        const ctx = cv.getContext('2d'); ctx.drawImage(src, 0, 0);
+        if (alvo) {
+            const k = src.width / src.clientWidth, g = alvo.geometry;
+            const polis = g.type === 'Polygon' ? [g.coordinates] : g.type === 'MultiPolygon' ? g.coordinates : [];
+            ctx.beginPath();
+            for (const pol of polis) for (const anel of pol) anel.forEach(([x, y], i) => { const p = map.project([x, y]); i ? ctx.lineTo(p.x * k, p.y * k) : ctx.moveTo(p.x * k, p.y * k); });
+            ctx.lineJoin = 'round'; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 7 * k; ctx.stroke();
+            ctx.strokeStyle = '#ff1744'; ctx.lineWidth = 4 * k; ctx.stroke();
+        }
+        return cv.toDataURL('image/jpeg', 0.9);
+    } catch (e) { return null; }
 }
 function rxDesenharAlvo(alvo, preenchido) {
     map.addSource('rx-alvo', { type: 'geojson', data: alvo });
@@ -192,7 +207,7 @@ async function rxFotoLocalizacao(alvo) {
     try {
         rxDesenharAlvo(alvo, false);
         map.fitBounds(boundsDe(alvo), { padding: 120, maxZoom: 15.5, duration: 0 });
-        return await rxCapturar();
+        return await rxCapturar(alvo);
     } finally { rxRestaurar(estado); }
 }
 // imagem 2: sobreposições – imóvel preenchido; vizinhos sobrepostos só com contorno (numerados) e áreas sobrepostas em vermelho
@@ -212,7 +227,7 @@ async function rxFotoSobreposicao(alvo, viz) {
         map.moveLayer('rx-alvo-linha', 'rx-viz-rot');
         const caixa = turf.bbox(turf.featureCollection([alvo, ...inter.features]));
         map.fitBounds([[caixa[0], caixa[1]], [caixa[2], caixa[3]]], { padding: 90, maxZoom: 16, duration: 0 });
-        return await rxCapturar();
+        return await rxCapturar(alvo);
     } finally { rxRestaurar(estado); }
 }
 // imagem 3: SIGEF – parcelas sobre o imóvel coloridas pela situação no registro, imóvel só com contorno
@@ -229,7 +244,7 @@ async function rxFotoSigef(alvo, parc) {
         map.addLayer({ id: 'rx-viz-rot', type: 'symbol', source: 'rx-rot', layout: { 'text-field': ['get', 'n'], 'text-size': 14, 'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'], 'text-allow-overlap': true },
             paint: { 'text-color': '#ffffff', 'text-halo-color': '#1b3a2a', 'text-halo-width': 2.2 } });
         map.fitBounds(boundsDe(alvo), { padding: 90, maxZoom: 16, duration: 0 });
-        return await rxCapturar();
+        return await rxCapturar(alvo);
     } finally {
         ['rx-sig', 'rx-sig-linha'].forEach(id => map.getLayer(id) && map.removeLayer(id));
         rxRestaurar(estado); map.getSource('rx-sig') && map.removeSource('rx-sig');
@@ -248,7 +263,7 @@ async function rxFotoPontos(alvo, pontos) {
         map.addLayer({ id: 'rx-viz-rot', type: 'symbol', source: 'rx-rot', layout: { 'text-field': ['get', 'n'], 'text-size': 11, 'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'], 'text-allow-overlap': true }, paint: { 'text-color': '#ffffff' } });
         const caixa = turf.bbox(turf.featureCollection([alvo, ...fc.features]));
         map.fitBounds([[caixa[0], caixa[1]], [caixa[2], caixa[3]]], { padding: 90, maxZoom: 16, duration: 0 });
-        return await rxCapturar();
+        return await rxCapturar(alvo);
     } finally {
         map.getLayer('rx-pt') && map.removeLayer('rx-pt');
         rxRestaurar(estado); map.getSource('rx-pt') && map.removeSource('rx-pt');
