@@ -1,0 +1,605 @@
+{
+ "cliente": {
+  "nome": "Análise Rural – Joaquim Távora/PR",
+  "subtitulo": "Imóveis rurais, restrições e Raio-X do imóvel · CS Consultoria Ambiental",
+  "selo": "Uso interno",
+  "centro": [
+   -49.90981796319466,
+   -23.456034883587353
+  ],
+  "zoom": 10.5
+ },
+ "atualizado_em": "2026-11-09",
+ "resumo": [
+  {
+   "valor": "845",
+   "rotulo": "imóveis rurais ativos no CAR"
+  },
+  {
+   "valor": "32,1 mil",
+   "rotulo": "hectares cadastrados"
+  },
+  {
+   "valor": "36%",
+   "rotulo": "analisados e em conformidade"
+  }
+ ],
+ "lista_titulo": "Buscar imóvel rural / pendências",
+ "programa": {
+  "titulo": "Sobre esta análise",
+  "texto": "Imóveis rurais do CAR de Joaquim Távora cruzados com SIGEF/INCRA, embargos do IBAMA, alertas de desmatamento, uso do solo (MapBiomas), outorgas e barragens do IAT, microbacias e relevo. Clique num imóvel e use o Raio-X para gerar o relatório.",
+  "etapas": []
+ },
+ "camadas": [
+  {
+   "id": "municipio",
+   "nome": "Limite do município",
+   "arquivo": "data/m/4112801/municipio.geojson",
+   "tipo": "line",
+   "cor": "#ffd54f",
+   "destaque": true
+  },
+  {
+   "id": "imoveis",
+   "nome": "Imóveis rurais (CAR)",
+   "arquivo": "data/m/4112801/car.geojson",
+   "tipo": "fill",
+   "cor_por": "situacao",
+   "cores": {
+    "Analisado – em conformidade": "#2e9e5b",
+    "Aguardando análise": "#ffd54f",
+    "Em análise": "#4fc3f7",
+    "Analisado – notificação pendente": "#ff8a65",
+    "Analisado – regularização ambiental pendente": "#e53935",
+    "Cancelado": "#9e9e9e"
+   },
+   "opacidade": 0.45,
+   "linha_cor": "#ffffff",
+   "linha_largura": 0.6,
+   "rotulo": false,
+   "destacar_selecao": true,
+   "campos": [
+    "Área (ha)",
+    "Módulos fiscais",
+    "Porte",
+    "Status do CAR",
+    "Condição",
+    "Tipo",
+    "Data de cadastro/atualização",
+    "Alertas MapBiomas",
+    "Área de alertas (ha)",
+    "Georreferenciamento SIGEF",
+    "Embargo IBAMA"
+   ],
+   "cor_por_opcoes": [
+    {
+     "campo": "situacao",
+     "rotulo": "Situação do CAR",
+     "titulo": "Imóveis rurais – situação do CAR",
+     "cores": {
+      "Analisado – em conformidade": "#2e9e5b",
+      "Aguardando análise": "#ffd54f",
+      "Em análise": "#4fc3f7",
+      "Analisado – notificação pendente": "#ff8a65",
+      "Analisado – regularização ambiental pendente": "#e53935",
+      "Cancelado": "#9e9e9e"
+     }
+    },
+    {
+     "campo": "Porte",
+     "rotulo": "Porte (módulos)",
+     "titulo": "Imóveis rurais – porte",
+     "cores": {
+      "Pequena (até 4 MF)": "#a5d6a7",
+      "Média (4 a 15 MF)": "#ffb74d",
+      "Grande (acima de 15 MF)": "#e57373"
+     }
+    },
+    {
+     "campo": "faixa_veg",
+     "rotulo": "Vegetação nativa",
+     "titulo": "Imóveis rurais – vegetação nativa (MapBiomas 2023)",
+     "cores": {
+      "Menos de 5%": "#d84315",
+      "5% a 10%": "#ffb74d",
+      "10% a 20%": "#c5e1a5",
+      "20% ou mais": "#2e7d32",
+      "Sem dado": "#9e9e9e"
+     }
+    },
+    {
+     "campo": "pendencia_nivel",
+     "rotulo": "Pendências",
+     "titulo": "Imóveis rurais – pendências ambientais (indicativo)",
+     "cores": {
+      "Prioridade alta": "#c62828",
+      "Prioridade média": "#ef6c00",
+      "Atenção": "#fdd835",
+      "Sem pendência identificada": "#43a047",
+      "Cancelado": "#9e9e9e"
+     }
+    }
+   ],
+   "categorias_ativaveis": true,
+   "campos_prefixos": [
+    "Pendência",
+    "MapBiomas"
+   ]
+  }
+ ],
+ "camadas_opcionais": [
+  {
+   "id": "mb-cobertura",
+   "secao": "MapBiomas",
+   "nome": "Uso e cobertura do solo 2023",
+   "arquivo": "data/m/4112801/cobertura.json",
+   "tipo": "imagem",
+   "icone": "fill",
+   "cor": "#1f8d49",
+   "opacidade": 0.8,
+   "antes": "cam-imoveis",
+   "fonte": "MapBiomas 10 m – Coleção 2 (beta), 2023",
+   "legenda_itens": []
+  },
+  {
+   "id": "mb-alertas",
+   "secao": "MapBiomas",
+   "nome": "Alertas de desmatamento",
+   "arquivo": "data/m/4112801/alertas.geojson",
+   "icone": "fill",
+   "cor": "#ff1744",
+   "largura": 2,
+   "halo": true,
+   "preenchimento": 0.45,
+   "clicavel": true,
+   "prioridade": true,
+   "enquadrar": true,
+   "campos": [
+    "Detectado em",
+    "Publicado em",
+    "Área do alerta (ha)",
+    "Área no imóvel (ha)",
+    "Vetor",
+    "Fonte",
+    "Bioma",
+    "Áreas especiais",
+    "Imóvel (CAR)"
+   ],
+   "fonte": "MapBiomas Alerta"
+  },
+  {
+   "id": "sigef",
+   "secao": "Fundiário",
+   "nome": "Imóveis certificados SIGEF/INCRA",
+   "arquivo": "data/m/4112801/sigef.geojson",
+   "icone": "fill",
+   "cor": "#ff9800",
+   "largura": 1.6,
+   "preenchimento": 0.15,
+   "clicavel": true,
+   "prioridade": true,
+   "campos": [
+    "Código SNCR (INCRA)",
+    "Situação",
+    "Status",
+    "Matrícula / registro",
+    "Área (ha)",
+    "Enviado em",
+    "Certificado em",
+    "Parcela SIGEF"
+   ],
+   "fonte": "SIGEF/INCRA – serviço público do IAT-PR",
+   "cor_por": "Situação",
+   "cores": {
+    "Registrada": "#2e7d32",
+    "Titulada, não registrada": "#29b6f6",
+    "Não titulada": "#ff9800"
+   },
+   "legenda_itens": [
+    {
+     "rotulo": "Registrada em cartório",
+     "cor": "#2e7d32"
+    },
+    {
+     "rotulo": "Titulada, aguardando registro",
+     "cor": "#29b6f6"
+    },
+    {
+     "rotulo": "Certificada no INCRA, sem registro (em processo)",
+     "cor": "#ff9800"
+    }
+   ]
+  },
+  {
+   "id": "embargos-ibama",
+   "secao": "Fiscalização (IBAMA)",
+   "nome": "Áreas embargadas pelo IBAMA",
+   "arquivo": "data/m/4112801/embargos.geojson",
+   "icone": "fill",
+   "cor": "#d50000",
+   "cor_por": "Situação",
+   "cores": {
+    "Embargo vigente": "#d50000",
+    "Desembargado": "#9e9e9e"
+   },
+   "largura": 2.2,
+   "halo": true,
+   "preenchimento": 0.35,
+   "clicavel": true,
+   "prioridade": true,
+   "enquadrar": true,
+   "campos": [
+    "Situação",
+    "Data do embargo",
+    "Embargado",
+    "Imóvel",
+    "Área embargada (ha)",
+    "Tipo de área",
+    "Motivo",
+    "Auto de infração",
+    "Processo",
+    "Desembargo",
+    "Localização"
+   ],
+   "legenda_itens": [
+    {
+     "rotulo": "Embargo vigente",
+     "cor": "#d50000"
+    },
+    {
+     "rotulo": "Desembargado",
+     "cor": "#9e9e9e"
+    }
+   ],
+   "fonte": "IBAMA – dados abertos, Fiscalização: termo de embargo (atualização mensal). Pessoas físicas sem polígono não são exibidas."
+  },
+  {
+   "secao": "Outorgas de água (SIGARH)",
+   "geometria": "ponto",
+   "icone": "dot",
+   "cor_por": "grupo",
+   "cores": {
+    "Poço (água subterrânea)": "#1e88e5",
+    "Captação superficial": "#00acc1",
+    "Lançamento de efluentes": "#8d6e63",
+    "Barragem / soleira": "#3949ab",
+    "Obras e intervenções em rios": "#ff7043"
+   },
+   "rotulo_campo": "nome",
+   "rotulo_minzoom": 15,
+   "clicavel": true,
+   "prioridade": true,
+   "campos": [
+    "Interferência",
+    "Documento",
+    "Portaria / declaração",
+    "Situação",
+    "Setor do usuário",
+    "Finalidade",
+    "Corpo hídrico / aquífero",
+    "Vazão máxima (m³/h)",
+    "Publicação",
+    "Vencimento",
+    "Bacia (comitê)",
+    "Área"
+   ],
+   "legenda_itens": [
+    {
+     "rotulo": "Poço (água subterrânea)",
+     "cor": "#1e88e5"
+    },
+    {
+     "rotulo": "Captação superficial",
+     "cor": "#00acc1"
+    },
+    {
+     "rotulo": "Lançamento de efluentes",
+     "cor": "#8d6e63"
+    },
+    {
+     "rotulo": "Barragem / soleira",
+     "cor": "#3949ab"
+    },
+    {
+     "rotulo": "Obras e intervenções em rios",
+     "cor": "#ff7043"
+    }
+   ],
+   "fonte": "IAT-PR – outorgas SIGARH (deferidas, em renovação ou regularização)",
+   "id": "outorgas-rural",
+   "nome": "Outorgas em imóveis do CAR (83)",
+   "arquivo": "data/m/4112801/outorgas_rural.geojson",
+   "cor": "#00acc1"
+  },
+  {
+   "secao": "Outorgas de água (SIGARH)",
+   "geometria": "ponto",
+   "icone": "dot",
+   "cor_por": "grupo",
+   "cores": {
+    "Poço (água subterrânea)": "#1e88e5",
+    "Captação superficial": "#00acc1",
+    "Lançamento de efluentes": "#8d6e63",
+    "Barragem / soleira": "#3949ab",
+    "Obras e intervenções em rios": "#ff7043"
+   },
+   "rotulo_campo": "nome",
+   "rotulo_minzoom": 15,
+   "clicavel": true,
+   "prioridade": true,
+   "campos": [
+    "Interferência",
+    "Documento",
+    "Portaria / declaração",
+    "Situação",
+    "Setor do usuário",
+    "Finalidade",
+    "Corpo hídrico / aquífero",
+    "Vazão máxima (m³/h)",
+    "Publicação",
+    "Vencimento",
+    "Bacia (comitê)",
+    "Área"
+   ],
+   "legenda_itens": [
+    {
+     "rotulo": "Poço (água subterrânea)",
+     "cor": "#1e88e5"
+    },
+    {
+     "rotulo": "Captação superficial",
+     "cor": "#00acc1"
+    },
+    {
+     "rotulo": "Lançamento de efluentes",
+     "cor": "#8d6e63"
+    },
+    {
+     "rotulo": "Barragem / soleira",
+     "cor": "#3949ab"
+    },
+    {
+     "rotulo": "Obras e intervenções em rios",
+     "cor": "#ff7043"
+    }
+   ],
+   "fonte": "IAT-PR – outorgas SIGARH (deferidas, em renovação ou regularização)",
+   "id": "outorgas-urbana",
+   "nome": "Outorgas fora do CAR (17)",
+   "arquivo": "data/m/4112801/outorgas_urbana.geojson",
+   "cor": "#1e88e5"
+  },
+  {
+   "id": "declividade",
+   "secao": "Relevo",
+   "nome": "Declividade do terreno (classes Embrapa)",
+   "tipo": "imagem",
+   "arquivo": "data/m/4112801/declividade.json",
+   "opacidade": 0.75,
+   "legenda_itens": [
+    {
+     "rotulo": "plano (0–3%) – sem cor",
+     "cor": "#f1eed2"
+    },
+    {
+     "rotulo": "suave ondulado (3–8%)",
+     "cor": "#d9f0a3"
+    },
+    {
+     "rotulo": "ondulado (8–20%)",
+     "cor": "#fed976"
+    },
+    {
+     "rotulo": "forte ondulado (20–45%)",
+     "cor": "#f03b20"
+    },
+    {
+     "rotulo": "montanhoso (> 45%)",
+     "cor": "#800026"
+    }
+   ],
+   "fonte": "Copernicus DEM GLO-30 (ESA), 30 m – classes de relevo da Embrapa"
+  },
+  {
+   "id": "curvas",
+   "secao": "Relevo",
+   "nome": "Curvas de nível (10 m; mestras a cada 50 m)",
+   "tipo": "vetor",
+   "tiles": "data/m/4112801/curvas/{z}/{x}/{y}.pbf",
+   "tiles_max": 15,
+   "camada_fonte": "curvas",
+   "so_linha": true,
+   "icone": "linha",
+   "cor": "#ff9800",
+   "cor_linha": [
+    "case",
+    [
+     "==",
+     [
+      "get",
+      "mestra"
+     ],
+     1
+    ],
+    "#ff9800",
+    "#ffcc80"
+   ],
+   "largura": [
+    "case",
+    [
+     "==",
+     [
+      "get",
+      "mestra"
+     ],
+     1
+    ],
+    1.4,
+    0.6
+   ],
+   "opacidade": 0.9,
+   "rotulo_campo": "cota",
+   "rotulo_linha": true,
+   "rotulo_minzoom": 13,
+   "rotulo_filtro": [
+    "==",
+    [
+     "get",
+     "mestra"
+    ],
+    1
+   ],
+   "fonte": "Copernicus DEM GLO-30 (ESA), 30 m – curvas geradas pelo projeto; precisão aproximada, não substitui levantamento topográfico",
+   "legenda_itens": [
+    {
+     "rotulo": "curva mestra (a cada 50 m, com cota)",
+     "cor": "#ff9800"
+    },
+    {
+     "rotulo": "curva intermediária (10 m)",
+     "cor": "#ffcc80"
+    }
+   ]
+  },
+  {
+   "id": "barragens",
+   "secao": "Hidrografia",
+   "nome": "Barragens cadastradas (IAT)",
+   "arquivo": "data/m/4112801/barragens.geojson",
+   "geometria": "ponto",
+   "icone": "dot",
+   "cor": "#1e88e5",
+   "cor_por": "risco",
+   "cores": {
+    "Alto": "#d32f2f",
+    "Médio": "#ffa000",
+    "Baixo": "#43a047"
+   },
+   "rotulo_campo": "nome",
+   "rotulo_minzoom": 12,
+   "clicavel": true,
+   "prioridade": true,
+   "campos": [
+    "Código IAT",
+    "Categoria de risco",
+    "Dano potencial associado (DPA)",
+    "Classificação",
+    "Fase",
+    "Finalidade",
+    "Tipo (material)",
+    "Altura (m)",
+    "Área do reservatório (m²)",
+    "Volume (hm³)"
+   ],
+   "legenda_itens": [
+    {
+     "rotulo": "Risco alto",
+     "cor": "#d32f2f"
+    },
+    {
+     "rotulo": "Risco médio",
+     "cor": "#ffa000"
+    },
+    {
+     "rotulo": "Risco baixo",
+     "cor": "#43a047"
+    }
+   ],
+   "fonte": "IAT-PR – cadastro de barragens (painel público)"
+  },
+  {
+   "id": "microbacias",
+   "nome": "Microbacias",
+   "arquivo": "data/m/4112801/microbacias.geojson",
+   "cor": "#b2ebf2",
+   "largura": 1,
+   "opacidade": 0.85,
+   "rotulo_campo": "rio",
+   "rotulo_minzoom": 12,
+   "rotulo_tamanho": 11,
+   "clicavel": true,
+   "fonte": "ANA/SNIRH – base ottocodificada"
+  }
+ ],
+ "fazendas": [],
+ "busca_camada": "imoveis",
+ "termos": {
+  "titulo": "Sobre os dados e termos de uso",
+  "texto": "Mapa de caráter informativo, elaborado para diagnóstico territorial e ambiental do município de Joaquim Távora a partir de bases públicas oficiais. Não substitui a consulta aos órgãos competentes e não tem valor de laudo, certidão ou documento oficial.",
+  "avisos": [
+   "Não são exibidos nomes de proprietários de imóveis, CPF ou CNPJ. Nas outorgas de água e nas licenças ambientais, o titular aparece como consta nas consultas públicas do SIGARH e do SGA (IAT). Número do CAR, matrícula e código SIGEF vêm das consultas públicas oficiais.",
+   "Alertas de desmatamento do MapBiomas não são autuação nem infração: indicam supressão de vegetação detectada por satélite, que pode estar autorizada, em análise ou já regularizada.",
+   "O indicador de pendências é uma triagem automática a partir de bases públicas e não constitui laudo, autuação ou conclusão sobre a situação do imóvel; depende de verificação técnica e documental.",
+   "A situação do CAR e a cobertura do solo refletem a data de cada base e podem estar desatualizadas.",
+   "Os percentuais de vegetação nativa vêm de imagens de satélite (MapBiomas) e não substituem a APP e a Reserva Legal declaradas no CAR."
+  ],
+  "fontes": [
+   {
+    "nome": "SICAR – Cadastro Ambiental Rural",
+    "detalhe": "consulta pública, base de 02/10/2026",
+    "link": "https://consultapublica.car.gov.br/"
+   },
+   {
+    "nome": "SIGEF/INCRA – imóveis certificados",
+    "detalhe": "serviço público do IAT-PR",
+    "link": "https://geopr.iat.pr.gov.br/"
+   },
+   {
+    "nome": "IAT-PR – cadastro de barragens (painel público de segurança de barragens)",
+    "link": "https://geopr.iat.pr.gov.br/portal/apps/experiencebuilder/experience/?id=8cf1eaa023fa40e88549e4f727f1812f"
+   },
+   {
+    "nome": "IAT-PR – outorgas de recursos hídricos (SIGARH)",
+    "detalhe": "só documentos deferidos, em renovação ou em regularização; titular conforme consulta pública do SIGARH",
+    "link": "https://geopr.iat.pr.gov.br/"
+   },
+   {
+    "nome": "IAT-PR – consulta pública de processos de licenciamento ambiental",
+    "detalhe": "planilha de 25/10/2026; localização aproximada pela outorga de água (SIGARH) do mesmo empreendimento",
+    "link": "https://geopr.iat.pr.gov.br/"
+   },
+   {
+    "nome": "MapBiomas – Cobertura e uso da terra 10 m (Coleção 2, 2023)",
+    "detalhe": "CC-BY 4.0",
+    "link": "https://brasil.mapbiomas.org/"
+   },
+   {
+    "nome": "MapBiomas Alerta – Sistema de Validação e Refinamento de Alertas de Desmatamento com Imagens de Alta Resolução",
+    "detalhe": "acessado em 22/10/2026, CC-BY 4.0",
+    "link": "https://alerta.mapbiomas.org/"
+   },
+   {
+    "nome": "ANA/SNIRH – bacias, microbacias e base hidrográfica ottocodificada",
+    "link": "https://www.snirh.gov.br/"
+   },
+   {
+    "nome": "IBGE – limite municipal",
+    "link": "https://www.ibge.gov.br/"
+   }
+  ],
+  "contato": "contato@institutobiosimos.org.br",
+  "site": {
+   "url": "https://lp-biosimos.vercel.app/",
+   "texto": "Conheça o Instituto Biosimos"
+  }
+ },
+ "busca_niveis": [
+  "Prioridade alta",
+  "Prioridade média"
+ ],
+ "raiox": {
+  "car": "data/m/4112801/car.geojson",
+  "sigef": "data/m/4112801/sigef.geojson",
+  "embargos": "data/m/4112801/embargos.geojson",
+  "alertas": "data/m/4112801/alertas.geojson",
+  "outorgas": [
+   "data/m/4112801/outorgas_rural.geojson",
+   "data/m/4112801/outorgas_urbana.geojson"
+  ],
+  "licencas": null,
+  "barragens": "data/m/4112801/barragens.geojson",
+  "microbacias": "data/m/4112801/microbacias.geojson",
+  "declividade": "data/m/4112801/declividade.json",
+  "municipio": "Joaquim Távora/PR"
+ }
+}

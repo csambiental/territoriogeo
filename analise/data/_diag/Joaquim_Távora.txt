@@ -1,64 +1,43 @@
+/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:36: DeprecationWarning: ssl.TLSVersion.TLSv1 is deprecated
+  SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
 Município 4112801 Joaquim Távora
-  tentativa 1 <urlopen error timed out>
-  tentativa 2 <urlopen error timed out>
-limite: IBGE indisponível, usando geodata-br (malha IBGE)
 
 ===== CAR =====
-  tentativa 1 <urlopen error [SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] ssl/tls alert handshake failure (_ssl.c:1018)>
-  tentativa 2 <urlopen error [SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] ssl/tls alert handshake failure (_ssl.c:1018)>
-  tentativa 3 <urlopen error [SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] ssl/tls alert handshake failure (_ssl.c:1018)>
-  tentativa 4 <urlopen error [SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] ssl/tls alert handshake failure (_ssl.c:1018)>
-  tentativa 5 <urlopen error [SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] ssl/tls alert handshake failure (_ssl.c:1018)>
-Traceback (most recent call last):
-  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 55, in run
-    try: fn(); log(f'----- {nome} ok ({time.time() - t0:.0f}s)')
-         ^^^^
-  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 89, in car
-    d = http(base + '?' + urllib.parse.urlencode(q), timeout=300)
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 41, in http
-    raise RuntimeError('falhou ' + url[:200])
-RuntimeError: falhou https://geoserver.car.gov.br/geoserver/sicar/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=sicar%3Asicar_imoveis_pr&outputFormat=application%2Fjson&srsName=EPSG%3A4326&CQL_FILTER=cod_muni
------ CAR FALHOU
+  CAR baixados 847
+imóveis 847 Counter({'Aguardando análise': 468, 'Analisado – em conformidade': 304, 'Analisado – notificação pendente': 71, 'Em análise': 2, 'Cancelado': 2}) [('Aguardando análise', 468), ('Analisado, em conformidade com a Lei nº 12.651/2012', 239), ('Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)', 61), ('Analisado, aguardando atendimento a notificação', 59), ('Aguardando análise, após revisão ou atendimento da notificação', 12), ('Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais', 4), ('Em análise', 2), ('Cancelado por decisão administrativa', 2)]
+----- CAR ok (2s)
 
 ===== SIGEF =====
 parcelas 315 Counter({'Registrada': 315})
------ SIGEF ok (8s)
+----- SIGEF ok (3s)
 
 ===== IBAMA =====
-/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:167: DeprecationWarning: The 'shapely.ops.transform()' function is deprecated. Use 'shapely.transform()' or 'shapely.transform_coordseq()' instead. See https://shapely.readthedocs.io/en/latest/manual.html#shapely.ops.transform for more details.
+/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:168: DeprecationWarning: The 'shapely.ops.transform()' function is deprecated. Use 'shapely.transform()' or 'shapely.transform_coordseq()' instead. See https://shapely.readthedocs.io/en/latest/manual.html#shapely.ops.transform for more details.
   g = transform(geo, transform(utm, Point(lon, lat)).buffer(60)); aprox = True
 embargos 0 Counter()
------ IBAMA ok (12s)
+----- IBAMA ok (7s)
 
 ===== Microbacias =====
 microbacias 59
------ Microbacias ok (13s)
+----- Microbacias ok (1s)
 
 ===== MapBiomas cobertura =====
+  indisponível: lulc_10m/collection_2/integration/mapbiomas_10m_collection2_integration_v1-classification_2023.tif HTTP response code: 403
+  indisponível: collection_10/lulc/coverage/brazil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lulc/coverage/brasil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lclu/coverage/brazil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lclu/coverage/brasil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lulc/coverage/brazil_coverage_2023.tif HTTP response code: 403
+  indisponível: collection_9/lclu/coverage/brasil_coverage_2023.tif HTTP response code: 403
+  indisponível: collection_9/lulc/coverage/brasil_coverage_2023.tif HTTP response code: 403
 Traceback (most recent call last):
-  File "rasterio/_base.pyx", line 311, in rasterio._base.DatasetBase.__init__
-  File "rasterio/_base.pyx", line 222, in rasterio._base.open_dataset
-  File "rasterio/_err.pyx", line 359, in rasterio._err.exc_wrap_pointer
-rasterio._err.CPLE_HttpResponseError: HTTP response code: 403
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 55, in run
+  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 60, in run
     try: fn(); log(f'----- {nome} ok ({time.time() - t0:.0f}s)')
          ^^^^
-  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 236, in mb_cobertura
-    with rasterio.Env(**env), rasterio.open('/vsicurl/' + TIF) as src:
-                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/rasterio/env.py", line 463, in wrapper
-    return f(*args, **kwds)
-           ^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/rasterio/__init__.py", line 356, in open
-    dataset = DatasetReader(path, driver=driver, sharing=sharing, **kwargs)
-              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "rasterio/_base.pyx", line 313, in rasterio._base.DatasetBase.__init__
-rasterio.errors.RasterioIOError: HTTP response code: 403
+  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 247, in mb_cobertura
+    if not TIF: raise RuntimeError('nenhuma fonte MapBiomas respondeu')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: nenhuma fonte MapBiomas respondeu
 ----- MapBiomas cobertura FALHOU
 
 ===== MapBiomas alertas =====
@@ -67,54 +46,25 @@ rasterio.errors.RasterioIOError: HTTP response code: 403
   tentativa 1 HTTP Error 400: Bad Request
   tentativa 2 HTTP Error 400: Bad Request
 alertas 0
-Traceback (most recent call last):
-  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 55, in run
-    try: fn(); log(f'----- {nome} ok ({time.time() - t0:.0f}s)')
-         ^^^^
-  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 315, in mb_alertas
-    imv = json.load(open(f'{D}/car.geojson'))
-                    ^^^^^^^^^^^^^^^^^^^^^^^^
-FileNotFoundError: [Errno 2] No such file or directory: 'data/m/4112801/car.geojson'
------ MapBiomas alertas FALHOU
+----- MapBiomas alertas ok (119s)
 
 ===== Outorgas SIGARH =====
-Traceback (most recent call last):
-  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 55, in run
-    try: fn(); log(f'----- {nome} ok ({time.time() - t0:.0f}s)')
-         ^^^^
-  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 342, in outorgas
-    imv = [shape(f['geometry']) for f in json.load(open(f'{D}/car.geojson'))['features']]
-                                                   ^^^^^^^^^^^^^^^^^^^^^^^^
-FileNotFoundError: [Errno 2] No such file or directory: 'data/m/4112801/car.geojson'
------ Outorgas SIGARH FALHOU
+outorgas rural 83 fora do CAR 17
+----- Outorgas SIGARH ok (4s)
 
 ===== Barragens IAT =====
 barragens 3
------ Barragens IAT ok (6s)
+----- Barragens IAT ok (2s)
 
 ===== Relevo =====
 0...10...20...30...40...50...60...70...80...90...100 - done.
-relevo: cotas 0.0 921.3053588867188
------ Relevo ok (8s)
+relevo: cotas 453.7571716308594 921.3053588867188
+----- Relevo ok (7s)
 
 ===== Pendências =====
-Traceback (most recent call last):
-  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 55, in run
-    try: fn(); log(f'----- {nome} ok ({time.time() - t0:.0f}s)')
-         ^^^^
-  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 413, in pendencias
-    imv = json.load(open(f'{D}/car.geojson'))
-                    ^^^^^^^^^^^^^^^^^^^^^^^^
-FileNotFoundError: [Errno 2] No such file or directory: 'data/m/4112801/car.geojson'
------ Pendências FALHOU
+Counter({'Atenção': 470, 'Sem pendência identificada': 304, 'Prioridade média': 71, 'Cancelado': 2})
+----- Pendências ok (0s)
 
 ===== Config =====
-Traceback (most recent call last):
-  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 55, in run
-    try: fn(); log(f'----- {nome} ok ({time.time() - t0:.0f}s)')
-         ^^^^
-  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 448, in config
-    imv = json.load(open(f'{D}/car.geojson'))['features']
-                    ^^^^^^^^^^^^^^^^^^^^^^^^
-FileNotFoundError: [Errno 2] No such file or directory: 'data/m/4112801/car.geojson'
------ Config FALHOU
+config ok Joaquim Távora 845 imóveis
+----- Config ok (0s)
