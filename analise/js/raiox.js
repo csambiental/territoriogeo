@@ -29,19 +29,18 @@ function rxBarragemDaMassa(m, barrs) {
     const bb = turf.bbox(m), d = 0.002;
     for (const b of barrs) { const [x, y] = b.geometry.coordinates; if (x < bb[0] - d || x > bb[2] + d || y < bb[1] - d || y > bb[3] + d) continue;
         if (turf.booleanPointInPolygon(b, m)) return b;
-        const ls = turf.polygonToLine(m); const arr = ls.type === 'FeatureCollection' ? ls.features : [ls];
+        const arr = turf.flatten(turf.polygonToLine(m)).features;
         if (Math.min(...arr.map(l => turf.pointToLineDistance(b, l))) <= 0.2) return b; }
     return null;
 }
 function rxPontos(alvo, feats, raioKm = 0.5) {
     const bb = turf.bbox(alvo), m = raioKm / 100, dentro = [], perto = [];
-    const linhas = turf.polygonToLine(alvo);
+    const ls = turf.flatten(turf.polygonToLine(alvo)).features;
     for (const f of feats) {
         if (f.geometry?.type !== 'Point') continue;
         const [x, y] = f.geometry.coordinates;
         if (x < bb[0] - m || x > bb[2] + m || y < bb[1] - m || y > bb[3] + m) continue;
         if (turf.booleanPointInPolygon(f, alvo)) { dentro.push({ f, km: 0 }); continue; }
-        const ls = linhas.type === 'FeatureCollection' ? linhas.features : [linhas];
         const km = Math.min(...ls.map(l => turf.pointToLineDistance(f, l)));
         if (km <= raioKm) perto.push({ f, km });
     }
@@ -224,7 +223,7 @@ async function analisarImovel(nome) {
                         esc([q['Uso principal'] || q['Finalidade (IAT)'], q['Altura (m)'] && q['Altura (m)'] + ' m', q['Volume (hm³)'] && q['Volume (hm³)'] + ' hm³'].filter(Boolean).join(' · ') || '–'), l[3], l[4]]; })); })()}
             <h3>Açudes, represas e lagos no imóvel (ANA)</h3>
             ${tab(['Nº', 'Tipo', 'Espelho d\'água total (ha)', 'Dentro do imóvel (ha)', 'Barragem cadastrada', 'Centro (lat, long)'], r.massas.slice(0, 15).map((x, i) => { const q = x.f.properties, c = turf.pointOnFeature(x.f).geometry.coordinates;
-                return [`<b>${i + 1}</b>`, esc(q.grupo), esc(q['Área (ha)']), rxF(x.ha, 2), x.barr ? `Sim – ${esc(x.barr.properties.nome)}` : (/artificial/.test(q.grupo) ? '<b>Não localizada</b>' : '–'),
+                return [`<b>${i + 1}</b>`, esc(q.grupo), esc(q['Área (ha)']), rxF(Math.min(x.ha, rxNum(q['Área (ha)']) || x.ha), 2), x.barr ? `Sim – ${esc(x.barr.properties.nome)}` : (/artificial/.test(q.grupo) ? '<b>Não localizada</b>' : '–'),
                     `<span class="mono">${c[1].toFixed(5)}, ${c[0].toFixed(5)}</span>`]; }))}
             ${rxResumoHtml(rxNecessidades(p, r, area, uso))}
             <p class="hint">Microbacia: ${esc(r.mbac[0] || '–')} · Dados do mapa atualizados em ${esc(dadosGerais.atualizado_em || '')}.</p>

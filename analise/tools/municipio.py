@@ -438,14 +438,14 @@ def barragens():
     for f in iat:
         p = f['properties']; pt = Point(f['geometry']['coordinates'][:2])
         extra = {'Código IAT': p.get('codigo_barragem') or '', 'Classificação IAT': p.get('classificacao') or '',
-                 'Finalidade (IAT)': (p.get('finalidade_recurso') or '').replace(',', ', '), 'Área do reservatório (m²)': nb(p.get('area_reservatorio_m2'), 0)}
+                 'Finalidade (IAT)': (p.get('finalidade_recurso') or '').replace('_', ' ').replace(',', ', '), 'Área do reservatório (m²)': nb(p.get('area_reservatorio_m2'), 0)}
         perto = sorted(((pt.distance(Point(o['geometry']['coordinates'])) * 111000, o) for o in out if o['properties']['Fonte'].startswith('SNISB')), key=lambda t: t[0])
         if perto and perto[0][0] <= 300:
             o = perto[0][1]['properties']; o.update({k: v for k, v in extra.items() if v}); o['Fonte'] = 'SNISB/ANA + vistoria IAT'; o['grupo'] = 'Barragem (SNISB + vistoria IAT)'
             continue
         risco = norm(nc(p.get('categoria_risco'))); dpa = norm(nc(p.get('dpa')))
         out.append({'type': 'Feature', 'geometry': {'type': 'Point', 'coordinates': f['geometry']['coordinates'][:2]}, 'properties': {
-            'nome': p.get('nome_barragem') or 'Barragem', 'risco': risco, 'dpa': dpa, 'grupo': 'Barragem (vistoria IAT)', 'Fonte': 'Vistoria IAT',
+            'nome': (lambda n: n if n and 'sem nome' not in n.lower() else 'Barragem sem nome')((p.get('nome_barragem') or '').strip()), 'risco': risco, 'dpa': dpa, 'grupo': 'Barragem (vistoria IAT)', 'Fonte': 'Vistoria IAT',
             'Categoria de risco': risco, 'Dano potencial associado (DPA)': dpa, 'Fase': p.get('fase_vida') or '', 'Tipo (material)': p.get('tipo_barragem_material') or '',
             'Altura (m)': nb(p.get('altura_m'), 1), 'Volume (hm³)': nb(p.get('volume_reservatorio_hm3'), 4), **extra}})
     salvar('barragens.geojson', out); log('barragens', len(out), 'SNISB', len(sn), 'IAT', len(iat))
