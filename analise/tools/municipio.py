@@ -29,12 +29,17 @@ if not COD.isdigit():
 D = f'data/m/{COD}'
 os.makedirs(D, exist_ok=True)
 UA = {'User-Agent': 'csambiental-analise-rural'}
+import ssl
+SSL_LEGADO = ssl.create_default_context()
+SSL_LEGADO.set_ciphers('DEFAULT@SECLEVEL=0')
+SSL_LEGADO.options |= getattr(ssl, 'OP_LEGACY_SERVER_CONNECT', 0x4)
+SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
 def log(*a): print(*a, flush=True)
 def http(url, dados=None, tent=5, timeout=180, raw=False):
     for t in range(tent):
         try:
             req = urllib.request.Request(url, data=urllib.parse.urlencode(dados).encode() if dados else None, headers=UA)
-            r = urllib.request.urlopen(req, timeout=timeout).read()
+            r = urllib.request.urlopen(req, timeout=timeout, context=SSL_LEGADO if 'car.gov.br' in url else None).read()
             return r if raw else json.loads(r)
         except Exception as e:
             log('  tentativa', t + 1, str(e)[:200]); time.sleep(10 * (t + 1))
@@ -82,14 +87,10 @@ TIPO = {'IRU': 'Imóvel rural', 'AST': 'Assentamento', 'PCT': 'Povos e comunidad
 @etapa('CAR')
 def car():
     base = 'https://geoserver.car.gov.br/geoserver/sicar/wfs'
-    feats, ini = [], 0
-    while True:
-        q = {'service': 'WFS', 'version': '2.0.0', 'request': 'GetFeature', 'typeNames': 'sicar:sicar_imoveis_pr', 'outputFormat': 'application/json',
-             'srsName': 'EPSG:4326', 'CQL_FILTER': f'cod_municipio_ibge={COD}', 'count': 1000, 'startIndex': ini, 'sortBy': 'cod_imovel'}
-        d = http(base + '?' + urllib.parse.urlencode(q), timeout=300)
-        fs = d.get('features', []); feats += fs; log('  lote', ini, len(fs))
-        if len(fs) < 1000: break
-        ini += len(fs)
+    q = {'service': 'WFS', 'version': '1.0.0', 'request': 'GetFeature', 'typeName': 'sicar:sicar_imoveis_pr', 'outputFormat': 'application/json',
+         'srsName': 'EPSG:4326', 'CQL_FILTER': f'cod_municipio_ibge={COD}'}
+    feats = http(base + '?' + urllib.parse.urlencode(q), timeout=600).get('features', [])
+    log('  CAR baixados', len(feats))
     out = []
     for f in feats:
         p = f['properties']; g = shape(f['geometry']).buffer(0)
@@ -224,14 +225,27 @@ CORES_GRUPO = {'Vegetação nativa': '#1f8d49', 'Agricultura': '#e974ed', 'Pasta
 ANO = '2023'
 @etapa('MapBiomas cobertura')
 def mb_cobertura():
+    global ANO
     import rasterio
     from rasterio.windows import from_bounds
     from rasterio.features import rasterize
     from rasterio.warp import reproject, Resampling, calculate_default_transform
     from PIL import Image
     from pyproj import Transformer
-    TIF = f'https://storage.googleapis.com/mapbiomas-public/initiatives/brasil/lulc_10m/collection_2/integration/mapbiomas_10m_collection2_integration_v1-classification_{ANO}.tif'
     env = {'GDAL_DISABLE_READDIR_ON_OPEN': 'EMPTY_DIR', 'CPL_VSIL_CURL_ALLOWED_EXTENSIONS': '.tif', 'GDAL_HTTP_MAX_RETRY': '5', 'GDAL_HTTP_RETRY_DELAY': '5'}
+    G = 'https://storage.googleapis.com/mapbiomas-public/initiatives/brasil/'
+    CAND = [G + f'lulc_10m/collection_2/integration/mapbiomas_10m_collection2_integration_v1-classification_{ANO}.tif',
+            G + 'collection_10/lulc/coverage/brazil_coverage_2024.tif', G + 'collection_10/lulc/coverage/brasil_coverage_2024.tif',
+            G + 'collection_10/lclu/coverage/brazil_coverage_2024.tif', G + 'collection_10/lclu/coverage/brasil_coverage_2024.tif',
+            G + 'collection_10/lulc/coverage/brazil_coverage_2023.tif', G + 'collection_9/lclu/coverage/brasil_coverage_2023.tif',
+            G + 'collection_9/lulc/coverage/brasil_coverage_2023.tif']
+    TIF = None
+    for u in CAND:
+        try:
+            with rasterio.Env(**env), rasterio.open('/vsicurl/' + u) as t: TIF = u; log('MapBiomas fonte:', u, t.res); break
+        except Exception as e: log('  indisponível:', u.replace(G, ''), str(e)[:60])
+    if not TIF: raise RuntimeError('nenhuma fonte MapBiomas respondeu')
+    ANO = re.search(r'(20\d\d)\.tif', TIF).group(1)
     minx, miny, maxx, maxy = MUN.buffer(0.01).bounds
     with rasterio.Env(**env), rasterio.open('/vsicurl/' + TIF) as src:
         win = from_bounds(minx, miny, maxx, maxy, src.transform).round_offsets().round_lengths()
@@ -382,6 +396,10 @@ def relevo():
     cat = Client.open('https://planetarycomputer.microsoft.com/api/stac/v1', modifier=pc.sign_inplace)
     srcs = [rasterio.open(i.assets['data'].href) for i in cat.search(collections=['cop-dem-glo-30'], bbox=bbox).items()]
     dem, tr = merge(srcs, bounds=bbox); dem = dem[0].astype('float32')
+    falta = dem <= 1
+    if falta.any():
+        idx = ndimage.distance_transform_edt(falta, return_distances=False, return_indices=True)
+        dem = dem[tuple(idx)]
     H, W = dem.shape
     fora = geometry_mask([mapping(MUN)], (H, W), tr, invert=False)
     lat0 = (bbox[1] + bbox[3]) / 2; dx = abs(tr.a) * 111320 * np.cos(np.radians(lat0)); dy = abs(tr.e) * 110540
