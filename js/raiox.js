@@ -312,6 +312,17 @@ ${u.html.replace('<!--FOTO4-->', foto4 ? `<img class="mapa" src="${foto4}" alt="
 </body></html>`);
     janela.document.close();
 }
+// baixa em segundo plano, depois que o mapa abre, os dados usados pelo Raio-X (o primeiro clique fica instantâneo)
+function rxPrecarregar() {
+    if (typeof dadosGerais === 'undefined' || !dadosGerais.camadas) return setTimeout(rxPrecarregar, 2000);
+    const C = dadosGerais.raiox;
+    const lista = C ? [C.sigef, C.embargos, C.alertas, ...(C.outorgas || []), C.licencas, C.barragens, C.microbacias, C.declividade]
+        : ['data/fundiario/sigef_londrina.geojson', 'data/ibama/embargos_londrina.geojson', 'data/mapbiomas/alertas_londrina.geojson', 'data/iat/outorgas_rural.geojson',
+           'data/iat/outorgas_urbana.geojson', 'data/iat/licencas_localizadas.geojson', 'data/iat/barragens_londrina.geojson', 'data/bacias/microbacias_regiao.geojson', 'data/relevo/declividade.json'];
+    const ocioso = window.requestIdleCallback || ((fn) => setTimeout(fn, 1500));
+    ocioso(() => { lista.filter(Boolean).forEach(a => rxJSON(a).catch(() => { delete RX.cache[a]; })); rxRasterDecliv().catch(() => { }); });
+}
+setTimeout(rxPrecarregar, 4000);
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('raioxFechar')?.addEventListener('click', () => document.getElementById('raioxDialog').close());
     document.getElementById('raioxPdf')?.addEventListener('click', gerarRelatorioRaiox);
