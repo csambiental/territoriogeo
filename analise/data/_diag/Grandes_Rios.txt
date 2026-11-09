@@ -2,25 +2,6 @@
   SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
 Município 4108700 Grandes Rios
 
-===== CAR =====
-  CAR baixados 915
-imóveis 915 Counter({'Aguardando análise': 556, 'Analisado – em conformidade': 254, 'Analisado – notificação pendente': 67, 'Em análise': 34, 'Cancelado': 4}) [('Aguardando análise', 556), ('Analisado, em conformidade com a Lei nº 12.651/2012', 200), ('Analisado, aguardando atendimento a notificação', 47), ('Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)', 45), ('Em análise', 34), ('Aguardando análise, após revisão ou atendimento da notificação', 20), ('Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais', 9), ('Cancelado por decisão administrativa', 4)]
------ CAR ok (2s)
-
-===== SIGEF =====
-parcelas 285 Counter({'Registrada': 275, 'Titulada, não registrada': 10})
------ SIGEF ok (8s)
-
-===== IBAMA =====
-/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:168: DeprecationWarning: The 'shapely.ops.transform()' function is deprecated. Use 'shapely.transform()' or 'shapely.transform_coordseq()' instead. See https://shapely.readthedocs.io/en/latest/manual.html#shapely.ops.transform for more details.
-  g = transform(geo, transform(utm, Point(lon, lat)).buffer(60)); aprox = True
-embargos 0 Counter()
------ IBAMA ok (17s)
-
-===== Microbacias =====
-microbacias 14
------ Microbacias ok (13s)
-
 ===== MapBiomas cobertura =====
   indisponível: lulc_10m/collection_2/integration/mapbiomas_10m_collection2_integration_v1-classification_2023.tif HTTP response code: 403
   indisponível: collection_10/lulc/coverage/brazil_coverage_2024.tif HTTP response code: 403
@@ -30,6 +11,7 @@ microbacias 14
   indisponível: collection_10/lulc/coverage/brazil_coverage_2023.tif HTTP response code: 403
   indisponível: collection_9/lclu/coverage/brasil_coverage_2023.tif HTTP response code: 403
   indisponível: collection_9/lulc/coverage/brasil_coverage_2023.tif HTTP response code: 403
+  indisponível: collection_8/lclu/coverage/brasil_coverage_2022.tif HTTP response code: 403
 Traceback (most recent call last):
   File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 60, in run
     try: fn(); log(f'----- {nome} ok ({time.time() - t0:.0f}s)')
@@ -39,28 +21,6 @@ Traceback (most recent call last):
                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 RuntimeError: nenhuma fonte MapBiomas respondeu
 ----- MapBiomas cobertura FALHOU
-
-===== MapBiomas alertas =====
-  tentativa 1 HTTP Error 400: Bad Request
-  tentativa 2 HTTP Error 400: Bad Request
-  tentativa 1 HTTP Error 400: Bad Request
-  tentativa 2 HTTP Error 400: Bad Request
-camada mapbiomas-alertas:mv_rural_properties_with_alerts_published
-alertas 1
------ MapBiomas alertas ok (65s)
-
-===== Outorgas SIGARH =====
-outorgas rural 93 fora do CAR 16
------ Outorgas SIGARH ok (3s)
-
-===== Barragens IAT =====
-barragens 0
------ Barragens IAT ok (2s)
-
-===== Relevo =====
-0...10...20...30...40...50...60...70...80...90...100 - done.
-relevo: cotas 369.38275146484375 829.516357421875
------ Relevo ok (7s)
 
 ===== Pendências =====
 Counter({'Atenção': 590, 'Sem pendência identificada': 254, 'Prioridade média': 67, 'Cancelado': 4})

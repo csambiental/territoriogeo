@@ -131,7 +131,7 @@
   {
    "id": "mb-cobertura",
    "secao": "MapBiomas",
-   "nome": "Uso e cobertura do solo 2023",
+   "nome": "Uso e cobertura do solo ",
    "arquivo": "data/m/4112801/cobertura.json",
    "tipo": "imagem",
    "icone": "fill",

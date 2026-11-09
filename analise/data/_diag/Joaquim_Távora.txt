@@ -2,25 +2,6 @@
   SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
 Município 4112801 Joaquim Távora
 
-===== CAR =====
-  CAR baixados 847
-imóveis 847 Counter({'Aguardando análise': 468, 'Analisado – em conformidade': 304, 'Analisado – notificação pendente': 71, 'Em análise': 2, 'Cancelado': 2}) [('Aguardando análise', 468), ('Analisado, em conformidade com a Lei nº 12.651/2012', 239), ('Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)', 61), ('Analisado, aguardando atendimento a notificação', 59), ('Aguardando análise, após revisão ou atendimento da notificação', 12), ('Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais', 4), ('Em análise', 2), ('Cancelado por decisão administrativa', 2)]
------ CAR ok (2s)
-
-===== SIGEF =====
-parcelas 315 Counter({'Registrada': 315})
------ SIGEF ok (3s)
-
-===== IBAMA =====
-/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:168: DeprecationWarning: The 'shapely.ops.transform()' function is deprecated. Use 'shapely.transform()' or 'shapely.transform_coordseq()' instead. See https://shapely.readthedocs.io/en/latest/manual.html#shapely.ops.transform for more details.
-  g = transform(geo, transform(utm, Point(lon, lat)).buffer(60)); aprox = True
-embargos 0 Counter()
------ IBAMA ok (7s)
-
-===== Microbacias =====
-microbacias 59
------ Microbacias ok (1s)
-
 ===== MapBiomas cobertura =====
   indisponível: lulc_10m/collection_2/integration/mapbiomas_10m_collection2_integration_v1-classification_2023.tif HTTP response code: 403
   indisponível: collection_10/lulc/coverage/brazil_coverage_2024.tif HTTP response code: 403
@@ -30,6 +11,7 @@ microbacias 59
   indisponível: collection_10/lulc/coverage/brazil_coverage_2023.tif HTTP response code: 403
   indisponível: collection_9/lclu/coverage/brasil_coverage_2023.tif HTTP response code: 403
   indisponível: collection_9/lulc/coverage/brasil_coverage_2023.tif HTTP response code: 403
+  indisponível: collection_8/lclu/coverage/brasil_coverage_2022.tif HTTP response code: 403
 Traceback (most recent call last):
   File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 60, in run
     try: fn(); log(f'----- {nome} ok ({time.time() - t0:.0f}s)')
@@ -39,27 +21,6 @@ Traceback (most recent call last):
                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 RuntimeError: nenhuma fonte MapBiomas respondeu
 ----- MapBiomas cobertura FALHOU
-
-===== MapBiomas alertas =====
-  tentativa 1 HTTP Error 400: Bad Request
-  tentativa 2 HTTP Error 400: Bad Request
-  tentativa 1 HTTP Error 400: Bad Request
-  tentativa 2 HTTP Error 400: Bad Request
-alertas 0
------ MapBiomas alertas ok (119s)
-
-===== Outorgas SIGARH =====
-outorgas rural 83 fora do CAR 17
------ Outorgas SIGARH ok (4s)
-
-===== Barragens IAT =====
-barragens 3
------ Barragens IAT ok (2s)
-
-===== Relevo =====
-0...10...20...30...40...50...60...70...80...90...100 - done.
-relevo: cotas 453.7571716308594 921.3053588867188
------ Relevo ok (7s)
 
 ===== Pendências =====
 Counter({'Atenção': 470, 'Sem pendência identificada': 304, 'Prioridade média': 71, 'Cancelado': 2})
