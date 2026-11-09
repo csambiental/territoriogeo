@@ -119,6 +119,16 @@ function rxNecessidades(p, r, area, uso) {
     // água
     const ag = [...r.agua.dentro];
     ag.forEach(x => { const v = rxData(x.f.properties.Vencimento); if (v && v < em12m) add(v < hoje ? 1 : 2, 'Outorga de água', `${x.f.properties.Interferência || 'Outorga'} – vence${v < hoje ? 'u' : ''} em ${x.f.properties.Vencimento}`, 'Renovação da outorga no SIGARH (IAT)'); });
+    if (ag.length) {
+        const tipo = x => x.f.properties.Interferência || x.f.properties.grupo || '';
+        const capta = ag.filter(x => /capta|subterr|poço/i.test(tipo(x))), lanca = ag.filter(x => /lançamento/i.test(tipo(x)));
+        const tipos = {}; capta.forEach(x => { const t = x.f.properties.Interferência || x.f.properties.grupo || 'Outorga'; tipos[t] = (tipos[t] || 0) + 1; });
+        const desc = Object.entries(tipos).map(([t, n]) => `${n} ${t.toLowerCase()}`).join(', ');
+        if (capta.length) add(2, 'Outorga – monitoramento', `${capta.length} outorga(s) de uso de água no imóvel (${desc})`,
+            'Verificação in loco: hidrômetro/medidor de vazão instalado e funcionando, leituras registradas e volumes dentro do outorgado; análise da qualidade da água captada; conferir as demais condicionantes da portaria (IAT/SIGARH)');
+        if (lanca.length) add(2, 'Outorga – efluentes', `${lanca.length} outorga(s) de lançamento de efluentes no imóvel`,
+            'Monitoramento do efluente lançado (vazão e análises laboratoriais conforme a portaria) e do corpo receptor; relatórios ao IAT');
+    }
     if (!ag.length) add(3, 'Uso da água', 'Nenhuma outorga do SIGARH localizada dentro do imóvel', 'Verificar em campo os usos de água (poço, captação, barragem, irrigação, dessedentação) e regularizar por outorga ou declaração de uso independente');
     r.barr.dentro.forEach(x => { const q = x.f.properties, pnsb = /^sim/i.test(q['Regulada pela PNSB'] || '');
         if (pnsb && /^n[ãa]o/i.test(q['Plano de segurança'] || '')) add(1, 'Segurança de barragem', `${q.nome}: enquadrada na PNSB e sem Plano de Segurança declarado (risco ${q.risco || 'não informado'}, DPA ${q.dpa || 'não informado'})`, 'Elaborar Plano de Segurança da Barragem, inspeções e revisão periódica (Lei 12.334/2010 e normas do IAT)');
