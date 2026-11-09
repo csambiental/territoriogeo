@@ -1,0 +1,69 @@
+== IAT GeoPR
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/bc_hid_barragem_l_10k/FeatureServer/0 | Hidrografia - Barragens - Mapeamento por radar 1:10.000 | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/bc_hid_barragem_l_10k/MapServer/0 | Hidrografia - Barragens - Mapeamento por radar 1:10.000 | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/grande_reserva_mata_atlantica/FeatureServer/0 | Grande Reserva Mata Atântica | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/grande_reserva_mata_atlantica/MapServer/0 | Grande Reserva Mata Atântica | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/mbai_barragens/FeatureServer/0 | Barragens / Mapeamento da Bacia do Rio Alto Iguaçu, PR | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/mbai_barragens/MapServer/0 | Barragens / Mapeamento da Bacia do Rio Alto Iguaçu, PR | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/mbai_reservatorios/FeatureServer/0 | Reservatórios / Mapeamento da Bacia do Rio Alto Iguaçu, PR | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/mbai_reservatorios/MapServer/0 | Reservatórios / Mapeamento da Bacia do Rio Alto Iguaçu, PR | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/PACUERA_Plano_Ambiental_de_Conservacao_e_Uso_do_Entorno_do_Reservatorio/FeatureServer/0 | PACUERA UHE Baixo Iguaçu (2022) | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/PACUERA_Plano_Ambiental_de_Conservacao_e_Uso_do_Entorno_do_Reservatorio/FeatureServer/1 | PACUERA PCH Bela Vista (2023) | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/PACUERA_Plano_Ambiental_de_Conservacao_e_Uso_do_Entorno_do_Reservatorio/FeatureServer/2 | PACUERA PCH Confluência (2024) | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/PACUERA_Plano_Ambiental_de_Conservacao_e_Uso_do_Entorno_do_Reservatorio/FeatureServer/3 | PACUERA PCH Lúcia Cherobim (2025) | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/PACUERA_Plano_Ambiental_de_Conservacao_e_Uso_do_Entorno_do_Reservatorio/FeatureServer/4 | PACUERA PCH Paredinha (2025) | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/PACUERA_Plano_Ambiental_de_Conservacao_e_Uso_do_Entorno_do_Reservatorio/FeatureServer/5 | PACUERA UHE Governador José Richa - UHE Salto Caxias (2020) | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/PACUERA_Plano_Ambiental_de_Conservacao_e_Uso_do_Entorno_do_Reservatorio/FeatureServer/6 | PACUERA UHE  Governador Parigot de Souza (2023) | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/PACUERA_Plano_Ambiental_de_Conservacao_e_Uso_do_Entorno_do_Reservatorio/FeatureServer/7 | PACUERA UHE Santa Clara (2026) | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/PACUERA_Plano_Ambiental_de_Conservacao_e_Uso_do_Entorno_do_Reservatorio/FeatureServer/8 | PACUERA UHE Salto Osório (2025) | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/PACUERA_Plano_Ambiental_de_Conservacao_e_Uso_do_Entorno_do_Reservatorio/FeatureServer/9 | PACUERA UHE Salto Santiago (2025) | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/PACUERA_Plano_Ambiental_de_Conservacao_e_Uso_do_Entorno_do_Reservatorio/FeatureServer/10 | PACUERA UHE Tibagi Montante (2021) | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/PACUERA_Plano_Ambiental_de_Conservacao_e_Uso_do_Entorno_do_Reservatorio/MapServer/0 | PACUERA UHE Baixo Iguaçu (2022) | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/PACUERA_Plano_Ambiental_de_Conservacao_e_Uso_do_Entorno_do_Reservatorio/MapServer/1 | PACUERA PCH Bela Vista (2023) | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/PACUERA_Plano_Ambiental_de_Conservacao_e_Uso_do_Entorno_do_Reservatorio/MapServer/2 | PACUERA PCH Confluência (2024) | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/PACUERA_Plano_Ambiental_de_Conservacao_e_Uso_do_Entorno_do_Reservatorio/MapServer/3 | PACUERA PCH Lúcia Cherobim (2025) | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/PACUERA_Plano_Ambiental_de_Conservacao_e_Uso_do_Entorno_do_Reservatorio/MapServer/4 | PACUERA PCH Paredinha (2025) | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/PACUERA_Plano_Ambiental_de_Conservacao_e_Uso_do_Entorno_do_Reservatorio/MapServer/5 | PACUERA UHE Governador José Richa - UHE Salto Caxias (2020) | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/PACUERA_Plano_Ambiental_de_Conservacao_e_Uso_do_Entorno_do_Reservatorio/MapServer/6 | PACUERA UHE  Governador Parigot de Souza (2023) | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/PACUERA_Plano_Ambiental_de_Conservacao_e_Uso_do_Entorno_do_Reservatorio/MapServer/7 | PACUERA UHE Santa Clara (2026) | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/PACUERA_Plano_Ambiental_de_Conservacao_e_Uso_do_Entorno_do_Reservatorio/MapServer/8 | PACUERA UHE Salto Osório (2025) | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/PACUERA_Plano_Ambiental_de_Conservacao_e_Uso_do_Entorno_do_Reservatorio/MapServer/9 | PACUERA UHE Salto Santiago (2025) | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/PACUERA_Plano_Ambiental_de_Conservacao_e_Uso_do_Entorno_do_Reservatorio/MapServer/10 | PACUERA UHE Tibagi Montante (2021) | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/pbnp_barragem_sem_eclusa/FeatureServer/0 | Barragens (Sem Eclusa) - Plano de Bacia da UGRHI Norte Pioneiro | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/pbnp_barragem_sem_eclusa/MapServer/0 | Barragens (Sem Eclusa) - Plano de Bacia da UGRHI Norte Pioneiro | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/pbpir_barragem_sem_eclusa/FeatureServer/0 | Barragem (Sem Eclusa) - Plano de Bacia da UGRHI da Piraponema | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/pbpir_barragem_sem_eclusa/MapServer/0 | Barragem (Sem Eclusa) - Plano de Bacia da UGRHI da Piraponema | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/zee_reservatorio_paranapanema/FeatureServer/0 | Reservatórios - Paranapanema - ZEE-PR | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/zee_reservatorio_paranapanema/MapServer/0 | Reservatórios - Paranapanema - ZEE-PR | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/zee_reservatorio_usina_maua/FeatureServer/0 | Reservatório Usina Mauá - ZEE-PR | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/zee_reservatorio_usina_maua/MapServer/0 | Reservatório Usina Mauá - ZEE-PR | Grandes Rios=0 | Joaquim Távora=0
+   https://geopr.iat.pr.gov.br/server/rest/services/Hosted/barragens_dashboard_publico/FeatureServer/0 | Barragens_VisitaTecnica | Grandes Rios=1 | Joaquim Távora=4
+   https://geopr.iat.pr.gov.br/server/rest/services/Hosted/Barragens_VisitaTecnica_Visualizacao_Imagens/FeatureServer/0 | Barragens_VisitaTecnica | Grandes Rios=1 | Joaquim Távora=4
+== SNIRH/ANA
+   https://www.snirh.gov.br/arcgis/rest/services/Atlas2020/Massa_dagua_abastecimento/MapServer/0 | Massa d'água. | Grandes Rios=0 | Joaquim Távora=0
+   https://www.snirh.gov.br/arcgis/rest/services/AtlasAguas2020/Massas_dagua/MapServer/0 | Massa dágua | Grandes Rios=0 | Joaquim Távora=0
+   https://www.snirh.gov.br/arcgis/rest/services/AtlasAguasWMS/Massas_dagua/MapServer/0 | Massa dágua | Grandes Rios=0 | Joaquim Távora=0
+ERRO svc https://www.snirh.gov.br/arcgis/rest/services/DADOSABERTOS/Massa_dÁgua_Grande/MapServer 'ascii' codec can't encode character '\xc1' in position 46: ordinal not in range(128)
+ERRO svc https://www.snirh.gov.br/arcgis/rest/services/DADOSABERTOS/Massa_dágua/FeatureServer 'ascii' codec can't encode character '\xe1' in position 46: ordinal not in range(128)
+ERRO svc https://www.snirh.gov.br/arcgis/rest/services/DADOSABERTOS/Massa_dágua/MapServer 'ascii' codec can't encode character '\xe1' in position 46: ordinal not in range(128)
+   https://www.snirh.gov.br/arcgis/rest/services/DADOSABERTOS/Piranha_Reservatorio_DA/MapServer/0 | Reservatório > 10 hm³ | Grandes Rios=0 | Joaquim Távora=0
+   https://www.snirh.gov.br/arcgis/rest/services/DADOSABERTOS/Piranhas_Balancio_Hidrico_Reservatorio_DA/MapServer/0 | Balanço Hídrico do Reservatório (Demanda/Disponibilidade) | Grandes Rios=0 | Joaquim Távora=0
+ERRO svc https://www.snirh.gov.br/arcgis/rest/services/DADOSABERTOS/Reservatórios/MapServer 'ascii' codec can't encode character '\xf3' in position 47: ordinal not in range(128)
+   https://www.snirh.gov.br/arcgis/rest/services/Evap_Liquida/Evap_liquida_Reserv_SNIRH/MapServer/0 | Reservatórios acima de 500 l/s | Grandes Rios=0 | Joaquim Távora=0
+   https://www.snirh.gov.br/arcgis/rest/services/Evap_Liquida/Evp_Liquida_Reservatorios/MapServer/0 | Microbacias  acima de 1 l/s | Grandes Rios=3 | Joaquim Távora=2
+   https://www.snirh.gov.br/arcgis/rest/services/Evap_Liquida/Evp_Liquida_Reservatorios/MapServer/1 | Reservatórios acima de 500 l/s | Grandes Rios=0 | Joaquim Távora=0
+   https://www.snirh.gov.br/arcgis/rest/services/EvapLiquidaWMS/Evap_liquida_Reserv_SNIRH/MapServer/0 | Reservatórios com Evaporação Líquida acima de 500 l/s | Grandes Rios=0 | Joaquim Távora=0
+   https://www.snirh.gov.br/arcgis/rest/services/IG/SNISB/FeatureServer/0 | Barragens | Grandes Rios=1 | Joaquim Távora=3
+   https://www.snirh.gov.br/arcgis/rest/services/IG/SNISB/MapServer/0 | Barragens | Grandes Rios=1 | Joaquim Távora=3
+   https://www.snirh.gov.br/arcgis/rest/services/SNIRH2016/Fiscalizacao_barragem/MapServer/0 | Barragens fiscalizadas | Grandes Rios=0 | Joaquim Távora=0
+   https://www.snirh.gov.br/arcgis/rest/services/SNIRH2016/Massa_dagua/MapServer/0 | massa_dagua | Grandes Rios=25 | Joaquim Távora=47
+   https://www.snirh.gov.br/arcgis/rest/services/SNIRH2016/Reservatorios/MapServer/0 | Volume armazenado (% da capacidade total) - Início/2015 | Grandes Rios=0 | Joaquim Távora=0
+   https://www.snirh.gov.br/arcgis/rest/services/SNIRH2016/Reservatorios/MapServer/1 | Volume armazenado (% da capacidade total) - Fim/2015 | Grandes Rios=0 | Joaquim Távora=0
+   https://www.snirh.gov.br/arcgis/rest/services/SPR/Armazena_Reservatorio_UGRH/FeatureServer/0 | Capacidade estimada (hm³) | Grandes Rios=1 | Joaquim Távora=1
+   https://www.snirh.gov.br/arcgis/rest/services/SPR/Armazena_Reservatorio_UGRH/FeatureServer/1 | Quantidade de reservatórios | Grandes Rios=1 | Joaquim Távora=1
+   https://www.snirh.gov.br/arcgis/rest/services/SPR/Armazena_Reservatorio_UGRH/MapServer/0 | Capacidade estimada (hm³) | Grandes Rios=1 | Joaquim Távora=1
+   https://www.snirh.gov.br/arcgis/rest/services/SPR/Armazena_Reservatorio_UGRH/MapServer/1 | Quantidade de reservatórios | Grandes Rios=1 | Joaquim Távora=1
+   https://www.snirh.gov.br/arcgis/rest/services/SPR/Massa_dagua_tipo_dominio/MapServer/0 | Massa dágua | Grandes Rios=25 | Joaquim Távora=47
+   https://www.snirh.gov.br/arcgis/rest/services/SPR/Massa_dagua/FeatureServer/0 | massa_dagua | Grandes Rios=25 | Joaquim Távora=47
+   https://www.snirh.gov.br/arcgis/rest/services/SPR/Massa_dagua/MapServer/0 | massa_dagua | Grandes Rios=25 | Joaquim Távora=47
+== ANA geoservicos
