@@ -122,7 +122,11 @@ function rxNecessidades(p, r, area, uso) {
     if (!ag.length) add(3, 'Uso da água', 'Nenhuma outorga do SIGARH localizada dentro do imóvel', 'Verificar em campo os usos de água (poço, captação, barragem, irrigação, dessedentação) e regularizar por outorga ou declaração de uso independente');
     r.barr.dentro.forEach(x => { const q = x.f.properties, pnsb = /^sim/i.test(q['Regulada pela PNSB'] || '');
         if (pnsb && /^n[ãa]o/i.test(q['Plano de segurança'] || '')) add(1, 'Segurança de barragem', `${q.nome}: enquadrada na PNSB e sem Plano de Segurança declarado (risco ${q.risco || 'não informado'}, DPA ${q.dpa || 'não informado'})`, 'Elaborar Plano de Segurança da Barragem, inspeções e revisão periódica (Lei 12.334/2010 e normas do IAT)');
-        else add(2, 'Barragem', `${q.nome} (${q.Fonte || 'cadastro'}; risco ${q.risco || 'não informado'}, DPA ${q.dpa || 'não informado'})`, 'Conferir cadastro no SNISB/IAT, outorga do barramento e obrigações de segurança de barragem (Lei 12.334/2010)'); });
+    });
+    const barrComuns = r.barr.dentro.filter(x => !(/^sim/i.test(x.f.properties['Regulada pela PNSB'] || '') && /^n[ãa]o/i.test(x.f.properties['Plano de segurança'] || '')));
+    if (barrComuns.length) add(2, 'Barragem', barrComuns.length === 1 ? `${barrComuns[0].f.properties.nome} (${barrComuns[0].f.properties.Fonte || 'cadastro'}; risco ${barrComuns[0].f.properties.risco || 'não informado'}, DPA ${barrComuns[0].f.properties.dpa || 'não informado'})`
+        : `${barrComuns.length} barragens cadastradas no imóvel (${barrComuns.filter(x => x.f.properties.risco === 'Alto').length} de risco alto) – ver tabela de barragens`,
+        'Conferir cadastro no SNISB/IAT, outorga do barramento e obrigações de segurança de barragem (Lei 12.334/2010)');
     r.massas.filter(x => /artificial/.test(x.f.properties.grupo) && !x.barr).slice(0, 8).forEach(x => add(2, 'Açude / represa', `Espelho d'água artificial de ${x.f.properties['Área (ha)']} ha sem barragem localizada no SNISB/IAT`,
         'Verificar a regularização do barramento (outorga ou dispensa no IAT/SIGARH e cadastro no SNISB) e a APP do entorno (art. 4º, III, da Lei 12.651/2012; dispensada abaixo de 1 ha, § 4º)'));
     (r.lic?.dentro || []).forEach(x => { const v = rxData(x.f.properties.Validade); if (v && v < em12m) add(v < hoje ? 1 : 2, 'Licença ambiental', `${x.f.properties.Modalidade || 'Licença'} – validade ${x.f.properties.Validade}`, 'Renovação da licença ambiental no IAT (SGA)'); });

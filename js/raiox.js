@@ -24,15 +24,23 @@ function rxSobreposicoes(alvo, feats, minHa = 0.01) {
     }
     return out.sort((a, b) => b.ha - a.ha);
 }
+// barragem cadastrada (ponto) a até 200 m do espelho d'água
+function rxBarragemDaMassa(m, barrs) {
+    const bb = turf.bbox(m), d = 0.002;
+    for (const b of barrs) { const [x, y] = b.geometry.coordinates; if (x < bb[0] - d || x > bb[2] + d || y < bb[1] - d || y > bb[3] + d) continue;
+        if (turf.booleanPointInPolygon(b, m)) return b;
+        const arr = turf.flatten(turf.polygonToLine(m)).features;
+        if (Math.min(...arr.map(l => turf.pointToLineDistance(b, l))) <= 0.2) return b; }
+    return null;
+}
 function rxPontos(alvo, feats, raioKm = 0.5) {
     const bb = turf.bbox(alvo), m = raioKm / 100, dentro = [], perto = [];
-    const linhas = turf.polygonToLine(alvo);
+    const ls = turf.flatten(turf.polygonToLine(alvo)).features;
     for (const f of feats) {
         if (f.geometry?.type !== 'Point') continue;
         const [x, y] = f.geometry.coordinates;
         if (x < bb[0] - m || x > bb[2] + m || y < bb[1] - m || y > bb[3] + m) continue;
         if (turf.booleanPointInPolygon(f, alvo)) { dentro.push({ f, km: 0 }); continue; }
-        const ls = linhas.type === 'FeatureCollection' ? linhas.features : [linhas];
         const km = Math.min(...ls.map(l => turf.pointToLineDistance(f, l)));
         if (km <= raioKm) perto.push({ f, km });
     }
@@ -112,7 +120,15 @@ function rxNecessidades(p, r, area, uso) {
     const ag = [...r.agua.dentro];
     ag.forEach(x => { const v = rxData(x.f.properties.Vencimento); if (v && v < em12m) add(v < hoje ? 1 : 2, 'Outorga de água', `${x.f.properties.Interferência || 'Outorga'} – vence${v < hoje ? 'u' : ''} em ${x.f.properties.Vencimento}`, 'Renovação da outorga no SIGARH (IAT)'); });
     if (!ag.length) add(3, 'Uso da água', 'Nenhuma outorga do SIGARH localizada dentro do imóvel', 'Verificar em campo os usos de água (poço, captação, barragem, irrigação, dessedentação) e regularizar por outorga ou declaração de uso independente');
-    r.barr.dentro.forEach(x => add(2, 'Barragem', `${x.f.properties.nome} (risco ${x.f.properties['Categoria de risco'] || 'não informado'})`, 'Conferir cadastro e obrigações de segurança de barragem (Lei 12.334/2010) no IAT'));
+    r.barr.dentro.forEach(x => { const q = x.f.properties, pnsb = /^sim/i.test(q['Regulada pela PNSB'] || '');
+        if (pnsb && /^n[ãa]o/i.test(q['Plano de segurança'] || '')) add(1, 'Segurança de barragem', `${q.nome}: enquadrada na PNSB e sem Plano de Segurança declarado (risco ${q.risco || 'não informado'}, DPA ${q.dpa || 'não informado'})`, 'Elaborar Plano de Segurança da Barragem, inspeções e revisão periódica (Lei 12.334/2010 e normas do IAT)');
+    });
+    const barrComuns = r.barr.dentro.filter(x => !(/^sim/i.test(x.f.properties['Regulada pela PNSB'] || '') && /^n[ãa]o/i.test(x.f.properties['Plano de segurança'] || '')));
+    if (barrComuns.length) add(2, 'Barragem', barrComuns.length === 1 ? `${barrComuns[0].f.properties.nome} (${barrComuns[0].f.properties.Fonte || 'cadastro'}; risco ${barrComuns[0].f.properties.risco || 'não informado'}, DPA ${barrComuns[0].f.properties.dpa || 'não informado'})`
+        : `${barrComuns.length} barragens cadastradas no imóvel (${barrComuns.filter(x => x.f.properties.risco === 'Alto').length} de risco alto) – ver tabela de barragens`,
+        'Conferir cadastro no SNISB/IAT, outorga do barramento e obrigações de segurança de barragem (Lei 12.334/2010)');
+    r.massas.filter(x => /artificial/.test(x.f.properties.grupo) && !x.barr).slice(0, 8).forEach(x => add(2, 'Açude / represa', `Espelho d'água artificial de ${x.f.properties['Área (ha)']} ha sem barragem localizada no SNISB/IAT`,
+        'Verificar a regularização do barramento (outorga ou dispensa no IAT/SIGARH e cadastro no SNISB) e a APP do entorno (art. 4º, III, da Lei 12.651/2012; dispensada abaixo de 1 ha, § 4º)'));
     (r.lic?.dentro || []).forEach(x => { const v = rxData(x.f.properties.Validade); if (v && v < em12m) add(v < hoje ? 1 : 2, 'Licença ambiental', `${x.f.properties.Modalidade || 'Licença'} – validade ${x.f.properties.Validade}`, 'Renovação da licença ambiental no IAT (SGA)'); });
     add(3, 'Vistoria', 'Análise feita só com bases públicas', 'Vistoria de campo e conferência documental (matrícula, CCIR, ITR, CAR) para confirmar os itens acima');
     return N.sort((a, b) => a.prior - b.prior);
@@ -135,9 +151,9 @@ async function analisarImovel(nome) {
         const alvo = cars.find(f => f.properties.nome === nome);
         if (!alvo) { corpo.innerHTML = '<p>Imóvel não encontrado.</p>'; return; }
         const p = alvo.properties, area = rxHa(alvo);
-        const [sigef, emb, alertas, outR, outU, lic, barr, mbac] = await Promise.all(['data/fundiario/sigef_londrina.geojson', 'data/ibama/embargos_londrina.geojson',
+        const [sigef, emb, alertas, outR, outU, lic, barr, mbac, mass] = await Promise.all(['data/fundiario/sigef_londrina.geojson', 'data/ibama/embargos_londrina.geojson',
             'data/mapbiomas/alertas_londrina.geojson', 'data/iat/outorgas_rural.geojson', 'data/iat/outorgas_urbana.geojson', 'data/iat/licencas_localizadas.geojson',
-            'data/iat/barragens_londrina.geojson', 'data/bacias/microbacias_regiao.geojson'].map(a => rxJSON(a).catch(() => ({ features: [] }))));
+            'data/iat/barragens_londrina.geojson', 'data/bacias/microbacias_regiao.geojson', 'data/ana/massas_dagua_londrina.geojson'].map(a => rxJSON(a).catch(() => ({ features: [] }))));
         const r = {
             car: rxSobreposicoes(alvo, cars.filter(f => f.properties.situacao !== 'Cancelado'), 0.05),
             sigef: rxSobreposicoes(alvo, sigef.features, 0.05),
@@ -146,6 +162,7 @@ async function analisarImovel(nome) {
             agua: rxPontos(alvo, [...outR.features, ...outU.features]),
             lic: rxPontos(alvo, lic.features),
             barr: rxPontos(alvo, barr.features),
+            massas: rxSobreposicoes(alvo, mass.features, 0.01).map(x => ({ ...x, barr: rxBarragemDaMassa(x.f, barr.features) })),
             decl: await rxDeclividade(alvo).catch(() => []),
             mbac: mbac.features.filter(m => rxCaixasCruzam(turf.bbox(m), turf.bbox(alvo)) && turf.booleanPointInPolygon(turf.pointOnFeature(alvo), m)).map(m => m.properties.nome || m.properties.rio).slice(0, 1)
         };
@@ -165,6 +182,10 @@ async function analisarImovel(nome) {
         if (!r.sigef.length) flags.push(['amarelo', 'Nenhuma parcela SIGEF/INCRA sobre o imóvel']);
         const forte = r.decl.slice(3).reduce((s, d) => s + d.pct, 0);
         if (forte >= 10) flags.push(['amarelo', `${rxF(forte, 0)}% do imóvel em relevo forte ondulado ou mais (≥ 20%)`]);
+        const barrAlto = r.barr.dentro.filter(x => x.f.properties.risco === 'Alto');
+        if (barrAlto.length) flags.push(['amarelo', `${barrAlto.length} barragem(ns) com categoria de risco ALTO dentro do imóvel`]);
+        const acSem = r.massas.filter(x => /artificial/.test(x.f.properties.grupo) && !x.barr);
+        if (acSem.length) flags.push(['amarelo', `${acSem.length} açude(s)/represa(s) no imóvel sem barragem localizada no SNISB/IAT`]);
         if (!flags.some(f => f[0] !== 'verde')) flags.unshift(['verde', 'Nenhuma restrição encontrada nas camadas consultadas']);
         const tab = (cab, linhas) => linhas.length ? `<table class="rx-tab"><tr>${cab.map(c => `<th>${c}</th>`).join('')}</tr>${linhas.map(l => `<tr>${l.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')}</table>` : '<p class="hint">Nada encontrado.</p>';
         const coord = (f) => { const [lo, la] = f.geometry.coordinates; return `<span class="mono">${la.toFixed(5)}, ${lo.toFixed(5)}</span><br><a href="https://www.google.com/maps?q=${la.toFixed(6)},${lo.toFixed(6)}" target="_blank" rel="noopener">ver no Google Maps ↗</a>`; };
@@ -200,10 +221,18 @@ async function analisarImovel(nome) {
             ${tab(['Nº', 'Titular (SIGARH)', 'Tipo', 'Posição', 'Coordenadas (lat, long – SIRGAS 2000)'], pts(r.agua, 'Interferência', 'agua'))}
             <h3>Licenças ambientais (IAT) no imóvel ou a até 500 m</h3>
             ${tab(['Nº', 'Empreendimento (SGA)', 'Atividade', 'Posição', 'Coordenadas (lat, long)'], pts(r.lic, 'Atividade', 'lic'))}
-            ${r.barr.dentro.length || r.barr.perto.length ? `<h3>Barragens cadastradas</h3>${tab(['Nº', 'Barragem', 'Tipo', 'Posição', 'Coordenadas (lat, long)'], pts(r.barr, 'grupo', 'barr'))}` : ''}
+            <h3>Barragens cadastradas (SNISB/ANA e IAT) no imóvel ou a até 500 m</h3>
+            ${(() => { const lista = [...r.barr.dentro, ...r.barr.perto].slice(0, 12); const linhas = pts(r.barr, 'Fonte', 'barr');
+                return tab(['Nº', 'Barragem', 'Fonte', 'Risco / DPA', 'Uso · altura · volume', 'Posição', 'Coordenadas (lat, long)'], linhas.map((l, i) => { const q = lista[i].f.properties;
+                    return [l[0], l[1] + (q.Empreendedor ? `<br><span class="hint">${esc(q.Empreendedor)}</span>` : ''), l[2], `${esc(q.risco || '–')} / ${esc(q.dpa || '–')}`,
+                        esc([q['Uso principal'] || q['Finalidade (IAT)'], q['Altura (m)'] && q['Altura (m)'] + ' m', q['Volume (hm³)'] && q['Volume (hm³)'] + ' hm³'].filter(Boolean).join(' · ') || '–'), l[3], l[4]]; })); })()}
+            <h3>Açudes, represas e lagos no imóvel (ANA)</h3>
+            ${tab(['Nº', 'Tipo', 'Espelho d\'água total (ha)', 'Dentro do imóvel (ha)', 'Barragem cadastrada', 'Centro (lat, long)'], r.massas.slice(0, 15).map((x, i) => { const q = x.f.properties, c = turf.pointOnFeature(x.f).geometry.coordinates;
+                return [`<b>${i + 1}</b>`, esc(q.grupo), esc(q['Área (ha)']), rxF(Math.min(x.ha, rxNum(q['Área (ha)']) || x.ha), 2), x.barr ? `Sim – ${esc(x.barr.properties.nome)}` : (/artificial/.test(q.grupo) ? '<b>Não localizada</b>' : '–'),
+                    `<span class="mono">${c[1].toFixed(5)}, ${c[0].toFixed(5)}</span>`]; }))}
             ${rxResumoHtml(rxNecessidades(p, r, area, uso))}
             <p class="hint">Microbacia: ${esc(r.mbac[0] || '–')} · Dados do mapa atualizados em ${esc(dadosGerais.atualizado_em || '')}.</p>
-            <p class="hint rx-aviso">Análise automática feita sobre bases públicas (SICAR, INCRA/SIGEF, IBAMA, MapBiomas, IAT/SIGARH/SGA, Copernicus). As áreas são aproximadas e não substituem vistoria, levantamento topográfico ou consulta oficial aos órgãos.</p>`;
+            <p class="hint rx-aviso">Análise automática feita sobre bases públicas (SICAR, INCRA/SIGEF, IBAMA, MapBiomas, IAT/SIGARH/SGA, ANA/SNISB, Copernicus). As áreas são aproximadas e não substituem vistoria, levantamento topográfico ou consulta oficial aos órgãos.</p>`;
         corpo.innerHTML = html;
         RX.ultimo = { nome, html, codigo, quando, alvo, viz: r.car, sigef: r.sigef, pontos: pontosFoto };
         document.getElementById('raioxPdf').disabled = false;
@@ -381,7 +410,7 @@ function rxPrecarregar() {
     const C = dadosGerais.raiox;
     const lista = C ? [C.sigef, C.embargos, C.alertas, ...(C.outorgas || []), C.licencas, C.barragens, C.microbacias, C.declividade]
         : ['data/fundiario/sigef_londrina.geojson', 'data/ibama/embargos_londrina.geojson', 'data/mapbiomas/alertas_londrina.geojson', 'data/iat/outorgas_rural.geojson',
-           'data/iat/outorgas_urbana.geojson', 'data/iat/licencas_localizadas.geojson', 'data/iat/barragens_londrina.geojson', 'data/bacias/microbacias_regiao.geojson', 'data/relevo/declividade.json'];
+           'data/iat/outorgas_urbana.geojson', 'data/iat/licencas_localizadas.geojson', 'data/iat/barragens_londrina.geojson', 'data/bacias/microbacias_regiao.geojson', 'data/ana/massas_dagua_londrina.geojson', 'data/relevo/declividade.json'];
     const ocioso = window.requestIdleCallback || ((fn) => setTimeout(fn, 1500));
     ocioso(() => { lista.filter(Boolean).forEach(a => rxJSON(a).catch(() => { delete RX.cache[a]; })); rxRasterDecliv().catch(() => { }); });
 }
