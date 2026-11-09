@@ -238,7 +238,7 @@ def mb_cobertura():
             G + 'collection_10/lulc/coverage/brazil_coverage_2024.tif', G + 'collection_10/lulc/coverage/brasil_coverage_2024.tif',
             G + 'collection_10/lclu/coverage/brazil_coverage_2024.tif', G + 'collection_10/lclu/coverage/brasil_coverage_2024.tif',
             G + 'collection_10/lulc/coverage/brazil_coverage_2023.tif', G + 'collection_9/lclu/coverage/brasil_coverage_2023.tif',
-            G + 'collection_9/lulc/coverage/brasil_coverage_2023.tif']
+            G + 'collection_9/lulc/coverage/brasil_coverage_2023.tif', G + 'collection_8/lclu/coverage/brasil_coverage_2022.tif']
     TIF = None
     for u in CAND:
         try:
@@ -257,7 +257,7 @@ def mb_cobertura():
     for cod, (c, gr) in CLASSES.items(): grp[dado == cod] = GRUPOS.index(gr) + 1
     tot = {g: float(area_ha[(grp == i + 1) & (dentro == 1)].sum()) for i, g in enumerate(GRUPOS)}
     T = sum(tot.values())
-    json.dump({'ano': ANO, 'area_total_ha': round(T, 1), 'grupos': [{'grupo': g, 'cor': CORES_GRUPO[g], 'area_ha': round(a, 1), 'pct': round(100 * a / T, 2)} for g, a in tot.items() if a > 0]},
+    json.dump({'ano': ANO, 'fonte': ('MapBiomas 10 m – Coleção 2 (beta), ' if 'lulc_10m' in TIF else 'MapBiomas 30 m – ') + ANO, 'area_total_ha': round(T, 1), 'grupos': [{'grupo': g, 'cor': CORES_GRUPO[g], 'area_ha': round(a, 1), 'pct': round(100 * a / T, 2)} for g, a in tot.items() if a > 0]},
               open(f'{D}/mapbiomas_estatisticas.json', 'w'), ensure_ascii=False, indent=1)
     def por_poligono(arquivo):
         if not os.path.exists(arquivo): return
@@ -486,6 +486,7 @@ def config():
     for o in c['camadas_opcionais']:
         i = o['id']
         if i == 'mb-cobertura':
+            o['nome'] = f"Uso e cobertura do solo {est.get('ano', '')}"; o['fonte'] = est.get('fonte', o.get('fonte'))
             o['arquivo'] = P('cobertura.json'); o['legenda_itens'] = [{'rotulo': f"{g['grupo']} ({g['pct']:.1f}%)".replace('.', ','), 'cor': g['cor']} for g in est['grupos']]
         elif i == 'mb-alertas': o['arquivo'] = P('alertas.geojson')
         elif i == 'sigef': o['arquivo'] = P('sigef.geojson')
