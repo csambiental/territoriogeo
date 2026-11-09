@@ -1149,7 +1149,7 @@ async function iniciar() {
     const sel = document.createElement('select'); sel.id = 'munSel'; sel.className = 'mun-sel'; sel.setAttribute('aria-label', 'Município');
     sel.innerHTML = lista.map(x => `<option value="${x.codigo}"${x.codigo === mun.codigo ? ' selected' : ''}>${esc(x.nome)}/PR (${Number(x.imoveis).toLocaleString('pt-BR')} imóveis)</option>`).join('');
     sel.addEventListener('change', () => { location.search = '?m=' + sel.value; });
-    document.getElementById('clienteSub').after(sel);
+    window._munSel = sel;
     const resp = await fetch(`data/m/${mun.codigo}/config.json`, { cache: 'no-cache' });
     const dados = await resp.json();
     const cliente = dados.cliente || {};
@@ -1161,6 +1161,7 @@ async function iniciar() {
         selo.textContent = cliente.selo;
         document.getElementById('clienteSub').after(selo);
     }
+    if (window._munSel) (document.querySelector('.demo-badge') || document.getElementById('clienteSub')).after(window._munSel);
     if (cliente.nome) document.title = `${cliente.nome} – Mapa Interativo`;
     if (cliente.centro) map.jumpTo({ center: cliente.centro, zoom: cliente.zoom || 12 });
     fazendas = dados.fazendas.map((f, i) => ({ ...f, cor: f.cor || PALETA[i % PALETA.length] }));

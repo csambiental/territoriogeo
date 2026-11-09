@@ -98,7 +98,7 @@ async function analisarImovel(nome) {
             decl: await rxDeclividade(alvo).catch(() => []),
             mbac: mbac.features.filter(m => rxCaixasCruzam(turf.bbox(m), turf.bbox(alvo)) && turf.booleanPointInPolygon(turf.pointOnFeature(alvo), m)).map(m => m.properties.nome || m.properties.rio).slice(0, 1)
         };
-        const uso = Object.keys(p).filter(k => /^MapBiomas \d{4} – /.test(k)).map(k => [k.replace(/^MapBiomas \d{4} – /, '').replace(' (%)', ''), rxNum(p[k])]).sort((a, b) => b[1] - a[1]);
+        const uso = Object.keys(p).filter(k => /^(MapBiomas|Uso do solo) \d{4} – /.test(k)).map(k => [k.replace(/^(MapBiomas|Uso do solo) \d{4} – /, '').replace(' (%)', ''), rxNum(p[k])]).sort((a, b) => b[1] - a[1]);
         const pend = Object.keys(p).filter(k => /^Pendência \d+$/.test(k)).map(k => p[k]);
         const sobreCar = r.car.reduce((s, x) => s + x.ha, 0), sobreSigef = r.sigef.reduce((s, x) => s + x.ha, 0);
         const quando = new Date();
@@ -126,7 +126,7 @@ async function analisarImovel(nome) {
               <div class="rx-area"><b>${rxF(area)}</b> ha<br><span class="hint">${esc(p['Módulos fiscais'] || '–')} módulos fiscais</span></div></div>
             <ul class="rx-flags">${flags.map(([c, t]) => `<li class="rx-${c}">${esc(t)}</li>`).join('')}</ul>
             ${pend.length ? `<h3>Pendências apontadas no mapa</h3><ul>${pend.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
-            <h3>Uso e cobertura do solo (MapBiomas ${esc((Object.keys(p).find(k => /^MapBiomas \d{4}/.test(k)) || '').slice(10, 14))})</h3>
+            <h3>Uso e cobertura do solo (${esc(((Object.keys(p).find(k => /^(MapBiomas|Uso do solo) \d{4}/.test(k)) || '').match(/^(MapBiomas \d{4}|Uso do solo \d{4})/) || [''])[0].replace('Uso do solo', 'Esri/Impact Observatory'))})</h3>
             ${tab(['Classe', '% do imóvel', 'ha (aprox.)'], uso.map(([k, v]) => [esc(k), rxF(v, 1) + '%', rxF(v / 100 * area, 1)]))}
             <h3>Declividade (Copernicus DEM, classes Embrapa)</h3>
             ${tab(['Classe de relevo', '% do imóvel', 'ha (aprox.)'], r.decl.filter(d => d.pct >= 0.05).map(d => [d.nome, rxF(d.pct, 1) + '%', rxF(d.pct / 100 * area, 1)]))}

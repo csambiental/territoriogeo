@@ -244,12 +244,39 @@ def mb_cobertura():
         try:
             with rasterio.Env(**env), rasterio.open('/vsicurl/' + u) as t: TIF = u; log('MapBiomas fonte:', u, t.res); break
         except Exception as e: log('  indisponível:', u.replace(G, ''), str(e)[:60])
-    if not TIF: raise RuntimeError('nenhuma fonte MapBiomas respondeu')
-    ANO = re.search(r'(20\d\d)\.tif', TIF).group(1)
     minx, miny, maxx, maxy = MUN.buffer(0.01).bounds
-    with rasterio.Env(**env), rasterio.open('/vsicurl/' + TIF) as src:
-        win = from_bounds(minx, miny, maxx, maxy, src.transform).round_offsets().round_lengths()
-        dado = src.read(1, window=win); tr = src.window_transform(win); crs = src.crs
+    global CLASSES, GRUPOS, CORES_GRUPO, FONTE_USO
+    if TIF:
+        ANO = re.search(r'(20\d\d)\.tif', TIF).group(1)
+        FONTE_USO = ('MapBiomas 10 m – Coleção 2 (beta), ' if 'lulc_10m' in TIF else 'MapBiomas 30 m – ') + ANO
+        with rasterio.Env(**env), rasterio.open('/vsicurl/' + TIF) as src:
+            win = from_bounds(minx, miny, maxx, maxy, src.transform).round_offsets().round_lengths()
+            dado = src.read(1, window=win); tr = src.window_transform(win); crs = src.crs
+    else:
+        # reserva: Esri/Impact Observatory 10 m (Planetary Computer, aberto, CC BY 4.0)
+        import planetary_computer as pc
+        from pystac_client import Client
+        from rasterio.merge import merge
+        cat = Client.open('https://planetarycomputer.microsoft.com/api/stac/v1', modifier=pc.sign_inplace)
+        itens = list(cat.search(collections=['io-lulc-annual-v02'], bbox=[minx, miny, maxx, maxy]).items())
+        ANO = max(i.datetime.year if i.datetime else int(str(i.properties.get('start_datetime'))[:4]) for i in itens)
+        itens = [i for i in itens if (i.datetime.year if i.datetime else int(str(i.properties.get('start_datetime'))[:4])) == ANO]
+        srcs = [rasterio.open(i.assets['data'].href) for i in itens]
+        from rasterio.warp import transform_bounds
+        b = transform_bounds('EPSG:4326', srcs[0].crs, minx, miny, maxx, maxy)
+        dado, tr = merge(srcs, bounds=b); dado = dado[0]; crs = srcs[0].crs
+        if str(crs) != 'EPSG:4326':
+            from rasterio.warp import calculate_default_transform
+            t4, w4, h4 = calculate_default_transform(crs, 'EPSG:4326', dado.shape[1], dado.shape[0], *rasterio.transform.array_bounds(dado.shape[0], dado.shape[1], tr))
+            d4 = np.zeros((h4, w4), 'uint8')
+            reproject(dado, d4, src_transform=tr, src_crs=crs, dst_transform=t4, dst_crs='EPSG:4326', resampling=Resampling.nearest)
+            dado, tr, crs = d4, t4, 'EPSG:4326'
+        CLASSES = {1: ('#419bdf', 'Água'), 2: ('#397d49', 'Vegetação arbórea'), 4: ('#7a87c6', 'Vegetação arbórea'), 5: ('#e49635', 'Agricultura'),
+                   7: ('#c4281b', 'Área urbanizada'), 8: ('#a59b8f', 'Outras áreas'), 11: ('#e3e2c3', 'Pastagem e campos')}
+        GRUPOS = ['Vegetação arbórea', 'Agricultura', 'Pastagem e campos', 'Área urbanizada', 'Água', 'Outras áreas']
+        CORES_GRUPO = {'Vegetação arbórea': '#397d49', 'Agricultura': '#e49635', 'Pastagem e campos': '#e3e2c3', 'Área urbanizada': '#c4281b', 'Água': '#419bdf', 'Outras áreas': '#a59b8f'}
+        FONTE_USO = f'Esri/Impact Observatory 10 m, {ANO} (MapBiomas indisponível para download)'
+        log('uso do solo: reserva Impact Observatory', ANO, dado.shape)
     dentro = rasterize([(mapping(MUN), 1)], out_shape=dado.shape, transform=tr, fill=0, dtype='uint8')
     lat = tr.f + tr.e * (np.arange(dado.shape[0]) + 0.5)
     area_ha = np.broadcast_to((abs(tr.a) * 111320 * np.cos(np.radians(lat)))[:, None] * (abs(tr.e) * 110574), dado.shape) / 1e4
@@ -257,7 +284,7 @@ def mb_cobertura():
     for cod, (c, gr) in CLASSES.items(): grp[dado == cod] = GRUPOS.index(gr) + 1
     tot = {g: float(area_ha[(grp == i + 1) & (dentro == 1)].sum()) for i, g in enumerate(GRUPOS)}
     T = sum(tot.values())
-    json.dump({'ano': ANO, 'fonte': ('MapBiomas 10 m – Coleção 2 (beta), ' if 'lulc_10m' in TIF else 'MapBiomas 30 m – ') + ANO, 'area_total_ha': round(T, 1), 'grupos': [{'grupo': g, 'cor': CORES_GRUPO[g], 'area_ha': round(a, 1), 'pct': round(100 * a / T, 2)} for g, a in tot.items() if a > 0]},
+    json.dump({'ano': ANO, 'fonte': FONTE_USO, 'area_total_ha': round(T, 1), 'grupos': [{'grupo': g, 'cor': CORES_GRUPO[g], 'area_ha': round(a, 1), 'pct': round(100 * a / T, 2)} for g, a in tot.items() if a > 0]},
               open(f'{D}/mapbiomas_estatisticas.json', 'w'), ensure_ascii=False, indent=1)
     def por_poligono(arquivo):
         if not os.path.exists(arquivo): return
@@ -267,11 +294,11 @@ def mb_cobertura():
         np.add.at(mat, (rot.ravel(), grp.ravel()), area_ha.ravel())
         for i, f in enumerate(g['features']):
             linha = mat[i + 1]; t = linha[1:].sum(); p = f['properties']
-            for k in [k for k in p if k.startswith('MapBiomas')]: p.pop(k)
+            for k in [k for k in p if k.startswith('MapBiomas') or k.startswith('Uso do solo ')]: p.pop(k)
             if t <= 0: continue
             for j, gr in enumerate(GRUPOS):
                 v = 100 * linha[j + 1] / t
-                if v >= 0.5: p[f'MapBiomas {ANO} – {gr} (%)'] = f'{v:.1f}'.replace('.', ',')
+                if v >= 0.5: p[f'{"MapBiomas" if TIF else "Uso do solo"} {ANO} – {gr} (%)'] = f'{v:.1f}'.replace('.', ',')
             p['veg_nativa_pct'] = round(100 * linha[1] / t, 1)
             v = p['veg_nativa_pct']; p['faixa_veg'] = 'Menos de 5%' if v < 5 else '5% a 10%' if v < 10 else '10% a 20%' if v < 20 else '20% ou mais'
         json.dump(g, open(arquivo, 'w'), ensure_ascii=False, separators=(',', ':'))
@@ -450,7 +477,8 @@ def pendencias():
             tem = [emb[i]['properties']['nome'].replace('Embargo IBAMA ', '') for i in earv.query(g) if g.intersection(embg[i]).area > 0.02 * embg[i].area]
             if tem: p['Embargo IBAMA'] = 'Vigente: ' + ', '.join(tem[:3]); pend.append(f"Área embargada pelo IBAMA ({', '.join(tem[:3])})"); pts += 4
         if p.get('Alertas MapBiomas'): pend.append(f"{p['Alertas MapBiomas']} alerta(s) de desmatamento MapBiomas"); pts += 3
-        if veg is not None and mf > 4 and veg < 20: pend.append(f'Vegetação nativa de {veg:.1f}% (abaixo de 20%) em imóvel acima de 4 módulos – possível déficit de Reserva Legal'.replace('.', ',')); pts += 2
+        rot_veg = 'Vegetação nativa' if any(k.startswith('MapBiomas') for k in p) else 'Cobertura arbórea (inclui silvicultura)'
+        if veg is not None and mf > 4 and veg < 20: pend.append(f'{rot_veg} de {veg:.1f}% (abaixo de 20%) em imóvel acima de 4 módulos – possível déficit de Reserva Legal'.replace('.', ',')); pts += 2
         if mf > 4 and cob < 0.1: pend.append('Imóvel acima de 4 módulos sem georreferenciamento certificado no SIGEF'); pts += 1
         nivel = 'Prioridade alta' if pts >= 4 else 'Prioridade média' if pts >= 2 else 'Atenção' if pts > 0 else 'Sem pendência identificada'
         p['pendencia_nivel'] = nivel; p['pendencias_n'] = len(pend)
@@ -481,12 +509,12 @@ def config():
     P = lambda a: f'{D}/{a}'
     for cam in c['camadas']:
         if cam['id'] == 'municipio': cam['arquivo'] = P('municipio.geojson')
-        if cam['id'] == 'imoveis': cam['arquivo'] = P('car.geojson'); cam['campos'] = [k.replace('Inscrição', 'Data de cadastro/atualização') for k in cam['campos'] if k != 'Última atualização']
+        if cam['id'] == 'imoveis': cam['arquivo'] = P('car.geojson'); cam['campos_prefixos'] = ['Pendência', 'MapBiomas', 'Uso do solo']; cam['campos'] = [k.replace('Inscrição', 'Data de cadastro/atualização') for k in cam['campos'] if k != 'Última atualização']
     novo = []
     for o in c['camadas_opcionais']:
         i = o['id']
         if i == 'mb-cobertura':
-            o['nome'] = f"Uso e cobertura do solo {est.get('ano', '')}"; o['fonte'] = est.get('fonte', o.get('fonte'))
+            o['nome'] = f"Uso e cobertura do solo {est.get('ano', '')}"; o['fonte'] = est.get('fonte', o.get('fonte')); o['secao'] = 'Uso do solo'
             o['arquivo'] = P('cobertura.json'); o['legenda_itens'] = [{'rotulo': f"{g['grupo']} ({g['pct']:.1f}%)".replace('.', ','), 'cor': g['cor']} for g in est['grupos']]
         elif i == 'mb-alertas': o['arquivo'] = P('alertas.geojson')
         elif i == 'sigef': o['arquivo'] = P('sigef.geojson')
