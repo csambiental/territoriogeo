@@ -807,7 +807,7 @@
   {
    "id": "barragens",
    "secao": "Hidrografia",
-   "nome": "Barragens cadastradas (IAT)",
+   "nome": "Barragens cadastradas – SNISB/IAT",
    "arquivo": "data/iat/barragens_londrina.geojson",
    "geometria": "ponto",
    "icone": "dot",
@@ -816,23 +816,37 @@
    "cores": {
     "Alto": "#d32f2f",
     "Médio": "#ffa000",
-    "Baixo": "#43a047"
+    "Baixo": "#43a047",
+    "Não classificado": "#1e88e5"
    },
    "rotulo_campo": "nome",
    "rotulo_minzoom": 12,
    "clicavel": true,
    "prioridade": true,
    "campos": [
+    "Fonte",
+    "Código SNISB",
     "Código IAT",
+    "Empreendedor",
+    "Órgão fiscalizador",
+    "Autorização / outorga",
+    "Data da autorização",
     "Categoria de risco",
     "Dano potencial associado (DPA)",
-    "Classificação",
+    "Classe",
+    "Regulada pela PNSB",
     "Fase",
-    "Finalidade",
+    "Uso principal",
+    "Curso d'água",
     "Tipo (material)",
     "Altura (m)",
+    "Volume (hm³)",
     "Área do reservatório (m²)",
-    "Volume (hm³)"
+    "Plano de segurança",
+    "PAE (plano de emergência)",
+    "Revisão periódica",
+    "Última inspeção",
+    "Autuada"
    ],
    "legenda_itens": [
     {
@@ -846,9 +860,48 @@
     {
      "rotulo": "Risco baixo",
      "cor": "#43a047"
+    },
+    {
+     "rotulo": "Não classificada",
+     "cor": "#1e88e5"
     }
    ],
-   "fonte": "IAT-PR – cadastro de barragens (painel público)"
+   "fonte": "ANA – SNISB (Sistema Nacional de Informações sobre Segurança de Barragens) e IAT-PR (vistorias técnicas)"
+  },
+  {
+   "id": "massas-dagua",
+   "secao": "Hidrografia",
+   "nome": "Açudes, represas e lagos – ANA",
+   "arquivo": "",
+   "icone": "fill",
+   "cor": "#0288d1",
+   "cor_por": "grupo",
+   "cores": {
+    "Açude / represa (artificial)": "#0288d1",
+    "Lago / lagoa (natural)": "#4dd0e1"
+   },
+   "largura": 1.2,
+   "preenchimento": 0.45,
+   "clicavel": true,
+   "campos": [
+    "Tipo",
+    "Área (ha)",
+    "Código SNISB",
+    "Dominialidade",
+    "Uso principal",
+    "Base"
+   ],
+   "legenda_itens": [
+    {
+     "rotulo": "Açude / represa (artificial)",
+     "cor": "#0288d1"
+    },
+    {
+     "rotulo": "Lago / lagoa (natural)",
+     "cor": "#4dd0e1"
+    }
+   ],
+   "fonte": "ANA – Base de massas d'água (mapeamento FBDS 2017 sobre imagens RapidEye)"
   },
   {
    "id": "bacias",
@@ -923,6 +976,14 @@
     "nome": "SIGEF/INCRA – imóveis certificados",
     "detalhe": "serviço público do IAT-PR",
     "link": "https://geopr.iat.pr.gov.br/"
+   },
+   {
+    "nome": "ANA – SNISB, Sistema Nacional de Informações sobre Segurança de Barragens",
+    "link": "https://www.snisb.gov.br/"
+   },
+   {
+    "nome": "ANA – Base de massas d'água (açudes, represas e lagos)",
+    "link": "https://metadados.snirh.gov.br/"
    },
    {
     "nome": "IAT-PR – cadastro de barragens (painel público de segurança de barragens)",

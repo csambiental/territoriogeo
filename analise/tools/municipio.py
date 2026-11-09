@@ -397,18 +397,68 @@ def outorgas():
         (rural if dentro else urbana).append({'type': 'Feature', 'geometry': {'type': 'Point', 'coordinates': [round(c, 6) for c in f['geometry']['coordinates'][:2]]}, 'properties': props})
     salvar('outorgas_rural.geojson', rural); salvar('outorgas_urbana.geojson', urbana)
     log('outorgas rural', len(rural), 'fora do CAR', len(urbana))
-@etapa('Barragens IAT')
+PJ_BAR = re.compile(r'\b(LTDA|S/?A|S\.A|EIRELI|ME|EPP|CIA|COMPANHIA|MUNICIPIO|PREFEITURA|ASSOCIACAO|COOPERATIVA|COOP|CONDOMINIO|EMPREENDIMENTOS?|INDUSTRIA|COMERCIO|AGROPECUARIA|AGRICOLA|CONSTRUTORA|LOTEADORA|INCORPORADORA|SANEPAR|COPEL|ESTADO|GOVERNO|SECRETARIA|DEPARTAMENTO|INSTITUTO|UNIVERSIDADE|ENERGIA|USINA|HOLDING|PARTICIPACOES|IGREJA|SAAE|FUNDACAO)\b')
+def empreendedor(n):
+    n = (n or '').strip()
+    return n if n and PJ_BAR.search(unicodedata.normalize('NFD', n).encode('ascii', 'ignore').decode().upper()) else ('Pessoa física (nome omitido)' if n else '')
+@etapa('Barragens IAT + SNISB')
 def barragens():
-    fs = iat_camada('https://geopr.iat.pr.gov.br/server/rest/services/Hosted/barragens_dashboard_publico/FeatureServer')
     nb = lambda v, c=2: '' if v in (None, '') or float(v) == 0 else f"{float(v):,.{c}f}".replace(',', 'X').replace('.', ',').replace('X', '.')
+    nc = lambda v: (str(v).strip() if v not in (None, '') else '') or 'Não classificado'
+    norm = lambda v: 'Não classificado' if v.lower().startswith(('não', 'nao', 'sem')) else v
+    dt = lambda ms: datetime.datetime.fromtimestamp(ms / 1000, datetime.timezone.utc).strftime('%d/%m/%Y') if isinstance(ms, (int, float)) else ''
+    out = []
+    # 1) SNISB (ANA) – cadastro nacional, inclui as barragens fiscalizadas pelo IAT
+    try:
+        sn = iat_camada('https://www.snirh.gov.br/arcgis/rest/services/IG/SNISB/FeatureServer')
+    except Exception as e:
+        log('SNISB indisponível', e); sn = []
+    for f in sn:
+        p = f['properties']; risco = norm(nc(p.get('CATEGORIA_RISCO'))); dpa = norm(nc(p.get('DANO_POTENCIAL')))
+        nome = (p.get('BAR_NM_NOME') or '').strip(); sec = (p.get('BAR_NM_SECUNDARIO') or '').strip()
+        if (not nome or 'sem nome' in nome.lower()) and sec: nome = sec
+        out.append({'type': 'Feature', 'geometry': {'type': 'Point', 'coordinates': f['geometry']['coordinates'][:2]}, 'properties': {
+            'nome': nome or 'Barragem sem nome', 'risco': risco, 'dpa': dpa, 'grupo': 'Barragem (SNISB)', 'Fonte': 'SNISB/ANA',
+            'Código SNISB': p.get('BAR_CD_SNISB') or '', 'Código no órgão fiscalizador': p.get('BAR_CD_BAR_ENT_FISCALIZADORA') or '',
+            'Empreendedor': empreendedor(p.get('NM_EMPREENDEDOR')), 'Órgão fiscalizador': p.get('ORG_NM_ORGANIZACAO') or '',
+            'Autorização / outorga': p.get('AUT_NU_AUTORIZACAO') or '', 'Data da autorização': dt(p.get('AUT_DT_EMISSAO_PUB')),
+            'Categoria de risco': risco, 'Dano potencial associado (DPA)': dpa, 'Classe': p.get('BAR_DS_CLASSE') or '',
+            'Regulada pela PNSB': p.get('REGULADA_PELO_PNSB') or '', 'Fase': p.get('FASE_DE_VIDA') or '',
+            'Uso principal': p.get('USO_PRINCIPAL') or '', 'Curso d\'água': p.get('ING_NM_TRECHO') or '', 'Tipo (material)': p.get('TIPO_MATERIAL') or '',
+            'Altura (m)': nb(p.get('BAR_NU_ALT_MAX_NIVEL_TERRENO') or p.get('BAR_NU_ALT_MAX_BASE_FUNDACAO'), 1), 'Volume (hm³)': nb(p.get('BAR_NU_CAP_TOTAL_RESERV'), 4),
+            'Plano de segurança': p.get('POSSUI_PLANO_SEGURANCA') or '', 'PAE (plano de emergência)': p.get('POSSUI_PAE') or '',
+            'Revisão periódica': p.get('POSSUI_REVISAO_PERIODICA') or '', 'Última inspeção': dt(p.get('INS_DT_INSPECAO')), 'Autuada': p.get('BARRAGEM_AUTUADA') or ''}})
+    # 2) IAT – painel de vistorias técnicas (junta com a do SNISB quando é a mesma barragem, até 300 m)
+    iat = iat_camada('https://geopr.iat.pr.gov.br/server/rest/services/Hosted/barragens_dashboard_publico/FeatureServer')
+    for f in iat:
+        p = f['properties']; pt = Point(f['geometry']['coordinates'][:2])
+        extra = {'Código IAT': p.get('codigo_barragem') or '', 'Classificação IAT': p.get('classificacao') or '',
+                 'Finalidade (IAT)': (p.get('finalidade_recurso') or '').replace(',', ', '), 'Área do reservatório (m²)': nb(p.get('area_reservatorio_m2'), 0)}
+        perto = sorted(((pt.distance(Point(o['geometry']['coordinates'])) * 111000, o) for o in out if o['properties']['Fonte'].startswith('SNISB')), key=lambda t: t[0])
+        if perto and perto[0][0] <= 300:
+            o = perto[0][1]['properties']; o.update({k: v for k, v in extra.items() if v}); o['Fonte'] = 'SNISB/ANA + vistoria IAT'; o['grupo'] = 'Barragem (SNISB + vistoria IAT)'
+            continue
+        risco = norm(nc(p.get('categoria_risco'))); dpa = norm(nc(p.get('dpa')))
+        out.append({'type': 'Feature', 'geometry': {'type': 'Point', 'coordinates': f['geometry']['coordinates'][:2]}, 'properties': {
+            'nome': p.get('nome_barragem') or 'Barragem', 'risco': risco, 'dpa': dpa, 'grupo': 'Barragem (vistoria IAT)', 'Fonte': 'Vistoria IAT',
+            'Categoria de risco': risco, 'Dano potencial associado (DPA)': dpa, 'Fase': p.get('fase_vida') or '', 'Tipo (material)': p.get('tipo_barragem_material') or '',
+            'Altura (m)': nb(p.get('altura_m'), 1), 'Volume (hm³)': nb(p.get('volume_reservatorio_hm3'), 4), **extra}})
+    salvar('barragens.geojson', out); log('barragens', len(out), 'SNISB', len(sn), 'IAT', len(iat))
+
+@etapa('Massas d\'água (ANA)')
+def massas():
+    fs = iat_camada('https://www.snirh.gov.br/arcgis/rest/services/SPR/Massa_dagua/FeatureServer')
     out = []
     for f in fs:
-        p = f['properties']; risco = (p.get('categoria_risco') or '').strip() or 'Não informado'; dpa = (p.get('dpa') or '').strip() or 'Não informado'
-        out.append({'type': 'Feature', 'geometry': f['geometry'], 'properties': {'nome': p.get('nome_barragem') or 'Barragem', 'risco': risco, 'dpa': dpa, 'grupo': 'Barragem',
-            'Código IAT': p.get('codigo_barragem') or '', 'Categoria de risco': risco, 'Dano potencial associado (DPA)': dpa, 'Classificação': p.get('classificacao') or '',
-            'Fase': p.get('fase_vida') or '', 'Finalidade': (p.get('finalidade_recurso') or '').replace(',', ', '), 'Tipo (material)': p.get('tipo_barragem_material') or '',
-            'Altura (m)': nb(p.get('altura_m'), 1), 'Área do reservatório (m²)': nb(p.get('area_reservatorio_m2'), 0), 'Volume (hm³)': nb(p.get('volume_reservatorio_hm3'), 4)}})
-    salvar('barragens.geojson', out); log('barragens', len(out))
+        p = f['properties']; g = shape(f['geometry']).buffer(0)
+        art = (p.get('detipomass') or '').strip().lower().startswith('artif')
+        nome = next((p.get(k).strip() for k in ('nmoriginal', 'nmalternat', 'nmgenerico') if (p.get(k) or '').strip()), '')
+        out.append({'type': 'Feature', 'geometry': mapping(g.simplify(0.00002)), 'properties': {
+            'nome': nome or ('Açude / represa' if art else 'Lago / lagoa'), 'grupo': 'Açude / represa (artificial)' if art else 'Lago / lagoa (natural)',
+            'Tipo': 'Artificial (açude, represa, reservatório)' if art else 'Natural', 'Área (ha)': f"{(p.get('nuareaha') or 0):.2f}".replace('.', ','),
+            'Código SNISB': p.get('cod_snisb') or '', 'Dominialidade': (p.get('dedominial') or '').strip(), 'Uso principal': (p.get('usoprinc') or '').strip(),
+            'Base': (p.get('deversao') or '').strip() + (f" – {p.get('desatelite').strip()}" if (p.get('desatelite') or '').strip() else '')}})
+    salvar('massas_dagua.geojson', out); log('massas d\'água', len(out))
 
 # ---------- 7) relevo: declividade e curvas de nível (Copernicus DEM) ----------
 @etapa('Relevo')
@@ -503,7 +553,7 @@ def config():
     c['resumo'] = [{'valor': f'{len(ativos):,}'.replace(',', '.'), 'rotulo': 'imóveis rurais ativos no CAR'},
                    {'valor': f'{area / 1000:,.1f} mil'.replace('.', ',') if area >= 1000 else f'{area:,.0f}'.replace(',', '.'), 'rotulo': 'hectares cadastrados'},
                    {'valor': f'{100 * conf / max(1, len(ativos)):.0f}%', 'rotulo': 'analisados e em conformidade'}]
-    c['programa'] = {'titulo': 'Sobre esta análise', 'texto': f'Imóveis rurais do CAR de {NOME} cruzados com SIGEF/INCRA, embargos do IBAMA, alertas de desmatamento, uso do solo (MapBiomas), outorgas e barragens do IAT, microbacias e relevo. Clique num imóvel e use o Raio-X para gerar o relatório.', 'etapas': []}
+    c['programa'] = {'titulo': 'Sobre esta análise', 'texto': f'Imóveis rurais do CAR de {NOME} cruzados com SIGEF/INCRA, embargos do IBAMA, alertas de desmatamento, uso do solo (MapBiomas), outorgas do IAT, barragens do SNISB/IAT, açudes e represas (ANA), microbacias e relevo. Clique num imóvel e use o Raio-X para gerar o relatório.', 'etapas': []}
     c['termos']['texto'] = c['termos']['texto'].replace('do município de Londrina', f'do município de {NOME}')
     c.pop('licencas', None)
     P = lambda a: f'{D}/{a}'
@@ -521,7 +571,8 @@ def config():
         elif i == 'embargos-ibama': o['arquivo'] = P('embargos.geojson')
         elif i == 'outorgas-rural': o['arquivo'] = P('outorgas_rural.geojson'); o['nome'] = f"Outorgas em imóveis do CAR ({cnt('outorgas_rural.geojson')})"
         elif i == 'outorgas-urbana': o['arquivo'] = P('outorgas_urbana.geojson'); o['nome'] = f"Outorgas fora do CAR ({cnt('outorgas_urbana.geojson')})"
-        elif i == 'barragens': o['arquivo'] = P('barragens.geojson')
+        elif i == 'barragens': o['arquivo'] = P('barragens.geojson'); o['nome'] = f"Barragens cadastradas – SNISB/IAT ({cnt('barragens.geojson')})"
+        elif i == 'massas-dagua': o['arquivo'] = P('massas_dagua.geojson'); o['nome'] = f"Açudes, represas e lagos – ANA ({cnt('massas_dagua.geojson')})"
         elif i == 'microbacias': o['arquivo'] = P('microbacias.geojson')
         elif i == 'declividade': o['arquivo'] = P('declividade.json')
         elif i == 'curvas': o['tiles'] = P('curvas/{z}/{x}/{y}.pbf')
@@ -529,7 +580,7 @@ def config():
         novo.append(o)
     c['camadas_opcionais'] = novo
     c['raiox'] = {'car': P('car.geojson'), 'sigef': P('sigef.geojson'), 'embargos': P('embargos.geojson'), 'alertas': P('alertas.geojson'),
-                  'outorgas': [P('outorgas_rural.geojson'), P('outorgas_urbana.geojson')], 'licencas': None, 'barragens': P('barragens.geojson'),
+                  'outorgas': [P('outorgas_rural.geojson'), P('outorgas_urbana.geojson')], 'licencas': None, 'barragens': P('barragens.geojson'), 'massas': P('massas_dagua.geojson'),
                   'microbacias': P('microbacias.geojson'), 'declividade': P('declividade.json'), 'municipio': f'{NOME}/PR'}
     json.dump(c, open(P('config.json'), 'w'), ensure_ascii=False, indent=1)
     # lista de municípios do site
@@ -539,5 +590,5 @@ def config():
     json.dump(sorted(lista, key=lambda m: m['nome']), open(L, 'w'), ensure_ascii=False, indent=1)
     log('config ok', NOME, len(ativos), 'imóveis')
 
-ETAPAS = os.environ.get('ETAPAS', 'car,sigef,ibama,microbacias,mb_cobertura,mb_alertas,outorgas,barragens,relevo,pendencias,config').split(',')
+ETAPAS = os.environ.get('ETAPAS', 'car,sigef,ibama,microbacias,mb_cobertura,mb_alertas,outorgas,barragens,massas,relevo,pendencias,config').split(',')
 for e in ETAPAS: globals()[e.strip()]()
