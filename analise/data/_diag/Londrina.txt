@@ -1,0 +1,17 @@
+/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:36: DeprecationWarning: ssl.TLSVersion.TLSv1 is deprecated
+  SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
+Município 4113700 Londrina
+  tentativa 1 <urlopen error timed out>
+  tentativa 2 <urlopen error timed out>
+limite: IBGE indisponível, usando geodata-br (malha IBGE)
+
+===== Barragens IAT + SNISB =====
+   IG/SNISB/FeatureServer camada 0 lote 69
+   Hosted/barragens_dashboard_publico/FeatureServer camada 0 lote 78
+barragens 67 SNISB 37 IAT 52
+----- Barragens IAT + SNISB ok (50s)
+
+===== Massas d'água (ANA) =====
+   SPR/Massa_dagua/FeatureServer camada 0 lote 285
+massas d'água 141
+----- Massas d'água (ANA) ok (10s)
