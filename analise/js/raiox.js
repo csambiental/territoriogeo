@@ -77,6 +77,56 @@ const rxSigefCor = (p) => (RX_SIGEF[p['Situação']] || ['#9e9e9e', p['Situaçã
 const rxSigefRot = (p) => (RX_SIGEF[p['Situação']] || ['#9e9e9e', p['Situação'] || 'Outra'])[1];
 const rxF = (n, c = 2) => Number(n).toLocaleString('pt-BR', { minimumFractionDigits: c, maximumFractionDigits: c });
 
+
+// ---------- resumo de pendências e adequações (base para orçamento) ----------
+const rxData = (t) => { const m = String(t || '').match(/(\d{2})\/(\d{2})\/(\d{4})/); return m ? new Date(+m[3], +m[2] - 1, +m[1]) : null; };
+function rxNecessidades(p, r, area, uso) {
+    const N = [], add = (prior, tema, achado, adequacao) => N.push({ prior, tema, achado, adequacao });
+    const sit = p.situacao || '', mf = rxNum(p['Módulos fiscais']), hoje = new Date(), em12m = new Date(hoje.getTime() + 365 * 864e5);
+    // CAR
+    if (sit === 'Analisado – regularização ambiental pendente') add(1, 'CAR / PRA', 'CAR analisado com regularização ambiental pendente', 'Adesão ao Programa de Regularização Ambiental (PRA) e termo de compromisso com o órgão ambiental');
+    else if (sit === 'Analisado – notificação pendente') add(1, 'CAR', 'Notificação do órgão no SICAR sem resposta', 'Responder a notificação do SICAR (ajustes de perímetro, APP, Reserva Legal ou documentos)');
+    else if (sit === 'Aguardando análise' || sit === 'Em análise') add(3, 'CAR', `CAR ${sit.toLowerCase()}`, 'Revisar o CAR antes da análise do órgão (perímetro, APP, Reserva Legal, uso consolidado) e retificar se necessário');
+    // embargos e alertas
+    r.emb.filter(x => x.f.properties['Situação'] !== 'Desembargado').forEach(x => add(1, 'Embargo IBAMA', `${x.f.properties.nome} (${rxF(x.ha, 2)} ha no imóvel)`, 'Defesa administrativa e/ou regularização do embargo, com Projeto de Recuperação de Área Degradada (PRAD) se aplicável'));
+    if (r.alertas.length) add(1, 'Desmatamento', `${r.alertas.length} alerta(s) MapBiomas (${rxF(r.alertas.reduce((a, x) => a + x.ha, 0), 2)} ha)`, 'Laudo técnico do alerta (supressão autorizada, falso positivo ou infração) e, se for o caso, PRAD ou regularização da supressão');
+    // Reserva Legal
+    const nat = uso.find(([k]) => /Vegetação (nativa|arbórea)/.test(k));
+    const pv = nat ? nat[1] : (p.veg_nativa_pct ?? null);
+    if (pv !== null && pv < 20) add(mf > 4 ? 1 : 2, 'Reserva Legal', `Vegetação ${nat && /arbórea/.test(nat[0]) ? 'arbórea' : 'nativa'} de ${rxF(pv, 1)}% do imóvel (mínimo legal de 20% no PR)`,
+        mf > 4 ? 'Diagnóstico de Reserva Legal: recomposição, regeneração ou compensação (CRA/doação em UC), via PRA' : 'Verificar Reserva Legal: imóveis até 4 módulos podem usar a vegetação existente em 22/07/2008 (art. 67 do Código Florestal)');
+    // sobreposições
+    const maior = r.car[0];
+    if (maior && maior.ha >= Math.max(1, area * 0.02)) add(2, 'Sobreposição de CAR', `${rxF(maior.ha)} ha (${rxF(maior.ha / area * 100, 1)}%) sobre o CAR ${maior.f.properties.nome}`, 'Conferir divisas com o vizinho e retificar o perímetro no CAR (o próprio e/ou o do vizinho)');
+    // SIGEF / INCRA
+    const cobS = Math.min(area, r.sigef.reduce((a, x) => a + x.ha, 0)) / area;
+    if (cobS < 0.5) add(mf > 4 ? 2 : 3, 'Georreferenciamento', r.sigef.length ? `SIGEF cobre só ${rxF(cobS * 100, 0)}% do imóvel` : 'Sem parcela certificada no SIGEF/INCRA',
+        'Georreferenciamento e certificação no SIGEF/INCRA (exigido para desmembramento, remembramento e transferência)');
+    const semReg = r.sigef.filter(x => x.f.properties['Situação'] && x.f.properties['Situação'] !== 'Registrada');
+    if (semReg.length) add(2, 'Registro', `${semReg.length} parcela(s) SIGEF ainda sem registro em cartório`, 'Averbação/registro da certificação SIGEF na matrícula do imóvel');
+    // relevo
+    const mont = (r.decl[4] || {}).pct || 0;
+    if (mont >= 0.5) add(2, 'Relevo / uso restrito', `${rxF(mont, 1)}% do imóvel com declividade acima de 45% (≈ 25°)`, 'Verificar uso restrito em áreas de 25° a 45° (art. 11 do Código Florestal) e APP de encostas acima de 45°; manejo conservacionista');
+    else if (r.decl.slice(3).reduce((a, d) => a + d.pct, 0) >= 15) add(3, 'Conservação do solo', 'Parte relevante do imóvel em relevo forte ondulado (≥ 20%)', 'Plano de conservação do solo e da água (terraceamento, plantio em nível, cobertura)');
+    // água
+    const ag = [...r.agua.dentro];
+    ag.forEach(x => { const v = rxData(x.f.properties.Vencimento); if (v && v < em12m) add(v < hoje ? 1 : 2, 'Outorga de água', `${x.f.properties.Interferência || 'Outorga'} – vence${v < hoje ? 'u' : ''} em ${x.f.properties.Vencimento}`, 'Renovação da outorga no SIGARH (IAT)'); });
+    if (!ag.length) add(3, 'Uso da água', 'Nenhuma outorga do SIGARH localizada dentro do imóvel', 'Verificar em campo os usos de água (poço, captação, barragem, irrigação, dessedentação) e regularizar por outorga ou declaração de uso independente');
+    r.barr.dentro.forEach(x => add(2, 'Barragem', `${x.f.properties.nome} (risco ${x.f.properties['Categoria de risco'] || 'não informado'})`, 'Conferir cadastro e obrigações de segurança de barragem (Lei 12.334/2010) no IAT'));
+    (r.lic?.dentro || []).forEach(x => { const v = rxData(x.f.properties.Validade); if (v && v < em12m) add(v < hoje ? 1 : 2, 'Licença ambiental', `${x.f.properties.Modalidade || 'Licença'} – validade ${x.f.properties.Validade}`, 'Renovação da licença ambiental no IAT (SGA)'); });
+    add(3, 'Vistoria', 'Análise feita só com bases públicas', 'Vistoria de campo e conferência documental (matrícula, CCIR, ITR, CAR) para confirmar os itens acima');
+    return N.sort((a, b) => a.prior - b.prior);
+}
+function rxResumoHtml(N) {
+    const ROT = { 1: ['Alta', '#c62828'], 2: ['Média', '#ef6c00'], 3: ['Baixa / verificar', '#558b2f'] };
+    const cont = [1, 2, 3].map(k => N.filter(n => n.prior === k).length);
+    return `<h3>Resumo: pendências e adequações sugeridas</h3>
+        <div class="rx-cob">${[1, 2, 3].map((k, i) => `<span><i style="background:${ROT[k][1]}"></i>Prioridade ${ROT[k][0].toLowerCase()}: <b>${cont[i]}</b></span>`).join('')}</div>
+        <table class="rx-tab"><tr><th>Nº</th><th>Prioridade</th><th>Tema</th><th>Situação encontrada</th><th>Adequação / serviço sugerido</th></tr>
+        ${N.map((n, i) => `<tr><td><b>${i + 1}</b></td><td><span class="rx-sw" style="background:${ROT[n.prior][1]}"></span>${ROT[n.prior][0]}</td><td>${esc(n.tema)}</td><td>${esc(n.achado)}</td><td>${esc(n.adequacao)}</td></tr>`).join('')}</table>
+        <p class="hint">Lista indicativa para orientar o orçamento de adequação ambiental e fundiária. Itens e quantidades devem ser confirmados em vistoria.</p>`;
+}
+
 async function analisarImovel(nome) {
     const dlg = document.getElementById('raioxDialog'), corpo = document.getElementById('raioxCorpo');
     corpo.innerHTML = '<p class="hint">Cruzando o imóvel com as camadas do mapa…</p>'; dlg.showModal();
@@ -150,6 +200,7 @@ async function analisarImovel(nome) {
             ${C.licencas === null ? '' : `<h3>Licenças ambientais (IAT) no imóvel ou a até 500 m</h3>`}
             ${C.licencas === null ? '' : tab(['Nº', 'Empreendimento (SGA)', 'Atividade', 'Posição', 'Coordenadas (lat, long)'], pts(r.lic, 'Atividade', 'lic'))}
             ${r.barr.dentro.length || r.barr.perto.length ? `<h3>Barragens cadastradas</h3>${tab(['Nº', 'Barragem', 'Tipo', 'Posição', 'Coordenadas (lat, long)'], pts(r.barr, 'grupo', 'barr'))}` : ''}
+            ${rxResumoHtml(rxNecessidades(p, r, area, uso))}
             <p class="hint">Microbacia: ${esc(r.mbac[0] || '–')} · Dados do mapa atualizados em ${esc(dadosGerais.atualizado_em || '')}.</p>
             <p class="hint rx-aviso">Análise automática feita sobre bases públicas (SICAR, INCRA/SIGEF, IBAMA, MapBiomas, IAT/SIGARH/SGA, Copernicus). As áreas são aproximadas e não substituem vistoria, levantamento topográfico ou consulta oficial aos órgãos.</p>`;
         corpo.innerHTML = html;
@@ -178,7 +229,7 @@ function rxRestaurar(estado) {
 }
 async function rxCapturar(alvo) {
     await new Promise(res => { map.once('idle', res); setTimeout(res, 8000); });
-    await new Promise(res => requestAnimationFrame(() => requestAnimationFrame(res)));
+    await new Promise(res => setTimeout(res, 400));
     try {
         // copia o mapa e redesenha o perímetro do imóvel por cima (garante o contorno vermelho na imagem)
         const src = map.getCanvas(), cv = document.createElement('canvas');
@@ -270,17 +321,23 @@ async function rxFotoPontos(alvo, pontos) {
 }
 async function gerarRelatorioRaiox() {
     const u = RX.ultimo; if (!u) return;
-    const janela = window.open('', '_blank');
-    if (!janela) { alert('Permita a abertura de janelas para gerar o relatório.'); return; }
-    janela.document.write('<p style="font-family:sans-serif;padding:20px">Montando o relatório…</p>');
+    // monta tudo nesta aba (o mapa precisa estar visível para desenhar) e só no fim abre o relatório
     document.getElementById('raioxDialog').close();
+    const aviso = document.createElement('div'); aviso.className = 'rx-progresso';
+    aviso.innerHTML = '<div><b>Montando o relatório…</b><span id="rxEtapa">mapa de localização (1/4)</span><small>Mantenha esta aba aberta e visível.</small></div>';
+    document.body.appendChild(aviso);
+    const etapa = (t) => { const e = document.getElementById('rxEtapa'); if (e) e.textContent = t; };
     const centro = map.getCenter(), zoom = map.getZoom();
     const foto = await rxFotoLocalizacao(u.alvo);
     const relevantes = u.viz.filter(x => x.ha >= 0.05).slice(0, 15);
+    etapa('mapa de sobreposições (2/4)');
     const foto2 = relevantes.length ? await rxFotoSobreposicao(u.alvo, relevantes) : null;
     const parc = (u.sigef || []).slice(0, 15);
+    etapa('mapa do SIGEF (3/4)');
     const foto3 = parc.length ? await rxFotoSigef(u.alvo, parc) : null;
+    etapa('mapa de outorgas e licenças (4/4)');
     const foto4 = (u.pontos || []).length ? await rxFotoPontos(u.alvo, u.pontos) : null;
+    const janela = { partes: [], document: { open() { }, write(t) { janela.partes.push(t); }, close() { } } };
     map.jumpTo({ center: centro, zoom });
     const dataHora = u.quando.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
     const titulo = (dadosGerais.cliente || {}).nome || 'Mapa';
@@ -309,7 +366,13 @@ ${u.html.replace('<!--FOTO4-->', foto4 ? `<img class="mapa" src="${foto4}" alt="
 <div style="text-align:right"><div class="hint">Código de conferência</div><div class="cod">${u.codigo}</div><div class="hint">identifica esta versão do relatório</div></div></footer>
 <p class="noprint" style="text-align:center;margin-top:16px"><button onclick="window.print()" style="padding:9px 18px;font-size:14px;background:#1e5a3c;color:#fff;border:0;border-radius:6px;cursor:pointer">Salvar em PDF / imprimir</button></p>
 </body></html>`);
-    janela.document.close();
+    const url = URL.createObjectURL(new Blob(janela.partes, { type: 'text/html;charset=utf-8' }));
+    const nomeArq = `relatorio_${u.nome}.html`;
+    aviso.innerHTML = `<div><b>Relatório pronto</b><a class="btn btn-solid" href="${url}" target="_blank" rel="noopener" id="rxAbrir">Abrir relatório</a>
+        <a class="btn" href="${url}" download="${nomeArq}">Baixar (HTML)</a><button type="button" class="btn" id="rxFecharAviso">Fechar</button></div>`;
+    document.getElementById('rxFecharAviso').onclick = () => aviso.remove();
+    document.getElementById('rxAbrir').addEventListener('click', () => setTimeout(() => aviso.remove(), 500));
+    const w = window.open(url, '_blank'); if (w) setTimeout(() => aviso.remove(), 800);
 }
 // baixa em segundo plano, depois que o mapa abre, os dados usados pelo Raio-X (o primeiro clique fica instantâneo)
 function rxPrecarregar() {
