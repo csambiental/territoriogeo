@@ -1,0 +1,15 @@
+{
+"name": "data/m/4112801/curvas",
+"description": "data/m/4112801/curvas",
+"version": "2",
+"minzoom": "10",
+"maxzoom": "15",
+"center": "-49.883423,-23.377556,15",
+"bounds": "-50.026449,-23.570700,-49.812176,-23.305424",
+"antimeridian_adjusted_bounds": "-50.026449,-23.570700,-49.812176,-23.305424",
+"type": "overlay",
+"format": "pbf",
+"generator": "tippecanoe v2.82.0",
+"generator_options": "tippecanoe -q -e data/m/4112801/curvas -l curvas -Z10 -z15 --no-tile-compression --drop-densest-as-needed '--simplification=2' /tmp/curvas.ndjson",
+"json": "{\"vector_layers\":[{\"id\":\"curvas\",\"description\":\"\",\"minzoom\":10,\"maxzoom\":15,\"fields\":{\"cota\":\"Number\",\"mestra\":\"Number\"}}],\"tilestats\":{\"layerCount\":1,\"layers\":[{\"layer\":\"curvas\",\"count\":550,\"geometry\":\"LineString\",\"attributeCount\":2,\"attributes\":[{\"attribute\":\"cota\",\"count\":45,\"type\":\"number\",\"values\":[470,480,490,500,510,520,530,540,550,560,570,580,590,600,610,620,630,640,650,660,670,680,690,700,710,720,730,740,750,760,770,780,790,800,810,820,830,840,850,860,870,880,890,900,910],\"min\":470,\"max\":910},{\"attribute\":\"mestra\",\"count\":2,\"type\":\"number\",\"values\":[0,1],\"min\":0,\"max\":1}]}]}}"
+}
