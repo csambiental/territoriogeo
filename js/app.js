@@ -934,7 +934,7 @@ function adicionarCamadas() {
             map.addLayer({ id: `cam-${c.id}-line`, type: 'line', source: `cam-${c.id}`,
                 paint: { 'line-color': c.linha_cor || (c.cor_por ? '#ffffff' : corFill), 'line-width': c.linha_largura ?? (c.cor_por ? 1.5 : 1), 'line-opacity': 0.9 } });
             if (c.destacar_selecao) map.addLayer({ id: `cam-${c.id}-sel`, type: 'line', source: `cam-${c.id}`, filter: ['==', ['get', 'nome'], ''],
-                paint: { 'line-color': '#ffeb3b', 'line-width': 3.5 } });
+                paint: { 'line-color': '#ff1744', 'line-width': 3.5 } });
         } else {
             const cor = c.cor_por && c.cores
                 ? ['match', ['get', c.cor_por], ...Object.entries(c.cores).flat(), '#777777']

@@ -183,8 +183,8 @@ async function rxCapturar() {
 }
 function rxDesenharAlvo(alvo, preenchido) {
     map.addSource('rx-alvo', { type: 'geojson', data: alvo });
-    map.addLayer({ id: 'rx-alvo', type: 'fill', source: 'rx-alvo', paint: { 'fill-color': '#ffd600', 'fill-opacity': preenchido ? 0.38 : 0.12 } });
-    map.addLayer({ id: 'rx-alvo-linha', type: 'line', source: 'rx-alvo', paint: { 'line-color': '#ffd600', 'line-width': 3.5 } });
+    map.addLayer({ id: 'rx-alvo', type: 'fill', source: 'rx-alvo', paint: { 'fill-color': '#b9f6ca', 'fill-opacity': preenchido ? 0.45 : 0.3 } });
+    map.addLayer({ id: 'rx-alvo-linha', type: 'line', source: 'rx-alvo', paint: { 'line-color': '#ff1744', 'line-width': 3.5 } });
 }
 // imagem 1: localização – só o imóvel, contorno forte sobre o satélite
 async function rxFotoLocalizacao(alvo) {
@@ -204,11 +204,12 @@ async function rxFotoSobreposicao(alvo, viz) {
         rxDesenharAlvo(alvo, true);
         map.addSource('rx-viz', { type: 'geojson', data: fc });
         map.addSource('rx-inter', { type: 'geojson', data: inter });
-        map.addLayer({ id: 'rx-viz', type: 'line', source: 'rx-viz', paint: { 'line-color': '#ff3d7f', 'line-width': 2.5, 'line-dasharray': [2, 1.2] } });
-        map.addLayer({ id: 'rx-inter', type: 'fill', source: 'rx-inter', paint: { 'fill-color': '#e53935', 'fill-opacity': 0.75, 'fill-outline-color': '#ffffff' } });
+        map.addLayer({ id: 'rx-viz', type: 'line', source: 'rx-viz', paint: { 'line-color': '#ffea00', 'line-width': 2.5, 'line-dasharray': [2, 1.2] } });
+        map.addLayer({ id: 'rx-inter', type: 'fill', source: 'rx-inter', paint: { 'fill-color': '#ff9100', 'fill-opacity': 0.8, 'fill-outline-color': '#ffffff' } });
         map.addSource('rx-rot', { type: 'geojson', data: turf.featureCollection(viz.map((x, i) => { const it = rxInter(alvo, x.f); return turf.point(turf.pointOnFeature(it || x.f).geometry.coordinates, { n: String(i + 1) }); })) });
         map.addLayer({ id: 'rx-viz-rot', type: 'symbol', source: 'rx-rot', layout: { 'text-field': ['get', 'n'], 'text-size': 15, 'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'], 'text-allow-overlap': true, 'text-offset': [0, -1.1] },
-            paint: { 'text-color': '#ffffff', 'text-halo-color': '#ff3d7f', 'text-halo-width': 2.5 } });
+            paint: { 'text-color': '#1a1a1a', 'text-halo-color': '#ffea00', 'text-halo-width': 2.5 } });
+        map.moveLayer('rx-alvo-linha', 'rx-viz-rot');
         const caixa = turf.bbox(turf.featureCollection([alvo, ...inter.features]));
         map.fitBounds([[caixa[0], caixa[1]], [caixa[2], caixa[3]]], { padding: 90, maxZoom: 16, duration: 0 });
         return await rxCapturar();
@@ -223,7 +224,7 @@ async function rxFotoSigef(alvo, parc) {
         map.addLayer({ id: 'rx-sig', type: 'fill', source: 'rx-sig', paint: { 'fill-color': ['get', 'cor'], 'fill-opacity': 0.45 } });
         map.addLayer({ id: 'rx-sig-linha', type: 'line', source: 'rx-sig', paint: { 'line-color': ['get', 'cor'], 'line-width': 2.2 } });
         map.addSource('rx-alvo', { type: 'geojson', data: alvo });
-        map.addLayer({ id: 'rx-alvo-linha', type: 'line', source: 'rx-alvo', paint: { 'line-color': '#ffd600', 'line-width': 3.5 } });
+        map.addLayer({ id: 'rx-alvo-linha', type: 'line', source: 'rx-alvo', paint: { 'line-color': '#ff1744', 'line-width': 3.5 } });
         map.addSource('rx-rot', { type: 'geojson', data: turf.featureCollection(parc.map((x, i) => { const it = rxInter(alvo, x.f); return turf.point(turf.pointOnFeature(it || x.f).geometry.coordinates, { n: String(i + 1) }); })) });
         map.addLayer({ id: 'rx-viz-rot', type: 'symbol', source: 'rx-rot', layout: { 'text-field': ['get', 'n'], 'text-size': 14, 'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'], 'text-allow-overlap': true },
             paint: { 'text-color': '#ffffff', 'text-halo-color': '#1b3a2a', 'text-halo-width': 2.2 } });
@@ -288,8 +289,8 @@ async function gerarRelatorioRaiox() {
 </style></head><body>
 <header><div><h1>Relatório de análise do imóvel rural</h1><div class="hint">${esc(titulo)} · Londrina/PR</div></div>
 <div style="text-align:right"><div class="hint">Gerado em</div><b>${esc(dataHora)}</b></div></header>
-${foto ? `<h3>Localização do imóvel</h3><img class="mapa" src="${foto}" alt="Mapa de localização do imóvel"><div class="hint">Perímetro do imóvel (amarelo) sobre imagem de satélite (Esri World Imagery).</div>` : ''}
-${u.html.replace('<!--FOTO4-->', foto4 ? `<img class="mapa" src="${foto4}" alt="Mapa das outorgas e licenças"><div class="hint legenda"><span style="border:3px solid #ffd600;background:none"></span>imóvel analisado &nbsp; <span style="background:#1e88e5;border-radius:50%"></span>outorga de água &nbsp; <span style="background:#8e24aa;border-radius:50%"></span>licença ambiental &nbsp; <span style="background:#00897b;border-radius:50%"></span>barragem – números = linhas das tabelas</div>` : '').replace('<!--FOTO3-->', foto3 ? `<img class="mapa" src="${foto3}" alt="Mapa do SIGEF"><div class="hint legenda"><span style="border:3px solid #ffd600;background:none"></span>imóvel analisado (CAR) &nbsp; ${Object.values(RX_SIGEF).map(([c, t]) => `<span style="background:${c}"></span>${t}`).join(' &nbsp; ')} – números = linhas da tabela</div>` : '').replace('<!--FOTO2-->', foto2 ? `<img class="mapa" src="${foto2}" alt="Mapa das sobreposições"><div class="hint legenda"><span style="background:#ffd600"></span>imóvel analisado &nbsp; <span style="border:2px dashed #ff3d7f;background:none"></span>imóveis vizinhos com sobreposição (nº da tabela) &nbsp; <span style="background:#e53935"></span>área sobreposta</div>` : '')}
+${foto ? `<h3>Localização do imóvel</h3><img class="mapa" src="${foto}" alt="Mapa de localização do imóvel"><div class="hint">Imóvel analisado: perímetro em vermelho e interior em verde-claro, sobre imagem de satélite (Esri World Imagery).</div>` : ''}
+${u.html.replace('<!--FOTO4-->', foto4 ? `<img class="mapa" src="${foto4}" alt="Mapa das outorgas e licenças"><div class="hint legenda"><span style="background:#b9f6ca;border:2px solid #ff1744"></span>imóvel analisado &nbsp; <span style="background:#1e88e5;border-radius:50%"></span>outorga de água &nbsp; <span style="background:#8e24aa;border-radius:50%"></span>licença ambiental &nbsp; <span style="background:#00897b;border-radius:50%"></span>barragem – números = linhas das tabelas</div>` : '').replace('<!--FOTO3-->', foto3 ? `<img class="mapa" src="${foto3}" alt="Mapa do SIGEF"><div class="hint legenda"><span style="border:3px solid #ff1744;background:none"></span>imóvel analisado (CAR) &nbsp; ${Object.values(RX_SIGEF).map(([c, t]) => `<span style="background:${c}"></span>${t}`).join(' &nbsp; ')} – números = linhas da tabela</div>` : '').replace('<!--FOTO2-->', foto2 ? `<img class="mapa" src="${foto2}" alt="Mapa das sobreposições"><div class="hint legenda"><span style="background:#b9f6ca;border:2px solid #ff1744"></span>imóvel analisado &nbsp; <span style="border:2px dashed #e6c800;background:none"></span>imóveis vizinhos com sobreposição (nº da tabela) &nbsp; <span style="background:#ff9100"></span>área sobreposta</div>` : '')}
 <footer><div class="hint">CS Consultoria Ambiental · Relatório gerado automaticamente a partir de bases públicas.<br>Dados do mapa atualizados em ${esc(dadosGerais.atualizado_em || '')}.</div>
 <div style="text-align:right"><div class="hint">Código de conferência</div><div class="cod">${u.codigo}</div><div class="hint">identifica esta versão do relatório</div></div></footer>
 <p class="noprint" style="text-align:center;margin-top:16px"><button onclick="window.print()" style="padding:9px 18px;font-size:14px;background:#1e5a3c;color:#fff;border:0;border-radius:6px;cursor:pointer">Salvar em PDF / imprimir</button></p>
