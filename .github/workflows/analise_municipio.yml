@@ -1,0 +1,32 @@
+name: Análise rural – processar municípios
+on:
+  workflow_dispatch:
+    inputs:
+      municipios: { description: 'Municípios do PR (nomes ou códigos IBGE, separados por ;)', required: true }
+      etapas: { description: 'Etapas (vazio = todas)', required: false, default: '' }
+permissions: { contents: write }
+jobs:
+  processar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq gdal-bin libsqlite3-dev zlib1g-dev
+          git clone -q --depth 1 https://github.com/felt/tippecanoe.git /tmp/tc && make -C /tmp/tc -j4 -s && sudo make -C /tmp/tc install -s
+          pip install -q "numpy<2" rasterio shapely pyproj pillow scipy pystac-client planetary-computer
+      - working-directory: analise
+        env: { ETAPAS_IN: '${{ github.event.inputs.etapas }}', MUNS: '${{ github.event.inputs.municipios }}' }
+        run: |
+          mkdir -p data/_diag
+          IFS=';' read -ra LISTA <<< "$MUNS"
+          for m in "${LISTA[@]}"; do
+            if [ -n "$ETAPAS_IN" ]; then export ETAPAS="$ETAPAS_IN"; fi
+            python3 tools/municipio.py "$m" 2>&1 | tee "data/_diag/$(echo "$m" | tr ' ' '_').txt" || true
+          done
+      - if: always()
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add analise/data; git commit -q -m "Análise rural: ${{ github.event.inputs.municipios }}" || true; git pull -q --rebase origin main || true; git push
