@@ -368,7 +368,12 @@ def iat_camada(url):
             d = http(f"{url}/{c['id']}/query", {'where': '1=1', 'geometry': f'{MINX},{MINY},{MAXX},{MAXY}', 'geometryType': 'esriGeometryEnvelope', 'inSR': '4326',
                      'spatialRel': 'esriSpatialRelIntersects', 'outSR': '4326', 'outFields': '*', 'returnZ': 'false', 'returnM': 'false', 'f': 'geojson',
                      'resultOffset': off, 'resultRecordCount': 1000})
+            if 'error' in d or 'features' not in d:  # alguns servidores (ANA) só aceitam GET
+                log('  POST recusado, tentando GET', str(d.get('error', ''))[:150])
+                d = http(f"{url}/{c['id']}/query?" + urllib.parse.urlencode({'where': '1=1', 'geometry': f'{MINX},{MINY},{MAXX},{MAXY}', 'geometryType': 'esriGeometryEnvelope', 'inSR': '4326',
+                         'spatialRel': 'esriSpatialRelIntersects', 'outSR': '4326', 'outFields': '*', 'f': 'geojson', 'resultOffset': off, 'resultRecordCount': 1000}))
             lote = d.get('features', []); fs += lote
+            log('  ', url.split('/services/')[-1], 'camada', c['id'], 'lote', len(lote))
             if len(lote) < 1000: break
             off += len(lote)
     return [f for f in fs if f.get('geometry') and shape(f['geometry']).intersects(MUN)]
