@@ -41,7 +41,7 @@ function rxPontos(alvo, feats, raioKm = 0.5) {
 // declividade: lê a imagem do mapa (classes Embrapa por cor) e conta os pixels dentro do imóvel
 async function rxRasterDecliv() {
     if (RX.decl) return RX.decl;
-    const cfg = await rxJSON('data/relevo/declividade.json');
+    const cfg = await rxJSON((dadosGerais.raiox || {}).declividade);
     const img = new Image(); img.src = cfg.imagem; await img.decode();
     const cv = document.createElement('canvas'); cv.width = img.width; cv.height = img.height;
     const ctx = cv.getContext('2d', { willReadFrequently: true }); ctx.drawImage(img, 0, 0);
@@ -81,13 +81,12 @@ async function analisarImovel(nome) {
     const dlg = document.getElementById('raioxDialog'), corpo = document.getElementById('raioxCorpo');
     corpo.innerHTML = '<p class="hint">Cruzando o imóvel com as camadas do mapa…</p>'; dlg.showModal();
     try {
-        const cars = (camadasData.imoveis || (await rxJSON('data/car/imoveis_londrina.geojson'))).features;
+        const C = dadosGerais.raiox || {};
+        const cars = (camadasData.imoveis || (await rxJSON(C.car))).features;
         const alvo = cars.find(f => f.properties.nome === nome);
         if (!alvo) { corpo.innerHTML = '<p>Imóvel não encontrado.</p>'; return; }
         const p = alvo.properties, area = rxHa(alvo);
-        const [sigef, emb, alertas, outR, outU, lic, barr, mbac] = await Promise.all(['data/fundiario/sigef_londrina.geojson', 'data/ibama/embargos_londrina.geojson',
-            'data/mapbiomas/alertas_londrina.geojson', 'data/iat/outorgas_rural.geojson', 'data/iat/outorgas_urbana.geojson', 'data/iat/licencas_localizadas.geojson',
-            'data/iat/barragens_londrina.geojson', 'data/bacias/microbacias_regiao.geojson'].map(a => rxJSON(a).catch(() => ({ features: [] }))));
+        const [sigef, emb, alertas, outR, outU, lic, barr, mbac] = await Promise.all([C.sigef, C.embargos, C.alertas, (C.outorgas || [])[0], (C.outorgas || [])[1], C.licencas, C.barragens, C.microbacias].map(a => a ? rxJSON(a).catch(() => ({ features: [] })) : Promise.resolve({ features: [] })));
         const r = {
             car: rxSobreposicoes(alvo, cars.filter(f => f.properties.situacao !== 'Cancelado'), 0.05),
             sigef: rxSobreposicoes(alvo, sigef.features, 0.05),
@@ -148,8 +147,8 @@ async function analisarImovel(nome) {
             <h3>Outorgas de água no imóvel ou a até 500 m</h3>
             <!--FOTO4-->
             ${tab(['Nº', 'Titular (SIGARH)', 'Tipo', 'Posição', 'Coordenadas (lat, long – SIRGAS 2000)'], pts(r.agua, 'Interferência', 'agua'))}
-            <h3>Licenças ambientais (IAT) no imóvel ou a até 500 m</h3>
-            ${tab(['Nº', 'Empreendimento (SGA)', 'Atividade', 'Posição', 'Coordenadas (lat, long)'], pts(r.lic, 'Atividade', 'lic'))}
+            ${C.licencas === null ? '' : `<h3>Licenças ambientais (IAT) no imóvel ou a até 500 m</h3>`}
+            ${C.licencas === null ? '' : tab(['Nº', 'Empreendimento (SGA)', 'Atividade', 'Posição', 'Coordenadas (lat, long)'], pts(r.lic, 'Atividade', 'lic'))}
             ${r.barr.dentro.length || r.barr.perto.length ? `<h3>Barragens cadastradas</h3>${tab(['Nº', 'Barragem', 'Tipo', 'Posição', 'Coordenadas (lat, long)'], pts(r.barr, 'grupo', 'barr'))}` : ''}
             <p class="hint">Microbacia: ${esc(r.mbac[0] || '–')} · Dados do mapa atualizados em ${esc(dadosGerais.atualizado_em || '')}.</p>
             <p class="hint rx-aviso">Análise automática feita sobre bases públicas (SICAR, INCRA/SIGEF, IBAMA, MapBiomas, IAT/SIGARH/SGA, Copernicus). As áreas são aproximadas e não substituem vistoria, levantamento topográfico ou consulta oficial aos órgãos.</p>`;
@@ -302,7 +301,7 @@ async function gerarRelatorioRaiox() {
  .cod{font-family:Consolas,monospace;font-size:14px;font-weight:700;letter-spacing:.05em}
  @media print{body{margin:12mm} .noprint{display:none} h3{break-after:avoid} table{break-inside:auto} tr{break-inside:avoid}}
 </style></head><body>
-<header><div><h1>Relatório de análise do imóvel rural</h1><div class="hint">${esc(titulo)} · Londrina/PR</div></div>
+<header><div><h1>Relatório de análise do imóvel rural</h1><div class="hint">${esc(titulo)}</div></div>
 <div style="text-align:right"><div class="hint">Gerado em</div><b>${esc(dataHora)}</b></div></header>
 ${foto ? `<h3>Localização do imóvel</h3><img class="mapa" src="${foto}" alt="Mapa de localização do imóvel"><div class="hint">Imóvel analisado: perímetro em vermelho e interior em verde-claro, sobre imagem de satélite (Esri World Imagery).</div>` : ''}
 ${u.html.replace('<!--FOTO4-->', foto4 ? `<img class="mapa" src="${foto4}" alt="Mapa das outorgas e licenças"><div class="hint legenda"><span style="background:#b9f6ca;border:2px solid #ff1744"></span>imóvel analisado &nbsp; <span style="background:#1e88e5;border-radius:50%"></span>outorga de água &nbsp; <span style="background:#8e24aa;border-radius:50%"></span>licença ambiental &nbsp; <span style="background:#00897b;border-radius:50%"></span>barragem – números = linhas das tabelas</div>` : '').replace('<!--FOTO3-->', foto3 ? `<img class="mapa" src="${foto3}" alt="Mapa do SIGEF"><div class="hint legenda"><span style="border:3px solid #ff1744;background:none"></span>imóvel analisado (CAR) &nbsp; ${Object.values(RX_SIGEF).map(([c, t]) => `<span style="background:${c}"></span>${t}`).join(' &nbsp; ')} – números = linhas da tabela</div>` : '').replace('<!--FOTO2-->', foto2 ? `<img class="mapa" src="${foto2}" alt="Mapa das sobreposições"><div class="hint legenda"><span style="background:#b9f6ca;border:2px solid #ff1744"></span>imóvel analisado &nbsp; <span style="border:2px dashed #e6c800;background:none"></span>imóveis vizinhos com sobreposição (nº da tabela) &nbsp; <span style="background:#ff9100"></span>área sobreposta</div>` : '')}

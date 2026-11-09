@@ -1142,7 +1142,15 @@ toggle.addEventListener('click', () => {
 
 // ---------- carregamento ----------
 async function iniciar() {
-    const resp = await fetch('data/fazendas.json', { cache: 'no-cache' });
+    // município escolhido (?m=código IBGE) – lista em data/municipios.json
+    const lista = await (await fetch('data/municipios.json', { cache: 'no-cache' })).json();
+    const pedido = new URLSearchParams(location.search).get('m');
+    const mun = lista.find(x => x.codigo === pedido) || lista[0];
+    const sel = document.createElement('select'); sel.id = 'munSel'; sel.className = 'mun-sel'; sel.setAttribute('aria-label', 'Município');
+    sel.innerHTML = lista.map(x => `<option value="${x.codigo}"${x.codigo === mun.codigo ? ' selected' : ''}>${esc(x.nome)}/PR (${Number(x.imoveis).toLocaleString('pt-BR')} imóveis)</option>`).join('');
+    sel.addEventListener('change', () => { location.search = '?m=' + sel.value; });
+    document.getElementById('clienteSub').after(sel);
+    const resp = await fetch(`data/m/${mun.codigo}/config.json`, { cache: 'no-cache' });
     const dados = await resp.json();
     const cliente = dados.cliente || {};
     document.getElementById('clienteNome').textContent = cliente.nome || 'Mapa interativo';

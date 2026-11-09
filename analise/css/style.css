@@ -542,3 +542,4 @@ table.ind tr.pos td { color: #1d6b3e; font-weight: 600; }
 .raiox footer { padding: 10px 18px; display: flex; justify-content: flex-end; }
 .rx-cob { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 4px 0 8px; font-size: .8rem; }
 .rx-cob i, .rx-sw { display: inline-block; width: 11px; height: 11px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
+.mun-sel { display: block; margin-top: 4px; font: inherit; font-size: .8rem; padding: 3px 6px; border-radius: 6px; border: 1px solid rgba(255,255,255,.5); background: rgba(255,255,255,.92); color: #1d2a24; max-width: 100%; }

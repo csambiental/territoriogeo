@@ -12,10 +12,20 @@ from shapely.strtree import STRtree
 from shapely import wkt
 
 COD = sys.argv[1].strip()
-if not COD.isdigit():   # aceita o nome do município
-    sa = lambda t: unicodedata.normalize('NFD', t).encode('ascii', 'ignore').decode().lower().strip()
-    lista = json.load(urllib.request.urlopen('https://servicodados.ibge.gov.br/api/v1/localidades/estados/PR/municipios', timeout=60))
-    COD = str(next(m['id'] for m in lista if sa(m['nome']) == sa(COD)))
+# limites municipais do PR: IBGE (pode bloquear acesso de fora do Brasil) com reserva no geodata-br (malha IBGE)
+def _malha_pr():
+    cache = '/tmp/pr_municipios.json'
+    if os.path.exists(cache): return json.load(open(cache))
+    for url in ('https://raw.githubusercontent.com/tbrugz/geodata-br/master/geojson/geojs-41-mun.json',):
+        try:
+            g = json.load(urllib.request.urlopen(urllib.request.Request(url, headers={'User-Agent': 'csambiental'}), timeout=120))
+            json.dump(g, open(cache, 'w')); return g
+        except Exception as e: print('malha falhou', url, e, flush=True)
+    return {'features': []}
+_sa = lambda t: unicodedata.normalize('NFD', t).encode('ascii', 'ignore').decode().lower().strip()
+MALHA = _malha_pr()
+if not COD.isdigit():
+    COD = next(str(f['properties']['id']) for f in MALHA['features'] if _sa(f['properties']['name']) == _sa(COD))
 D = f'data/m/{COD}'
 os.makedirs(D, exist_ok=True)
 UA = {'User-Agent': 'csambiental-analise-rural'}
@@ -48,10 +58,14 @@ def etapa(nome):
     return dec
 
 # ---------- 0) limite e nome do município ----------
-info = http(f'https://servicodados.ibge.gov.br/api/v1/localidades/municipios/{COD}')
-NOME = info['nome']; log('Município', COD, NOME)
+_f = next((f for f in MALHA['features'] if str(f['properties']['id']) == COD), None)
+NOME = _f['properties']['name'] if _f else COD
+log('Município', COD, NOME)
 if not os.path.exists(f'{D}/municipio.geojson'):
-    g = http(f'https://servicodados.ibge.gov.br/api/v3/malhas/municipios/{COD}?formato=application/vnd.geo%2Bjson&qualidade=maxima')
+    g = None
+    try: g = http(f'https://servicodados.ibge.gov.br/api/v3/malhas/municipios/{COD}?formato=application/vnd.geo%2Bjson&qualidade=maxima', tent=2, timeout=40); log('limite: IBGE')
+    except Exception: log('limite: IBGE indisponível, usando geodata-br (malha IBGE)')
+    if not g: g = {'type': 'FeatureCollection', 'features': [_f]}
     for f in g['features']: f['properties'] = {'nome': NOME, 'codigo_ibge': COD}
     json.dump(g, open(f'{D}/municipio.geojson', 'w'), ensure_ascii=False)
 MUN = unary_union([shape(f['geometry']) for f in json.load(open(f'{D}/municipio.geojson'))['features']]).buffer(0)
