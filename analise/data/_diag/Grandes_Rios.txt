@@ -12,18 +12,12 @@ Município 4108700 Grandes Rios
   indisponível: collection_9/lclu/coverage/brasil_coverage_2023.tif HTTP response code: 403
   indisponível: collection_9/lulc/coverage/brasil_coverage_2023.tif HTTP response code: 403
   indisponível: collection_8/lclu/coverage/brasil_coverage_2022.tif HTTP response code: 403
-Traceback (most recent call last):
-  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 60, in run
-    try: fn(); log(f'----- {nome} ok ({time.time() - t0:.0f}s)')
-         ^^^^
-  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 247, in mb_cobertura
-    if not TIF: raise RuntimeError('nenhuma fonte MapBiomas respondeu')
-                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-RuntimeError: nenhuma fonte MapBiomas respondeu
------ MapBiomas cobertura FALHOU
+uso do solo: reserva Impact Observatory 2023 (2540, 2845)
+grupos (%) {'Vegetação arbórea': 25.4, 'Agricultura': 32.6, 'Pastagem e campos': 39.2, 'Área urbanizada': 1.1, 'Água': 1.7, 'Outras áreas': 0.0}
+----- MapBiomas cobertura ok (4s)
 
 ===== Pendências =====
-Counter({'Atenção': 590, 'Sem pendência identificada': 254, 'Prioridade média': 67, 'Cancelado': 4})
+Counter({'Atenção': 571, 'Sem pendência identificada': 254, 'Prioridade média': 69, 'Prioridade alta': 17, 'Cancelado': 4})
 ----- Pendências ok (0s)
 
 ===== Config =====

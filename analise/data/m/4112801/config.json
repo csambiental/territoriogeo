@@ -123,23 +123,45 @@
    "categorias_ativaveis": true,
    "campos_prefixos": [
     "Pendência",
-    "MapBiomas"
+    "MapBiomas",
+    "Uso do solo"
    ]
   }
  ],
  "camadas_opcionais": [
   {
    "id": "mb-cobertura",
-   "secao": "MapBiomas",
-   "nome": "Uso e cobertura do solo ",
+   "secao": "Uso do solo",
+   "nome": "Uso e cobertura do solo 2023",
    "arquivo": "data/m/4112801/cobertura.json",
    "tipo": "imagem",
    "icone": "fill",
    "cor": "#1f8d49",
    "opacidade": 0.8,
    "antes": "cam-imoveis",
-   "fonte": "MapBiomas 10 m – Coleção 2 (beta), 2023",
-   "legenda_itens": []
+   "fonte": "Esri/Impact Observatory 10 m, 2023 (MapBiomas indisponível para download)",
+   "legenda_itens": [
+    {
+     "rotulo": "Vegetação arbórea (19,0%)",
+     "cor": "#397d49"
+    },
+    {
+     "rotulo": "Agricultura (23,2%)",
+     "cor": "#e49635"
+    },
+    {
+     "rotulo": "Pastagem e campos (55,3%)",
+     "cor": "#e3e2c3"
+    },
+    {
+     "rotulo": "Área urbanizada (2,5%)",
+     "cor": "#c4281b"
+    },
+    {
+     "rotulo": "Água (0,1%)",
+     "cor": "#419bdf"
+    }
+   ]
   },
   {
    "id": "mb-alertas",
