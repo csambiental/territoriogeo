@@ -1,0 +1,15 @@
+/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:36: DeprecationWarning: ssl.TLSVersion.TLSv1 is deprecated
+  SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
+Município 4108700 Grandes Rios
+
+===== Barragens IAT + SNISB =====
+barragens 0 SNISB 0 IAT 0
+----- Barragens IAT + SNISB ok (15s)
+
+===== Massas d'água (ANA) =====
+massas d'água 9
+----- Massas d'água (ANA) ok (6s)
+
+===== Config =====
+config ok Grandes Rios 911 imóveis
+----- Config ok (0s)

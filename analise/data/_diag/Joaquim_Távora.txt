@@ -1,0 +1,15 @@
+/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:36: DeprecationWarning: ssl.TLSVersion.TLSv1 is deprecated
+  SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
+Município 4112801 Joaquim Távora
+
+===== Barragens IAT + SNISB =====
+barragens 3 SNISB 0 IAT 3
+----- Barragens IAT + SNISB ok (3s)
+
+===== Massas d'água (ANA) =====
+massas d'água 30
+----- Massas d'água (ANA) ok (3s)
+
+===== Config =====
+config ok Joaquim Távora 845 imóveis
+----- Config ok (0s)
