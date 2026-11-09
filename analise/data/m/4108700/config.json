@@ -486,7 +486,7 @@
   {
    "id": "barragens",
    "secao": "Hidrografia",
-   "nome": "Barragens cadastradas – SNISB/IAT (0)",
+   "nome": "Barragens cadastradas – SNISB/IAT (1)",
    "arquivo": "data/m/4108700/barragens.geojson",
    "geometria": "ponto",
    "icone": "dot",

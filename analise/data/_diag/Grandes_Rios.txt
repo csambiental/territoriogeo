@@ -3,12 +3,10 @@
 Município 4108700 Grandes Rios
 
 ===== Barragens IAT + SNISB =====
-barragens 0 SNISB 0 IAT 0
------ Barragens IAT + SNISB ok (15s)
-
-===== Massas d'água (ANA) =====
-massas d'água 9
------ Massas d'água (ANA) ok (6s)
+   IG/SNISB/FeatureServer camada 0 lote 3
+   Hosted/barragens_dashboard_publico/FeatureServer camada 0 lote 2
+barragens 1 SNISB 1 IAT 0
+----- Barragens IAT + SNISB ok (5s)
 
 ===== Config =====
 config ok Grandes Rios 911 imóveis

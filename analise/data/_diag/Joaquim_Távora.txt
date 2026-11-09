@@ -3,12 +3,10 @@
 Município 4112801 Joaquim Távora
 
 ===== Barragens IAT + SNISB =====
-barragens 3 SNISB 0 IAT 3
------ Barragens IAT + SNISB ok (3s)
-
-===== Massas d'água (ANA) =====
-massas d'água 30
------ Massas d'água (ANA) ok (3s)
+   IG/SNISB/FeatureServer camada 0 lote 5
+   Hosted/barragens_dashboard_publico/FeatureServer camada 0 lote 8
+barragens 4 SNISB 3 IAT 3
+----- Barragens IAT + SNISB ok (4s)
 
 ===== Config =====
 config ok Joaquim Távora 845 imóveis
