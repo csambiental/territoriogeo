@@ -22,6 +22,10 @@
   {
    "valor": "32%",
    "rotulo": "analisados e em conformidade"
+  },
+  {
+   "valor": "51%",
+   "rotulo": "da área do CAR georreferenciada no SIGEF/INCRA"
   }
  ],
  "lista_titulo": "Buscar imóvel rural / pendências",
@@ -100,6 +104,56 @@
      {
       "rotulo": "Outras áreas",
       "pct": 0.18
+     }
+    ]
+   },
+   {
+    "id": "geo-car",
+    "titulo": "Situação do CAR – % da área cadastrada",
+    "fonte": "Fonte: SICAR · 4.153 imóveis ativos, 146.499 ha declarados (com sobreposições)",
+    "itens": [
+     {
+      "rotulo": "Analisado – em conformidade (1332)",
+      "pct": 9.85
+     },
+     {
+      "rotulo": "Analisado – regularização ambiental pendente (127)",
+      "pct": 8.23
+     },
+     {
+      "rotulo": "Analisado – notificação pendente (361)",
+      "pct": 35.14
+     },
+     {
+      "rotulo": "Em análise (33)",
+      "pct": 5.9
+     },
+     {
+      "rotulo": "Aguardando análise (2300)",
+      "pct": 40.88
+     }
+    ]
+   },
+   {
+    "id": "geo-sigef",
+    "titulo": "Georreferenciamento SIGEF/INCRA – % da área do CAR",
+    "fonte": "Fonte: INCRA/SIGEF · 72.370 ha certificados = 50,9% da área rural do CAR e 43,9% do território do município",
+    "itens": [
+     {
+      "rotulo": "Registrada em cartório (1165 parcelas)",
+      "pct": 50.77
+     },
+     {
+      "rotulo": "Titulada, aguardando registro (8 parcelas)",
+      "pct": 0.08
+     },
+     {
+      "rotulo": "Certificada no INCRA, sem registro (em processo) (668 parcelas; área já contada como registrada)",
+      "pct": 0.0
+     },
+     {
+      "rotulo": "Sem georreferenciamento certificado",
+      "pct": 49.15
      }
     ]
    }
@@ -279,7 +333,7 @@
   {
    "id": "sigef",
    "secao": "Fundiário",
-   "nome": "Imóveis certificados SIGEF/INCRA",
+   "nome": "Imóveis certificados SIGEF/INCRA (51% da área do CAR)",
    "arquivo": "data/fundiario/sigef_londrina.geojson",
    "icone": "fill",
    "cor": "#ff9800",
@@ -306,15 +360,15 @@
    },
    "legenda_itens": [
     {
-     "rotulo": "Registrada em cartório",
+     "rotulo": "Registrada em cartório – 1165 parcelas, 72.255 ha",
      "cor": "#2e7d32"
     },
     {
-     "rotulo": "Titulada, aguardando registro",
+     "rotulo": "Titulada, aguardando registro – 8 parcelas, 114 ha",
      "cor": "#29b6f6"
     },
     {
-     "rotulo": "Certificada no INCRA, sem registro (em processo)",
+     "rotulo": "Certificada no INCRA, sem registro (em processo) – 668 parcelas, 7.263 ha (quase toda sobre áreas já registradas)",
      "cor": "#ff9800"
     }
    ]

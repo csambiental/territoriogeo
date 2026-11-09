@@ -22,13 +22,61 @@
   {
    "valor": "28%",
    "rotulo": "analisados e em conformidade"
+  },
+  {
+   "valor": "50%",
+   "rotulo": "da área do CAR georreferenciada no SIGEF/INCRA"
   }
  ],
  "lista_titulo": "Buscar imóvel rural / pendências",
  "programa": {
   "titulo": "Sobre esta análise",
   "texto": "Imóveis rurais do CAR de Grandes Rios cruzados com SIGEF/INCRA, embargos do IBAMA, alertas de desmatamento, uso do solo (MapBiomas), outorgas do IAT, barragens do SNISB/IAT, açudes e represas (ANA), microbacias e relevo. Clique num imóvel e use o Raio-X para gerar o relatório.",
-  "etapas": []
+  "etapas": [],
+  "graficos": [
+   {
+    "id": "geo-car",
+    "titulo": "Situação do CAR – % da área cadastrada",
+    "fonte": "Fonte: SICAR · 911 imóveis ativos, 30.355 ha declarados (com sobreposições)",
+    "itens": [
+     {
+      "rotulo": "Analisado – em conformidade (254)",
+      "pct": 12.74
+     },
+     {
+      "rotulo": "Analisado – notificação pendente (67)",
+      "pct": 39.58
+     },
+     {
+      "rotulo": "Em análise (34)",
+      "pct": 10.81
+     },
+     {
+      "rotulo": "Aguardando análise (556)",
+      "pct": 36.86
+     }
+    ]
+   },
+   {
+    "id": "geo-sigef",
+    "titulo": "Georreferenciamento SIGEF/INCRA – % da área do CAR",
+    "fonte": "Fonte: INCRA/SIGEF · 14.396 ha certificados = 50,1% da área rural do CAR e 46,3% do território do município",
+    "itens": [
+     {
+      "rotulo": "Registrada em cartório (275 parcelas)",
+      "pct": 49.92
+     },
+     {
+      "rotulo": "Titulada, aguardando registro (10 parcelas)",
+      "pct": 0.15
+     },
+     {
+      "rotulo": "Sem georreferenciamento certificado",
+      "pct": 49.92
+     }
+    ]
+   }
+  ]
  },
  "camadas": [
   {
@@ -192,7 +240,7 @@
   {
    "id": "sigef",
    "secao": "Fundiário",
-   "nome": "Imóveis certificados SIGEF/INCRA",
+   "nome": "Imóveis certificados SIGEF/INCRA (50% da área do CAR)",
    "arquivo": "data/m/4108700/sigef.geojson",
    "icone": "fill",
    "cor": "#ff9800",
@@ -219,16 +267,12 @@
    },
    "legenda_itens": [
     {
-     "rotulo": "Registrada em cartório",
+     "rotulo": "Registrada em cartório – 275 parcelas, 14.353 ha",
      "cor": "#2e7d32"
     },
     {
-     "rotulo": "Titulada, aguardando registro",
+     "rotulo": "Titulada, aguardando registro – 10 parcelas, 44 ha",
      "cor": "#29b6f6"
-    },
-    {
-     "rotulo": "Certificada no INCRA, sem registro (em processo)",
-     "cor": "#ff9800"
     }
    ]
   },

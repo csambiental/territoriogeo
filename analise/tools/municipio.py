@@ -587,6 +587,10 @@ def config():
     c['raiox'] = {'car': P('car.geojson'), 'sigef': P('sigef.geojson'), 'embargos': P('embargos.geojson'), 'alertas': P('alertas.geojson'),
                   'outorgas': [P('outorgas_rural.geojson'), P('outorgas_urbana.geojson')], 'licencas': None, 'barragens': P('barragens.geojson'), 'massas': P('massas_dagua.geojson'),
                   'microbacias': P('microbacias.geojson'), 'declividade': P('declividade.json'), 'municipio': f'{NOME}/PR'}
+    try:  # % da área georreferenciada (SIGEF) e situação do CAR no painel
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); import estat_geo
+        c = estat_geo.aplicar(c, estat_geo.calcular(*(json.load(open(P(a))) for a in ('municipio.geojson', 'car.geojson', 'sigef.geojson'))))
+    except Exception as e: log('estatística SIGEF falhou', e)
     json.dump(c, open(P('config.json'), 'w'), ensure_ascii=False, indent=1)
     # lista de municípios do site
     L = 'data/municipios.json'

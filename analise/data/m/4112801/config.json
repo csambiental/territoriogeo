@@ -22,13 +22,57 @@
   {
    "valor": "36%",
    "rotulo": "analisados e em conformidade"
+  },
+  {
+   "valor": "44%",
+   "rotulo": "da área do CAR georreferenciada no SIGEF/INCRA"
   }
  ],
  "lista_titulo": "Buscar imóvel rural / pendências",
  "programa": {
   "titulo": "Sobre esta análise",
   "texto": "Imóveis rurais do CAR de Joaquim Távora cruzados com SIGEF/INCRA, embargos do IBAMA, alertas de desmatamento, uso do solo (MapBiomas), outorgas do IAT, barragens do SNISB/IAT, açudes e represas (ANA), microbacias e relevo. Clique num imóvel e use o Raio-X para gerar o relatório.",
-  "etapas": []
+  "etapas": [],
+  "graficos": [
+   {
+    "id": "geo-car",
+    "titulo": "Situação do CAR – % da área cadastrada",
+    "fonte": "Fonte: SICAR · 845 imóveis ativos, 32.140 ha declarados (com sobreposições)",
+    "itens": [
+     {
+      "rotulo": "Analisado – em conformidade (304)",
+      "pct": 13.56
+     },
+     {
+      "rotulo": "Analisado – notificação pendente (71)",
+      "pct": 33.02
+     },
+     {
+      "rotulo": "Em análise (2)",
+      "pct": 11.26
+     },
+     {
+      "rotulo": "Aguardando análise (468)",
+      "pct": 42.16
+     }
+    ]
+   },
+   {
+    "id": "geo-sigef",
+    "titulo": "Georreferenciamento SIGEF/INCRA – % da área do CAR",
+    "fonte": "Fonte: INCRA/SIGEF · 12.278 ha certificados = 44,2% da área rural do CAR e 42,6% do território do município",
+    "itens": [
+     {
+      "rotulo": "Registrada em cartório (315 parcelas)",
+      "pct": 44.19
+     },
+     {
+      "rotulo": "Sem georreferenciamento certificado",
+      "pct": 55.81
+     }
+    ]
+   }
+  ]
  },
  "camadas": [
   {
@@ -192,7 +236,7 @@
   {
    "id": "sigef",
    "secao": "Fundiário",
-   "nome": "Imóveis certificados SIGEF/INCRA",
+   "nome": "Imóveis certificados SIGEF/INCRA (44% da área do CAR)",
    "arquivo": "data/m/4112801/sigef.geojson",
    "icone": "fill",
    "cor": "#ff9800",
@@ -219,16 +263,8 @@
    },
    "legenda_itens": [
     {
-     "rotulo": "Registrada em cartório",
+     "rotulo": "Registrada em cartório – 315 parcelas, 12.278 ha",
      "cor": "#2e7d32"
-    },
-    {
-     "rotulo": "Titulada, aguardando registro",
-     "cor": "#29b6f6"
-    },
-    {
-     "rotulo": "Certificada no INCRA, sem registro (em processo)",
-     "cor": "#ff9800"
     }
    ]
   },
