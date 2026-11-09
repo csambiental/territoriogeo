@@ -297,7 +297,27 @@
     "Certificado em",
     "Parcela SIGEF"
    ],
-   "fonte": "SIGEF/INCRA – serviço público do IAT-PR"
+   "fonte": "SIGEF/INCRA – serviço público do IAT-PR",
+   "cor_por": "Situação",
+   "cores": {
+    "Registrada": "#2e7d32",
+    "Titulada, não registrada": "#29b6f6",
+    "Não titulada": "#ff9800"
+   },
+   "legenda_itens": [
+    {
+     "rotulo": "Registrada em cartório",
+     "cor": "#2e7d32"
+    },
+    {
+     "rotulo": "Titulada, aguardando registro",
+     "cor": "#29b6f6"
+    },
+    {
+     "rotulo": "Certificada no INCRA, sem registro (em processo)",
+     "cor": "#ff9800"
+    }
+   ]
   },
   {
    "id": "embargos-ibama",

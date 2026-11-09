@@ -540,3 +540,5 @@ table.ind tr.pos td { color: #1d6b3e; font-weight: 600; }
 .rx-tab th { background: #f3f7f4; }
 .rx-btn { margin-top: 8px; width: 100%; }
 .raiox footer { padding: 10px 18px; display: flex; justify-content: flex-end; }
+.rx-cob { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 4px 0 8px; font-size: .8rem; }
+.rx-cob i, .rx-sw { display: inline-block; width: 11px; height: 11px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }

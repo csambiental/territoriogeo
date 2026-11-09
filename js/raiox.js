@@ -72,6 +72,9 @@ async function rxCodigo(obj) {
     const h = [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
     return `${h.slice(0, 4)}-${h.slice(4, 8)}-${h.slice(8, 12)}`;
 }
+const RX_SIGEF = { 'Registrada': ['#2e7d32', 'Registrada em cartório'], 'Titulada, não registrada': ['#29b6f6', 'Titulada, aguardando registro'], 'Não titulada': ['#ff9800', 'Certificada no INCRA, sem registro (em processo)'] };
+const rxSigefCor = (p) => (RX_SIGEF[p['Situação']] || ['#9e9e9e', p['Situação'] || 'Outra'])[0];
+const rxSigefRot = (p) => (RX_SIGEF[p['Situação']] || ['#9e9e9e', p['Situação'] || 'Outra'])[1];
 const rxF = (n, c = 2) => Number(n).toLocaleString('pt-BR', { minimumFractionDigits: c, maximumFractionDigits: c });
 
 async function analisarImovel(nome) {
@@ -114,7 +117,10 @@ async function analisarImovel(nome) {
         if (forte >= 10) flags.push(['amarelo', `${rxF(forte, 0)}% do imóvel em relevo forte ondulado ou mais (≥ 20%)`]);
         if (!flags.some(f => f[0] !== 'verde')) flags.unshift(['verde', 'Nenhuma restrição encontrada nas camadas consultadas']);
         const tab = (cab, linhas) => linhas.length ? `<table class="rx-tab"><tr>${cab.map(c => `<th>${c}</th>`).join('')}</tr>${linhas.map(l => `<tr>${l.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')}</table>` : '<p class="hint">Nada encontrado.</p>';
-        const pts = (o, campo) => [...o.dentro, ...o.perto].slice(0, 12).map(x => [esc(x.f.properties.nome || ''), esc(x.f.properties[campo] || x.f.properties.grupo || ''), x.km ? `a ${rxF(x.km * 1000, 0)} m` : 'dentro']);
+        const coord = (f) => { const [lo, la] = f.geometry.coordinates; return `<span class="mono">${la.toFixed(5)}, ${lo.toFixed(5)}</span><br><a href="https://www.google.com/maps?q=${la.toFixed(6)},${lo.toFixed(6)}" target="_blank" rel="noopener">ver no Google Maps ↗</a>`; };
+        let nPt = 0; const pontosFoto = [];
+        const pts = (o, campo, tipo) => [...o.dentro, ...o.perto].slice(0, 12).map(x => { nPt++; pontosFoto.push({ n: nPt, tipo, c: x.f.geometry.coordinates });
+            return [`<b>${nPt}</b>`, esc(x.f.properties.nome || ''), esc(x.f.properties[campo] || x.f.properties.grupo || ''), x.km ? `a ${rxF(x.km * 1000, 0)} m` : 'dentro', coord(x.f)]; });
         const html = `
             <div class="rx-cab"><div><div class="mono rx-cod">${esc(nome)}</div>
               <div class="hint">${esc(p['Status do CAR'] || '')} · ${esc(p.situacao || '')} · ${esc(p.Tipo || '')}</div></div>
@@ -126,33 +132,126 @@ async function analisarImovel(nome) {
             <h3>Declividade (Copernicus DEM, classes Embrapa)</h3>
             ${tab(['Classe de relevo', '% do imóvel', 'ha (aprox.)'], r.decl.filter(d => d.pct >= 0.05).map(d => [d.nome, rxF(d.pct, 1) + '%', rxF(d.pct / 100 * area, 1)]))}
             <h3>Sobreposição com outros imóveis do CAR</h3>
-            ${tab(['CAR', 'Situação', 'Sobreposição (ha)', '% do imóvel'], r.car.slice(0, 15).map(x => [`<span class="mono">${esc(x.f.properties.nome)}</span>`, esc(x.f.properties.situacao || ''), rxF(x.ha), (x.ha / area * 100 < 0.1 ? '< 0,1%' : rxF(x.ha / area * 100, 1) + '%')]))}
+            <!--FOTO2-->
+            ${tab(['Nº', 'CAR', 'Situação', 'Sobreposição (ha)', '% do imóvel'], r.car.slice(0, 15).map((x, i) => [`<b>${i + 1}</b>`, `<span class="mono">${esc(x.f.properties.nome)}</span>`, esc(x.f.properties.situacao || ''), rxF(x.ha), (x.ha / area * 100 < 0.1 ? '< 0,1%' : rxF(x.ha / area * 100, 1) + '%')]))}
             <h3>Imóveis certificados no SIGEF/INCRA</h3>
-            ${tab(['Parcela', 'Matrícula', 'Situação', 'Sobre o imóvel (ha)'], r.sigef.slice(0, 15).map(x => [esc(x.f.properties.nome || ''), esc(x.f.properties['Matrícula / registro'] || ''), esc(x.f.properties['Status'] || ''), rxF(x.ha)]))}
+            ${(() => { const cob = {}; r.sigef.forEach(x => { const k = rxSigefRot(x.f.properties); cob[k] = (cob[k] || [rxSigefCor(x.f.properties), 0]); cob[k][1] += x.ha; });
+                const tot = Math.min(area, r.sigef.reduce((a, x) => a + x.ha, 0));
+                return `<div class="rx-cob">${Object.entries(cob).map(([k, [c, ha]]) => `<span><i style="background:${c}"></i>${esc(k)}: <b>${rxF(Math.min(ha, area) / area * 100, 1)}%</b> (${rxF(ha, 1)} ha)</span>`).join('')}
+                  <span><i style="background:#fff;border:1px solid #999"></i>Sem SIGEF: <b>${rxF(Math.max(0, area - tot) / area * 100, 1)}%</b></span></div>`; })()}
+            <!--FOTO3-->
+            ${tab(['Nº', 'Parcela', 'Matrícula', 'Situação no registro', 'Sobre o imóvel (ha)'], r.sigef.slice(0, 15).map((x, i) => [`<b>${i + 1}</b>`, esc(x.f.properties.nome || ''), esc(x.f.properties['Matrícula / registro'] || ''), `<span class="rx-sw" style="background:${rxSigefCor(x.f.properties)}"></span>${esc(rxSigefRot(x.f.properties))}`, rxF(x.ha)]))}
             <h3>Embargos do IBAMA</h3>
             ${tab(['Embargo', 'Situação', 'Data', 'Dentro do imóvel (ha)'], r.emb.map(x => [esc(x.f.properties.nome), esc(x.f.properties['Situação'] || ''), esc(x.f.properties['Data do embargo'] || ''), rxF(x.ha, 3)]))}
             <h3>Alertas de desmatamento (MapBiomas Alerta)</h3>
             ${tab(['Alerta', 'Detectado em', 'Vetor', 'Dentro do imóvel (ha)'], r.alertas.map(x => [esc(x.f.properties.nome), esc(x.f.properties['Detectado em'] || ''), esc(x.f.properties['Vetor'] || ''), rxF(x.ha, 2)]))}
             <h3>Outorgas de água no imóvel ou a até 500 m</h3>
-            ${tab(['Titular (SIGARH)', 'Tipo', 'Posição'], pts(r.agua, 'Interferência'))}
+            <!--FOTO4-->
+            ${tab(['Nº', 'Titular (SIGARH)', 'Tipo', 'Posição', 'Coordenadas (lat, long – SIRGAS 2000)'], pts(r.agua, 'Interferência', 'agua'))}
             <h3>Licenças ambientais (IAT) no imóvel ou a até 500 m</h3>
-            ${tab(['Empreendimento (SGA)', 'Atividade', 'Posição'], pts(r.lic, 'Atividade'))}
-            ${r.barr.dentro.length || r.barr.perto.length ? `<h3>Barragens cadastradas</h3>${tab(['Barragem', 'Tipo', 'Posição'], pts(r.barr, 'grupo'))}` : ''}
+            ${tab(['Nº', 'Empreendimento (SGA)', 'Atividade', 'Posição', 'Coordenadas (lat, long)'], pts(r.lic, 'Atividade', 'lic'))}
+            ${r.barr.dentro.length || r.barr.perto.length ? `<h3>Barragens cadastradas</h3>${tab(['Nº', 'Barragem', 'Tipo', 'Posição', 'Coordenadas (lat, long)'], pts(r.barr, 'grupo', 'barr'))}` : ''}
             <p class="hint">Microbacia: ${esc(r.mbac[0] || '–')} · Dados do mapa atualizados em ${esc(dadosGerais.atualizado_em || '')}.</p>
             <p class="hint rx-aviso">Análise automática feita sobre bases públicas (SICAR, INCRA/SIGEF, IBAMA, MapBiomas, IAT/SIGARH/SGA, Copernicus). As áreas são aproximadas e não substituem vistoria, levantamento topográfico ou consulta oficial aos órgãos.</p>`;
         corpo.innerHTML = html;
-        RX.ultimo = { nome, html, codigo, quando, alvo };
+        RX.ultimo = { nome, html, codigo, quando, alvo, viz: r.car, sigef: r.sigef, pontos: pontosFoto };
         document.getElementById('raioxPdf').disabled = false;
     } catch (e) {
         console.error(e); corpo.innerHTML = '<p>Não foi possível concluir a análise. Tente novamente.</p>';
     }
 }
-async function rxFotoMapa(alvo) {
-    // enquadra o imóvel, destaca e captura o mapa (para o relatório)
-    if (map.getLayer('cam-imoveis-sel')) map.setFilter('cam-imoveis-sel', ['==', ['get', 'nome'], alvo.properties.nome]);
-    map.fitBounds(boundsDe(alvo), { padding: 60, maxZoom: 16, duration: 0 });
-    await new Promise(res => { map.once('idle', res); setTimeout(res, 6000); });
-    try { return map.getCanvas().toDataURL('image/jpeg', 0.85); } catch (e) { return null; }
+// ---------- fotos do mapa para o relatório ----------
+const RX_FONTES_BASE = ['esri', 'composite', 'mapbox', 'mapbox-satellite'];
+function rxEsconderCamadas() {
+    const estado = [];
+    for (const l of map.getStyle().layers) {
+        if (!l.source || RX_FONTES_BASE.includes(l.source) || l.id.startsWith('rx-')) continue;
+        estado.push([l.id, map.getLayoutProperty(l.id, 'visibility') || 'visible']);
+        map.setLayoutProperty(l.id, 'visibility', 'none');
+    }
+    document.querySelectorAll('.mapboxgl-popup').forEach(p => p.remove());
+    return estado;
+}
+function rxRestaurar(estado) {
+    for (const [id, v] of estado) if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', v);
+    ['rx-viz-rot', 'rx-inter', 'rx-viz', 'rx-alvo-linha', 'rx-alvo'].forEach(id => map.getLayer(id) && map.removeLayer(id));
+    ['rx-alvo', 'rx-viz', 'rx-inter', 'rx-rot'].forEach(id => map.getSource(id) && map.removeSource(id));
+}
+async function rxCapturar() {
+    await new Promise(res => { map.once('idle', res); setTimeout(res, 8000); });
+    try { return map.getCanvas().toDataURL('image/jpeg', 0.88); } catch (e) { return null; }
+}
+function rxDesenharAlvo(alvo, preenchido) {
+    map.addSource('rx-alvo', { type: 'geojson', data: alvo });
+    map.addLayer({ id: 'rx-alvo', type: 'fill', source: 'rx-alvo', paint: { 'fill-color': '#ffd600', 'fill-opacity': preenchido ? 0.38 : 0.12 } });
+    map.addLayer({ id: 'rx-alvo-linha', type: 'line', source: 'rx-alvo', paint: { 'line-color': '#ffd600', 'line-width': 3.5 } });
+}
+// imagem 1: localização – só o imóvel, contorno forte sobre o satélite
+async function rxFotoLocalizacao(alvo) {
+    const estado = rxEsconderCamadas();
+    try {
+        rxDesenharAlvo(alvo, false);
+        map.fitBounds(boundsDe(alvo), { padding: 120, maxZoom: 15.5, duration: 0 });
+        return await rxCapturar();
+    } finally { rxRestaurar(estado); }
+}
+// imagem 2: sobreposições – imóvel preenchido; vizinhos sobrepostos só com contorno (numerados) e áreas sobrepostas em vermelho
+async function rxFotoSobreposicao(alvo, viz) {
+    const estado = rxEsconderCamadas();
+    try {
+        const fc = turf.featureCollection(viz.map((x, i) => ({ type: 'Feature', geometry: x.f.geometry, properties: { n: String(i + 1) } })));
+        const inter = turf.featureCollection(viz.map(x => rxInter(alvo, x.f)).filter(Boolean));
+        rxDesenharAlvo(alvo, true);
+        map.addSource('rx-viz', { type: 'geojson', data: fc });
+        map.addSource('rx-inter', { type: 'geojson', data: inter });
+        map.addLayer({ id: 'rx-viz', type: 'line', source: 'rx-viz', paint: { 'line-color': '#ff3d7f', 'line-width': 2.5, 'line-dasharray': [2, 1.2] } });
+        map.addLayer({ id: 'rx-inter', type: 'fill', source: 'rx-inter', paint: { 'fill-color': '#e53935', 'fill-opacity': 0.75, 'fill-outline-color': '#ffffff' } });
+        map.addSource('rx-rot', { type: 'geojson', data: turf.featureCollection(viz.map((x, i) => { const it = rxInter(alvo, x.f); return turf.point(turf.pointOnFeature(it || x.f).geometry.coordinates, { n: String(i + 1) }); })) });
+        map.addLayer({ id: 'rx-viz-rot', type: 'symbol', source: 'rx-rot', layout: { 'text-field': ['get', 'n'], 'text-size': 15, 'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'], 'text-allow-overlap': true, 'text-offset': [0, -1.1] },
+            paint: { 'text-color': '#ffffff', 'text-halo-color': '#ff3d7f', 'text-halo-width': 2.5 } });
+        const caixa = turf.bbox(turf.featureCollection([alvo, ...inter.features]));
+        map.fitBounds([[caixa[0], caixa[1]], [caixa[2], caixa[3]]], { padding: 90, maxZoom: 16, duration: 0 });
+        return await rxCapturar();
+    } finally { rxRestaurar(estado); }
+}
+// imagem 3: SIGEF – parcelas sobre o imóvel coloridas pela situação no registro, imóvel só com contorno
+async function rxFotoSigef(alvo, parc) {
+    const estado = rxEsconderCamadas();
+    try {
+        const fc = turf.featureCollection(parc.map((x, i) => ({ type: 'Feature', geometry: x.f.geometry, properties: { n: String(i + 1), cor: rxSigefCor(x.f.properties) } })));
+        map.addSource('rx-sig', { type: 'geojson', data: fc });
+        map.addLayer({ id: 'rx-sig', type: 'fill', source: 'rx-sig', paint: { 'fill-color': ['get', 'cor'], 'fill-opacity': 0.45 } });
+        map.addLayer({ id: 'rx-sig-linha', type: 'line', source: 'rx-sig', paint: { 'line-color': ['get', 'cor'], 'line-width': 2.2 } });
+        map.addSource('rx-alvo', { type: 'geojson', data: alvo });
+        map.addLayer({ id: 'rx-alvo-linha', type: 'line', source: 'rx-alvo', paint: { 'line-color': '#ffd600', 'line-width': 3.5 } });
+        map.addSource('rx-rot', { type: 'geojson', data: turf.featureCollection(parc.map((x, i) => { const it = rxInter(alvo, x.f); return turf.point(turf.pointOnFeature(it || x.f).geometry.coordinates, { n: String(i + 1) }); })) });
+        map.addLayer({ id: 'rx-viz-rot', type: 'symbol', source: 'rx-rot', layout: { 'text-field': ['get', 'n'], 'text-size': 14, 'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'], 'text-allow-overlap': true },
+            paint: { 'text-color': '#ffffff', 'text-halo-color': '#1b3a2a', 'text-halo-width': 2.2 } });
+        map.fitBounds(boundsDe(alvo), { padding: 90, maxZoom: 16, duration: 0 });
+        return await rxCapturar();
+    } finally {
+        ['rx-sig', 'rx-sig-linha'].forEach(id => map.getLayer(id) && map.removeLayer(id));
+        rxRestaurar(estado); map.getSource('rx-sig') && map.removeSource('rx-sig');
+    }
+}
+// imagem 4: outorgas, licenças e barragens numeradas em volta do imóvel
+const RX_PT_COR = { agua: '#1e88e5', lic: '#8e24aa', barr: '#00897b' };
+async function rxFotoPontos(alvo, pontos) {
+    const estado = rxEsconderCamadas();
+    try {
+        rxDesenharAlvo(alvo, false);
+        const fc = turf.featureCollection(pontos.map(p => turf.point(p.c, { n: String(p.n), cor: RX_PT_COR[p.tipo] })));
+        map.addSource('rx-pt', { type: 'geojson', data: fc });
+        map.addLayer({ id: 'rx-pt', type: 'circle', source: 'rx-pt', paint: { 'circle-radius': 9, 'circle-color': ['get', 'cor'], 'circle-stroke-color': '#ffffff', 'circle-stroke-width': 2 } });
+        map.addSource('rx-rot', { type: 'geojson', data: fc });
+        map.addLayer({ id: 'rx-viz-rot', type: 'symbol', source: 'rx-rot', layout: { 'text-field': ['get', 'n'], 'text-size': 11, 'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'], 'text-allow-overlap': true }, paint: { 'text-color': '#ffffff' } });
+        const caixa = turf.bbox(turf.featureCollection([alvo, ...fc.features]));
+        map.fitBounds([[caixa[0], caixa[1]], [caixa[2], caixa[3]]], { padding: 90, maxZoom: 16, duration: 0 });
+        return await rxCapturar();
+    } finally {
+        map.getLayer('rx-pt') && map.removeLayer('rx-pt');
+        rxRestaurar(estado); map.getSource('rx-pt') && map.removeSource('rx-pt');
+    }
 }
 async function gerarRelatorioRaiox() {
     const u = RX.ultimo; if (!u) return;
@@ -160,7 +259,14 @@ async function gerarRelatorioRaiox() {
     if (!janela) { alert('Permita a abertura de janelas para gerar o relatório.'); return; }
     janela.document.write('<p style="font-family:sans-serif;padding:20px">Montando o relatório…</p>');
     document.getElementById('raioxDialog').close();
-    const foto = await rxFotoMapa(u.alvo);
+    const centro = map.getCenter(), zoom = map.getZoom();
+    const foto = await rxFotoLocalizacao(u.alvo);
+    const relevantes = u.viz.filter(x => x.ha >= 0.05).slice(0, 15);
+    const foto2 = relevantes.length ? await rxFotoSobreposicao(u.alvo, relevantes) : null;
+    const parc = (u.sigef || []).slice(0, 15);
+    const foto3 = parc.length ? await rxFotoSigef(u.alvo, parc) : null;
+    const foto4 = (u.pontos || []).length ? await rxFotoPontos(u.alvo, u.pontos) : null;
+    map.jumpTo({ center: centro, zoom });
     const dataHora = u.quando.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
     const titulo = (dadosGerais.cliente || {}).nome || 'Mapa';
     janela.document.open();
@@ -175,15 +281,15 @@ async function gerarRelatorioRaiox() {
  .rx-flags{list-style:none;padding:0;margin:10px 0} .rx-flags li{padding:5px 9px;border-radius:6px;margin:3px 0;font-weight:600}
  .rx-vermelho{background:#fdecea;color:#b71c1c} .rx-amarelo{background:#fff6dd;color:#8a5a00} .rx-verde{background:#e7f5ec;color:#1b6b3a}
  table{width:100%;border-collapse:collapse;font-size:11.5px} th,td{border-bottom:1px solid #e5ebe7;padding:4px 6px;text-align:left;vertical-align:top} th{background:#f3f7f4}
- img.mapa{width:100%;border-radius:8px;border:1px solid #cfd8d3;margin:6px 0 2px}
+ .rx-cob{display:flex;flex-wrap:wrap;gap:6px 14px;margin:4px 0 8px} .rx-cob i,.rx-sw{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:4px;vertical-align:-1px} .legenda span{display:inline-block;width:14px;height:10px;border-radius:2px;margin:0 4px -1px 0} img.mapa{width:100%;border-radius:8px;border:1px solid #cfd8d3;margin:6px 0 2px}
  footer{margin-top:18px;border-top:1px solid #cfd8d3;padding-top:8px;display:flex;justify-content:space-between;gap:10px}
  .cod{font-family:Consolas,monospace;font-size:14px;font-weight:700;letter-spacing:.05em}
  @media print{body{margin:12mm} .noprint{display:none} h3{break-after:avoid} table{break-inside:auto} tr{break-inside:avoid}}
 </style></head><body>
 <header><div><h1>Relatório de análise do imóvel rural</h1><div class="hint">${esc(titulo)} · Londrina/PR</div></div>
 <div style="text-align:right"><div class="hint">Gerado em</div><b>${esc(dataHora)}</b></div></header>
-${foto ? `<img class="mapa" src="${foto}" alt="Mapa do imóvel"><div class="hint">Imóvel destacado sobre imagem de satélite (Esri World Imagery).</div>` : ''}
-${u.html}
+${foto ? `<h3>Localização do imóvel</h3><img class="mapa" src="${foto}" alt="Mapa de localização do imóvel"><div class="hint">Perímetro do imóvel (amarelo) sobre imagem de satélite (Esri World Imagery).</div>` : ''}
+${u.html.replace('<!--FOTO4-->', foto4 ? `<img class="mapa" src="${foto4}" alt="Mapa das outorgas e licenças"><div class="hint legenda"><span style="border:3px solid #ffd600;background:none"></span>imóvel analisado &nbsp; <span style="background:#1e88e5;border-radius:50%"></span>outorga de água &nbsp; <span style="background:#8e24aa;border-radius:50%"></span>licença ambiental &nbsp; <span style="background:#00897b;border-radius:50%"></span>barragem – números = linhas das tabelas</div>` : '').replace('<!--FOTO3-->', foto3 ? `<img class="mapa" src="${foto3}" alt="Mapa do SIGEF"><div class="hint legenda"><span style="border:3px solid #ffd600;background:none"></span>imóvel analisado (CAR) &nbsp; ${Object.values(RX_SIGEF).map(([c, t]) => `<span style="background:${c}"></span>${t}`).join(' &nbsp; ')} – números = linhas da tabela</div>` : '').replace('<!--FOTO2-->', foto2 ? `<img class="mapa" src="${foto2}" alt="Mapa das sobreposições"><div class="hint legenda"><span style="background:#ffd600"></span>imóvel analisado &nbsp; <span style="border:2px dashed #ff3d7f;background:none"></span>imóveis vizinhos com sobreposição (nº da tabela) &nbsp; <span style="background:#e53935"></span>área sobreposta</div>` : '')}
 <footer><div class="hint">CS Consultoria Ambiental · Relatório gerado automaticamente a partir de bases públicas.<br>Dados do mapa atualizados em ${esc(dadosGerais.atualizado_em || '')}.</div>
 <div style="text-align:right"><div class="hint">Código de conferência</div><div class="cod">${u.codigo}</div><div class="hint">identifica esta versão do relatório</div></div></footer>
 <p class="noprint" style="text-align:center;margin-top:16px"><button onclick="window.print()" style="padding:9px 18px;font-size:14px;background:#1e5a3c;color:#fff;border:0;border-radius:6px;cursor:pointer">Salvar em PDF / imprimir</button></p>
