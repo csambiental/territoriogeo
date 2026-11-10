@@ -523,10 +523,17 @@ def pendencias():
     arv = STRtree(sig) if sig else None
     emb = [f for f in json.load(open(f'{D}/embargos.geojson'))['features'] if f['properties'].get('Situação') == 'Embargo vigente'] if os.path.exists(f'{D}/embargos.geojson') else []
     embg = [shape(f['geometry']).buffer(0) for f in emb]; earv = STRtree(embg) if embg else None
+    RX_AGUA = re.compile(r'avicult|suinocult|bovinocult|bubalinocult|ovinocult|caprinocult|equinocult|cunicult|piscicult|aquicult|carcinicult|ranicult|cria[çc][ãa]o de (animais|aves|su[íi]nos|bovinos|frangos|peixes)|confinamento|leite|latic|abate|frigor|alimentos|bebida|f[ée]cula|amido|aguardente|cacha[çc]a|destilaria|usina|curtume|irriga|viveiro|hortali|cogumel|lavagem|lavador|beneficiamento', re.I); RX_CAPTA = re.compile(r'capta|subterr|po[çc]o|insignific|uso independente', re.I)
+    licp = [f for f in (json.load(open(f'{D}/licencas.geojson'))['features'] if os.path.exists(f'{D}/licencas.geojson') else [])
+            if RX_AGUA.search(f"{f['properties'].get('Atividade', '')} {f['properties'].get('Atividade específica', '')}")]
+    outc = [f for a in ('outorgas_rural.geojson', 'outorgas_urbana.geojson') if os.path.exists(f'{D}/{a}') for f in json.load(open(f'{D}/{a}'))['features']
+            if RX_CAPTA.search(f"{f['properties'].get('Interferência', '')} {f['properties'].get('Documento', '')} {f['properties'].get('grupo', '')}")]
+    licg = [Point(f['geometry']['coordinates'][:2]) for f in licp]; outg = [Point(f['geometry']['coordinates'][:2]) for f in outc]
+    larv = STRtree(licg) if licg else None; oarv = STRtree(outg) if outg else None
     classes = Counter()
     for f in imv['features']:
         p = f['properties']
-        for k in [k for k in p if k.startswith('Pendência') or k in ('pendencia_nivel', 'pendencias_n', 'Georreferenciamento SIGEF', 'Embargo IBAMA')]: p.pop(k)
+        for k in [k for k in p if k.startswith('Pendência') or k in ('pendencia_nivel', 'pendencias_n', 'Georreferenciamento SIGEF', 'Embargo IBAMA', 'Uso da água × licença')]: p.pop(k)
         if p.get('situacao') == 'Cancelado': p['pendencia_nivel'] = 'Cancelado'; classes['Cancelado'] += 1; continue
         g = shape(f['geometry']).buffer(0); a = g.area or 1
         cob = sum(g.intersection(sig[i]).area for i in arv.query(g)) / a if arv is not None else 0
@@ -539,6 +546,12 @@ def pendencias():
         if earv is not None:
             tem = [emb[i]['properties']['nome'].replace('Embargo IBAMA ', '') for i in earv.query(g) if g.intersection(embg[i]).area > 0.02 * embg[i].area]
             if tem: p['Embargo IBAMA'] = 'Vigente: ' + ', '.join(tem[:3]); pend.append(f"Área embargada pelo IBAMA ({', '.join(tem[:3])})"); pts += 4
+        if larv is not None:
+            la = [licp[i]['properties'].get('Atividade', '') for i in larv.query(g) if g.contains(licg[i])]
+            tem_capta = oarv is not None and any(g.contains(outg[i]) for i in oarv.query(g))
+            if la and not tem_capta:
+                p['Uso da água × licença'] = f"Atividade licenciada ({', '.join(sorted(set(la))[:2])}) sem outorga de captação localizada"
+                pend.append(f"Atividade licenciada com consumo de água ({', '.join(sorted(set(la))[:2])}) sem outorga de captação no imóvel"); pts += 2
         if p.get('Alertas MapBiomas'): pend.append(f"{p['Alertas MapBiomas']} alerta(s) de desmatamento MapBiomas"); pts += 3
         rot_veg = 'Vegetação nativa' if any(k.startswith('MapBiomas') for k in p) else 'Cobertura arbórea (inclui silvicultura)'
         if veg is not None and mf > 4 and veg < 20: pend.append(f'{rot_veg} de {veg:.1f}% (abaixo de 20%) em imóvel acima de 4 módulos – possível déficit de Reserva Legal'.replace('.', ',')); pts += 2

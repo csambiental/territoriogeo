@@ -128,7 +128,13 @@ function rxNecessidades(p, r, area, uso) {
         if (lanca.length) add(2, 'Outorga – efluentes', `${lanca.length} outorga(s) de lançamento de efluentes no imóvel: ${lst(lanca)}`,
             'Monitoramento do efluente lançado (vazão e análises laboratoriais conforme a portaria) e do corpo receptor; relatórios ao IAT');
     }
-    if (!ag.length) add(3, 'Uso da água', 'Nenhuma outorga do SIGARH localizada dentro do imóvel', 'Verificar em campo os usos de água (poço, captação, barragem, irrigação, dessedentação) e regularizar por outorga ou declaração de uso independente');
+    // atividade licenciada que consome água × outorga de captação no imóvel
+    const RX_AGUA = /avicult|suinocult|bovinocult|bubalinocult|ovinocult|caprinocult|equinocult|cunicult|piscicult|aquicult|carcinicult|ranicult|cria[çc][ãa]o de (animais|aves|su[íi]nos|bovinos|frangos|peixes)|confinamento|leite|latic|abate|frigor|alimentos|bebida|f[ée]cula|amido|aguardente|cacha[çc]a|destilaria|usina|curtume|irriga|viveiro|hortali|cogumel|lavagem|lavador|beneficiamento/i, RX_CAPTA = /capta|subterr|po[çc]o|insignific|uso independente/i;
+    const licAgua = (r.lic?.dentro || []).filter(x => !/substituída|^Vencida$/.test(x.f.properties.situacao || '') && RX_AGUA.test(`${x.f.properties.Atividade || ''} ${x.f.properties['Atividade específica'] || ''}`));
+    const captaImovel = ag.filter(x => RX_CAPTA.test(`${x.f.properties.Interferência || ''} ${x.f.properties.Documento || ''} ${x.f.properties.grupo || ''}`));
+    if (licAgua.length && !captaImovel.length) add(1, 'Uso da água × licença', `Atividade licenciada com consumo de água (${[...new Set(licAgua.map(x => x.f.properties.Atividade))].slice(0, 3).join(', ')}) e nenhuma outorga de captação localizada no imóvel`,
+        'Verificar a fonte de água da atividade (poço, nascente, rio, açude, rede) e regularizar no IAT/SIGARH: outorga de captação ou declaração de uso independente de outorga; instalar hidrômetro');
+    else if (!ag.length) add(3, 'Uso da água', 'Nenhuma outorga do SIGARH localizada dentro do imóvel', 'Verificar em campo os usos de água (poço, captação, barragem, irrigação, dessedentação) e regularizar por outorga ou declaração de uso independente');
     r.barr.dentro.forEach(x => { const q = x.f.properties, pnsb = /^sim/i.test(q['Regulada pela PNSB'] || '');
         if (pnsb && /^n[ãa]o/i.test(q['Plano de segurança'] || '')) add(1, 'Segurança de barragem', `${q.nome}: enquadrada na PNSB e sem Plano de Segurança declarado (risco ${q.risco || 'não informado'}, DPA ${q.dpa || 'não informado'})`, 'Elaborar Plano de Segurança da Barragem, inspeções e revisão periódica (Lei 12.334/2010 e normas do IAT)');
     });
@@ -205,6 +211,10 @@ async function analisarImovel(nome) {
           if (breve.length) flags.push(['amarelo', `Outorga(s) vencendo em até 6 meses: ${breve.slice(0, 4).map(no).join('; ')}${breve.length > 4 ? ' …' : ''}`]);
           const ok = ags.filter(x => !venc.includes(x) && !breve.includes(x));
           if (ok.length) flags.push(['verde', `${ok.length} outorga(s) vigente(s) no imóvel: ${ok.slice(0, 4).map(no).join('; ')}${ok.length > 4 ? ' …' : ''}`]); }
+        { const RXA = /avicult|suinocult|bovinocult|bubalinocult|ovinocult|caprinocult|equinocult|cunicult|piscicult|aquicult|carcinicult|ranicult|cria[çc][ãa]o de (animais|aves|su[íi]nos|bovinos|frangos|peixes)|confinamento|leite|latic|abate|frigor|alimentos|bebida|f[ée]cula|amido|aguardente|cacha[çc]a|destilaria|usina|curtume|irriga|viveiro|hortali|cogumel|lavagem|lavador|beneficiamento/i, RXC = /capta|subterr|po[çc]o|insignific|uso independente/i;
+          const la = (r.lic?.dentro || []).filter(x => !/substituída|^Vencida$/.test(x.f.properties.situacao || '') && RXA.test(`${x.f.properties.Atividade || ''} ${x.f.properties['Atividade específica'] || ''}`));
+          if (la.length && !r.agua.dentro.some(x => RXC.test(`${x.f.properties.Interferência || ''} ${x.f.properties.Documento || ''} ${x.f.properties.grupo || ''}`)))
+              flags.push(['amarelo', `Atividade licenciada com consumo de água (${la[0].f.properties.Atividade}) sem outorga de captação localizada no imóvel`]); }
         const barrAlto = r.barr.dentro.filter(x => x.f.properties.risco === 'Alto');
         if (barrAlto.length) flags.push(['amarelo', `${barrAlto.length} barragem(ns) com categoria de risco ALTO dentro do imóvel`]);
         const acSem = r.massas.filter(x => /artificial/.test(x.f.properties.grupo) && !x.barr);

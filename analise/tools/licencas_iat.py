@@ -9,7 +9,7 @@ O PDF da licença fica na consulta pública do SGA (protegido por CAPTCHA): o ma
 Uso: python3 licencas_iat.py <cod_ibge> <pasta_saida> [prefixo_arquivos]
 Gera <pasta>/licencas.geojson (pontos) e <pasta>/licencas.json (lista para o painel).
 """
-import json, sys, ssl, re, datetime, urllib.request, urllib.parse, collections, os, unicodedata
+import json, sys, ssl, re, math, datetime, urllib.request, urllib.parse, collections, os, unicodedata
 
 CAMADA = 'https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/licenciamento_ambiental_pr/FeatureServer/0'
 CAMPOS = ['num_protocolo', 'nome_razao_social', 'cod_ibge', 'nome_municipio', 'sigla_modalidade', 'desc_modalidade',
@@ -131,6 +131,22 @@ def gerar(cod, pasta, nome_geo='licencas.geojson', nome_lista='licencas.json'):
     for a in arqs:
         for f in json.load(open(a))['features']:
             idx.setdefault(chave_nome(f['properties'].get('nome')), f['geometry']['coordinates'][:2])
+    RX_AGUA = re.compile(r'avicult|suinocult|bovinocult|bubalinocult|ovinocult|caprinocult|equinocult|cunicult|piscicult|aquicult|carcinicult|ranicult|cria[çc][ãa]o de (animais|aves|su[íi]nos|bovinos|frangos|peixes)|confinamento|leite|latic|abate|frigor|alimentos|bebida|f[ée]cula|amido|aguardente|cacha[çc]a|destilaria|usina|curtume|irriga|viveiro|hortali|cogumel|lavagem|lavador|beneficiamento', re.I); RX_CAPTA = re.compile(r'capta|subterr|po[çc]o|insignific|uso independente', re.I)
+    capt = []
+    for a in arqs:
+        for f in json.load(open(a))['features']:
+            q = f['properties']
+            if RX_CAPTA.search(f"{q.get('Interferência', '')} {q.get('Documento', '')} {q.get('grupo', '')}"):
+                capt.append((f['geometry']['coordinates'][:2], chave_nome(q.get('nome')), q.get('Portaria / declaração', '')))
+
+    def outorga_proxima(x, y, nome):
+        if x is None: return ''
+        dist = sorted((math.hypot((c[0] - x) * 101700, (c[1] - y) * 110600), n, doc) for c, n, doc in capt)
+        mesmo = [t for t in dist if t[1] == chave_nome(nome)]
+        if mesmo and mesmo[0][0] <= 2000: return 'Sim – nº %s, do mesmo titular, a %.0f m' % (mesmo[0][2] or 's/ nº', mesmo[0][0])
+        perto = [t for t in dist if t[0] <= 500]
+        if perto: return 'Há outorga de captação de outro titular a %.0f m – conferir se atende a atividade' % perto[0][0]
+        return 'Não localizada até 500 m – verificar a fonte de água e a outorga'
     pontos, vencidas, lista = [], [], []
     for d in por_prot.values():
         va, em = d['va'], d['em']
@@ -154,7 +170,7 @@ def gerar(cod, pasta, nome_geo='licencas.geojson', nome_lista='licencas.json'):
                 'nome': reg['nome'], 'grupo': reg['grupo'], 'situacao': situ, 'Modalidade': f"{sig} – {d['mod']}".strip(' –') if d['mod'] else sig, 'Situação': situ,
                 'Atividade': reg['atividade'], 'Atividade específica': reg['especifica'], 'Grupo de atividade': d['grupo_ativ'],
                 'Nº do documento': reg['documento'], 'Emissão': reg['emissao'], 'Validade': reg['validade'], 'Protocolo': prot, 'Sistema': 'SIA' if d['sia'] else 'SGA',
-                'Localização': local, 'link': link, 'link_texto': 'Abrir a licença no SGA (PDF) ↗'}})
+                'Localização': local, **({'Outorga de captação': outorga_proxima(x, y, d['nome'])} if RX_AGUA.search(reg['atividade'] + ' ' + reg['especifica']) else {}), 'link': link, 'link_texto': 'Abrir a licença no SGA (PDF) ↗'}})
         elif k in genericos: reg['localizacao'] = 'sem coordenada própria (ponto genérico no cadastro)'
         lista.append(reg)
     ordem = lambda x: datetime.datetime.strptime(x['validade'], '%d/%m/%Y') if x['validade'] else datetime.datetime.max
