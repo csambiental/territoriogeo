@@ -124,7 +124,14 @@ def gerar(cod, pasta, nome_geo='licencas.geojson', nome_lista='licencas.json'):
     # licenças vencidas substituídas por outra mais recente do mesmo titular e atividade
     grupos = collections.defaultdict(list)
     for d in por_prot.values(): grupos[(chave_nome(d['nome']), sem_acento(d['ativ']))].append(d)
-    pontos, lista = [], []
+    # localização aproximada pela outorga de água do mesmo titular (SIGARH), só para quem não tem coordenada
+    arqs = [a for a in [os.path.join(pasta, 'outorgas_rural.geojson'), os.path.join(pasta, 'outorgas_urbana.geojson')] if os.path.exists(a)]
+    if not arqs and str(cod) == '4113700': arqs = [a for a in ['../data/iat/outorgas_rural.geojson', '../data/iat/outorgas_urbana.geojson'] if os.path.exists(a)]
+    idx = {}
+    for a in arqs:
+        for f in json.load(open(a))['features']:
+            idx.setdefault(chave_nome(f['properties'].get('nome')), f['geometry']['coordinates'][:2])
+    pontos, vencidas, lista = [], [], []
     for d in por_prot.values():
         va, em = d['va'], d['em']
         mais_nova = max((o['em'] for o in grupos[(chave_nome(d['nome']), sem_acento(d['ativ']))] if o['em']), default=None)
@@ -138,13 +145,16 @@ def gerar(cod, pasta, nome_geo='licencas.geojson', nome_lista='licencas.json'):
                'documento': doc_fmt(d['doc']), 'emissao': em.strftime('%d/%m/%Y') if em else '', 'validade': va.strftime('%d/%m/%Y') if va else '', 'situacao': situ, 'link': link}
         x, y = d['x'], d['y']
         k = (round(x, 4), round(y, 4)) if x and y else None
+        local = 'Coordenada do empreendimento cadastrada no licenciamento (IAT)'
+        if (not k or k in genericos) and situ != 'Vencida' and 'substituída' not in situ and chave_nome(d['nome']) in idx:
+            x, y = idx[chave_nome(d['nome'])]; k = (round(x, 4), round(y, 4)); local = 'Aproximada – ponto da outorga de água do mesmo titular (SIGARH)'
         if k and k not in genericos and -27 < y < -22 and -55 < x < -48 and 'substituída' not in situ:
             reg['no_mapa'] = True
-            pontos.append({'type': 'Feature', 'geometry': {'type': 'Point', 'coordinates': [round(x, 6), round(y, 6)]}, 'properties': {
+            (vencidas if situ == 'Vencida' else pontos).append({'type': 'Feature', 'geometry': {'type': 'Point', 'coordinates': [round(x, 6), round(y, 6)]}, 'properties': {
                 'nome': reg['nome'], 'grupo': reg['grupo'], 'situacao': situ, 'Modalidade': f"{sig} – {d['mod']}".strip(' –') if d['mod'] else sig, 'Situação': situ,
                 'Atividade': reg['atividade'], 'Atividade específica': reg['especifica'], 'Grupo de atividade': d['grupo_ativ'],
                 'Nº do documento': reg['documento'], 'Emissão': reg['emissao'], 'Validade': reg['validade'], 'Protocolo': prot, 'Sistema': 'SIA' if d['sia'] else 'SGA',
-                'Localização': 'Coordenada do empreendimento cadastrada no licenciamento (IAT)', 'link': link, 'link_texto': 'Abrir a licença no SGA (PDF) ↗'}})
+                'Localização': local, 'link': link, 'link_texto': 'Abrir a licença no SGA (PDF) ↗'}})
         elif k in genericos: reg['localizacao'] = 'sem coordenada própria (ponto genérico no cadastro)'
         lista.append(reg)
     ordem = lambda x: datetime.datetime.strptime(x['validade'], '%d/%m/%Y') if x['validade'] else datetime.datetime.max
@@ -152,9 +162,10 @@ def gerar(cod, pasta, nome_geo='licencas.geojson', nome_lista='licencas.json'):
     lista.sort(key=lambda x: (peso.get(x['situacao'], 3), ordem(x)))
     os.makedirs(pasta, exist_ok=True)
     json.dump({'type': 'FeatureCollection', 'features': pontos}, open(os.path.join(pasta, nome_geo), 'w'), ensure_ascii=False, separators=(',', ':'))
+    json.dump({'type': 'FeatureCollection', 'features': vencidas}, open(os.path.join(pasta, nome_geo.replace('.geojson', '_vencidas.geojson')), 'w'), ensure_ascii=False, separators=(',', ':'))
     json.dump({'atualizado': HOJE.strftime('%d/%m/%Y'), 'total': len(lista), 'licencas': lista}, open(os.path.join(pasta, nome_lista), 'w'), ensure_ascii=False, separators=(',', ':'))
     C = collections.Counter
-    print(f'  {len(lista)} licenças, {len(pontos)} no mapa; pontos genéricos: {len(genericos)};', dict(C(x["situacao"] for x in lista)))
+    print(f'  {len(lista)} licenças, {len(pontos)} vigentes e {len(vencidas)} vencidas no mapa; pontos genéricos: {len(genericos)};', dict(C(x["situacao"] for x in lista)))
     print('  grupos:', dict(C(x["grupo"] for x in lista).most_common(10)))
     return len(lista), len(pontos)
 

@@ -163,13 +163,14 @@ async function analisarImovel(nome) {
         const [sigef, emb, alertas, outR, outU, lic, barr, mbac, mass] = await Promise.all(['data/fundiario/sigef_londrina.geojson', 'data/ibama/embargos_londrina.geojson',
             'data/mapbiomas/alertas_londrina.geojson', 'data/iat/outorgas_rural.geojson', 'data/iat/outorgas_urbana.geojson', 'data/iat/licencas_localizadas.geojson',
             'data/iat/barragens_londrina.geojson', 'data/bacias/microbacias_regiao.geojson', 'data/ana/massas_dagua_londrina.geojson'].map(a => rxJSON(a).catch(() => ({ features: [] }))));
+        const licV = ('data/iat/licencas_localizadas_vencidas.geojson') ? await rxJSON('data/iat/licencas_localizadas_vencidas.geojson').catch(() => ({ features: [] })) : { features: [] };
         const r = {
             car: rxSobreposicoes(alvo, cars.filter(f => f.properties.situacao !== 'Cancelado'), 0.05),
             sigef: rxSobreposicoes(alvo, sigef.features, 0.05),
             emb: rxSobreposicoes(alvo, emb.features, 0.0001),
             alertas: Object.values(rxSobreposicoes(alvo, alertas.features, 0.0001).reduce((m, x) => { const k = x.f.properties.nome; if (!m[k] || m[k].ha < x.ha) m[k] = x; return m; }, {})),
             agua: rxPontos(alvo, [...outR.features, ...outU.features]),
-            lic: rxPontos(alvo, lic.features),
+            lic: rxPontos(alvo, lic.features.concat(licV.features)),
             barr: rxPontos(alvo, barr.features),
             massas: rxSobreposicoes(alvo, mass.features, 0.01).map(x => ({ ...x, barr: rxBarragemDaMassa(x.f, barr.features) })),
             decl: await rxDeclividade(alvo).catch(() => []),

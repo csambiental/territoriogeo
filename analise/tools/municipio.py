@@ -591,7 +591,9 @@ def config():
         elif i == 'massas-dagua': o['arquivo'] = P('massas_dagua.geojson'); o['nome'] = f"Açudes, represas e lagos – ANA ({cnt('massas_dagua.geojson')})"
         elif i == 'microbacias': o['arquivo'] = P('microbacias.geojson')
         elif i == 'licencas' and os.path.exists(P('licencas.geojson')):
-            o.update({'arquivo': P('licencas.geojson'), 'nome': f"Licenças ambientais IAT ({cnt('licencas.geojson')})"})
+            o.update({'arquivo': P('licencas.geojson'), 'nome': f"Licenças ambientais IAT – vigentes ({cnt('licencas.geojson')})"})
+        elif i == 'licencas-vencidas' and os.path.exists(P('licencas_vencidas.geojson')):
+            o.update({'arquivo': P('licencas_vencidas.geojson'), 'nome': f"Licenças ambientais IAT – vencidas sem renovação ({cnt('licencas_vencidas.geojson')})"})
         elif i == 'declividade': o['arquivo'] = P('declividade.json')
         elif i == 'curvas': o['tiles'] = P('curvas/{z}/{x}/{y}.pbf')
         else: continue

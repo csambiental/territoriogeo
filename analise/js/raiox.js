@@ -162,13 +162,14 @@ async function analisarImovel(nome) {
         if (!alvo) { corpo.innerHTML = '<p>Imóvel não encontrado.</p>'; return; }
         const p = alvo.properties, area = rxHa(alvo);
         const [sigef, emb, alertas, outR, outU, lic, barr, mbac, mass] = await Promise.all([C.sigef, C.embargos, C.alertas, (C.outorgas || [])[0], (C.outorgas || [])[1], C.licencas, C.barragens, C.microbacias, C.massas].map(a => a ? rxJSON(a).catch(() => ({ features: [] })) : Promise.resolve({ features: [] })));
+        const licV = (C.licencas ? C.licencas.replace('.geojson', '_vencidas.geojson') : null) ? await rxJSON(C.licencas ? C.licencas.replace('.geojson', '_vencidas.geojson') : null).catch(() => ({ features: [] })) : { features: [] };
         const r = {
             car: rxSobreposicoes(alvo, cars.filter(f => f.properties.situacao !== 'Cancelado'), 0.05),
             sigef: rxSobreposicoes(alvo, sigef.features, 0.05),
             emb: rxSobreposicoes(alvo, emb.features, 0.0001),
             alertas: Object.values(rxSobreposicoes(alvo, alertas.features, 0.0001).reduce((m, x) => { const k = x.f.properties.nome; if (!m[k] || m[k].ha < x.ha) m[k] = x; return m; }, {})),
             agua: rxPontos(alvo, [...outR.features, ...outU.features]),
-            lic: rxPontos(alvo, lic.features),
+            lic: rxPontos(alvo, lic.features.concat(licV.features)),
             barr: rxPontos(alvo, barr.features),
             massas: rxSobreposicoes(alvo, mass.features, 0.01).map(x => ({ ...x, barr: rxBarragemDaMassa(x.f, barr.features) })),
             decl: await rxDeclividade(alvo).catch(() => []),
