@@ -155,7 +155,7 @@ async function renderLicencas() {
                 <strong>${esc(x.nome)}</strong></div>
                 <div class="lic-ativ">${esc(x.atividade)}${x.especifica && x.especifica !== x.atividade ? ` – ${esc(x.especifica)}` : ''}</div>
                 <div class="lic-meta">Doc. ${esc(x.documento)} · emitida ${esc(x.emissao)} · <span class="${x.situacao !== 'Vigente' ? 'lic-alerta' : ''}">${x.situacao === 'Vencida' ? 'vencida em' : 'válida até'} ${esc(x.validade)}</span> · prot. ${esc(x.protocolo)}
-                ${x.no_mapa ? `<button type="button" class="lic-mapa" data-p="${esc(x.protocolo)}">📍 ver no mapa</button>` : ''}${x.link ? ` <a class="lic-mapa" href="${esc(x.link)}" target="_blank" rel="noopener">📄 licença no SGA</a>` : ''}</div></div>`).join('');
+                ${x.no_mapa ? `<button type="button" class="lic-mapa" data-p="${esc(x.protocolo)}">📍 ver no mapa</button>` : ''}${x.protocolo ? ` <a class="lic-mapa" href="https://www.sga.pr.gov.br/sga-iap/consultarProcessoLicenciamento.do?action=exibirDadosPublicoLicenca&numProtocolo=${esc(String(x.protocolo).replace(/\D/g, ''))}&indSia=${x.sia ? 'true' : 'false'}&ucsChamador=carregarInterfaceInicial" target="_blank" rel="noopener">📄 licença no SGA</a>` : ''}</div></div>`).join('');
         lista.querySelectorAll('.lic-mapa').forEach(b => b.addEventListener('click', () => mostrarLicenca(b.dataset.p)));
     };
     busca.addEventListener('input', desenhar);

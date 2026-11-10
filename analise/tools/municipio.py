@@ -563,6 +563,8 @@ def config():
     c['cliente'] = {'nome': f'Análise Rural – {NOME}/PR', 'subtitulo': 'Imóveis rurais, restrições e Raio-X do imóvel · CS Consultoria Ambiental', 'selo': 'Uso interno',
                     'centro': [MUN.centroid.x, MUN.centroid.y], 'zoom': 10.5}
     c['atualizado_em'] = datetime.date.today().isoformat()
+    try: c['cliente']['selo'] = json.load(open(f'{D}/config.json'))['cliente'].get('selo', c['cliente'].get('selo'))  # mantém o selo escolhido
+    except Exception: pass
     c['resumo'] = [{'valor': f'{len(ativos):,}'.replace(',', '.'), 'rotulo': 'imóveis rurais ativos no CAR'},
                    {'valor': f'{area / 1000:,.1f} mil'.replace('.', ',') if area >= 1000 else f'{area:,.0f}'.replace(',', '.'), 'rotulo': 'hectares cadastrados'},
                    {'valor': f'{100 * conf / max(1, len(ativos)):.0f}%', 'rotulo': 'analisados e em conformidade'}]

@@ -419,7 +419,7 @@
   {
    "id": "licencas",
    "secao": "Licenciamento",
-   "nome": "Licenças ambientais IAT – vigentes",
+   "nome": "Licenças ambientais IAT – vigentes (1351)",
    "arquivo": "data/iat/licencas_localizadas.geojson",
    "geometria": "ponto",
    "icone": "dot",
@@ -481,7 +481,7 @@
   {
    "id": "licencas-vencidas",
    "secao": "Licenciamento",
-   "nome": "Licenças ambientais IAT – vencidas (sem renovação)",
+   "nome": "Licenças ambientais IAT – vencidas sem renovação (3819)",
    "arquivo": "data/iat/licencas_localizadas_vencidas.geojson",
    "geometria": "ponto",
    "icone": "dot",

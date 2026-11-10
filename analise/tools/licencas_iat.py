@@ -142,7 +142,7 @@ def gerar(cod, pasta, nome_geo='licencas.geojson', nome_lista='licencas.json'):
         sig = d['sig']; prot = proto_fmt(d['prot'])
         link = f"{SGA}?action=exibirDadosPublicoLicenca&numProtocolo={d['prot']}&indSia={'true' if d['sia'] else 'false'}&ucsChamador=carregarInterfaceInicial"
         reg = {'protocolo': prot, 'nome': d['nome'], 'atividade': d['ativ'] or d['grupo_ativ'], 'especifica': d['esp'], 'modalidade': sig, 'grupo': GRUPO.get(sig, d['mod'] or sig),
-               'documento': doc_fmt(d['doc']), 'emissao': em.strftime('%d/%m/%Y') if em else '', 'validade': va.strftime('%d/%m/%Y') if va else '', 'situacao': situ, 'link': link}
+               'documento': doc_fmt(d['doc']), 'emissao': em.strftime('%d/%m/%Y') if em else '', 'validade': va.strftime('%d/%m/%Y') if va else '', 'situacao': situ, **({'sia': True} if d['sia'] else {})}
         x, y = d['x'], d['y']
         k = (round(x, 4), round(y, 4)) if x and y else None
         local = 'Coordenada do empreendimento cadastrada no licenciamento (IAT)'
