@@ -1,0 +1,8 @@
+name: Diagnóstico link SGA
+on: { workflow_dispatch: {} }
+jobs:
+  d:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          curl -s -L -A "Mozilla/5.0" "https://www.sga.pr.gov.br/sga-iap/consultarProcessoLicenciamento.do?action=exibirDadosPublicoLicenca&numProtocolo=166118433&indSia=false&ucsChamador=carregarInterfaceInicial" -o p.html -w "%{http_code} %{url_effective}\n"; grep -o '"numLicenca":"[^"]*"\|"modalidade":"[^"]*"\|identidadedigital' p.html | head
