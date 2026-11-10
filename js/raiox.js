@@ -118,15 +118,14 @@ function rxNecessidades(p, r, area, uso) {
     else if (r.decl.slice(3).reduce((a, d) => a + d.pct, 0) >= 15) add(3, 'Conservação do solo', 'Parte relevante do imóvel em relevo forte ondulado (≥ 20%)', 'Plano de conservação do solo e da água (terraceamento, plantio em nível, cobertura)');
     // água
     const ag = [...r.agua.dentro];
-    ag.forEach(x => { const v = rxData(x.f.properties.Vencimento); if (v && v < em12m) add(v < hoje ? 1 : 2, 'Outorga de água', `${x.f.properties.Interferência || 'Outorga'} – vence${v < hoje ? 'u' : ''} em ${x.f.properties.Vencimento}`, 'Renovação da outorga no SIGARH (IAT)'); });
+    ag.forEach(x => { const v = rxData(x.f.properties.Vencimento); if (v && v < em12m) add(v < hoje ? 1 : 2, 'Outorga de água', `${x.f.properties.Interferência || 'Outorga'} nº ${x.f.properties['Portaria / declaração'] || 's/ nº'} – vence${v < hoje ? 'u' : ''} em ${x.f.properties.Vencimento}`, 'Renovação da outorga no SIGARH (IAT)'); });
     if (ag.length) {
         const tipo = x => x.f.properties.Interferência || x.f.properties.grupo || '';
         const capta = ag.filter(x => /capta|subterr|poço/i.test(tipo(x))), lanca = ag.filter(x => /lançamento/i.test(tipo(x)));
-        const tipos = {}; capta.forEach(x => { const t = x.f.properties.Interferência || x.f.properties.grupo || 'Outorga'; tipos[t] = (tipos[t] || 0) + 1; });
-        const desc = Object.entries(tipos).map(([t, n]) => `${n} ${t.toLowerCase()}`).join(', ');
-        if (capta.length) add(2, 'Outorga – monitoramento', `${capta.length} outorga(s) de uso de água no imóvel (${desc})`,
+        const lst = l => l.slice(0, 6).map(x => `nº ${x.f.properties['Portaria / declaração'] || 's/ nº'} (${(x.f.properties.Interferência || 'outorga').toLowerCase()}, vence ${x.f.properties.Vencimento || '–'})`).join('; ') + (l.length > 6 ? `; e mais ${l.length - 6}` : '');
+        if (capta.length) add(2, 'Outorga – monitoramento', `${capta.length} outorga(s) de uso de água no imóvel: ${lst(capta)}`,
             'Verificação in loco: hidrômetro/medidor de vazão instalado e funcionando, leituras registradas e volumes dentro do outorgado; análise da qualidade da água captada; conferir as demais condicionantes da portaria (IAT/SIGARH)');
-        if (lanca.length) add(2, 'Outorga – efluentes', `${lanca.length} outorga(s) de lançamento de efluentes no imóvel`,
+        if (lanca.length) add(2, 'Outorga – efluentes', `${lanca.length} outorga(s) de lançamento de efluentes no imóvel: ${lst(lanca)}`,
             'Monitoramento do efluente lançado (vazão e análises laboratoriais conforme a portaria) e do corpo receptor; relatórios ao IAT');
     }
     if (!ag.length) add(3, 'Uso da água', 'Nenhuma outorga do SIGARH localizada dentro do imóvel', 'Verificar em campo os usos de água (poço, captação, barragem, irrigação, dessedentação) e regularizar por outorga ou declaração de uso independente');
@@ -192,6 +191,14 @@ async function analisarImovel(nome) {
         if (!r.sigef.length) flags.push(['amarelo', 'Nenhuma parcela SIGEF/INCRA sobre o imóvel']);
         const forte = r.decl.slice(3).reduce((s, d) => s + d.pct, 0);
         if (forte >= 10) flags.push(['amarelo', `${rxF(forte, 0)}% do imóvel em relevo forte ondulado ou mais (≥ 20%)`]);
+        { const hj = new Date(), dt = v => { const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(v || ''); return m ? new Date(+m[3], m[2] - 1, +m[1]) : null; };
+          const no = x => `nº ${x.f.properties['Portaria / declaração'] || 's/ nº'} (${x.f.properties.Vencimento || 'sem data'})`;
+          const ags = r.agua.dentro, venc = ags.filter(x => dt(x.f.properties.Vencimento) && dt(x.f.properties.Vencimento) < hj),
+                breve = ags.filter(x => { const d = dt(x.f.properties.Vencimento); return d && d >= hj && (d - hj) / 864e5 <= 180; });
+          if (venc.length) flags.push(['vermelho', `Outorga(s) vencida(s) no imóvel: ${venc.slice(0, 4).map(no).join('; ')}${venc.length > 4 ? ' …' : ''}`]);
+          if (breve.length) flags.push(['amarelo', `Outorga(s) vencendo em até 6 meses: ${breve.slice(0, 4).map(no).join('; ')}${breve.length > 4 ? ' …' : ''}`]);
+          const ok = ags.filter(x => !venc.includes(x) && !breve.includes(x));
+          if (ok.length) flags.push(['verde', `${ok.length} outorga(s) vigente(s) no imóvel: ${ok.slice(0, 4).map(no).join('; ')}${ok.length > 4 ? ' …' : ''}`]); }
         const barrAlto = r.barr.dentro.filter(x => x.f.properties.risco === 'Alto');
         if (barrAlto.length) flags.push(['amarelo', `${barrAlto.length} barragem(ns) com categoria de risco ALTO dentro do imóvel`]);
         const acSem = r.massas.filter(x => /artificial/.test(x.f.properties.grupo) && !x.barr);
