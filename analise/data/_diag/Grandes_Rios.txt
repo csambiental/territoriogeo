@@ -5,6 +5,10 @@ Município 4108700 Grandes Rios
 ===== Licenças ambientais IAT (SGA/SIA) =====
   GeoPR: 180 licenças (com histórico); SGA consulta pública: 95
   45 licenças só no SGA (sem coordenada no GeoPR)
-  223 licenças, 76 no mapa; pontos genéricos: 2; {'Vence em até 6 meses': 4, 'Vigente': 88, 'Vencida': 74, 'Vencida (substituída por licença mais recente)': 57}
+  223 licenças, 65 vigentes e 31 vencidas no mapa; pontos genéricos: 2; {'Vence em até 6 meses': 4, 'Vigente': 88, 'Vencida': 74, 'Vencida (substituída por licença mais recente)': 57}
   grupos: {'Licença Prévia / de Instalação': 70, 'Dispensa de licenciamento': 68, 'Autorização Ambiental': 34, 'Licença de Operação': 31, 'Licença Simplificada': 17, 'Licença por Adesão e Compromisso': 3}
------ Licenças ambientais IAT (SGA/SIA) ok (8s)
+----- Licenças ambientais IAT (SGA/SIA) ok (5s)
+
+===== Config =====
+config ok Grandes Rios 911 imóveis
+----- Config ok (0s)

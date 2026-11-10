@@ -2,14 +2,14 @@
  "cliente": {
   "nome": "Análise Rural – Grandes Rios/PR",
   "subtitulo": "Imóveis rurais, restrições e Raio-X do imóvel · CS Consultoria Ambiental",
-  "selo": "Versão de demonstração",
+  "selo": "Uso interno",
   "centro": [
    -51.447586934966964,
    -24.189383589559156
   ],
   "zoom": 10.5
  },
- "atualizado_em": "2026-11-09",
+ "atualizado_em": "2026-11-10",
  "resumo": [
   {
    "valor": "911",
@@ -31,7 +31,7 @@
  "lista_titulo": "Buscar imóvel rural / pendências",
  "programa": {
   "titulo": "Sobre esta análise",
-  "texto": "Imóveis rurais do CAR de Grandes Rios cruzados com SIGEF/INCRA, embargos do IBAMA, alertas de desmatamento, uso do solo (MapBiomas), outorgas do IAT, barragens do SNISB/IAT, açudes e represas (ANA), microbacias e relevo. Clique num imóvel e use o Raio-X para gerar o relatório.",
+  "texto": "Imóveis rurais do CAR de Grandes Rios cruzados com SIGEF/INCRA, embargos do IBAMA, alertas de desmatamento, uso do solo (MapBiomas), outorgas e licenças ambientais do IAT, barragens do SNISB/IAT, açudes e represas (ANA), microbacias e relevo. Clique num imóvel e use o Raio-X para gerar o relatório.",
   "etapas": [],
   "graficos": [
    {
@@ -318,6 +318,101 @@
     }
    ],
    "fonte": "IBAMA – dados abertos, Fiscalização: termo de embargo (atualização mensal). Pessoas físicas sem polígono não são exibidas."
+  },
+  {
+   "id": "licencas",
+   "secao": "Licenciamento",
+   "nome": "Licenças ambientais IAT – vigentes (65)",
+   "arquivo": "data/m/4108700/licencas.geojson",
+   "geometria": "ponto",
+   "icone": "dot",
+   "cor": "#1565c0",
+   "cor_por": "grupo",
+   "cores": {
+    "Licença de Operação": "#1565c0",
+    "Licença Simplificada": "#26a69a",
+    "Licença por Adesão e Compromisso": "#7e57c2",
+    "Licença Prévia / de Instalação": "#ef6c00",
+    "Dispensa de licenciamento": "#9e9e9e",
+    "Autorização Ambiental": "#c2185b"
+   },
+   "rotulo_campo": "nome",
+   "rotulo_minzoom": 14,
+   "clicavel": true,
+   "prioridade": true,
+   "campos": [
+    "Modalidade",
+    "Situação",
+    "Atividade",
+    "Atividade específica",
+    "Grupo de atividade",
+    "Nº do documento",
+    "Emissão",
+    "Validade",
+    "Protocolo",
+    "Sistema",
+    "Localização"
+   ],
+   "legenda_itens": [
+    {
+     "rotulo": "Licença de Operação",
+     "cor": "#1565c0"
+    },
+    {
+     "rotulo": "Licença Simplificada",
+     "cor": "#26a69a"
+    },
+    {
+     "rotulo": "Licença por Adesão e Compromisso",
+     "cor": "#7e57c2"
+    },
+    {
+     "rotulo": "Licença Prévia / de Instalação",
+     "cor": "#ef6c00"
+    },
+    {
+     "rotulo": "Dispensa de licenciamento",
+     "cor": "#9e9e9e"
+    },
+    {
+     "rotulo": "Autorização Ambiental",
+     "cor": "#c2185b"
+    }
+   ],
+   "fonte": "IAT-PR – licenciamento ambiental (SGA e SIA): camada pública do GeoPR e consulta pública do SGA"
+  },
+  {
+   "id": "licencas-vencidas",
+   "secao": "Licenciamento",
+   "nome": "Licenças ambientais IAT – vencidas sem renovação (31)",
+   "arquivo": "data/m/4108700/licencas_vencidas.geojson",
+   "geometria": "ponto",
+   "icone": "dot",
+   "cor": "#9e9e9e",
+   "rotulo_campo": "nome",
+   "rotulo_minzoom": 14,
+   "clicavel": true,
+   "prioridade": false,
+   "campos": [
+    "Modalidade",
+    "Situação",
+    "Atividade",
+    "Atividade específica",
+    "Grupo de atividade",
+    "Nº do documento",
+    "Emissão",
+    "Validade",
+    "Protocolo",
+    "Sistema",
+    "Localização"
+   ],
+   "legenda_itens": [
+    {
+     "rotulo": "Licença vencida sem licença mais recente do mesmo titular e atividade",
+     "cor": "#9e9e9e"
+    }
+   ],
+   "fonte": "IAT-PR – licenciamento ambiental (SGA e SIA): camada pública do GeoPR e consulta pública do SGA"
   },
   {
    "secao": "Outorgas de água (SIGARH)",
@@ -710,6 +805,20 @@
    "texto": "Conheça o Instituto Biosimos"
   }
  },
+ "licencas": {
+  "arquivo": "data/m/4108700/licencas.json",
+  "camada": "licencas",
+  "cores": {
+   "Licença de Operação": "#1565c0",
+   "Licença Simplificada": "#26a69a",
+   "Licença por Adesão e Compromisso": "#7e57c2",
+   "Licença Prévia / de Instalação": "#ef6c00",
+   "Dispensa de licenciamento": "#9e9e9e",
+   "Autorização Ambiental": "#c2185b"
+  },
+  "titulo": "Licenças ambientais em Grandes Rios",
+  "subtitulo": "Licenças, dispensas e autorizações emitidas pelo IAT (SGA e SIA), com a localização cadastrada no licenciamento. Titular conforme consta na consulta pública do SGA."
+ },
  "busca_niveis": [
   "Prioridade alta",
   "Prioridade média"
@@ -723,7 +832,7 @@
    "data/m/4108700/outorgas_rural.geojson",
    "data/m/4108700/outorgas_urbana.geojson"
   ],
-  "licencas": null,
+  "licencas": "data/m/4108700/licencas.geojson",
   "barragens": "data/m/4108700/barragens.geojson",
   "massas": "data/m/4108700/massas_dagua.geojson",
   "microbacias": "data/m/4108700/microbacias.geojson",
