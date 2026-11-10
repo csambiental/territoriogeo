@@ -5,6 +5,6 @@ Município 4113700 Londrina
 ===== Licenças ambientais IAT (SGA/SIA) =====
   GeoPR: 10352 licenças (com histórico); SGA consulta pública: 2093
   910 licenças só no SGA (sem coordenada no GeoPR)
-  10582 licenças, 4983 no mapa; pontos genéricos: 7; {'Vence em até 6 meses': 137, 'Vigente': 1954, 'Vencida': 4365, 'Vencida (substituída por licença mais recente)': 4126}
+  10582 licenças, 1351 vigentes e 3819 vencidas no mapa; pontos genéricos: 7; {'Vence em até 6 meses': 137, 'Vigente': 1954, 'Vencida': 4365, 'Vencida (substituída por licença mais recente)': 4126}
   grupos: {'Licença de Operação': 3042, 'Dispensa de licenciamento': 2750, 'Licença Prévia / de Instalação': 2347, 'Autorização Ambiental': 1847, 'Licença Simplificada': 571, 'Licença por Adesão e Compromisso': 13, 'Renovação de Licença de Instalação (Ampliação)': 7, 'Autorização Florestal': 3, '': 2}
------ Licenças ambientais IAT (SGA/SIA) ok (32s)
+----- Licenças ambientais IAT (SGA/SIA) ok (33s)
