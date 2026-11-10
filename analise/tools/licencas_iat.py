@@ -19,7 +19,7 @@ GRUPO = {'LO': 'Licença de Operação', 'RLO': 'Licença de Operação', 'LOR':
          'LAS': 'Licença Simplificada', 'RLAS': 'Licença Simplificada', 'LASR': 'Licença Simplificada', 'LAS-A': 'Licença Simplificada',
          'LAC': 'Licença por Adesão e Compromisso', 'RLAC': 'Licença por Adesão e Compromisso',
          'LP': 'Licença Prévia / de Instalação', 'LP-A': 'Licença Prévia / de Instalação', 'LI': 'Licença Prévia / de Instalação', 'LI-A': 'Licença Prévia / de Instalação',
-         'LPI': 'Licença Prévia / de Instalação', 'DLAM': 'Dispensa de licenciamento', 'DLAE': 'Dispensa de licenciamento', 'AA': 'Autorização Ambiental', 'AAP': 'Autorização Ambiental'}
+         'LPI': 'Licença Prévia / de Instalação', 'RLI': 'Licença Prévia / de Instalação', 'CP': 'Licença Prévia / de Instalação', 'DLAM': 'Dispensa de licenciamento', 'DLAE': 'Dispensa de licenciamento', 'DILA': 'Dispensa de licenciamento', 'DIL': 'Dispensa de licenciamento', 'AA': 'Autorização Ambiental', 'AAP': 'Autorização Ambiental'}
 CTX = ssl.create_default_context(); CTX.set_ciphers('DEFAULT@SECLEVEL=0'); CTX.options |= 0x4
 HOJE = datetime.date.today()
 
@@ -65,65 +65,97 @@ def baixar_geopr(cod):
     return fs
 
 
-def especificas_sga(nome_mun):
-    """protocolo -> atividade específica, pela consulta pública do SGA (o CPF/CNPJ que vem junto é descartado)."""
+def _js_para_json(t):
+    i = t.index('['); t = t[i:t.rindex(']') + 1]
+    t = re.sub(r'([{,])\s*([A-Za-z_]\w*)\s*:', r'\1"\2":', t)
+    return json.loads(t)
+
+
+def lista_sga(nome_mun):
+    """Licenças da consulta pública do SGA (as que o SGA mostra como vigentes). O CPF/CNPJ é descartado na leitura."""
     try:
         txt = http(f'{SGA}?action=listaMunicipioPorUFAjax&estadoMunicipioCombo=PR&page=1&start=0&limit=500', txt=True)
         alvo = sem_acento(nome_mun)
-        ids = [int(m.group(1)) for m in re.finditer(r'idMunicipioCorreios:(\d+),nomeMunicipio:"([^"]+)"', txt) if sem_acento(m.group(2)) == alvo]
-        if not ids:
-            ids = [int(a) for a, b in re.findall(r'"?idMunicipioCorreios"?\s*:\s*(\d+)\s*,\s*"?nomeMunicipio"?\s*:\s*"([^"]+)"', txt) if sem_acento(b) == alvo]
-        if not ids: print('  SGA: município não encontrado'); return {}
-        out, pag = {}, 1
+        ids = [int(a) for a, b in re.findall(r'"?idMunicipioCorreios"?\s*:\s*(\d+)\s*,\s*"?nomeMunicipio"?\s*:\s*"([^"]+)"', txt) if sem_acento(b) == alvo]
+        if not ids: print('  SGA: município não encontrado'); return []
+        out, pag = [], 1
         while True:
             t = http(f'{SGA}?action=consultarProcessoLicenciamento&estadoMunicipioCombo=PR&municipioCombo={ids[0]}&page={pag}&start={(pag - 1) * 500}&limit=500', txt=True)
-            reg = re.findall(r'descAtividadeEspecifica:"((?:[^"\\]|\\.)*)".*?numProtocolo:(\d+)', t)
-            for esp, prot in reg: out[int(prot)] = esp.replace('\\"', '"')
-            if len(reg) < 500: break
+            regs = _js_para_json(t)
+            for r in regs: r.pop('cpfCnpj', None)
+            out += regs
+            if len(regs) < 500: break
             pag += 1
         return out
     except Exception as e:
-        print('  SGA indisponível:', e); return {}
+        print('  SGA indisponível:', e); return []
+
+
+def chave_nome(t):
+    t = sem_acento(t); t = re.sub(r'\b(LTDA|ME|EPP|EIRELI|S/?A|LIMITADA)\b', '', t); return re.sub(r'[^A-Z0-9]', '', t)
 
 
 def gerar(cod, pasta, nome_geo='licencas.geojson', nome_lista='licencas.json'):
-    regs = baixar_geopr(cod)
-    nome_mun = (regs[0]['nome_municipio'] if regs else '')
-    esp = especificas_sga(nome_mun) if regs else {}
-    print(f'  GeoPR: {len(regs)} licenças; SGA: {len(esp)} com atividade específica')
-    pontos, lista, coords = [], [], collections.Counter()
-    for r in regs:
-        if r.get('x') and r.get('y'): coords[(round(r['x'], 4), round(r['y'], 4))] += 1
-    for r in regs:
-        sig = (r.get('sigla_modalidade') or '').strip()
-        em, va = data(r.get('dt_emissao')), data(r.get('dt_validade'))
-        situ = 'Vencida' if va and va < HOJE else ('Vence em até 6 meses' if va and (va - HOJE).days <= 183 else 'Vigente')
-        prot = proto_fmt(r['num_protocolo']); sia = str(r.get('ind_sia')).lower() == 'true'
-        link = f"{SGA}?action=exibirDadosPublicoLicenca&numProtocolo={r['num_protocolo']}&indSia={'true' if sia else 'false'}&ucsChamador=carregarInterfaceInicial"
-        reg = {'protocolo': prot, 'nome': (r.get('nome_razao_social') or '').strip(), 'atividade': r.get('desc_atividade') or r.get('desc_grupo_atividade') or '',
-               'especifica': esp.get(int(r['num_protocolo']), ''), 'modalidade': sig, 'grupo': GRUPO.get(sig, r.get('desc_modalidade') or sig),
-               'documento': doc_fmt(r.get('num_documento')), 'emissao': em.strftime('%d/%m/%Y') if em else '', 'validade': va.strftime('%d/%m/%Y') if va else '',
-               'situacao': situ, 'link': link}
-        x, y = r.get('x'), r.get('y')
-        if x and y and -27 < y < -22 and -55 < x < -48:
+    geo = baixar_geopr(cod)
+    nome_mun = geo[0]['nome_municipio'] if geo else ''
+    sga = lista_sga(nome_mun) if nome_mun else []
+    print(f'  GeoPR: {len(geo)} licenças (com histórico); SGA consulta pública: {len(sga)}')
+    por_prot = {}
+    for r in geo:
+        por_prot[int(r['num_protocolo'])] = {'prot': int(r['num_protocolo']), 'nome': (r.get('nome_razao_social') or '').strip(), 'sig': (r.get('sigla_modalidade') or '').strip(),
+            'mod': r.get('desc_modalidade') or '', 'grupo_ativ': r.get('desc_grupo_atividade') or '', 'ativ': r.get('desc_atividade') or '', 'esp': '',
+            'doc': r.get('num_documento'), 'em': data(r.get('dt_emissao')), 'va': data(r.get('dt_validade')), 'sia': str(r.get('ind_sia')).lower() == 'true', 'x': r.get('x'), 'y': r.get('y')}
+    novos = 0
+    for r in sga:
+        p = int(r['numProtocolo']); d = por_prot.get(p)
+        if not d:
+            novos += 1
+            d = por_prot[p] = {'prot': p, 'nome': (r.get('nomeRazaoSocial') or '').strip(), 'sig': r.get('siglaModalidade') or '', 'mod': '', 'grupo_ativ': '',
+                               'ativ': r.get('descAtividade') or '', 'esp': '', 'doc': r.get('numDocumento'), 'em': data(r.get('dtDecisao')), 'va': data(r.get('dtValidade')),
+                               'sia': bool(r.get('indSia')), 'x': None, 'y': None}
+        d['esp'] = r.get('descAtividadeEspecifica') or d['esp']
+        d['no_sga'] = True
+    print(f'  {novos} licenças só no SGA (sem coordenada no GeoPR)')
+    # pontos genéricos: muitas licenças de titulares diferentes no mesmo ponto (ex.: centro da cidade)
+    tit = collections.defaultdict(set)
+    for d in por_prot.values():
+        if d['x'] and d['y']: tit[(round(d['x'], 4), round(d['y'], 4))].add(chave_nome(d['nome']))
+    genericos = {k for k, v in tit.items() if len(v) >= 5}
+    # licenças vencidas substituídas por outra mais recente do mesmo titular e atividade
+    grupos = collections.defaultdict(list)
+    for d in por_prot.values(): grupos[(chave_nome(d['nome']), sem_acento(d['ativ']))].append(d)
+    pontos, lista = [], []
+    for d in por_prot.values():
+        va, em = d['va'], d['em']
+        mais_nova = max((o['em'] for o in grupos[(chave_nome(d['nome']), sem_acento(d['ativ']))] if o['em']), default=None)
+        if va and va < HOJE:
+            situ = 'Vencida (substituída por licença mais recente)' if mais_nova and em and mais_nova > em else 'Vencida'
+        else:
+            situ = 'Vence em até 6 meses' if va and (va - HOJE).days <= 183 else 'Vigente'
+        sig = d['sig']; prot = proto_fmt(d['prot'])
+        link = f"{SGA}?action=exibirDadosPublicoLicenca&numProtocolo={d['prot']}&indSia={'true' if d['sia'] else 'false'}&ucsChamador=carregarInterfaceInicial"
+        reg = {'protocolo': prot, 'nome': d['nome'], 'atividade': d['ativ'] or d['grupo_ativ'], 'especifica': d['esp'], 'modalidade': sig, 'grupo': GRUPO.get(sig, d['mod'] or sig),
+               'documento': doc_fmt(d['doc']), 'emissao': em.strftime('%d/%m/%Y') if em else '', 'validade': va.strftime('%d/%m/%Y') if va else '', 'situacao': situ, 'link': link}
+        x, y = d['x'], d['y']
+        k = (round(x, 4), round(y, 4)) if x and y else None
+        if k and k not in genericos and -27 < y < -22 and -55 < x < -48 and 'substituída' not in situ:
             reg['no_mapa'] = True
-            repetido = coords[(round(x, 4), round(y, 4))]
             pontos.append({'type': 'Feature', 'geometry': {'type': 'Point', 'coordinates': [round(x, 6), round(y, 6)]}, 'properties': {
-                'nome': reg['nome'], 'grupo': reg['grupo'], 'situacao': situ, 'Atividade': reg['atividade'], 'Atividade específica': reg['especifica'],
-                'Grupo de atividade': r.get('desc_grupo_atividade') or '', 'Modalidade': f"{sig} – {r.get('desc_modalidade') or ''}".strip(' –'),
-                'Nº do documento': reg['documento'], 'Emissão': reg['emissao'], 'Validade': reg['validade'], 'Situação': situ, 'Protocolo': prot,
-                'Sistema': 'SIA' if sia else 'SGA',
-                'Localização': 'Coordenada do empreendimento cadastrada no licenciamento (IAT)' + (f' – ponto compartilhado por {repetido} licenças' if repetido > 3 else ''),
-                'link': link, 'link_texto': 'Abrir a licença no SGA (PDF) ↗'}})
+                'nome': reg['nome'], 'grupo': reg['grupo'], 'situacao': situ, 'Modalidade': f"{sig} – {d['mod']}".strip(' –') if d['mod'] else sig, 'Situação': situ,
+                'Atividade': reg['atividade'], 'Atividade específica': reg['especifica'], 'Grupo de atividade': d['grupo_ativ'],
+                'Nº do documento': reg['documento'], 'Emissão': reg['emissao'], 'Validade': reg['validade'], 'Protocolo': prot, 'Sistema': 'SIA' if d['sia'] else 'SGA',
+                'Localização': 'Coordenada do empreendimento cadastrada no licenciamento (IAT)', 'link': link, 'link_texto': 'Abrir a licença no SGA (PDF) ↗'}})
+        elif k in genericos: reg['localizacao'] = 'sem coordenada própria (ponto genérico no cadastro)'
         lista.append(reg)
     ordem = lambda x: datetime.datetime.strptime(x['validade'], '%d/%m/%Y') if x['validade'] else datetime.datetime.max
-    lista.sort(key=lambda x: (x['situacao'] == 'Vencida', ordem(x)))
+    peso = {'Vence em até 6 meses': 0, 'Vigente': 1, 'Vencida': 2}
+    lista.sort(key=lambda x: (peso.get(x['situacao'], 3), ordem(x)))
     os.makedirs(pasta, exist_ok=True)
     json.dump({'type': 'FeatureCollection', 'features': pontos}, open(os.path.join(pasta, nome_geo), 'w'), ensure_ascii=False, separators=(',', ':'))
     json.dump({'atualizado': HOJE.strftime('%d/%m/%Y'), 'total': len(lista), 'licencas': lista}, open(os.path.join(pasta, nome_lista), 'w'), ensure_ascii=False, separators=(',', ':'))
     C = collections.Counter
-    print(f'  {len(lista)} licenças, {len(pontos)} no mapa;', dict(C(x["situacao"] for x in lista)), dict(C(x["grupo"] for x in lista).most_common(8)))
-    print('  pontos mais repetidos:', coords.most_common(3))
+    print(f'  {len(lista)} licenças, {len(pontos)} no mapa; pontos genéricos: {len(genericos)};', dict(C(x["situacao"] for x in lista)))
+    print('  grupos:', dict(C(x["grupo"] for x in lista).most_common(10)))
     return len(lista), len(pontos)
 
 
