@@ -3,7 +3,8 @@
 Município 4108700 Grandes Rios
 
 ===== Licenças ambientais IAT (SGA/SIA) =====
-  GeoPR: 180 licenças; SGA: 92 com atividade específica
-  180 licenças, 180 no mapa; {'Vence em até 6 meses': 1, 'Vigente': 48, 'Vencida': 131} {'Licença Prévia / de Instalação': 62, 'Dispensa de licenciamento': 47, 'Licença de Operação': 29, 'Autorização Ambiental': 25, 'Licença Simplificada': 12, 'Declaração de Inexigibilidade de Licenciamento Ambiental': 2, 'Renovação de Licença de Instalação': 2, 'Consulta Prévia': 1}
-  pontos mais repetidos: [((-51.5064, -24.1464), 67), ((-51.5059, -24.1455), 23), ((-51.4799, -24.1474), 4)]
------ Licenças ambientais IAT (SGA/SIA) ok (7s)
+  GeoPR: 180 licenças (com histórico); SGA consulta pública: 95
+  45 licenças só no SGA (sem coordenada no GeoPR)
+  223 licenças, 76 no mapa; pontos genéricos: 2; {'Vence em até 6 meses': 4, 'Vigente': 88, 'Vencida': 74, 'Vencida (substituída por licença mais recente)': 57}
+  grupos: {'Licença Prévia / de Instalação': 70, 'Dispensa de licenciamento': 68, 'Autorização Ambiental': 34, 'Licença de Operação': 31, 'Licença Simplificada': 17, 'Licença por Adesão e Compromisso': 3}
+----- Licenças ambientais IAT (SGA/SIA) ok (8s)

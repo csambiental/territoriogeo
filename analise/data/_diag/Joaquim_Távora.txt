@@ -3,7 +3,8 @@
 Município 4112801 Joaquim Távora
 
 ===== Licenças ambientais IAT (SGA/SIA) =====
-  GeoPR: 573 licenças; SGA: 159 com atividade específica
-  573 licenças, 573 no mapa; {'Vence em até 6 meses': 3, 'Vigente': 112, 'Vencida': 458} {'Licença Prévia / de Instalação': 167, 'Dispensa de licenciamento': 144, 'Licença de Operação': 115, 'Autorização Ambiental': 55, 'Licença Simplificada': 49, 'Declaração de Inexigibilidade de Licenciamento Ambiental': 29, 'Renovação de Licença de Instalação': 14}
-  pontos mais repetidos: [((-49.9047, -23.4994), 61), ((-49.9262, -23.5054), 15), ((-49.9207, -23.5105), 11)]
------ Licenças ambientais IAT (SGA/SIA) ok (4s)
+  GeoPR: 573 licenças (com histórico); SGA consulta pública: 162
+  45 licenças só no SGA (sem coordenada no GeoPR)
+  589 licenças, 270 no mapa; pontos genéricos: 3; {'Vence em até 6 meses': 3, 'Vigente': 155, 'Vencida': 196, 'Vencida (substituída por licença mais recente)': 235}
+  grupos: {'Licença Prévia / de Instalação': 184, 'Dispensa de licenciamento': 160, 'Licença de Operação': 121, 'Autorização Ambiental': 60, 'Licença Simplificada': 54, 'Licença por Adesão e Compromisso': 10}
+----- Licenças ambientais IAT (SGA/SIA) ok (5s)
