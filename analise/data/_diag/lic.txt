@@ -30,3 +30,5 @@ LAYER https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/zee_destin
 LAYER https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/zee_destin_fin_resI_licen_2012/MapServer/0 Licenciamento de Resíduos Sólidos Urbanos (2012) - ZEE-PR 86 ['OBJECTID', 'shape', 'licenca']
   ex {"objectid": 1, "licenca": "Sem LO vigente, pedido de RLO em análise"}
   ex {"objectid": 2, "licenca": "Sem LO vigente, pedido de RLO em análise"}
+== SGA a partir do Actions
+SGA OK {success: true,mensagem: 'OK',listaProcessoLicenciamento: [{codIbge:4108700,x:"69653690949",descAtividade:"Bovinocultura de leite",descAtividadeEspecifica:"Criação de animais em lactação semiconfinados",dtDecisao:1726594945975,dtDecisaoFormatado:"17/09/2024",dtValidade:2042127745980,dtValidade
