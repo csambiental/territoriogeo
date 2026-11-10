@@ -3,6 +3,9 @@ Uso: python3 tools/municipio.py <código IBGE>   (rodar dentro da pasta analise/
 Gera tudo em data/m/<código>/ e o config.json do município. Cada etapa é independente: se uma falhar, as outras seguem.
 Fontes: IBGE (limite), SICAR (CAR), IAT/INCRA (SIGEF), IBAMA (embargos), MapBiomas (uso do solo e alertas),
 IAT (outorgas SIGARH e barragens), ANA/SNIRH (microbacias), Copernicus DEM (declividade e curvas de nível)."""
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))
+import nomes_rios
 import json, os, sys, re, io, csv, time, datetime, unicodedata, traceback, subprocess, urllib.request, urllib.parse
 from collections import Counter, defaultdict
 import numpy as np
@@ -206,7 +209,7 @@ def microbacias():
         if not g.intersects(MUN): continue
         a = f['attributes']
         out.append({'type': 'Feature', 'geometry': mapping(g.simplify(0.0008, preserve_topology=True)),
-                    'properties': {'rio': a.get('NORIOCOMP'), 'nome': f"Microbacia do {a.get('NORIOCOMP') or 'curso sem nome'}", 'cobacia': a.get('COBACIA'), 'ugrh': a.get('UGRH')}})
+                    'properties': {'rio': nomes_rios.rio(a.get('NORIOCOMP')), 'nome': nomes_rios.microbacia(a.get('NORIOCOMP')), 'cobacia': a.get('COBACIA'), 'ugrh': a.get('UGRH')}})
     json.dump(arred({'type': 'FeatureCollection', 'features': out}, 5), open(f'{D}/microbacias.geojson', 'w'), ensure_ascii=False, separators=(',', ':'))
     log('microbacias', len(out))
 
