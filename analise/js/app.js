@@ -1191,6 +1191,12 @@ async function iniciar() {
         try { camadasData[c.id] = await (await fetch(c.arquivo, { cache: 'no-cache' })).json(); }
         catch (err) { console.error(`Não foi possível carregar ${c.arquivo}`, err); }
     }));
+    // imóvel FICTÍCIO de demonstração (não corresponde a nenhum imóvel real)
+    if (dados.raiox && dados.raiox.demo) try {
+        const dm = await (await fetch(dados.raiox.demo, { cache: 'no-cache' })).json();
+        const im = camadasData[dados.busca_camada || 'imoveis'];
+        if (im) im.features.push(...dm.features.filter(f => f.properties.camada === 'imovel'));
+    } catch (e) { console.warn('demo indisponível', e); }
     renderResumo();
     renderFiltroEtapa();
     renderTermos();

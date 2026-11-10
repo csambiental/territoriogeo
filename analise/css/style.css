@@ -546,3 +546,5 @@ table.ind tr.pos td { color: #1d6b3e; font-weight: 600; }
 .rx-progresso { position: fixed; inset: 0; background: rgba(10,20,14,.45); z-index: 9999; display: flex; align-items: center; justify-content: center; }
 .rx-progresso > div { background: #fff; border-radius: 12px; padding: 18px 22px; display: flex; flex-direction: column; gap: 8px; min-width: 280px; box-shadow: 0 8px 30px rgba(0,0,0,.25); font-size: .9rem; }
 .rx-progresso small { color: #5f6d66; }
+
+.rx-ficticio{background:#fff3e0;border:2px dashed #ef6c00;color:#e65100;font-weight:700;padding:8px 12px;border-radius:6px;margin:8px 0}

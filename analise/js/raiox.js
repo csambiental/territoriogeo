@@ -161,10 +161,16 @@ async function analisarImovel(nome) {
         const alvo = cars.find(f => f.properties.nome === nome);
         if (!alvo) { corpo.innerHTML = '<p>Imóvel não encontrado.</p>'; return; }
         const p = alvo.properties, area = rxHa(alvo);
-        const [sigef, emb, alertas, outR, outU, lic, barr, mbac, mass] = await Promise.all([C.sigef, C.embargos, C.alertas, (C.outorgas || [])[0], (C.outorgas || [])[1], C.licencas, C.barragens, C.microbacias, C.massas].map(a => a ? rxJSON(a).catch(() => ({ features: [] })) : Promise.resolve({ features: [] })));
-        const licV = (C.licencas ? C.licencas.replace('.geojson', '_vencidas.geojson') : null) ? await rxJSON(C.licencas ? C.licencas.replace('.geojson', '_vencidas.geojson') : null).catch(() => ({ features: [] })) : { features: [] };
+        let [sigef, emb, alertas, outR, outU, lic, barr, mbac, mass] = await Promise.all([C.sigef, C.embargos, C.alertas, (C.outorgas || [])[0], (C.outorgas || [])[1], C.licencas, C.barragens, C.microbacias, C.massas].map(a => a ? rxJSON(a).catch(() => ({ features: [] })) : Promise.resolve({ features: [] })));
+        let licV = (C.licencas ? C.licencas.replace('.geojson', '_vencidas.geojson') : null) ? await rxJSON(C.licencas ? C.licencas.replace('.geojson', '_vencidas.geojson') : null).catch(() => ({ features: [] })) : { features: [] };
+        let vizinhos = cars.filter(f => f.properties.situacao !== 'Cancelado' && !f.properties.ficticio);
+        if (p.ficticio && C.demo) {  // imóvel de exemplo: só as camadas fictícias, nada de dados reais de terceiros
+            const dm = await rxJSON(C.demo), so = k => ({ features: dm.features.filter(f => f.properties.camada === k) }), vazio = { features: [] };
+            vizinhos = so('car').features; sigef = so('sigef'); emb = vazio; alertas = vazio; outR = so('outorga'); outU = vazio;
+            lic = so('licenca'); licV = vazio; barr = so('barragem'); mass = so('massa');
+        }
         const r = {
-            car: rxSobreposicoes(alvo, cars.filter(f => f.properties.situacao !== 'Cancelado'), 0.05),
+            car: rxSobreposicoes(alvo, vizinhos, 0.05),
             sigef: rxSobreposicoes(alvo, sigef.features, 0.05),
             emb: rxSobreposicoes(alvo, emb.features, 0.0001),
             alertas: Object.values(rxSobreposicoes(alvo, alertas.features, 0.0001).reduce((m, x) => { const k = x.f.properties.nome; if (!m[k] || m[k].ha < x.ha) m[k] = x; return m; }, {})),
@@ -213,7 +219,7 @@ async function analisarImovel(nome) {
             <div class="rx-cab"><div><div class="mono rx-cod">${esc(nome)}</div>
               <div class="hint">${esc(p['Status do CAR'] || '')} · ${esc(p.situacao || '')} · ${esc(p.Tipo || '')}</div></div>
               <div class="rx-area"><b>${rxF(area)}</b> ha<br><span class="hint">${esc(p['Módulos fiscais'] || '–')} módulos fiscais</span></div></div>
-            <ul class="rx-flags">${flags.map(([c, t]) => `<li class="rx-${c}">${esc(t)}</li>`).join('')}</ul>
+            ${p.ficticio ? `<p class="rx-ficticio">⚠️ IMÓVEL FICTÍCIO – exemplo criado só para demonstração. Os dados deste relatório não correspondem a nenhum imóvel ou pessoa real.</p>` : ''}<ul class="rx-flags">${flags.map(([c, t]) => `<li class="rx-${c}">${esc(t)}</li>`).join('')}</ul>
             ${pend.length ? `<h3>Pendências apontadas no mapa</h3><ul>${pend.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
             <h3>Uso e cobertura do solo (${esc(((Object.keys(p).find(k => /^(MapBiomas|Uso do solo) \d{4}/.test(k)) || '').match(/^(MapBiomas \d{4}|Uso do solo \d{4})/) || [''])[0].replace('Uso do solo', 'Esri/Impact Observatory'))})</h3>
             ${tab(['Classe', '% do imóvel', 'ha (aprox.)'], uso.map(([k, v]) => [esc(k), rxF(v, 1) + '%', rxF(v / 100 * area, 1)]))}

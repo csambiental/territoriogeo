@@ -107,6 +107,7 @@
    "rotulo": false,
    "destacar_selecao": true,
    "campos": [
+    "Imóvel de exemplo",
     "Área (ha)",
     "Módulos fiscais",
     "Porte",
@@ -837,6 +838,7 @@
   "massas": "data/m/4108700/massas_dagua.geojson",
   "microbacias": "data/m/4108700/microbacias.geojson",
   "declividade": "data/m/4108700/declividade.json",
-  "municipio": "Grandes Rios/PR"
+  "municipio": "Grandes Rios/PR",
+  "demo": "data/m/4108700/demo.geojson"
  }
 }

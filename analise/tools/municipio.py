@@ -604,6 +604,10 @@ def config():
     c['raiox'] = {'car': P('car.geojson'), 'sigef': P('sigef.geojson'), 'embargos': P('embargos.geojson'), 'alertas': P('alertas.geojson'),
                   'outorgas': [P('outorgas_rural.geojson'), P('outorgas_urbana.geojson')], 'licencas': P('licencas.geojson') if os.path.exists(P('licencas.geojson')) else None, 'barragens': P('barragens.geojson'), 'massas': P('massas_dagua.geojson'),
                   'microbacias': P('microbacias.geojson'), 'declividade': P('declividade.json'), 'municipio': f'{NOME}/PR'}
+    if os.path.exists(P('demo.geojson')):  # imóvel fictício de demonstração
+        c['raiox']['demo'] = P('demo.geojson')
+        for cam in c['camadas']:
+            if cam['id'] == 'imoveis' and 'Imóvel de exemplo' not in cam['campos']: cam['campos'].insert(0, 'Imóvel de exemplo')
     try:  # % da área georreferenciada (SIGEF) e situação do CAR no painel
         sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); import estat_geo
         c = estat_geo.aplicar(c, estat_geo.calcular(*(json.load(open(P(a))) for a in ('municipio.geojson', 'car.geojson', 'sigef.geojson'))))
