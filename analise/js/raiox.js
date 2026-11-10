@@ -227,7 +227,12 @@ async function analisarImovel(nome) {
             ${tab(['Alerta', 'Detectado em', 'Vetor', 'Dentro do imóvel (ha)'], r.alertas.map(x => [esc(x.f.properties.nome), esc(x.f.properties['Detectado em'] || ''), esc(x.f.properties['Vetor'] || ''), rxF(x.ha, 2)]))}
             <h3>Outorgas de água no imóvel ou a até 500 m</h3>
             <!--FOTO4-->
-            ${tab(['Nº', 'Titular (SIGARH)', 'Tipo', 'Posição', 'Coordenadas (lat, long – SIRGAS 2000)'], pts(r.agua, 'Interferência', 'agua'))}
+            ${(() => { const lista = [...r.agua.dentro, ...r.agua.perto].slice(0, 12), linhas = pts(r.agua, 'Interferência', 'agua'), hoje = new Date();
+                const venc = q => { const v = q.Vencimento || q['Validade'] || ''; const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(v); if (!v) return '–';
+                    if (!m) return esc(v); const d = new Date(+m[3], m[2] - 1, +m[1]), dias = (d - hoje) / 864e5;
+                    return dias < 0 ? `<b style="color:#c62828">${esc(v)}<br>vencida</b>` : dias <= 180 ? `<b style="color:#e65100">${esc(v)}<br>vence em ${Math.ceil(dias)} dias</b>` : esc(v); };
+                return tab(['Nº', 'Titular (SIGARH)', 'Tipo', 'Nº da outorga / declaração', 'Vencimento', 'Posição', 'Coordenadas (lat, long – SIRGAS 2000)'], linhas.map((l, i) => { const q = lista[i].f.properties;
+                    return [l[0], l[1], l[2], `<span class="mono">${esc(q['Portaria / declaração'] || '–')}</span>${q.Documento ? `<br><span class="hint">${esc(q.Documento)}${q['Situação'] ? ' · ' + esc(q['Situação']) : ''}</span>` : ''}`, venc(q), l[3], l[4]]; })); })()}
             ${C.licencas === null ? '' : `<h3>Licenças ambientais (IAT) no imóvel ou a até 500 m</h3>`}
             ${C.licencas === null ? '' : tab(['Nº', 'Empreendimento (SGA)', 'Atividade', 'Posição', 'Coordenadas (lat, long)'], pts(r.lic, 'Atividade', 'lic'))}
             <h3>Barragens cadastradas (SNISB/ANA e IAT) no imóvel ou a até 500 m</h3>
