@@ -7,7 +7,11 @@ Município 4112801 Joaquim Távora
   45 licenças só no SGA (sem coordenada no GeoPR)
   589 licenças, 129 vigentes e 157 vencidas no mapa; pontos genéricos: 3; {'Vence em até 6 meses': 3, 'Vigente': 155, 'Vencida': 196, 'Vencida (substituída por licença mais recente)': 235}
   grupos: {'Licença Prévia / de Instalação': 184, 'Dispensa de licenciamento': 160, 'Licença de Operação': 121, 'Autorização Ambiental': 60, 'Licença Simplificada': 54, 'Licença por Adesão e Compromisso': 10}
------ Licenças ambientais IAT (SGA/SIA) ok (5s)
+----- Licenças ambientais IAT (SGA/SIA) ok (6s)
+
+===== Pendências =====
+Counter({'Atenção': 436, 'Sem pendência identificada': 283, 'Prioridade média': 86, 'Prioridade alta': 40, 'Cancelado': 2})
+----- Pendências ok (0s)
 
 ===== Config =====
 config ok Joaquim Távora 845 imóveis
