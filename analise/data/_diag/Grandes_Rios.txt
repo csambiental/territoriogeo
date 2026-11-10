@@ -1,0 +1,9 @@
+/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:39: DeprecationWarning: ssl.TLSVersion.TLSv1 is deprecated
+  SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
+Município 4108700 Grandes Rios
+
+===== Licenças ambientais IAT (SGA/SIA) =====
+  GeoPR: 180 licenças; SGA: 92 com atividade específica
+  180 licenças, 180 no mapa; {'Vence em até 6 meses': 1, 'Vigente': 48, 'Vencida': 131} {'Licença Prévia / de Instalação': 62, 'Dispensa de licenciamento': 47, 'Licença de Operação': 29, 'Autorização Ambiental': 25, 'Licença Simplificada': 12, 'Declaração de Inexigibilidade de Licenciamento Ambiental': 2, 'Renovação de Licença de Instalação': 2, 'Consulta Prévia': 1}
+  pontos mais repetidos: [((-51.5064, -24.1464), 67), ((-51.5059, -24.1455), 23), ((-51.4799, -24.1474), 4)]
+----- Licenças ambientais IAT (SGA/SIA) ok (7s)
