@@ -27,3 +27,9 @@ def varrer(raiz, prof=0):
     if prof<1:
         for f in d.get('folders',[]): varrer(raiz.rstrip('/')+'/'+f,prof+1)
 varrer('https://geopr.iat.pr.gov.br/server/rest/services')
+print('== SGA a partir do Actions')
+try:
+    import urllib.request
+    t=urllib.request.urlopen(urllib.request.Request('https://www.sga.pr.gov.br/sga-iap/consultarProcessoLicenciamento.do?action=consultarProcessoLicenciamento&estadoMunicipioCombo=PR&municipioCombo=6113&page=1&start=0&limit=3',headers={'User-Agent':'Mozilla/5.0'}),timeout=60,context=ctx).read().decode('utf-8','replace')
+    print('SGA OK', t[:300].replace('cpfCnpj','x'))
+except Exception as e: print('SGA ERRO', e)
