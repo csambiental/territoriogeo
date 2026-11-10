@@ -1,10 +1,13 @@
 /home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:39: DeprecationWarning: ssl.TLSVersion.TLSv1 is deprecated
   SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
 Município 4113700 Londrina
+  tentativa 1 <urlopen error timed out>
+  tentativa 2 <urlopen error timed out>
+limite: IBGE indisponível, usando geodata-br (malha IBGE)
 
 ===== Licenças ambientais IAT (SGA/SIA) =====
   GeoPR: 10352 licenças (com histórico); SGA consulta pública: 2093
-  910 licenças só no SGA (sem coordenada no GeoPR)
-  10582 licenças, 1351 vigentes e 3819 vencidas no mapa; pontos genéricos: 7; {'Vence em até 6 meses': 137, 'Vigente': 1954, 'Vencida': 4365, 'Vencida (substituída por licença mais recente)': 4126}
-  grupos: {'Licença de Operação': 3042, 'Dispensa de licenciamento': 2750, 'Licença Prévia / de Instalação': 2347, 'Autorização Ambiental': 1847, 'Licença Simplificada': 571, 'Licença por Adesão e Compromisso': 13, 'Renovação de Licença de Instalação (Ampliação)': 7, 'Autorização Florestal': 3, '': 2}
------ Licenças ambientais IAT (SGA/SIA) ok (33s)
+  911 licenças só no SGA (sem coordenada no GeoPR)
+  10583 licenças, 1351 vigentes e 3818 vencidas no mapa; pontos genéricos: 7; {'Vence em até 6 meses': 137, 'Vigente': 1955, 'Vencida': 4364, 'Vencida (substituída por licença mais recente)': 4127}
+  grupos: {'Licença de Operação': 3043, 'Dispensa de licenciamento': 2750, 'Licença Prévia / de Instalação': 2347, 'Autorização Ambiental': 1847, 'Licença Simplificada': 571, 'Licença por Adesão e Compromisso': 13, 'Renovação de Licença de Instalação (Ampliação)': 7, 'Autorização Florestal': 3, '': 2}
+----- Licenças ambientais IAT (SGA/SIA) ok (37s)
