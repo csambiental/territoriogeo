@@ -453,6 +453,11 @@ def barragens():
             'Altura (m)': nb(p.get('altura_m'), 1), 'Volume (hm³)': nb(p.get('volume_reservatorio_hm3'), 4), **extra}})
     salvar('barragens.geojson', out); log('barragens', len(out), 'SNISB', len(sn), 'IAT', len(iat))
 
+@etapa('Licenças ambientais IAT (SGA/SIA)')
+def licencas():
+    import licencas_iat
+    licencas_iat.gerar(COD, D)
+
 @etapa('Massas d\'água (ANA)')
 def massas():
     fs = iat_camada('https://www.snirh.gov.br/arcgis/rest/services/SPR/Massa_dagua/FeatureServer')
@@ -561,9 +566,12 @@ def config():
     c['resumo'] = [{'valor': f'{len(ativos):,}'.replace(',', '.'), 'rotulo': 'imóveis rurais ativos no CAR'},
                    {'valor': f'{area / 1000:,.1f} mil'.replace('.', ',') if area >= 1000 else f'{area:,.0f}'.replace(',', '.'), 'rotulo': 'hectares cadastrados'},
                    {'valor': f'{100 * conf / max(1, len(ativos)):.0f}%', 'rotulo': 'analisados e em conformidade'}]
-    c['programa'] = {'titulo': 'Sobre esta análise', 'texto': f'Imóveis rurais do CAR de {NOME} cruzados com SIGEF/INCRA, embargos do IBAMA, alertas de desmatamento, uso do solo (MapBiomas), outorgas do IAT, barragens do SNISB/IAT, açudes e represas (ANA), microbacias e relevo. Clique num imóvel e use o Raio-X para gerar o relatório.', 'etapas': []}
+    c['programa'] = {'titulo': 'Sobre esta análise', 'texto': f'Imóveis rurais do CAR de {NOME} cruzados com SIGEF/INCRA, embargos do IBAMA, alertas de desmatamento, uso do solo (MapBiomas), outorgas e licenças ambientais do IAT, barragens do SNISB/IAT, açudes e represas (ANA), microbacias e relevo. Clique num imóvel e use o Raio-X para gerar o relatório.', 'etapas': []}
     c['termos']['texto'] = c['termos']['texto'].replace('do município de Londrina', f'do município de {NOME}')
-    c.pop('licencas', None)
+    if os.path.exists(P0 := f'{D}/licencas.json'):
+        c['licencas'].update({'arquivo': P0, 'titulo': f'Licenças ambientais em {NOME}',
+            'subtitulo': 'Licenças, dispensas e autorizações emitidas pelo IAT (SGA e SIA), com a localização cadastrada no licenciamento. Titular conforme consta na consulta pública do SGA.'})
+    else: c.pop('licencas', None)
     P = lambda a: f'{D}/{a}'
     for cam in c['camadas']:
         if cam['id'] == 'municipio': cam['arquivo'] = P('municipio.geojson')
@@ -582,13 +590,15 @@ def config():
         elif i == 'barragens': o['arquivo'] = P('barragens.geojson'); o['nome'] = f"Barragens cadastradas – SNISB/IAT ({cnt('barragens.geojson')})"
         elif i == 'massas-dagua': o['arquivo'] = P('massas_dagua.geojson'); o['nome'] = f"Açudes, represas e lagos – ANA ({cnt('massas_dagua.geojson')})"
         elif i == 'microbacias': o['arquivo'] = P('microbacias.geojson')
+        elif i == 'licencas' and os.path.exists(P('licencas.geojson')):
+            o.update({'arquivo': P('licencas.geojson'), 'nome': f"Licenças ambientais IAT ({cnt('licencas.geojson')})"})
         elif i == 'declividade': o['arquivo'] = P('declividade.json')
         elif i == 'curvas': o['tiles'] = P('curvas/{z}/{x}/{y}.pbf')
         else: continue
         novo.append(o)
     c['camadas_opcionais'] = novo
     c['raiox'] = {'car': P('car.geojson'), 'sigef': P('sigef.geojson'), 'embargos': P('embargos.geojson'), 'alertas': P('alertas.geojson'),
-                  'outorgas': [P('outorgas_rural.geojson'), P('outorgas_urbana.geojson')], 'licencas': None, 'barragens': P('barragens.geojson'), 'massas': P('massas_dagua.geojson'),
+                  'outorgas': [P('outorgas_rural.geojson'), P('outorgas_urbana.geojson')], 'licencas': P('licencas.geojson') if os.path.exists(P('licencas.geojson')) else None, 'barragens': P('barragens.geojson'), 'massas': P('massas_dagua.geojson'),
                   'microbacias': P('microbacias.geojson'), 'declividade': P('declividade.json'), 'municipio': f'{NOME}/PR'}
     try:  # % da área georreferenciada (SIGEF) e situação do CAR no painel
         sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); import estat_geo
@@ -602,5 +612,5 @@ def config():
     json.dump(sorted(lista, key=lambda m: m['nome']), open(L, 'w'), ensure_ascii=False, indent=1)
     log('config ok', NOME, len(ativos), 'imóveis')
 
-ETAPAS = os.environ.get('ETAPAS', 'car,sigef,ibama,microbacias,mb_cobertura,mb_alertas,outorgas,barragens,massas,relevo,pendencias,config').split(',')
+ETAPAS = os.environ.get('ETAPAS', 'car,sigef,ibama,microbacias,mb_cobertura,mb_alertas,outorgas,licencas,barragens,massas,relevo,pendencias,config').split(',')
 for e in ETAPAS: globals()[e.strip()]()

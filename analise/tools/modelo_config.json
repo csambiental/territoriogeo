@@ -365,7 +365,7 @@
   {
    "id": "licencas",
    "secao": "Licenciamento",
-   "nome": "Licenças ambientais (IAT) localizadas",
+   "nome": "Licenças ambientais IAT",
    "arquivo": "data/iat/licencas_localizadas.geojson",
    "geometria": "ponto",
    "icone": "dot",
@@ -384,13 +384,16 @@
    "clicavel": true,
    "prioridade": true,
    "campos": [
+    "Modalidade",
+    "Situação",
     "Atividade",
     "Atividade específica",
-    "Modalidade",
+    "Grupo de atividade",
     "Nº do documento",
     "Emissão",
     "Validade",
     "Protocolo",
+    "Sistema",
     "Localização"
    ],
    "legenda_itens": [
@@ -419,7 +422,7 @@
      "cor": "#c2185b"
     }
    ],
-   "fonte": "IAT-PR – consulta pública de processos de licenciamento; localização pela outorga SIGARH"
+   "fonte": "IAT-PR – licenciamento ambiental (SGA e SIA), camada pública do GeoPR e consulta pública do SGA"
   },
   {
    "secao": "Outorgas de água (SIGARH)",

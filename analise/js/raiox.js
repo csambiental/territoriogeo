@@ -138,7 +138,7 @@ function rxNecessidades(p, r, area, uso) {
         'Conferir cadastro no SNISB/IAT, outorga do barramento e obrigações de segurança de barragem (Lei 12.334/2010)');
     r.massas.filter(x => /artificial/.test(x.f.properties.grupo) && !x.barr).slice(0, 8).forEach(x => add(2, 'Açude / represa', `Espelho d'água artificial de ${x.f.properties['Área (ha)']} ha sem barragem localizada no SNISB/IAT`,
         'Verificar a regularização do barramento (outorga ou dispensa no IAT/SIGARH e cadastro no SNISB) e a APP do entorno (art. 4º, III, da Lei 12.651/2012; dispensada abaixo de 1 ha, § 4º)'));
-    (r.lic?.dentro || []).forEach(x => { const v = rxData(x.f.properties.Validade); if (v && v < em12m) add(v < hoje ? 1 : 2, 'Licença ambiental', `${x.f.properties.Modalidade || 'Licença'} – validade ${x.f.properties.Validade}`, 'Renovação da licença ambiental no IAT (SGA)'); });
+    (r.lic?.dentro || []).forEach(x => { const v = rxData(x.f.properties.Validade); if (v && v < em12m) add(v < hoje ? 1 : 2, 'Licença ambiental', `${x.f.properties.Modalidade || 'Licença'} nº ${x.f.properties['Nº do documento'] || 's/ nº'} (${x.f.properties.Atividade || ''}) – ${rxData(x.f.properties.Validade) < hoje ? 'vencida em' : 'vence em'} ${x.f.properties.Validade}`, 'Renovação da licença ambiental no IAT (SGA)'); });
     add(3, 'Vistoria', 'Análise feita só com bases públicas', 'Vistoria de campo e conferência documental (matrícula, CCIR, ITR, CAR) para confirmar os itens acima');
     return N.sort((a, b) => a.prior - b.prior);
 }
@@ -240,8 +240,13 @@ async function analisarImovel(nome) {
                     return dias < 0 ? `<b style="color:#c62828">${esc(v)}<br>vencida</b>` : dias <= 180 ? `<b style="color:#e65100">${esc(v)}<br>vence em ${Math.ceil(dias)} dias</b>` : esc(v); };
                 return tab(['Nº', 'Titular (SIGARH)', 'Tipo', 'Nº da outorga / declaração', 'Vencimento', 'Posição', 'Coordenadas (lat, long – SIRGAS 2000)'], linhas.map((l, i) => { const q = lista[i].f.properties;
                     return [l[0], l[1], l[2], `<span class="mono">${esc(q['Portaria / declaração'] || '–')}</span>${q.Documento ? `<br><span class="hint">${esc(q.Documento)}${q['Situação'] ? ' · ' + esc(q['Situação']) : ''}</span>` : ''}`, venc(q), l[3], l[4]]; })); })()}
-            ${C.licencas === null ? '' : `<h3>Licenças ambientais (IAT) no imóvel ou a até 500 m</h3>`}
-            ${C.licencas === null ? '' : tab(['Nº', 'Empreendimento (SGA)', 'Atividade', 'Posição', 'Coordenadas (lat, long)'], pts(r.lic, 'Atividade', 'lic'))}
+            ${C.licencas === null ? '' : `<h3>Licenças ambientais (IAT – SGA/SIA) no imóvel ou a até 500 m</h3>`}
+            ${C.licencas === null ? '' : (() => { if (!r.lic) return '<p class="hint">Camada de licenças não disponível neste município.</p>'; const lista = [...r.lic.dentro, ...r.lic.perto].slice(0, 12), linhas = pts(r.lic, 'Atividade', 'lic'), hoje = new Date();
+                const venc = q => { const v = q.Validade || ''; const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(v); if (!v) return '–'; if (!m) return esc(v); const d = new Date(+m[3], m[2] - 1, +m[1]), dias = (d - hoje) / 864e5;
+                    return dias < 0 ? `<b style="color:#c62828">${esc(v)}<br>vencida</b>` : dias <= 180 ? `<b style="color:#e65100">${esc(v)}<br>vence em ${Math.ceil(dias)} dias</b>` : esc(v); };
+                return tab(['Nº', 'Titular (SGA)', 'Atividade', 'Modalidade e nº do documento', 'Validade', 'Posição', 'Coordenadas (lat, long)'], linhas.map((l, i) => { const q = lista[i].f.properties;
+                    return [l[0], l[1], l[2] + (q['Atividade específica'] && q['Atividade específica'] !== q.Atividade ? `<br><span class="hint">${esc(q['Atividade específica'])}</span>` : ''),
+                        `${esc(q.Modalidade || '')}<br><span class="mono">nº ${esc(q['Nº do documento'] || '–')}</span>${q.link ? `<br><a href="${esc(q.link)}" target="_blank" rel="noopener">licença no SGA (PDF) ↗</a>` : ''}`, venc(q), l[3], l[4]]; })); })()}
             <h3>Barragens cadastradas (SNISB/ANA e IAT) no imóvel ou a até 500 m</h3>
             ${(() => { const lista = [...r.barr.dentro, ...r.barr.perto].slice(0, 12); const linhas = pts(r.barr, 'Fonte', 'barr');
                 return tab(['Nº', 'Barragem', 'Fonte', 'Risco / DPA', 'Uso · altura · volume', 'Posição', 'Coordenadas (lat, long)'], linhas.map((l, i) => { const q = lista[i].f.properties;
