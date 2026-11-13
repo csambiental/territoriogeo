@@ -1,5 +1,6 @@
 name: Relatório Raio-X de exemplo (fictício)
 on: { workflow_dispatch: {} }
+permissions: { contents: write }
 jobs:
   gerar:
     runs-on: ubuntu-24.04
@@ -10,3 +11,9 @@ jobs:
       - run: python3 tools/teste_relatorio.py https://csambiental.github.io/territoriogeo /tmp/Raio-X_exemplo_com_ITR.pdf
       - uses: actions/upload-artifact@v4
         with: { name: relatorio-exemplo, path: /tmp/Raio-X_exemplo_com_ITR.* }
+      - name: Guardar no ramo exemplo-relatorio
+        run: |
+          mkdir /tmp/ex && cp /tmp/Raio-X_exemplo_com_ITR.* /tmp/ex/ && cd /tmp/ex
+          git init -q -b exemplo-relatorio && git add -A
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -q -m "Relatório de exemplo"
+          git push -f -q "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" exemplo-relatorio
