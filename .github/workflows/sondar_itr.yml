@@ -6,25 +6,8 @@ jobs:
     steps:
       - run: |
           set +e
-          pip install -q pdfplumber >/dev/null 2>&1
-          curl -sL -m 120 -A "Mozilla/5.0" -o vtn.pdf https://www.gov.br/receitafederal/pt-br/centrais-de-conteudo/publicacoes/documentos-tecnicos/vtn/tabela-vtn-2026-para-publicacao.pdf; ls -la vtn.pdf; file vtn.pdf
-          python3 - <<'PY'
-          import pdfplumber
-          with pdfplumber.open('vtn.pdf') as pdf:
-              print('paginas', len(pdf.pages))
-              print(pdf.pages[0].extract_text()[:2500])
-              for i, p in enumerate(pdf.pages):
-                  t = p.extract_text() or ''
-                  if 'Grandes Rios' in t or 'GRANDES RIOS' in t:
-                      print('=== pagina', i); print('\n'.join(l for l in t.split('\n') if 'PR' in l)[:2500]); break
-          PY
-          curl -sL -m 120 -A "Mozilla/5.0" -o in256.html https://www.normasbrasil.com.br/norma/instrucao-normativa-256-2002_74738.html; ls -la in256.html
-          python3 - <<'PY'
-          import re, html
-          t = open('in256.html', encoding='utf-8', errors='ignore').read()
-          t = html.unescape(re.sub(r'<[^>]+>', '\n', t)); t = re.sub(r'\n\s*\n+', '\n', t)
-          i = t.find('§ 3º', t.find('Art. 24')); print(t[i:i+700])
-          for k in ['PARANÁ', 'Paraná', 'PR\n']:
-              j = t.find(k, t.find('ANEXO I')); print('==', k, j)
-          j = t.find('Grandes Rios'); print(t[j-3000:j+300] if j > 0 else 'sem Grandes Rios')
-          PY
+          U=https://www.gov.br/receitafederal/pt-br/centrais-de-conteudo/publicacoes/documentos-tecnicos/vtn/tabela-vtn-2026-para-publicacao.pdf
+          curl -sL -m 120 -A "Mozilla/5.0" $U | head -c 300; echo
+          curl -sL -m 120 -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36" -H "Accept: application/pdf,*/*" -H "Accept-Language: pt-BR,pt;q=0.9" -o v.pdf $U; ls -la v.pdf; head -c 200 v.pdf; echo
+          curl -sL -m 120 -A "Mozilla/5.0" -o v2.pdf "$U/@@download/file"; ls -la v2.pdf; head -c 100 v2.pdf; echo
+          curl -sI -m 60 $U | head -20
