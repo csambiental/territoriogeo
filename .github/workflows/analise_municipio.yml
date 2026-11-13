@@ -7,14 +7,14 @@ on:
 permissions: { contents: write }
 jobs:
   processar:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 300
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: '3.11' }
       - run: |
-          sudo apt-get update -qq && sudo apt-get install -y -qq gdal-bin libsqlite3-dev zlib1g-dev
+          (sudo apt-get update -qq || sudo apt-get update -qq || true) && sudo apt-get install -y -qq gdal-bin libsqlite3-dev zlib1g-dev
           git clone -q --depth 1 https://github.com/felt/tippecanoe.git /tmp/tc && make -C /tmp/tc -j4 -s && sudo make -C /tmp/tc install -s
           pip install -q "numpy<2" rasterio shapely pyproj pillow scipy pystac-client planetary-computer
       - working-directory: analise

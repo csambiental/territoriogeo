@@ -473,6 +473,18 @@ def massas():
             'Base': (p.get('deversao') or '').strip() + (f" – {p.get('desatelite').strip()}" if (p.get('desatelite') or '').strip() else '')}})
     salvar('massas_dagua.geojson', out); log('massas d\'água', len(out))
 
+# ---------- 6b) hidrografia FBDS (base usada no CAR: rios até 10 m e nascentes) – estimativa de APP ----------
+@etapa('Hidrografia FBDS (IAT)')
+def hidrografia():
+    for camada, arq in (('fbds_rio_ate10m_larg', 'rios_fbds.geojson'), ('fbds_nascentes', 'nascentes_fbds.geojson')):
+        fs = iat_camada(f'https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES/{camada}/FeatureServer')
+        out = []
+        for f in fs:
+            g = shape(f['geometry'])
+            if g.geom_type.startswith('Multi') or g.geom_type == 'LineString': g = g.simplify(0.00003)
+            out.append({'type': 'Feature', 'geometry': arred(mapping(g), 6), 'properties': {}})
+        salvar(arq, out); log(camada, len(out))
+
 # ---------- 7) relevo: declividade e curvas de nível (Copernicus DEM) ----------
 @etapa('Relevo')
 def relevo():
@@ -617,6 +629,8 @@ def config():
     c['raiox'] = {'car': P('car.geojson'), 'sigef': P('sigef.geojson'), 'embargos': P('embargos.geojson'), 'alertas': P('alertas.geojson'),
                   'outorgas': [P('outorgas_rural.geojson'), P('outorgas_urbana.geojson')], 'licencas': P('licencas.geojson') if os.path.exists(P('licencas.geojson')) else None, 'barragens': P('barragens.geojson'), 'massas': P('massas_dagua.geojson'),
                   'microbacias': P('microbacias.geojson'), 'declividade': P('declividade.json'), 'municipio': f'{NOME}/PR'}
+    for k, a in (('rios', 'rios_fbds.geojson'), ('nascentes', 'nascentes_fbds.geojson')):
+        if os.path.exists(P(a)): c['raiox'][k] = P(a)
     if os.path.exists(P('demo.geojson')):  # imóvel fictício de demonstração
         c['raiox']['demo'] = P('demo.geojson')
         for cam in c['camadas']:
@@ -633,5 +647,5 @@ def config():
     json.dump(sorted(lista, key=lambda m: m['nome']), open(L, 'w'), ensure_ascii=False, indent=1)
     log('config ok', NOME, len(ativos), 'imóveis')
 
-ETAPAS = os.environ.get('ETAPAS', 'car,sigef,ibama,microbacias,mb_cobertura,mb_alertas,outorgas,licencas,barragens,massas,relevo,pendencias,config').split(',')
+ETAPAS = os.environ.get('ETAPAS', 'car,sigef,ibama,microbacias,mb_cobertura,mb_alertas,outorgas,licencas,barragens,massas,hidrografia,relevo,pendencias,config').split(',')
 for e in ETAPAS: globals()[e.strip()]()
