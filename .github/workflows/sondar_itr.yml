@@ -6,8 +6,20 @@ jobs:
     steps:
       - run: |
           set +e
-          U=https://www.gov.br/receitafederal/pt-br/centrais-de-conteudo/publicacoes/documentos-tecnicos/vtn/tabela-vtn-2026-para-publicacao.pdf
-          curl -sL -m 120 -A "Mozilla/5.0" $U | head -c 300; echo
-          curl -sL -m 120 -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36" -H "Accept: application/pdf,*/*" -H "Accept-Language: pt-BR,pt;q=0.9" -o v.pdf $U; ls -la v.pdf; head -c 200 v.pdf; echo
-          curl -sL -m 120 -A "Mozilla/5.0" -o v2.pdf "$U/@@download/file"; ls -la v2.pdf; head -c 100 v2.pdf; echo
-          curl -sI -m 60 $U | head -20
+          for u in "https://www.legisweb.com.br/legislacao/?id=75346" "https://www.normasbrasil.com.br/norma/instrucao-normativa-256-2002_74738.html" "http://normas.receita.fazenda.gov.br/sijut2consulta/link.action?idAto=15134&visao=anotado"; do
+            curl -sL -m 120 -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/130.0" -o p.html "$u"; echo "== $u $(wc -c < p.html)"
+            python3 - <<'PY'
+          import re, html, collections
+          t = open('p.html', encoding='utf-8', errors='ignore').read()
+          t = html.unescape(re.sub(r'<[^>]+>', ' | ', t)); t = re.sub(r'\s+', ' ', t)
+          i = t.upper().find('PARANÁ', t.upper().find('ANEXO I'))
+          print('pos PR', i, 'tam', len(t))
+          for nome in ['Londrina', 'Grandes Rios', 'Guarapuava', 'Cascavel', 'Maringá', 'Ponta Grossa']:
+              j = t.find(nome, max(i, 0)); print(nome, t[j:j+80] if j >= 0 else '-')
+          if i > 0:
+              seg = t[i:i+60000]; fim = re.search(r'PERNAMBUCO|PIAU', seg); seg = seg[:fim.start()] if fim else seg
+              vals = re.findall(r'\|\s*([A-ZÀ-Úa-zà-ú\' \-]+?)\s*\|\s*(?:Demais|Polígono[^|]*)?\s*\|?\s*(\d,\d\d)', seg)
+              print('linhas', len(vals), collections.Counter(v for _, v in vals).most_common(8))
+              print(seg[:600])
+          PY
+          done
