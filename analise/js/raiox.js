@@ -6,7 +6,8 @@ const rxJSON = (arq) => (RX.cache[arq] = RX.cache[arq] || fetch(arq, { cache: 'n
 const rxHa = (g) => turf.area(g) / 1e4;
 const rxNum = (t) => parseFloat(String(t ?? '').replace(/\./g, '').replace(',', '.')) || 0;
 function rxInter(a, b) {
-    try { return turf.intersect(a, b); } catch (e) {
+    try { const r = turf.intersect(a, b); if (r !== undefined) return r; } catch (e) { }
+    try { return turf.intersect(turf.featureCollection([a, b])); } catch (e) {
         try { return turf.intersect(turf.buffer(a, 0), turf.buffer(b, 0)); } catch (e2) { return null; }
     }
 }
@@ -281,6 +282,7 @@ async function analisarImovel(nome) {
         RX.itr = RX.itr || {};
         RX.ultimo = { nome, html, codigo, quando, alvo, viz: r.car, sigef: r.sigef, pontos: pontosFoto, p, r, area, uso, flags, N, pend, B, C, itr: (RX.itr || {})[nome] || null };
         rxMostrarItr();
+        itrPrevia(RX.ultimo).then(pv => { if (RX.ultimo && RX.ultimo.nome === nome) { RX.ultimo.previa = pv; rxMostrarItr(); } }).catch(e => console.error('prévia ITR', e));
         document.getElementById('raioxPdf').disabled = false;
     } catch (e) {
         console.error(e); corpo.innerHTML = '<p>Não foi possível concluir a análise. Tente novamente.</p>';
@@ -397,6 +399,7 @@ async function rxFotoPontos(alvo, pontos) {
 }
 async function gerarRelatorioRaiox() {
     const u = RX.ultimo; if (!u) return;
+    if (!u.previa) { try { u.previa = await itrPrevia(u); } catch (e) { console.error(e); } }
     // monta tudo nesta aba (o mapa precisa estar visível para desenhar) e só no fim abre o relatório
     document.getElementById('raioxDialog').close();
     const aviso = document.createElement('div'); aviso.className = 'rx-progresso';
@@ -490,10 +493,11 @@ function rxChecklist(u) {
     add('Licenças ambientais no imóvel (IAT – SGA/SIA)', u.C.licencas === null || !r.lic ? 'na' : !lic.length ? 'na' : lv.length ? 'no' : lb.length ? 'at' : 'ok',
         lic.length ? lic.slice(0, 5).map(x => `${x.f.properties.Modalidade || 'Licença'} nº ${x.f.properties['Nº do documento'] || 's/ nº'} – ${x.f.properties.Atividade || ''}, validade ${x.f.properties.Validade || '–'}`).join('; ') : 'Nenhuma licença localizada dentro do imóvel');
     if (u.itr) G.push(itrChecklist(u));
+    const gp = itrPrevChecklist(u); if (gp) G.push(gp);
     return G;
 }
 function rxRelatorioHtml(u, F) {
-    const { p, r, area, uso } = u, G = rxChecklist(u), N = u.itr ? [...u.N.filter(n => n.tema !== 'Vistoria'), ...itrPendencias(u), ...u.N.filter(n => n.tema === 'Vistoria')].sort((a, b) => a.prior - b.prior) : u.N;
+    const { p, r, area, uso } = u, G = rxChecklist(u), N = [...u.N.filter(n => n.tema !== 'Vistoria'), ...(u.itr ? itrPendencias(u) : []), ...itrPrevPendencias(u), ...u.N.filter(n => n.tema === 'Vistoria')].sort((a, b) => a.prior - b.prior);
     const dataHora = u.quando.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
     const mun = (u.C.municipio || ((dadosGerais.cliente || {}).nome || '').replace(/^.*– */, '')) || '–';
     const cod = (String(u.C.car || '').match(/data\/m\/(\d{7})\//) || [])[1];
@@ -617,7 +621,8 @@ ${sec('Cobertura do solo e relevo', 'Declarado no CAR × medido por satélite', 
   <div class="duas"><div><h4>Uso e cobertura do solo (${u.B.usoFonte})</h4>${barras(uso, corUso)}</div><div><h4>Declividade (Copernicus DEM, classes Embrapa)</h4>${barras(r.decl.filter(d => d.pct >= .05).map(d => [d.nome, d.pct]), corDecl)}</div></div>
   ${(u.pend || []).length ? `<h4>Observações do cadastro</h4>${u.pend.map(t => `<div class="obs">${esc(t)}</div>`).join('')}` : ''}`)}
 
-${u.itr ? sec(`Declaração do ITR${u.itr.exercicio ? ` – exercício ${u.itr.exercicio}` : ''}`, 'Dados quantitativos da DIAC/DIAT (Receita Federal) cruzados com o CAR e o satélite', itrBlocoHtml(u, true)) : ''}
+${u.itr ? sec(`Declaração do ITR${u.itr.exercicio ? ` – exercício ${u.itr.exercicio}` : ''}`, 'Dados quantitativos da DIAC/DIAT (Receita Federal) cruzados com o CAR e o satélite', itrBlocoHtml(u, true) + (u.previa ? `<h4>Declarado × estimado por satélite</h4>${itrComparacaoHtml(u)}` : '')) : ''}
+${u.previa ? sec(u.itr ? 'Prévia do ITR – base da comparação' : 'Prévia do ITR (estimativa por satélite)', u.itr ? 'Como cada valor estimado foi calculado' : 'O que o imóvel deveria declarar, estimado sem a declaração oficial', itrPreviaHtml(u)) : ''}
 
 ${sec('Situação fundiária', 'Sobreposições com o CAR e certificação no SIGEF/INCRA', `
   ${F.foto2 ? `<img class="mapa" src="${F.foto2}" alt="Sobreposições">${legSob}` : ''}${tabela('Sobreposição com outros imóveis do CAR', u.B.car)}
@@ -670,11 +675,13 @@ ${sec('Metodologia e fontes', 'Como esta análise foi feita', `
 function rxMostrarItr() {
     const u = RX.ultimo, corpo = document.getElementById('raioxCorpo'); if (!u || !corpo) return;
     corpo.querySelector('.itr-box')?.remove();
-    if (!u.itr) return;
+    if (!u.itr && !u.previa) return;
     const box = document.createElement('div'); box.className = 'itr-box';
-    const pend = itrPendencias(u);
-    box.innerHTML = `<h3>Declaração do ITR${u.itr.exercicio ? ` – exercício ${u.itr.exercicio}` : ''}</h3>${itrBlocoHtml(u, false)}
-        ${pend.length ? `<h4>Pendências do ITR</h4><ul>${pend.map(n => `<li>${esc(n.achado)} → ${esc(n.adequacao)}</li>`).join('')}</ul>` : ''}`;
+    const pend = [...(u.itr ? itrPendencias(u) : []), ...itrPrevPendencias(u)];
+    box.innerHTML = u.itr ? `<h3>Declaração do ITR${u.itr.exercicio ? ` – exercício ${u.itr.exercicio}` : ''}</h3>${itrBlocoHtml(u, false)}
+        ${u.previa ? `<h4>Declarado × estimado por satélite</h4>${itrComparacaoHtml(u)}<details><summary>Ver a prévia completa (como foi estimado)</summary>${itrPreviaHtml(u)}</details>` : '<p class="hint">Calculando a prévia por satélite para comparar…</p>'}
+        ${pend.length ? `<h4>Pendências do ITR</h4><ul>${pend.map(n => `<li>${esc(n.achado)} → ${esc(n.adequacao)}</li>`).join('')}</ul>` : ''}`
+      : `<h3>Prévia do ITR (estimativa por satélite)</h3><p class="hint">Sem a declaração: o que o imóvel deveria declarar. Anexe a DITR (botão abaixo) para comparar declarado × estimado.</p>${itrPreviaHtml(u)}`;
     const ancora = corpo.querySelector('.rx-flags'); ancora ? ancora.after(box) : corpo.prepend(box);
 }
 document.addEventListener('DOMContentLoaded', () => {

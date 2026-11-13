@@ -8,12 +8,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: pip install -q playwright && python -m playwright install chromium
-      - run: python3 tools/teste_relatorio.py https://csambiental.github.io/territoriogeo /tmp/Raio-X_exemplo_com_ITR.pdf
+      - run: python3 tools/teste_relatorio.py https://csambiental.github.io/territoriogeo /tmp/ex
       - uses: actions/upload-artifact@v4
-        with: { name: relatorio-exemplo, path: /tmp/Raio-X_exemplo_com_ITR.* }
+        with: { name: relatorio-exemplo, path: /tmp/ex }
       - name: Guardar no ramo exemplo-relatorio
         run: |
-          mkdir /tmp/ex && cp /tmp/Raio-X_exemplo_com_ITR.* /tmp/ex/ && cd /tmp/ex
+          cd /tmp/ex
           git init -q -b exemplo-relatorio && git add -A
           git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -q -m "Relatório de exemplo"
           git push -f -q "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" exemplo-relatorio
