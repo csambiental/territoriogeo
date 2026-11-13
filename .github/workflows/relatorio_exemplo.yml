@@ -1,0 +1,12 @@
+name: Relatório Raio-X de exemplo (fictício)
+on: { workflow_dispatch: {} }
+jobs:
+  gerar:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install -q playwright && python -m playwright install chromium
+      - run: python3 tools/teste_relatorio.py https://csambiental.github.io/territoriogeo /tmp/Raio-X_exemplo_com_ITR.pdf
+      - uses: actions/upload-artifact@v4
+        with: { name: relatorio-exemplo, path: /tmp/Raio-X_exemplo_com_ITR.* }

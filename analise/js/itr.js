@@ -54,7 +54,7 @@ const ITR_CAMPOS = [
     ['alagada', 'alagada'], ['area tribut', 'tributavel'], ['benfeitorias uteis', 'benfeitorias'], ['demais benfeitorias', 'demaisBenfeitorias'],
     ['area aproveit', 'aproveitavel'], ['produtos vegetais', 'produtosVegetais'], ['area em descanso', 'descanso'], ['reflorestamento', 'reflorestamento'],
     ['extrativa', 'extrativa'], ['granjeira', 'granjeira'], ['frustra', 'frustracao'], ['grau de utiliza', 'gu'],
-    ['minera', 'minera'], ['imprest', 'imprest'], ['inexplorada', 'inexplorada'], ['outras areas', 'outras'],
+    ['minera', 'mineracao'], ['imprest', 'imprestavel'], ['inexplorada', 'inexplorada'], ['outras areas', 'outras'],
     ['valor total do im', 'valorTotal'], ['valor das constru', 'valorBenfeitorias'], ['valor das culturas', 'valorCulturas'],
     ['valor da terra nua tribut', 'vtnTributavel'], ['valor da terra nua', 'vtn'], ['aliquota', 'aliquota'], ['imposto calculado', 'impostoCalculado'],
     ['imposto devido', 'impostoDevido'], ['quantidade de quotas', 'quotas'], ['animais de grande porte', 'animaisGrande'], ['medio porte', 'animaisMedio'],
@@ -71,6 +71,7 @@ function itrInterpretar(texto) {
         const m = texto.match(/\b([A-Z]{2})\s*-\s*(\d{7})\s*-\s*([0-9A-Za-z.\s]{30,44})/);
         if (m) { let h = m[3].replace(/[\s.]/g, '').toUpperCase().replace(/O/g, '0').replace(/[IL]/g, '1').replace(/[^0-9A-F]/g, '');
             if (h.length >= 32) d.car = `${m[1]}-${m[2]}-${h.slice(0, 32)}`; }
+        if (!d.car) { const g2 = texto.match(/N\S*mero do CAR\s+([A-Z]{2}-\d{7}-[A-Z0-9-]{6,})/i); if (g2) d.car = g2[1].toUpperCase(); }
     }
     d.ada = g(/Recibo do ADA[^\n]*?(\d{8,})/i);
     d.nomeImovel = g(/Nome do Im\S* Rural:\s*([^\n]+?)\s*(?:\n|$)/i);
