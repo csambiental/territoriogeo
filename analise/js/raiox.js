@@ -278,7 +278,9 @@ async function analisarImovel(nome) {
             <p class="hint">Microbacia: ${esc(r.mbac[0] || '–')} · Dados do mapa atualizados em ${esc(dadosGerais.atualizado_em || '')}.</p>
             <p class="hint rx-aviso">Análise automática feita sobre bases públicas (SICAR, INCRA/SIGEF, IBAMA, MapBiomas, IAT/SIGARH/SGA, ANA/SNISB, Copernicus). As áreas são aproximadas e não substituem vistoria, levantamento topográfico ou consulta oficial aos órgãos.</p>`;
         corpo.innerHTML = html;
-        RX.ultimo = { nome, html, codigo, quando, alvo, viz: r.car, sigef: r.sigef, pontos: pontosFoto, p, r, area, uso, flags, N, pend, B, C };
+        RX.itr = RX.itr || {};
+        RX.ultimo = { nome, html, codigo, quando, alvo, viz: r.car, sigef: r.sigef, pontos: pontosFoto, p, r, area, uso, flags, N, pend, B, C, itr: (RX.itr || {})[nome] || null };
+        rxMostrarItr();
         document.getElementById('raioxPdf').disabled = false;
     } catch (e) {
         console.error(e); corpo.innerHTML = '<p>Não foi possível concluir a análise. Tente novamente.</p>';
@@ -487,10 +489,11 @@ function rxChecklist(u) {
     const lv = lic.filter(x => { const v = dt(x.f.properties.Validade); return v && v < hoje && hoje - v <= 5 * 365 * 864e5; }), lb = lic.filter(x => { const v = dt(x.f.properties.Validade); return v && v >= hoje && v - hoje <= d6; });
     add('Licenças ambientais no imóvel (IAT – SGA/SIA)', u.C.licencas === null || !r.lic ? 'na' : !lic.length ? 'na' : lv.length ? 'no' : lb.length ? 'at' : 'ok',
         lic.length ? lic.slice(0, 5).map(x => `${x.f.properties.Modalidade || 'Licença'} nº ${x.f.properties['Nº do documento'] || 's/ nº'} – ${x.f.properties.Atividade || ''}, validade ${x.f.properties.Validade || '–'}`).join('; ') : 'Nenhuma licença localizada dentro do imóvel');
+    if (u.itr) G.push(itrChecklist(u));
     return G;
 }
 function rxRelatorioHtml(u, F) {
-    const { p, r, area, uso, N } = u, G = rxChecklist(u);
+    const { p, r, area, uso } = u, G = rxChecklist(u), N = u.itr ? [...u.N.filter(n => n.tema !== 'Vistoria'), ...itrPendencias(u), ...u.N.filter(n => n.tema === 'Vistoria')].sort((a, b) => a.prior - b.prior) : u.N;
     const dataHora = u.quando.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
     const mun = (u.C.municipio || ((dadosGerais.cliente || {}).nome || '').replace(/^.*– */, '')) || '–';
     const cod = (String(u.C.car || '').match(/data\/m\/(\d{7})\//) || [])[1];
@@ -576,6 +579,10 @@ function rxRelatorioHtml(u, F) {
  .fonte { display: grid; grid-template-columns: 30% 1fr; gap: 4px 12px; font-size: 9pt; } .fonte b { color: #1f4933; }
  .valida { display: flex; gap: 14px; align-items: center; border: 1px solid #dfe8e2; border-radius: 10px; padding: 10px; margin-top: 12px; } .valida .qr { width: 96px; height: 96px; } .valida .qr svg { width: 100%; height: 100%; }
  .csb { display: flex; gap: 14px; align-items: center; border-top: 3px solid #83bb4e; margin-top: 14px; padding-top: 10px; font-size: 9pt; color: #1f4933; } .csb img { height: 46px; } .csb span { color: #5f6d66; }
+ .itr-cds { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 6px 0 8px; } .itr-cds div { border: 1px solid #dfe8e2; border-radius: 10px; padding: 8px 10px; background: #fafcfb; }
+ .itr-cds span { display: block; font-size: 7.5pt; text-transform: uppercase; letter-spacing: .06em; color: #6b7a72; } .itr-cds b { font-size: 13pt; color: #1f4933; }
+ .itr-duas { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+ .dk.rx-tab th { background: #1d2a24; color: #fff; }
  .noprint { text-align: center; padding: 14px; } .noprint button { padding: 10px 20px; font-size: 14px; background: #1f4933; color: #fff; border: 0; border-radius: 8px; cursor: pointer; }
  @media print { body { background: #fff; } .noprint { display: none; } h4 { break-after: avoid; } img.mapa { break-inside: avoid; max-height: 125mm; object-fit: cover; } }
 </style></head><body>
@@ -610,6 +617,8 @@ ${sec('Cobertura do solo e relevo', 'Declarado no CAR × medido por satélite', 
   <div class="duas"><div><h4>Uso e cobertura do solo (${u.B.usoFonte})</h4>${barras(uso, corUso)}</div><div><h4>Declividade (Copernicus DEM, classes Embrapa)</h4>${barras(r.decl.filter(d => d.pct >= .05).map(d => [d.nome, d.pct]), corDecl)}</div></div>
   ${(u.pend || []).length ? `<h4>Observações do cadastro</h4>${u.pend.map(t => `<div class="obs">${esc(t)}</div>`).join('')}` : ''}`)}
 
+${u.itr ? sec(`Declaração do ITR${u.itr.exercicio ? ` – exercício ${u.itr.exercicio}` : ''}`, 'Dados quantitativos da DIAC/DIAT (Receita Federal) cruzados com o CAR e o satélite', itrBlocoHtml(u, true)) : ''}
+
 ${sec('Situação fundiária', 'Sobreposições com o CAR e certificação no SIGEF/INCRA', `
   ${F.foto2 ? `<img class="mapa" src="${F.foto2}" alt="Sobreposições">${legSob}` : ''}${tabela('Sobreposição com outros imóveis do CAR', u.B.car)}
   ${F.foto3 ? `<img class="mapa" src="${F.foto3}" alt="SIGEF">${legSig}` : ''}${tabela('Parcelas certificadas no SIGEF/INCRA', u.B.sigefCob + u.B.sigef)}
@@ -636,6 +645,7 @@ ${sec('Metodologia e fontes', 'Como esta análise foi feita', `
    <b>MapBiomas Alerta</b><span>Alertas de desmatamento validados, com data de detecção.</span>
    <b>Uso do solo</b><span>${u.B.usoFonte || 'MapBiomas / Esri'} – percentuais por classe dentro do perímetro.</span>
    <b>Copernicus DEM (30 m)</b><span>Declividade em classes da Embrapa.</span>
+   <b>Declaração do ITR</b><span>Quando anexada: DIAC/DIAT da Receita Federal lida no computador do usuário (áreas, VTN, grau de utilização, rebanho). Dados pessoais do contribuinte não são lidos.</span>
    <b>IAT – SIGARH</b><span>Outorgas e declarações de uso da água (tipo, número da portaria e vencimento).</span>
    <b>IAT – SGA/SIA</b><span>Licenças ambientais (modalidade, número, atividade e validade).</span>
    <b>ANA – SNISB e IAT</b><span>Barragens cadastradas (risco, dano potencial, PNSB) e massas d'água (açudes, represas, lagos).</span>
@@ -655,3 +665,32 @@ ${sec('Metodologia e fontes', 'Como esta análise foi feita', `
     };
     setTimeout(() => tentar(0), 2500);
 })();
+
+// ---------- ITR anexado pelo usuário ----------
+function rxMostrarItr() {
+    const u = RX.ultimo, corpo = document.getElementById('raioxCorpo'); if (!u || !corpo) return;
+    corpo.querySelector('.itr-box')?.remove();
+    if (!u.itr) return;
+    const box = document.createElement('div'); box.className = 'itr-box';
+    const pend = itrPendencias(u);
+    box.innerHTML = `<h3>Declaração do ITR${u.itr.exercicio ? ` – exercício ${u.itr.exercicio}` : ''}</h3>${itrBlocoHtml(u, false)}
+        ${pend.length ? `<h4>Pendências do ITR</h4><ul>${pend.map(n => `<li>${esc(n.achado)} → ${esc(n.adequacao)}</li>`).join('')}</ul>` : ''}`;
+    const ancora = corpo.querySelector('.rx-flags'); ancora ? ancora.after(box) : corpo.prepend(box);
+}
+document.addEventListener('DOMContentLoaded', () => {
+    const inp = document.getElementById('raioxItr'); if (!inp) return;
+    inp.addEventListener('change', async () => {
+        const arq = inp.files[0]; inp.value = ''; const u = RX.ultimo; if (!arq || !u) return;
+        const corpo = document.getElementById('raioxCorpo'), st = document.createElement('p'); st.className = 'hint itr-status';
+        corpo.querySelector('.itr-status')?.remove(); corpo.prepend(st);
+        const btn = document.getElementById('raioxPdf'); btn.disabled = true;
+        try {
+            st.textContent = 'Lendo a declaração do ITR neste computador…';
+            const d = await itrLerArquivo(arq, t => st.textContent = t);
+            if (d.lidos < 5) { st.textContent = 'Não consegui ler os quadros da declaração do ITR neste PDF. Use o PDF da DITR (DIAC/DIAT) gerado pela Receita.'; return; }
+            u.itr = d; RX.itr[u.nome] = d; st.remove(); rxMostrarItr();
+            corpo.querySelector('.itr-box')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } catch (e) { console.error(e); st.textContent = 'Não foi possível ler o PDF do ITR.'; }
+        finally { btn.disabled = false; }
+    });
+});
