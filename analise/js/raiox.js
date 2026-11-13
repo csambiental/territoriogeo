@@ -225,59 +225,60 @@ async function analisarImovel(nome) {
         let nPt = 0; const pontosFoto = [];
         const pts = (o, campo, tipo) => [...o.dentro, ...o.perto].slice(0, 12).map(x => { nPt++; pontosFoto.push({ n: nPt, tipo, c: x.f.geometry.coordinates });
             return [`<b>${nPt}</b>`, esc(x.f.properties.nome || ''), esc(x.f.properties[campo] || x.f.properties.grupo || ''), x.km ? `a ${rxF(x.km * 1000, 0)} m` : 'dentro', coord(x.f)]; });
+        const B = {};
+        B.uso = tab(['Classe', '% do imóvel', 'ha (aprox.)'], uso.map(([k, v]) => [esc(k), rxF(v, 1) + '%', rxF(v / 100 * area, 1)]));
+        B.usoFonte = esc(((Object.keys(p).find(k => /^(MapBiomas|Uso do solo) \d{4}/.test(k)) || '').match(/^(MapBiomas \d{4}|Uso do solo \d{4})/) || [''])[0].replace('Uso do solo', 'Esri/Impact Observatory'));
+        B.decl = tab(['Classe de relevo', '% do imóvel', 'ha (aprox.)'], r.decl.filter(d => d.pct >= 0.05).map(d => [d.nome, rxF(d.pct, 1) + '%', rxF(d.pct / 100 * area, 1)]));
+        B.car = tab(['Nº', 'CAR', 'Situação', 'Sobreposição (ha)', '% do imóvel'], r.car.slice(0, 15).map((x, i) => [`<b>${i + 1}</b>`, `<span class="mono">${esc(x.f.properties.nome)}</span>`, esc(x.f.properties.situacao || ''), rxF(x.ha), (x.ha / area * 100 < 0.1 ? '< 0,1%' : rxF(x.ha / area * 100, 1) + '%')]));
+        B.sigefCob = (() => { const cob = {}; r.sigef.forEach(x => { const k = rxSigefRot(x.f.properties); cob[k] = (cob[k] || [rxSigefCor(x.f.properties), 0]); cob[k][1] += x.ha; });
+                const tot = Math.min(area, r.sigef.reduce((a, x) => a + x.ha, 0));
+                return `<div class="rx-cob">${Object.entries(cob).map(([k, [c, ha]]) => `<span><i style="background:${c}"></i>${esc(k)}: <b>${rxF(Math.min(ha, area) / area * 100, 1)}%</b> (${rxF(ha, 1)} ha)</span>`).join('')}
+                  <span><i style="background:#fff;border:1px solid #999"></i>Sem SIGEF: <b>${rxF(Math.max(0, area - tot) / area * 100, 1)}%</b></span></div>`; })();
+        B.sigef = tab(['Nº', 'Parcela', 'Matrícula', 'Situação no registro', 'Sobre o imóvel (ha)'], r.sigef.slice(0, 15).map((x, i) => [`<b>${i + 1}</b>`, esc(x.f.properties.nome || ''), esc(x.f.properties['Matrícula / registro'] || ''), `<span class="rx-sw" style="background:${rxSigefCor(x.f.properties)}"></span>${esc(rxSigefRot(x.f.properties))}`, rxF(x.ha)]));
+        B.emb = tab(['Embargo', 'Situação', 'Data', 'Dentro do imóvel (ha)'], r.emb.map(x => [esc(x.f.properties.nome), esc(x.f.properties['Situação'] || ''), esc(x.f.properties['Data do embargo'] || ''), rxF(x.ha, 3)]));
+        B.alertas = tab(['Alerta', 'Detectado em', 'Vetor', 'Dentro do imóvel (ha)'], r.alertas.map(x => [esc(x.f.properties.nome), esc(x.f.properties['Detectado em'] || ''), esc(x.f.properties['Vetor'] || ''), rxF(x.ha, 2)]));
+        B.outorgas = (() => { const lista = [...r.agua.dentro, ...r.agua.perto].slice(0, 12), linhas = pts(r.agua, 'Interferência', 'agua'), hoje = new Date();
+                const venc = q => { const v = q.Vencimento || q['Validade'] || ''; const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(v); if (!v) return '–';
+                    if (!m) return esc(v); const d = new Date(+m[3], m[2] - 1, +m[1]), dias = (d - hoje) / 864e5;
+                    return dias < 0 ? `<b style="color:#c62828">${esc(v)}<br>vencida</b>` : dias <= 180 ? `<b style="color:#e65100">${esc(v)}<br>vence em ${Math.ceil(dias)} dias</b>` : esc(v); };
+                return tab(['Nº', 'Titular (SIGARH)', 'Tipo', 'Nº da outorga / declaração', 'Vencimento', 'Posição', 'Coordenadas (lat, long – SIRGAS 2000)'], linhas.map((l, i) => { const q = lista[i].f.properties;
+                    return [l[0], l[1], l[2], `<span class="mono">${esc(q['Portaria / declaração'] || '–')}</span>${q.Documento ? `<br><span class="hint">${esc(q.Documento)}${q['Situação'] ? ' · ' + esc(q['Situação']) : ''}</span>` : ''}`, venc(q), l[3], l[4]]; })); })();
+        B.licencas = C.licencas === null ? '' : (() => { if (!r.lic) return '<p class="hint">Camada de licenças não disponível neste município.</p>'; const lista = [...r.lic.dentro, ...r.lic.perto].slice(0, 12), linhas = pts(r.lic, 'Atividade', 'lic'), hoje = new Date();
+                const venc = q => { const v = q.Validade || ''; const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(v); if (!v) return '–'; if (!m) return esc(v); const d = new Date(+m[3], m[2] - 1, +m[1]), dias = (d - hoje) / 864e5;
+                    return dias < 0 ? `<b style="color:#c62828">${esc(v)}<br>vencida</b>` : dias <= 180 ? `<b style="color:#e65100">${esc(v)}<br>vence em ${Math.ceil(dias)} dias</b>` : esc(v); };
+                return tab(['Nº', 'Titular (SGA)', 'Atividade', 'Modalidade e nº do documento', 'Validade', 'Posição', 'Coordenadas (lat, long)'], linhas.map((l, i) => { const q = lista[i].f.properties;
+                    return [l[0], l[1], l[2] + (q['Atividade específica'] && q['Atividade específica'] !== q.Atividade ? `<br><span class="hint">${esc(q['Atividade específica'])}</span>` : ''),
+                        `${esc(q.Modalidade || '')}<br><span class="mono">nº ${esc(q['Nº do documento'] || '–')}</span>${q.link ? `<br><a href="${esc(q.link)}" target="_blank" rel="noopener">licença no SGA (PDF) ↗</a>` : ''}`, venc(q), l[3], l[4]]; })); })();
+        B.barragens = (() => { const lista = [...r.barr.dentro, ...r.barr.perto].slice(0, 12); const linhas = pts(r.barr, 'Fonte', 'barr');
+                return tab(['Nº', 'Barragem', 'Fonte', 'Risco / DPA', 'Uso · altura · volume', 'Posição', 'Coordenadas (lat, long)'], linhas.map((l, i) => { const q = lista[i].f.properties;
+                    return [l[0], l[1] + (q.Empreendedor ? `<br><span class="hint">${esc(q.Empreendedor)}</span>` : ''), l[2], `${esc(q.risco || '–')} / ${esc(q.dpa || '–')}`,
+                        esc([q['Uso principal'] || q['Finalidade (IAT)'], q['Altura (m)'] && q['Altura (m)'] + ' m', q['Volume (hm³)'] && q['Volume (hm³)'] + ' hm³'].filter(Boolean).join(' · ') || '–'), l[3], l[4]]; })); })();
+        B.massas = tab(['Nº', 'Tipo', 'Espelho d\'água total (ha)', 'Dentro do imóvel (ha)', 'Barragem cadastrada', 'Centro (lat, long)'], r.massas.slice(0, 15).map((x, i) => { const q = x.f.properties, c = turf.pointOnFeature(x.f).geometry.coordinates;
+                return [`<b>${i + 1}</b>`, esc(q.grupo), esc(q['Área (ha)']), rxF(Math.min(x.ha, rxNum(q['Área (ha)']) || x.ha), 2), x.barr ? `Sim – ${esc(x.barr.properties.nome)}` : (/artificial/.test(q.grupo) ? '<b>Não localizada</b>' : '–'),
+                    `<span class="mono">${c[1].toFixed(5)}, ${c[0].toFixed(5)}</span>`]; }));
+        const N = rxNecessidades(p, r, area, uso);
+        B.resumo = rxResumoHtml(N);
         const html = `
             <div class="rx-cab"><div><div class="mono rx-cod">${esc(nome)}</div>
               <div class="hint">${esc(p['Status do CAR'] || '')} · ${esc(p.situacao || '')} · ${esc(p.Tipo || '')}</div></div>
               <div class="rx-area"><b>${rxF(area)}</b> ha<br><span class="hint">${esc(p['Módulos fiscais'] || '–')} módulos fiscais</span></div></div>
             ${p.ficticio ? `<p class="rx-ficticio">⚠️ IMÓVEL FICTÍCIO – exemplo criado só para demonstração. Os dados deste relatório não correspondem a nenhum imóvel ou pessoa real.</p>` : ''}<ul class="rx-flags">${flags.map(([c, t]) => `<li class="rx-${c}">${esc(t)}</li>`).join('')}</ul>
             ${pend.length ? `<h3>Pendências apontadas no mapa</h3><ul>${pend.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
-            <h3>Uso e cobertura do solo (${esc(((Object.keys(p).find(k => /^(MapBiomas|Uso do solo) \d{4}/.test(k)) || '').match(/^(MapBiomas \d{4}|Uso do solo \d{4})/) || [''])[0].replace('Uso do solo', 'Esri/Impact Observatory'))})</h3>
-            ${tab(['Classe', '% do imóvel', 'ha (aprox.)'], uso.map(([k, v]) => [esc(k), rxF(v, 1) + '%', rxF(v / 100 * area, 1)]))}
-            <h3>Declividade (Copernicus DEM, classes Embrapa)</h3>
-            ${tab(['Classe de relevo', '% do imóvel', 'ha (aprox.)'], r.decl.filter(d => d.pct >= 0.05).map(d => [d.nome, rxF(d.pct, 1) + '%', rxF(d.pct / 100 * area, 1)]))}
-            <h3>Sobreposição com outros imóveis do CAR</h3>
-            <!--FOTO2-->
-            ${tab(['Nº', 'CAR', 'Situação', 'Sobreposição (ha)', '% do imóvel'], r.car.slice(0, 15).map((x, i) => [`<b>${i + 1}</b>`, `<span class="mono">${esc(x.f.properties.nome)}</span>`, esc(x.f.properties.situacao || ''), rxF(x.ha), (x.ha / area * 100 < 0.1 ? '< 0,1%' : rxF(x.ha / area * 100, 1) + '%')]))}
-            <h3>Imóveis certificados no SIGEF/INCRA</h3>
-            ${(() => { const cob = {}; r.sigef.forEach(x => { const k = rxSigefRot(x.f.properties); cob[k] = (cob[k] || [rxSigefCor(x.f.properties), 0]); cob[k][1] += x.ha; });
-                const tot = Math.min(area, r.sigef.reduce((a, x) => a + x.ha, 0));
-                return `<div class="rx-cob">${Object.entries(cob).map(([k, [c, ha]]) => `<span><i style="background:${c}"></i>${esc(k)}: <b>${rxF(Math.min(ha, area) / area * 100, 1)}%</b> (${rxF(ha, 1)} ha)</span>`).join('')}
-                  <span><i style="background:#fff;border:1px solid #999"></i>Sem SIGEF: <b>${rxF(Math.max(0, area - tot) / area * 100, 1)}%</b></span></div>`; })()}
-            <!--FOTO3-->
-            ${tab(['Nº', 'Parcela', 'Matrícula', 'Situação no registro', 'Sobre o imóvel (ha)'], r.sigef.slice(0, 15).map((x, i) => [`<b>${i + 1}</b>`, esc(x.f.properties.nome || ''), esc(x.f.properties['Matrícula / registro'] || ''), `<span class="rx-sw" style="background:${rxSigefCor(x.f.properties)}"></span>${esc(rxSigefRot(x.f.properties))}`, rxF(x.ha)]))}
-            <h3>Embargos do IBAMA</h3>
-            ${tab(['Embargo', 'Situação', 'Data', 'Dentro do imóvel (ha)'], r.emb.map(x => [esc(x.f.properties.nome), esc(x.f.properties['Situação'] || ''), esc(x.f.properties['Data do embargo'] || ''), rxF(x.ha, 3)]))}
-            <h3>Alertas de desmatamento (MapBiomas Alerta)</h3>
-            ${tab(['Alerta', 'Detectado em', 'Vetor', 'Dentro do imóvel (ha)'], r.alertas.map(x => [esc(x.f.properties.nome), esc(x.f.properties['Detectado em'] || ''), esc(x.f.properties['Vetor'] || ''), rxF(x.ha, 2)]))}
-            <h3>Outorgas de água no imóvel ou a até 500 m</h3>
-            <!--FOTO4-->
-            ${(() => { const lista = [...r.agua.dentro, ...r.agua.perto].slice(0, 12), linhas = pts(r.agua, 'Interferência', 'agua'), hoje = new Date();
-                const venc = q => { const v = q.Vencimento || q['Validade'] || ''; const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(v); if (!v) return '–';
-                    if (!m) return esc(v); const d = new Date(+m[3], m[2] - 1, +m[1]), dias = (d - hoje) / 864e5;
-                    return dias < 0 ? `<b style="color:#c62828">${esc(v)}<br>vencida</b>` : dias <= 180 ? `<b style="color:#e65100">${esc(v)}<br>vence em ${Math.ceil(dias)} dias</b>` : esc(v); };
-                return tab(['Nº', 'Titular (SIGARH)', 'Tipo', 'Nº da outorga / declaração', 'Vencimento', 'Posição', 'Coordenadas (lat, long – SIRGAS 2000)'], linhas.map((l, i) => { const q = lista[i].f.properties;
-                    return [l[0], l[1], l[2], `<span class="mono">${esc(q['Portaria / declaração'] || '–')}</span>${q.Documento ? `<br><span class="hint">${esc(q.Documento)}${q['Situação'] ? ' · ' + esc(q['Situação']) : ''}</span>` : ''}`, venc(q), l[3], l[4]]; })); })()}
-            ${C.licencas === null ? '' : `<h3>Licenças ambientais (IAT – SGA/SIA) no imóvel ou a até 500 m</h3>`}
-            ${C.licencas === null ? '' : (() => { if (!r.lic) return '<p class="hint">Camada de licenças não disponível neste município.</p>'; const lista = [...r.lic.dentro, ...r.lic.perto].slice(0, 12), linhas = pts(r.lic, 'Atividade', 'lic'), hoje = new Date();
-                const venc = q => { const v = q.Validade || ''; const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(v); if (!v) return '–'; if (!m) return esc(v); const d = new Date(+m[3], m[2] - 1, +m[1]), dias = (d - hoje) / 864e5;
-                    return dias < 0 ? `<b style="color:#c62828">${esc(v)}<br>vencida</b>` : dias <= 180 ? `<b style="color:#e65100">${esc(v)}<br>vence em ${Math.ceil(dias)} dias</b>` : esc(v); };
-                return tab(['Nº', 'Titular (SGA)', 'Atividade', 'Modalidade e nº do documento', 'Validade', 'Posição', 'Coordenadas (lat, long)'], linhas.map((l, i) => { const q = lista[i].f.properties;
-                    return [l[0], l[1], l[2] + (q['Atividade específica'] && q['Atividade específica'] !== q.Atividade ? `<br><span class="hint">${esc(q['Atividade específica'])}</span>` : ''),
-                        `${esc(q.Modalidade || '')}<br><span class="mono">nº ${esc(q['Nº do documento'] || '–')}</span>${q.link ? `<br><a href="${esc(q.link)}" target="_blank" rel="noopener">licença no SGA (PDF) ↗</a>` : ''}`, venc(q), l[3], l[4]]; })); })()}
-            <h3>Barragens cadastradas (SNISB/ANA e IAT) no imóvel ou a até 500 m</h3>
-            ${(() => { const lista = [...r.barr.dentro, ...r.barr.perto].slice(0, 12); const linhas = pts(r.barr, 'Fonte', 'barr');
-                return tab(['Nº', 'Barragem', 'Fonte', 'Risco / DPA', 'Uso · altura · volume', 'Posição', 'Coordenadas (lat, long)'], linhas.map((l, i) => { const q = lista[i].f.properties;
-                    return [l[0], l[1] + (q.Empreendedor ? `<br><span class="hint">${esc(q.Empreendedor)}</span>` : ''), l[2], `${esc(q.risco || '–')} / ${esc(q.dpa || '–')}`,
-                        esc([q['Uso principal'] || q['Finalidade (IAT)'], q['Altura (m)'] && q['Altura (m)'] + ' m', q['Volume (hm³)'] && q['Volume (hm³)'] + ' hm³'].filter(Boolean).join(' · ') || '–'), l[3], l[4]]; })); })()}
-            <h3>Açudes, represas e lagos no imóvel (ANA)</h3>
-            ${tab(['Nº', 'Tipo', 'Espelho d\'água total (ha)', 'Dentro do imóvel (ha)', 'Barragem cadastrada', 'Centro (lat, long)'], r.massas.slice(0, 15).map((x, i) => { const q = x.f.properties, c = turf.pointOnFeature(x.f).geometry.coordinates;
-                return [`<b>${i + 1}</b>`, esc(q.grupo), esc(q['Área (ha)']), rxF(Math.min(x.ha, rxNum(q['Área (ha)']) || x.ha), 2), x.barr ? `Sim – ${esc(x.barr.properties.nome)}` : (/artificial/.test(q.grupo) ? '<b>Não localizada</b>' : '–'),
-                    `<span class="mono">${c[1].toFixed(5)}, ${c[0].toFixed(5)}</span>`]; }))}
-            ${rxResumoHtml(rxNecessidades(p, r, area, uso))}
+            <h3>Uso e cobertura do solo (${B.usoFonte})</h3>${B.uso}
+            <h3>Declividade (Copernicus DEM, classes Embrapa)</h3>${B.decl}
+            <h3>Sobreposição com outros imóveis do CAR</h3>${B.car}
+            <h3>Imóveis certificados no SIGEF/INCRA</h3>${B.sigefCob}${B.sigef}
+            <h3>Embargos do IBAMA</h3>${B.emb}
+            <h3>Alertas de desmatamento (MapBiomas Alerta)</h3>${B.alertas}
+            <h3>Outorgas de água no imóvel ou a até 500 m</h3>${B.outorgas}
+            ${C.licencas === null ? '' : `<h3>Licenças ambientais (IAT – SGA/SIA) no imóvel ou a até 500 m</h3>${B.licencas}`}
+            <h3>Barragens cadastradas (SNISB/ANA e IAT) no imóvel ou a até 500 m</h3>${B.barragens}
+            <h3>Açudes, represas e lagos no imóvel (ANA)</h3>${B.massas}
+            ${B.resumo}
             <p class="hint">Microbacia: ${esc(r.mbac[0] || '–')} · Dados do mapa atualizados em ${esc(dadosGerais.atualizado_em || '')}.</p>
             <p class="hint rx-aviso">Análise automática feita sobre bases públicas (SICAR, INCRA/SIGEF, IBAMA, MapBiomas, IAT/SIGARH/SGA, ANA/SNISB, Copernicus). As áreas são aproximadas e não substituem vistoria, levantamento topográfico ou consulta oficial aos órgãos.</p>`;
         corpo.innerHTML = html;
-        RX.ultimo = { nome, html, codigo, quando, alvo, viz: r.car, sigef: r.sigef, pontos: pontosFoto };
+        RX.ultimo = { nome, html, codigo, quando, alvo, viz: r.car, sigef: r.sigef, pontos: pontosFoto, p, r, area, uso, flags, N, pend, B, C };
         document.getElementById('raioxPdf').disabled = false;
     } catch (e) {
         console.error(e); corpo.innerHTML = '<p>Não foi possível concluir a análise. Tente novamente.</p>';
@@ -410,37 +411,10 @@ async function gerarRelatorioRaiox() {
     const foto3 = parc.length ? await rxFotoSigef(u.alvo, parc) : null;
     etapa('mapa de outorgas e licenças (4/4)');
     const foto4 = (u.pontos || []).length ? await rxFotoPontos(u.alvo, u.pontos) : null;
-    const janela = { partes: [], document: { open() { }, write(t) { janela.partes.push(t); }, close() { } } };
     map.jumpTo({ center: centro, zoom });
-    const dataHora = u.quando.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
-    const titulo = (dadosGerais.cliente || {}).nome || 'Mapa';
-    janela.document.open();
-    janela.document.write(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Relatório do imóvel ${esc(u.nome)}</title>
-<style>
- body{font-family:Inter,Arial,sans-serif;color:#1d2a24;margin:28px;font-size:12.5px;line-height:1.45}
- header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #1e5a3c;padding-bottom:10px;margin-bottom:14px}
- h1{font-size:18px;margin:0 0 3px;color:#1e5a3c} h3{font-size:13.5px;margin:16px 0 6px;color:#1e5a3c;border-bottom:1px solid #dfe8e2;padding-bottom:3px}
- .mono{font-family:Consolas,monospace} .hint{color:#5f6d66;font-size:11.5px}
- .rx-cab{display:flex;justify-content:space-between;gap:12px;background:#f3f7f4;border-radius:8px;padding:10px 12px}
- .rx-cod{font-size:12.5px;font-weight:700;word-break:break-all} .rx-area{text-align:right;font-size:14px}
- .rx-flags{list-style:none;padding:0;margin:10px 0} .rx-flags li{padding:5px 9px;border-radius:6px;margin:3px 0;font-weight:600}
- .rx-vermelho{background:#fdecea;color:#b71c1c} .rx-amarelo{background:#fff6dd;color:#8a5a00} .rx-verde{background:#e7f5ec;color:#1b6b3a}
- table{width:100%;border-collapse:collapse;font-size:11.5px} th,td{border-bottom:1px solid #e5ebe7;padding:4px 6px;text-align:left;vertical-align:top} th{background:#f3f7f4}
- .rx-cob{display:flex;flex-wrap:wrap;gap:6px 14px;margin:4px 0 8px} .rx-cob i,.rx-sw{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:4px;vertical-align:-1px} .legenda span{display:inline-block;width:14px;height:10px;border-radius:2px;margin:0 4px -1px 0} img.mapa{width:100%;border-radius:8px;border:1px solid #cfd8d3;margin:6px 0 2px}
- footer{margin-top:18px;border-top:1px solid #cfd8d3;padding-top:8px;display:flex;justify-content:space-between;gap:10px}
- .cod{font-family:Consolas,monospace;font-size:14px;font-weight:700;letter-spacing:.05em}
- @media print{body{margin:12mm} .noprint{display:none} h3{break-after:avoid} table{break-inside:auto} tr{break-inside:avoid}}
-</style></head><body>
-<header><div><h1>Relatório de análise do imóvel rural</h1><div class="hint">${esc(titulo)}</div></div>
-<div style="text-align:right"><div class="hint">Gerado em</div><b>${esc(dataHora)}</b></div></header>
-${foto ? `<h3>Localização do imóvel</h3><img class="mapa" src="${foto}" alt="Mapa de localização do imóvel"><div class="hint">Imóvel analisado: perímetro em vermelho e interior em verde-claro, sobre imagem de satélite (Esri World Imagery).</div>` : ''}
-${u.html.replace('<!--FOTO4-->', foto4 ? `<img class="mapa" src="${foto4}" alt="Mapa das outorgas e licenças"><div class="hint legenda"><span style="background:#b9f6ca;border:2px solid #ff1744"></span>imóvel analisado &nbsp; <span style="background:#1e88e5;border-radius:50%"></span>outorga de água &nbsp; <span style="background:#8e24aa;border-radius:50%"></span>licença ambiental &nbsp; <span style="background:#00897b;border-radius:50%"></span>barragem – números = linhas das tabelas</div>` : '').replace('<!--FOTO3-->', foto3 ? `<img class="mapa" src="${foto3}" alt="Mapa do SIGEF"><div class="hint legenda"><span style="border:3px solid #ff1744;background:none"></span>imóvel analisado (CAR) &nbsp; ${Object.values(RX_SIGEF).map(([c, t]) => `<span style="background:${c}"></span>${t}`).join(' &nbsp; ')} – números = linhas da tabela</div>` : '').replace('<!--FOTO2-->', foto2 ? `<img class="mapa" src="${foto2}" alt="Mapa das sobreposições"><div class="hint legenda"><span style="background:#b9f6ca;border:2px solid #ff1744"></span>imóvel analisado &nbsp; <span style="border:2px dashed #e6c800;background:none"></span>imóveis vizinhos com sobreposição (nº da tabela) &nbsp; <span style="background:#ff9100"></span>área sobreposta</div>` : '')}
-<footer><div class="hint">CS Consultoria Ambiental · Relatório gerado automaticamente a partir de bases públicas.<br>Dados do mapa atualizados em ${esc(dadosGerais.atualizado_em || '')}.</div>
-<div style="text-align:right"><div class="hint">Código de conferência</div><div class="cod">${u.codigo}</div><div class="hint">identifica esta versão do relatório</div></div></footer>
-<p class="noprint" style="text-align:center;margin-top:16px"><button onclick="window.print()" style="padding:9px 18px;font-size:14px;background:#1e5a3c;color:#fff;border:0;border-radius:6px;cursor:pointer">Salvar em PDF / imprimir</button></p>
-</body></html>`);
+    const janela = { partes: [rxRelatorioHtml(u, { foto, foto2, foto3, foto4 })] };
     const url = URL.createObjectURL(new Blob(janela.partes, { type: 'text/html;charset=utf-8' }));
-    const nomeArq = `relatorio_${u.nome}.html`;
+    const nomeArq = `raio-x_${u.nome}.html`;
     aviso.innerHTML = `<div><b>Relatório pronto</b><a class="btn btn-solid" href="${url}" target="_blank" rel="noopener" id="rxAbrir">Abrir relatório</a>
         <a class="btn" href="${url}" download="${nomeArq}">Baixar (HTML)</a><button type="button" class="btn" id="rxFecharAviso">Fechar</button></div>`;
     document.getElementById('rxFecharAviso').onclick = () => aviso.remove();
@@ -462,3 +436,222 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('raioxFechar')?.addEventListener('click', () => document.getElementById('raioxDialog').close());
     document.getElementById('raioxPdf')?.addEventListener('click', gerarRelatorioRaiox);
 });
+
+// ---------- relatório no formato "laudo" (capa, cabeçalho e rodapé fixos, checklist com selos, metodologia) ----------
+const RX_ST = { ok: ['✓', 'Em acordo', 'ok'], at: ['!', 'Atenção', 'at'], no: ['✕', 'Em desacordo', 'no'], na: ['–', 'Não se aplica', 'na'] };
+function rxChecklist(u) {
+    const { p, r, area, uso } = u, G = [], hoje = new Date(), d6 = 180 * 864e5;
+    const grupo = (nome) => { const g = { nome, itens: [] }; G.push(g); return (ind, st, det = '') => g.itens.push({ ind, st, det }); };
+    const dt = v => rxData(v);
+    // AMBIENTAL
+    let add = grupo('Ambiental');
+    const embAt = r.emb.filter(x => x.f.properties['Situação'] !== 'Desembargado');
+    add('Embargos do IBAMA (área)', embAt.length ? 'no' : r.emb.length ? 'at' : 'ok',
+        r.emb.map(x => `${x.f.properties.nome} – ${x.f.properties['Situação'] || ''}, ${rxF(x.ha, 2)} ha no imóvel`).join('; '));
+    add('Alertas de desmatamento (MapBiomas Alerta)', r.alertas.length ? 'no' : 'ok',
+        r.alertas.map(x => `${x.f.properties.nome}: ${rxF(x.ha, 2)} ha, detectado em ${x.f.properties['Detectado em'] || '–'}`).join('; '));
+    const nat = uso.find(([k]) => /Vegetação (nativa|arbórea)/.test(k)), pv = nat ? nat[1] : (p.veg_nativa_pct ?? null), mf = rxNum(p['Módulos fiscais']);
+    add('Reserva Legal – vegetação nativa ≥ 20% (PR)', pv === null ? 'na' : pv >= 20 ? 'ok' : mf <= 4 ? 'at' : 'no',
+        pv === null ? 'Sem dado de cobertura para o imóvel' : `Vegetação ${nat && /arbórea/.test(nat[0]) ? 'arbórea' : 'nativa'}: ${rxF(pv, 1)}% (${rxF(pv / 100 * area, 1)} ha); mínimo de 20% = ${rxF(area * 0.2, 1)} ha` + (pv < 20 && mf <= 4 ? ' – imóvel até 4 módulos fiscais: verificar art. 67 do Código Florestal' : ''));
+    const mont = (r.decl[4] || {}).pct || 0, forte = r.decl.slice(3).reduce((a, d) => a + d.pct, 0);
+    add('Encostas acima de 45% (APP / uso restrito)', mont >= 0.5 ? 'at' : 'ok', mont >= 0.5 ? `${rxF(mont, 1)}% do imóvel` : '');
+    add('Relevo forte ondulado (≥ 20%) – conservação do solo', forte >= 15 ? 'at' : 'ok', forte >= 1 ? `${rxF(forte, 1)}% do imóvel` : '');
+    // FUNDIÁRIO / CAR
+    add = grupo('CAR e situação fundiária');
+    const sit = p.situacao || '';
+    add('Situação do CAR', /Cancelado/i.test(sit) || /pendente/i.test(sit) ? 'no' : /Aguardando|Em análise/i.test(sit) ? 'at' : 'ok', [p['Status do CAR'], sit].filter(Boolean).join(' · '));
+    const maior = r.car[0];
+    add('Sobreposição com outros imóveis do CAR', maior && maior.ha >= Math.max(1, area * 0.02) ? 'no' : 'ok',
+        r.car.length ? `${r.car.length} imóvel(is); maior sobreposição ${rxF(maior.ha)} ha (${rxF(maior.ha / area * 100, 1)}%)` : 'Nenhuma');
+    const cobS = Math.min(area, r.sigef.reduce((a, x) => a + x.ha, 0)) / area;
+    add('Georreferenciamento certificado (SIGEF/INCRA)', cobS >= 0.9 ? 'ok' : cobS >= 0.5 ? 'at' : mf > 4 ? 'no' : 'at', `${rxF(cobS * 100, 0)}% do imóvel coberto por parcelas certificadas`);
+    const semReg = r.sigef.filter(x => x.f.properties['Situação'] && x.f.properties['Situação'] !== 'Registrada');
+    add('Registro da certificação em cartório', !r.sigef.length ? 'na' : semReg.length ? 'at' : 'ok', semReg.length ? `${semReg.length} parcela(s) sem registro` : '');
+    // ÁGUA
+    add = grupo('Recursos hídricos');
+    const ag = r.agua.dentro, venc = ag.filter(x => dt(x.f.properties.Vencimento) && dt(x.f.properties.Vencimento) < hoje),
+          breve = ag.filter(x => { const d = dt(x.f.properties.Vencimento); return d && d >= hoje && d - hoje <= d6; });
+    add('Outorgas de uso da água no imóvel (SIGARH)', !ag.length ? 'na' : venc.length ? 'no' : breve.length ? 'at' : 'ok',
+        ag.length ? ag.slice(0, 6).map(x => `nº ${x.f.properties['Portaria / declaração'] || 's/ nº'} – ${(x.f.properties.Interferência || 'outorga').toLowerCase()}, vence ${x.f.properties.Vencimento || '–'}`).join('; ') : 'Nenhuma outorga localizada dentro do imóvel');
+    const RXA = /avicult|suinocult|bovinocult|bubalinocult|ovinocult|caprinocult|equinocult|cunicult|piscicult|aquicult|carcinicult|ranicult|cria[çc][ãa]o de (animais|aves|su[íi]nos|bovinos|frangos|peixes)|confinamento|leite|latic|abate|frigor|alimentos|bebida|f[ée]cula|amido|aguardente|cacha[çc]a|destilaria|usina|curtume|irriga|viveiro|hortali|cogumel|lavagem|lavador|beneficiamento/i, RXC = /capta|subterr|po[çc]o|insignific|uso independente/i;
+    const la = (r.lic?.dentro || []).filter(x => !/substituída|^Vencida$/.test(x.f.properties.situacao || '') && RXA.test(`${x.f.properties.Atividade || ''} ${x.f.properties['Atividade específica'] || ''}`));
+    const capta = ag.some(x => RXC.test(`${x.f.properties.Interferência || ''} ${x.f.properties.Documento || ''} ${x.f.properties.grupo || ''}`));
+    add('Atividade licenciada com consumo de água × outorga de captação', !la.length ? 'na' : capta ? 'ok' : 'no', la.length ? `${la[0].f.properties.Atividade}${capta ? ' – outorga de captação localizada' : ' – sem outorga de captação no imóvel'}` : '');
+    const pnsb = r.barr.dentro.filter(x => /^sim/i.test(x.f.properties['Regulada pela PNSB'] || '') && /^n[ãa]o/i.test(x.f.properties['Plano de segurança'] || '')), alto = r.barr.dentro.filter(x => x.f.properties.risco === 'Alto');
+    add('Segurança de barragens (Lei 12.334/2010)', !r.barr.dentro.length ? 'na' : pnsb.length ? 'no' : alto.length ? 'at' : 'ok', r.barr.dentro.length ? `${r.barr.dentro.length} barragem(ns) no imóvel${alto.length ? `, ${alto.length} de risco alto` : ''}${pnsb.length ? `, ${pnsb.length} sem Plano de Segurança` : ''}` : '');
+    const art = r.massas.filter(x => /artificial/.test(x.f.properties.grupo)), sem = art.filter(x => !x.barr);
+    add('Açudes e represas com barragem cadastrada (SNISB/IAT)', !art.length ? 'na' : sem.length ? 'at' : 'ok', art.length ? `${art.length} espelho(s) d'água artificial(is); ${sem.length} sem barragem localizada` : '');
+    // LICENCIAMENTO
+    add = grupo('Licenciamento ambiental');
+    const lic = (r.lic?.dentro || []).filter(x => !/substituída/.test(x.f.properties.situacao || ''));
+    const lv = lic.filter(x => { const v = dt(x.f.properties.Validade); return v && v < hoje && hoje - v <= 5 * 365 * 864e5; }), lb = lic.filter(x => { const v = dt(x.f.properties.Validade); return v && v >= hoje && v - hoje <= d6; });
+    add('Licenças ambientais no imóvel (IAT – SGA/SIA)', u.C.licencas === null || !r.lic ? 'na' : !lic.length ? 'na' : lv.length ? 'no' : lb.length ? 'at' : 'ok',
+        lic.length ? lic.slice(0, 5).map(x => `${x.f.properties.Modalidade || 'Licença'} nº ${x.f.properties['Nº do documento'] || 's/ nº'} – ${x.f.properties.Atividade || ''}, validade ${x.f.properties.Validade || '–'}`).join('; ') : 'Nenhuma licença localizada dentro do imóvel');
+    return G;
+}
+function rxRelatorioHtml(u, F) {
+    const { p, r, area, uso, N } = u, G = rxChecklist(u);
+    const dataHora = u.quando.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+    const mun = (u.C.municipio || ((dadosGerais.cliente || {}).nome || '').replace(/^.*– */, '')) || '–';
+    const cod = (String(u.C.car || '').match(/data\/m\/(\d{7})\//) || [])[1];
+    const link = `${location.origin}${location.pathname}?${cod ? `m=${cod}&` : ''}car=${encodeURIComponent(u.nome)}`;
+    const qr = (txt, px) => { try { const q = qrcode(0, 'M'); q.addData(txt); q.make(); return q.createSvgTag({ cellSize: Math.max(2, Math.round(px / (q.getModuleCount() + 8))), margin: 4, scalable: true }); } catch (e) { return ''; } };
+    const todos = G.flatMap(g => g.itens), cont = k => todos.filter(i => i.st === k).length;
+    const avaliados = todos.filter(i => i.st !== 'na').length, emAcordo = cont('ok');
+    const nat = uso.find(([k]) => /Vegetação (nativa|arbórea)/.test(k)), pv = nat ? nat[1] : (p.veg_nativa_pct ?? null);
+    const cobS = Math.min(area, r.sigef.reduce((a, x) => a + x.ha, 0)) / area;
+    const decl = rxNum(p['Área (ha)']);
+    const card = (rot, val, sub = '') => `<div class="cd"><span>${rot}</span><b>${val}</b>${sub ? `<small>${sub}</small>` : ''}</div>`;
+    const selo = st => `<span class="selo ${RX_ST[st][2]}">${RX_ST[st][0]} ${RX_ST[st][1]}</span>`;
+    const barras = (lst, cor) => lst.map(([k, v]) => `<div class="br"><span>${esc(k)}</span><i><em style="width:${Math.min(100, v)}%;background:${cor(k)}"></em></i><b>${rxF(v, 1)}%</b></div>`).join('');
+    const corUso = k => /arbórea|nativa|Floresta|Vegeta/i.test(k) ? '#2e7d32' : /Agricult|Lavoura|Soja/i.test(k) ? '#f9a825' : /Pastagem|Campo|Pasto/i.test(k) ? '#c0ca33' : /Água|Agua/i.test(k) ? '#1e88e5' : /urban|Constru/i.test(k) ? '#e53935' : '#8d6e63';
+    const corDecl = k => ({ 'Plano (0–3%)': '#cfe8c3', 'Suave ondulado (3–8%)': '#d9f0a3', 'Ondulado (8–20%)': '#fed976', 'Forte ondulado (20–45%)': '#f03b20', 'Montanhoso (> 45%)': '#800026' }[k] || '#999');
+    const ROT = { 1: ['Alta', '#c62828'], 2: ['Média', '#ef6c00'], 3: ['Baixa', '#558b2f'] };
+    const legSob = `<div class="leg"><span style="background:#b9f6ca;border:2px solid #ff1744"></span>imóvel analisado <span style="border:2px dashed #e6c800"></span>vizinhos com sobreposição (nº da tabela) <span style="background:#ff9100"></span>área sobreposta</div>`;
+    const legSig = `<div class="leg"><span style="border:3px solid #ff1744"></span>imóvel (CAR) ${Object.values(RX_SIGEF).map(([c, t]) => `<span style="background:${c}"></span>${t}`).join(' ')}</div>`;
+    const legPt = `<div class="leg"><span style="background:#b9f6ca;border:2px solid #ff1744"></span>imóvel <span style="background:#1e88e5;border-radius:50%"></span>outorga <span style="background:#8e24aa;border-radius:50%"></span>licença <span style="background:#00897b;border-radius:50%"></span>barragem – nº = linhas das tabelas</div>`;
+    const sec = (titulo, sub, corpo, quebra = true) => `<section class="${quebra ? 'pg' : ''}"><div class="st"><i></i><div><h2>${titulo}</h2>${sub ? `<p>${sub}</p>` : ''}</div></div>${corpo}</section>`;
+    const tabela = (titulo, corpo) => `<h4>${titulo}</h4>${corpo}`;
+    const logo = new URL('logo.png', location.href).href;
+    const cs = dadosGerais.cs_contato || {};
+    const contato = [cs.site, cs.telefone, cs.email].filter(Boolean).map(esc).join('  ·  ');
+    const blocoCS = `<div class="csb"><img src="${logo}" alt="CS Consultoria Ambiental"><div><b>CS Consultoria Ambiental</b><br><span>Diagnóstico Ambiental Rural · regularização ambiental, fundiária e de recursos hídricos</span>${contato ? `<br><span>${contato}</span>` : ''}${cs.responsavel ? `<br><span>Responsável técnico: ${esc(cs.responsavel)}</span>` : ''}</div></div>`;
+    return `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Raio-X do imóvel rural – ${esc(u.nome)}</title>
+<style>
+ @page { size: A4; margin: 22mm 14mm 20mm;
+   @top-left { content: "CS Consultoria Ambiental  ·  RAIO-X DO IMÓVEL RURAL"; font: 600 8pt Arial; color: #1f4933; }
+   @top-right { content: "${esc(dataHora)}   ·   Página " counter(page) " de " counter(pages); font: 8pt Arial; color: #5f6d66; }
+   @bottom-left { content: "Código de conferência ${u.codigo}"; font: 8pt Consolas, monospace; color: #5f6d66; }
+   @bottom-right { content: "Análise automática sobre bases públicas – não substitui vistoria"; font: 7.5pt Arial; color: #8a978f; } }
+ @page :first { margin: 0; @top-left { content: none } @top-right { content: none } @bottom-left { content: none } @bottom-right { content: none } }
+ * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+ body { font-family: Inter, 'Segoe UI', Arial, sans-serif; color: #1d2a24; margin: 0; font-size: 10.5pt; line-height: 1.45; background: #e9eeeb; }
+ .folha { max-width: 210mm; margin: 0 auto; background: #fff; }
+ .marca { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 0; }
+ .marca img { width: 62%; opacity: .05; }
+ section, .capa { position: relative; z-index: 1; }
+ .pg { break-before: page; padding: 6mm 0 0; }
+ @media screen { .pg { padding: 14mm 14mm 8mm; border-top: 10px solid #e9eeeb; } .marca { display: none; } }
+ .capa { height: 297mm; color: #fff; display: flex; flex-direction: column; padding: 18mm 16mm 14mm; overflow: hidden;
+   background: linear-gradient(160deg, rgba(20,46,32,.93), rgba(31,73,51,.80) 55%, rgba(20,46,32,.96)), ${F.foto ? `url(${F.foto}) center/cover` : '#1f4933'}; }
+ .capa .topo { display: flex; justify-content: space-between; align-items: center; }
+ .capa .topo img { height: 52px; background: #fff; border-radius: 10px; padding: 6px 10px; }
+ .capa .data { background: rgba(0,0,0,.35); border-radius: 999px; padding: 6px 14px; font-size: 10pt; }
+ .capa .meio { margin-top: auto; margin-bottom: auto; }
+ .capa .kick { letter-spacing: .3em; font-size: 9.5pt; font-weight: 700; color: #83bb4e; }
+ .capa h1 { font-size: 46pt; line-height: 1; margin: 8px 0 6px; font-weight: 800; } .capa h1 span { color: #83bb4e; display: block; }
+ .capa .sub { font-size: 13pt; opacity: .9; }
+ .capa .faixa { display: grid; grid-template-columns: 1fr 2fr 1fr auto; gap: 14px; align-items: center; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.25); border-radius: 14px; padding: 12px 16px; }
+ .capa .faixa span { display: block; font-size: 8pt; opacity: .75; text-transform: uppercase; letter-spacing: .08em; } .capa .faixa b { font-size: 10.5pt; word-break: break-all; }
+ .capa .qr { background: #fff; border-radius: 8px; padding: 4px; width: 92px; height: 92px; } .capa .qr svg { width: 100%; height: 100%; }
+ .capa .fict { margin-top: 10px; background: #ff8f00; color: #1d1d1d; font-weight: 700; border-radius: 8px; padding: 8px 12px; text-align: center; }
+ .st { display: flex; gap: 10px; align-items: center; margin: 0 0 10px; } .st i { width: 6px; height: 34px; border-radius: 3px; background: linear-gradient(#83bb4e, #1f4933); }
+ .st h2 { margin: 0; font-size: 15pt; color: #1f4933; } .st p { margin: 0; color: #5f6d66; font-size: 9pt; }
+ h4 { margin: 14px 0 6px; font-size: 10.5pt; color: #1f4933; }
+ .cds { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 6px 0 10px; }
+ .cd { border: 1px solid #dfe8e2; border-radius: 10px; padding: 8px 10px; background: #fafcfb; } .cd span { display: block; font-size: 7.5pt; text-transform: uppercase; letter-spacing: .06em; color: #6b7a72; }
+ .cd b { display: block; font-size: 12.5pt; color: #1d2a24; margin-top: 2px; word-break: break-all; } .cd small { color: #6b7a72; font-size: 8.5pt; }
+ .cds.n4 { grid-template-columns: repeat(4, 1fr); } .cds.n4 .cd b { font-size: 16pt; color: #1f4933; }
+ .placar { display: grid; grid-template-columns: 1.2fr repeat(3, 1fr); gap: 8px; margin: 6px 0 12px; }
+ .placar div { border-radius: 10px; padding: 10px; text-align: center; } .placar b { display: block; font-size: 20pt; } .placar span { font-size: 8.5pt; }
+ .placar .g { background: #1f4933; color: #fff; } .placar .ok { background: #e7f5ec; color: #1b6b3a; } .placar .at { background: #fff6dd; color: #8a5a00; } .placar .no { background: #fdecea; color: #b71c1c; }
+ .ck { width: 100%; border-collapse: collapse; margin-bottom: 10px; } .ck caption { background: #eef6e6; color: #1f4933; font-weight: 700; font-size: 9pt; letter-spacing: .12em; text-transform: uppercase; padding: 6px; border-radius: 6px; }
+ .ck th { font-size: 7.5pt; color: #6b7a72; text-align: left; text-transform: uppercase; letter-spacing: .06em; padding: 6px 4px; border-bottom: 1px solid #dfe8e2; } .ck th:last-child, .ck td:last-child { text-align: right; width: 32%; }
+ .ck td { padding: 7px 4px; border-bottom: 1px solid #eef2ef; vertical-align: top; } .ck tr { break-inside: avoid; }
+ .ck .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; vertical-align: 1px; }
+ .ck .det { display: block; color: #5f6d66; font-size: 8.5pt; margin: 3px 0 0 16px; }
+ .selo { display: inline-block; font-size: 8pt; font-weight: 700; border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
+ .selo.ok { background: #e7f5ec; color: #1b6b3a; } .selo.at { background: #fff3d6; color: #8a5a00; } .selo.no { background: #fdecea; color: #b71c1c; } .selo.na { background: #eef1ef; color: #7b8781; }
+ .dot.ok { background: #2e7d32; } .dot.at { background: #f9a825; } .dot.no { background: #c62828; } .dot.na { background: #b0bab4; }
+ .dk { width: 100%; border-collapse: collapse; border-radius: 10px; overflow: hidden; margin: 6px 0; font-size: 9.5pt; } .dk th { background: #1d2a24; color: #fff; text-align: left; padding: 7px 8px; font-size: 8pt; text-transform: uppercase; letter-spacing: .05em; }
+ .dk td { padding: 7px 8px; border-bottom: 1px solid #e5ebe7; } .dk .def { color: #c62828; font-weight: 700; } .dk .bom { color: #1b6b3a; font-weight: 700; }
+ .br { display: grid; grid-template-columns: 38% 1fr 54px; gap: 8px; align-items: center; margin: 4px 0; font-size: 9pt; } .br i { height: 10px; background: #eef2ef; border-radius: 5px; overflow: hidden; } .br em { display: block; height: 100%; border-radius: 5px; } .br b { text-align: right; }
+ .duas { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+ img.mapa { width: 100%; border-radius: 10px; border: 1px solid #cfd8d3; margin: 4px 0 2px; } .leg { font-size: 8pt; color: #5f6d66; margin-bottom: 6px; }
+ .leg span { display: inline-block; width: 12px; height: 9px; border-radius: 2px; margin: 0 3px -1px 8px; }
+ .rx-tab, table.rx-tab { width: 100%; border-collapse: collapse; font-size: 8.5pt; } .rx-tab th { background: #f3f7f4; text-align: left; padding: 5px; } .rx-tab td { border-bottom: 1px solid #e5ebe7; padding: 4px 5px; vertical-align: top; } .rx-tab tr { break-inside: avoid; }
+ .rx-cob { display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 4px 0 8px; font-size: 9pt; } .rx-cob i, .rx-sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
+ .mono { font-family: Consolas, monospace; } .hint { color: #5f6d66; font-size: 8.5pt; } a { color: #1f4933; }
+ .obs { border: 1px solid #dfe8e2; border-left: 4px solid #83bb4e; border-radius: 8px; padding: 8px 10px; margin: 6px 0; font-size: 9pt; background: #fafcfb; }
+ .fonte { display: grid; grid-template-columns: 30% 1fr; gap: 4px 12px; font-size: 9pt; } .fonte b { color: #1f4933; }
+ .valida { display: flex; gap: 14px; align-items: center; border: 1px solid #dfe8e2; border-radius: 10px; padding: 10px; margin-top: 12px; } .valida .qr { width: 96px; height: 96px; } .valida .qr svg { width: 100%; height: 100%; }
+ .csb { display: flex; gap: 14px; align-items: center; border-top: 3px solid #83bb4e; margin-top: 14px; padding-top: 10px; font-size: 9pt; color: #1f4933; } .csb img { height: 46px; } .csb span { color: #5f6d66; }
+ .noprint { text-align: center; padding: 14px; } .noprint button { padding: 10px 20px; font-size: 14px; background: #1f4933; color: #fff; border: 0; border-radius: 8px; cursor: pointer; }
+ @media print { body { background: #fff; } .noprint { display: none; } h4 { break-after: avoid; } img.mapa { break-inside: avoid; max-height: 125mm; object-fit: cover; } }
+</style></head><body>
+<p class="noprint"><button onclick="window.print()">Salvar em PDF / imprimir</button> <span class="hint">Use "Salvar como PDF", papel A4, com "Gráficos de fundo" ligado.</span></p>
+<div class="marca"><img src="${logo}" alt=""></div>
+<div class="folha">
+<div class="capa">
+  <div class="topo"><img src="${logo}" alt="CS Consultoria Ambiental"><span class="data">${esc(dataHora)}</span></div>
+  <div class="meio"><div class="kick">DIAGNÓSTICO AMBIENTAL RURAL · CONSULTA AUTOMÁTICA</div><h1>Raio-X do<span>Imóvel Rural</span></h1>
+    <div class="sub">Consulta automática a ${todos.length} indicadores em bases públicas oficiais · ${esc(mun)}</div></div>
+  <div class="faixa"><div><span>Emitido por</span><b>CS Consultoria Ambiental</b></div><div><span>CAR</span><b class="mono">${esc(u.nome)}</b></div>
+    <div><span>Área total</span><b>${rxF(area)} ha</b></div><div class="qr">${qr(link, 92)}</div></div>
+  ${p.ficticio ? '<div class="fict">IMÓVEL FICTÍCIO – exemplo criado só para demonstração. Não corresponde a nenhum imóvel ou pessoa real.</div>' : ''}
+</div>
+
+${sec('Detalhes do imóvel', 'Informações cadastrais e localização', `
+  <div class="cds">${card('CAR', `<span class="mono" style="font-size:9pt">${esc(u.nome)}</span>`)}${card('Status do CAR', esc(p['Status do CAR'] || '–'))}${card('Condição', esc(p.situacao || p['Condição'] || '–'))}
+  ${card('Data de cadastro / atualização', esc(p['Data de cadastro/atualização'] || '–'))}${card('Área calculada', `${rxF(area)} ha`, decl ? `declarada: ${rxF(decl)} ha` : '')}${card('Módulos fiscais', esc(p['Módulos fiscais'] || '–'), esc(p.Porte || ''))}
+  ${card('Município', esc(mun))}${card('Microbacia', esc(r.mbac[0] || '–'))}${card('Tipo', esc(p.Tipo || '–'))}</div>
+  ${F.foto ? `<img class="mapa" src="${F.foto}" alt="Localização"><div class="leg">Perímetro do imóvel (vermelho) sobre imagem de satélite (Esri World Imagery).</div>` : ''}`)}
+
+${sec('Resultado da análise', 'Resumo dos indicadores consultados', `
+  <div class="placar"><div class="g"><b>${emAcordo}/${avaliados}</b><span>indicadores em acordo</span></div><div class="ok"><b>${cont('ok')}</b><span>✓ em acordo</span></div><div class="at"><b>${cont('at')}</b><span>! atenção</span></div><div class="no"><b>${cont('no')}</b><span>✕ em desacordo</span></div></div>
+  <div class="cds n4">${card('Vegetação nativa', pv === null ? '–' : rxF(pv, 1) + '%', pv === null ? '' : `${rxF(pv / 100 * area, 1)} ha`)}${card('Certificação SIGEF', rxF(cobS * 100, 0) + '%', 'da área do imóvel')}${card('Outorgas no imóvel', String(r.agua.dentro.length), 'SIGARH/IAT')}${card('Licenças no imóvel', String((r.lic?.dentro || []).length), 'SGA/SIA – IAT')}</div>
+  ${G.map(g => `<table class="ck"><caption>${g.nome}</caption><tr><th>Indicador</th><th>Status</th></tr>${g.itens.map(i => `<tr><td><span class="dot ${RX_ST[i.st][2]}"></span>${esc(i.ind)}${i.det ? `<span class="det">${esc(i.det)}</span>` : ''}</td><td>${selo(i.st)}</td></tr>`).join('')}</table>`).join('')}`)}
+
+${sec('Cobertura do solo e relevo', 'Declarado no CAR × medido por satélite', `
+  <table class="dk"><tr><th>Informação</th><th>Declarado / referência</th><th>Medido no perímetro</th><th>Análise automática</th></tr>
+   <tr><td>Área do imóvel</td><td>${decl ? rxF(decl) + ' ha' : '–'}</td><td>${rxF(area)} ha</td><td class="${decl && Math.abs(area - decl) / decl > .05 ? 'def' : 'bom'}">${decl ? (Math.abs(area - decl) / decl > .05 ? `Diferença de ${rxF(area - decl)} ha (${rxF((area - decl) / decl * 100, 1)}%)` : 'Compatível') : '–'}</td></tr>
+   <tr><td>Reserva Legal (mín. 20%)</td><td>${rxF(area * .2, 1)} ha</td><td>${pv === null ? '–' : rxF(pv / 100 * area, 1) + ' ha de vegetação'}</td><td class="${pv !== null && pv < 20 ? 'def' : 'bom'}">${pv === null ? '–' : pv < 20 ? `Déficit: ${rxF((20 - pv) / 100 * area, 1)} ha` : 'Atende'}</td></tr>
+   <tr><td>Sobreposição com outros CAR</td><td>0 ha</td><td>${rxF(r.car.reduce((a, x) => a + x.ha, 0))} ha</td><td class="${r.car[0] && r.car[0].ha >= Math.max(1, area * .02) ? 'def' : 'bom'}">${r.car[0] && r.car[0].ha >= Math.max(1, area * .02) ? 'Sobreposição relevante' : 'Só ajustes de divisa'}</td></tr></table>
+  <div class="duas"><div><h4>Uso e cobertura do solo (${u.B.usoFonte})</h4>${barras(uso, corUso)}</div><div><h4>Declividade (Copernicus DEM, classes Embrapa)</h4>${barras(r.decl.filter(d => d.pct >= .05).map(d => [d.nome, d.pct]), corDecl)}</div></div>
+  ${(u.pend || []).length ? `<h4>Observações do cadastro</h4>${u.pend.map(t => `<div class="obs">${esc(t)}</div>`).join('')}` : ''}`)}
+
+${sec('Situação fundiária', 'Sobreposições com o CAR e certificação no SIGEF/INCRA', `
+  ${F.foto2 ? `<img class="mapa" src="${F.foto2}" alt="Sobreposições">${legSob}` : ''}${tabela('Sobreposição com outros imóveis do CAR', u.B.car)}
+  ${F.foto3 ? `<img class="mapa" src="${F.foto3}" alt="SIGEF">${legSig}` : ''}${tabela('Parcelas certificadas no SIGEF/INCRA', u.B.sigefCob + u.B.sigef)}
+  ${tabela('Embargos do IBAMA', u.B.emb)}${tabela('Alertas de desmatamento (MapBiomas Alerta)', u.B.alertas)}`)}
+
+${sec('Água e licenciamento', 'Outorgas, licenças, barragens e açudes no imóvel ou a até 500 m', `
+  ${F.foto4 ? `<img class="mapa" src="${F.foto4}" alt="Outorgas e licenças">${legPt}` : ''}
+  ${tabela('Outorgas de uso da água (SIGARH/IAT)', u.B.outorgas)}${u.C.licencas === null ? '' : tabela('Licenças ambientais (IAT – SGA/SIA)', u.B.licencas)}
+  ${tabela('Barragens cadastradas (SNISB/ANA e IAT)', u.B.barragens)}${tabela('Açudes, represas e lagos (ANA)', u.B.massas)}`)}
+
+${sec('Pendências e adequações sugeridas', 'Base para o plano de regularização e o orçamento', `
+  <div class="placar">${[1, 2, 3].map(k => `<div style="background:${ROT[k][1]}1a;color:${ROT[k][1]}"><b>${N.filter(n => n.prior === k).length}</b><span>prioridade ${ROT[k][0].toLowerCase()}</span></div>`).join('')}<div class="g"><b>${N.length}</b><span>itens no total</span></div></div>
+  <table class="rx-tab"><tr><th>Nº</th><th>Prioridade</th><th>Tema</th><th>Situação encontrada</th><th>Adequação / serviço sugerido</th></tr>
+  ${N.map((n, i) => `<tr><td><b>${i + 1}</b></td><td><span class="rx-sw" style="background:${ROT[n.prior][1]}"></span>${ROT[n.prior][0]}</td><td>${esc(n.tema)}</td><td>${esc(n.achado)}</td><td>${esc(n.adequacao)}</td></tr>`).join('')}</table>
+  <p class="hint">Lista indicativa. Itens e quantidades devem ser confirmados em vistoria de campo e conferência documental (matrícula, CCIR, ITR, CAR).</p>
+  <div class="obs"><b>Próximo passo com a CS:</b> vistoria técnica e Diagnóstico Ambiental Rural completo, com plano de adequação priorizado e orçamento por item.</div>${blocoCS}`)}
+
+${sec('Metodologia e fontes', 'Como esta análise foi feita', `
+  <p>O perímetro do imóvel declarado no CAR é cruzado automaticamente com as camadas públicas abaixo. Áreas são calculadas sobre o elipsoide (WGS84/SIRGAS 2000) e são aproximadas. Pontos (outorgas, licenças, barragens) são considerados dentro do imóvel ou a até 500 m do perímetro.</p>
+  <div class="fonte">
+   <b>CAR – SICAR</b><span>Perímetro, situação, módulos fiscais e sobreposições entre imóveis (Serviço Florestal Brasileiro).</span>
+   <b>SIGEF / INCRA</b><span>Parcelas georreferenciadas certificadas e situação no registro de imóveis.</span>
+   <b>IBAMA</b><span>Áreas embargadas (situação e data do embargo).</span>
+   <b>MapBiomas Alerta</b><span>Alertas de desmatamento validados, com data de detecção.</span>
+   <b>Uso do solo</b><span>${u.B.usoFonte || 'MapBiomas / Esri'} – percentuais por classe dentro do perímetro.</span>
+   <b>Copernicus DEM (30 m)</b><span>Declividade em classes da Embrapa.</span>
+   <b>IAT – SIGARH</b><span>Outorgas e declarações de uso da água (tipo, número da portaria e vencimento).</span>
+   <b>IAT – SGA/SIA</b><span>Licenças ambientais (modalidade, número, atividade e validade).</span>
+   <b>ANA – SNISB e IAT</b><span>Barragens cadastradas (risco, dano potencial, PNSB) e massas d'água (açudes, represas, lagos).</span>
+  </div>
+  <p class="hint">Legenda dos selos: <b>Em acordo</b> – nada encontrado ou situação regular; <b>Atenção</b> – item a verificar ou que pode exigir adequação; <b>Em desacordo</b> – restrição ou pendência identificada nas bases; <b>Não se aplica</b> – não há o elemento no imóvel ou não há dado.</p>
+  <p class="hint">Privacidade: este relatório não exibe CPF, CNPJ nem dados pessoais de proprietários. Titulares de outorgas e licenças aparecem como constam nas consultas públicas do IAT.</p>
+  <div class="valida"><div class="qr">${qr(link, 96)}</div><div><b>Conferência do relatório</b><br><span class="mono">${u.codigo}</span><br><span class="hint">Aponte a câmera para o QR code para abrir este imóvel no mapa e refazer a análise com os dados mais recentes. Dados do mapa atualizados em ${esc(dadosGerais.atualizado_em || '')}. Emitido em ${esc(dataHora)}.</span></div></div>${blocoCS}`)}
+</div></body></html>`;
+}
+// abre o Raio-X direto quando o link traz ?car=… (usado pelo QR code do relatório)
+(function rxAbrirPeloLink() {
+    const car = new URLSearchParams(location.search).get('car');
+    if (!car) return;
+    const tentar = (n) => {
+        if (typeof dadosGerais !== 'undefined' && dadosGerais.raiox && typeof map !== 'undefined' && map.loaded && map.loaded()) analisarImovel(car);
+        else if (n < 60) setTimeout(() => tentar(n + 1), 1000);
+    };
+    setTimeout(() => tentar(0), 2500);
+})();
