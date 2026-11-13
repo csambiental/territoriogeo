@@ -508,7 +508,10 @@ function rxRelatorioHtml(u, F) {
     const nat = uso.find(([k]) => /Vegetação (nativa|arbórea)/.test(k)), pv = nat ? nat[1] : (p.veg_nativa_pct ?? null);
     const cobS = Math.min(area, r.sigef.reduce((a, x) => a + x.ha, 0)) / area;
     const decl = rxNum(p['Área (ha)']);
-    const card = (rot, val, sub = '') => `<div class="cd"><span>${rot}</span><b>${val}</b>${sub ? `<small>${sub}</small>` : ''}</div>`;
+    const card = (rot, val, sub = '', cls = '') => {
+        const txt = String(val).replace(/<[^>]+>/g, ''), tam = txt.length > 34 ? 'xs' : txt.length > 20 ? 'sm' : '';
+        return `<div class="cd ${cls}"><span>${rot}</span><b class="${tam}">${val}</b>${sub ? `<small>${sub}</small>` : ''}</div>`;
+    };
     const selo = st => `<span class="selo ${RX_ST[st][2]}">${RX_ST[st][0]} ${RX_ST[st][1]}</span>`;
     const barras = (lst, cor) => lst.map(([k, v]) => `<div class="br"><span>${esc(k)}</span><i><em style="width:${Math.min(100, v)}%;background:${cor(k)}"></em></i><b>${rxF(v, 1)}%</b></div>`).join('');
     const corUso = k => /arbórea|nativa|Floresta|Vegeta/i.test(k) ? '#2e7d32' : /Agricult|Lavoura|Soja/i.test(k) ? '#f9a825' : /Pastagem|Campo|Pasto/i.test(k) ? '#c0ca33' : /Água|Agua/i.test(k) ? '#1e88e5' : /urban|Constru/i.test(k) ? '#e53935' : '#8d6e63';
@@ -548,8 +551,8 @@ function rxRelatorioHtml(u, F) {
  .capa .kick { letter-spacing: .3em; font-size: 9.5pt; font-weight: 700; color: #83bb4e; }
  .capa h1 { font-size: 46pt; line-height: 1; margin: 8px 0 6px; font-weight: 800; } .capa h1 span { color: #83bb4e; display: block; }
  .capa .sub { font-size: 13pt; opacity: .9; }
- .capa .faixa { display: grid; grid-template-columns: 1fr 2fr 1fr auto; gap: 14px; align-items: center; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.25); border-radius: 14px; padding: 12px 16px; }
- .capa .faixa span { display: block; font-size: 8pt; opacity: .75; text-transform: uppercase; letter-spacing: .08em; } .capa .faixa b { font-size: 10.5pt; word-break: break-all; }
+ .capa .faixa { display: grid; grid-template-columns: 0.9fr 2.6fr 0.8fr auto; gap: 14px; align-items: center; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.25); border-radius: 14px; padding: 12px 16px; }
+ .capa .faixa span { display: block; font-size: 8pt; opacity: .75; text-transform: uppercase; letter-spacing: .08em; } .capa .faixa b { font-size: 10.5pt; overflow-wrap: anywhere; } .capa .faixa b.mono { font-size: 8.5pt; letter-spacing: -.03em; white-space: nowrap; }
  .capa .qr { background: #fff; border-radius: 8px; padding: 4px; width: 92px; height: 92px; } .capa .qr svg { width: 100%; height: 100%; }
  .capa .fict { margin-top: 10px; background: #ff8f00; color: #1d1d1d; font-weight: 700; border-radius: 8px; padding: 8px 12px; text-align: center; }
  .st { display: flex; gap: 10px; align-items: center; margin: 0 0 10px; } .st i { width: 6px; height: 34px; border-radius: 3px; background: linear-gradient(#83bb4e, #1f4933); }
@@ -557,7 +560,9 @@ function rxRelatorioHtml(u, F) {
  h4 { margin: 14px 0 6px; font-size: 10.5pt; color: #1f4933; }
  .cds { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 6px 0 10px; }
  .cd { border: 1px solid #dfe8e2; border-radius: 10px; padding: 8px 10px; background: #fafcfb; } .cd span { display: block; font-size: 7.5pt; text-transform: uppercase; letter-spacing: .06em; color: #6b7a72; }
- .cd b { display: block; font-size: 12.5pt; color: #1d2a24; margin-top: 2px; word-break: break-all; } .cd small { color: #6b7a72; font-size: 8.5pt; }
+ .cd b { display: block; font-size: 12.5pt; line-height: 1.25; color: #1d2a24; margin-top: 3px; word-break: normal; overflow-wrap: break-word; hyphens: manual; }
+ .cd b.sm { font-size: 11pt; } .cd b.xs { font-size: 9.5pt; } .cd small { display: block; color: #6b7a72; font-size: 8.5pt; margin-top: 2px; }
+ .cd .mono { font-size: 9.5pt; letter-spacing: -.02em; white-space: nowrap; } .cd.l2 { grid-column: span 2; } .cd { min-width: 0; }
  .cds.n4 { grid-template-columns: repeat(4, 1fr); } .cds.n4 .cd b { font-size: 16pt; color: #1f4933; }
  .placar { display: grid; grid-template-columns: 1.2fr repeat(3, 1fr); gap: 8px; margin: 6px 0 12px; }
  .placar div { border-radius: 10px; padding: 10px; text-align: center; } .placar b { display: block; font-size: 20pt; } .placar span { font-size: 8.5pt; }
@@ -572,13 +577,13 @@ function rxRelatorioHtml(u, F) {
  .dot.ok { background: #2e7d32; } .dot.at { background: #f9a825; } .dot.no { background: #c62828; } .dot.na { background: #b0bab4; }
  .dk { width: 100%; border-collapse: collapse; border-radius: 10px; overflow: hidden; margin: 6px 0; font-size: 9.5pt; } .dk th { background: #1d2a24; color: #fff; text-align: left; padding: 7px 8px; font-size: 8pt; text-transform: uppercase; letter-spacing: .05em; }
  .dk td { padding: 7px 8px; border-bottom: 1px solid #e5ebe7; } .dk .def { color: #c62828; font-weight: 700; } .dk .bom { color: #1b6b3a; font-weight: 700; }
- .br { display: grid; grid-template-columns: 38% 1fr 54px; gap: 8px; align-items: center; margin: 4px 0; font-size: 9pt; } .br i { height: 10px; background: #eef2ef; border-radius: 5px; overflow: hidden; } .br em { display: block; height: 100%; border-radius: 5px; } .br b { text-align: right; }
+ .br { display: grid; grid-template-columns: 52% 1fr 44px; gap: 6px; align-items: center; margin: 4px 0; font-size: 8.5pt; } .br span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .br i { height: 10px; background: #eef2ef; border-radius: 5px; overflow: hidden; } .br em { display: block; height: 100%; border-radius: 5px; } .br b { text-align: right; }
  .duas { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
  img.mapa { width: 100%; border-radius: 10px; border: 1px solid #cfd8d3; margin: 4px 0 2px; } .leg { font-size: 8pt; color: #5f6d66; margin-bottom: 6px; }
  .leg span { display: inline-block; width: 12px; height: 9px; border-radius: 2px; margin: 0 3px -1px 8px; }
  .rx-tab, table.rx-tab { width: 100%; border-collapse: collapse; font-size: 8.5pt; } .rx-tab th { background: #f3f7f4; text-align: left; padding: 5px; } .rx-tab td { border-bottom: 1px solid #e5ebe7; padding: 4px 5px; vertical-align: top; } .rx-tab tr { break-inside: avoid; }
  .rx-cob { display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 4px 0 8px; font-size: 9pt; } .rx-cob i, .rx-sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
- .mono { font-family: Consolas, monospace; } .hint { color: #5f6d66; font-size: 8.5pt; } a { color: #1f4933; }
+ .mono { font-family: Consolas, monospace; } .rx-tab .mono, .dk .mono { font-size: 8pt; overflow-wrap: anywhere; } .hint { color: #5f6d66; font-size: 8.5pt; } a { color: #1f4933; }
  .obs { border: 1px solid #dfe8e2; border-left: 4px solid #83bb4e; border-radius: 8px; padding: 8px 10px; margin: 6px 0; font-size: 9pt; background: #fafcfb; }
  .fonte { display: grid; grid-template-columns: 30% 1fr; gap: 4px 12px; font-size: 9pt; } .fonte b { color: #1f4933; }
  .valida { display: flex; gap: 14px; align-items: center; border: 1px solid #dfe8e2; border-radius: 10px; padding: 10px; margin-top: 12px; } .valida .qr { width: 96px; height: 96px; } .valida .qr svg { width: 100%; height: 100%; }
@@ -596,16 +601,17 @@ function rxRelatorioHtml(u, F) {
 <div class="capa">
   <div class="topo"><img src="${logo}" alt="CS Consultoria Ambiental"><span class="data">${esc(dataHora)}</span></div>
   <div class="meio"><div class="kick">DIAGNÓSTICO AMBIENTAL RURAL · CONSULTA AUTOMÁTICA</div><h1>Raio-X do<span>Imóvel Rural</span></h1>
-    <div class="sub">Consulta automática a ${todos.length} indicadores em bases públicas oficiais · ${esc(mun)}</div></div>
+    <div class="sub">Consulta automática a ${todos.length} indicadores em bases públicas oficiais<br><b>${esc(mun)}</b></div></div>
   <div class="faixa"><div><span>Emitido por</span><b>CS Consultoria Ambiental</b></div><div><span>CAR</span><b class="mono">${esc(u.nome)}</b></div>
     <div><span>Área total</span><b>${rxF(area)} ha</b></div><div class="qr">${qr(link, 92)}</div></div>
   ${p.ficticio ? '<div class="fict">IMÓVEL FICTÍCIO – exemplo criado só para demonstração. Não corresponde a nenhum imóvel ou pessoa real.</div>' : ''}
 </div>
 
 ${sec('Detalhes do imóvel', 'Informações cadastrais e localização', `
-  <div class="cds">${card('CAR', `<span class="mono" style="font-size:9pt">${esc(u.nome)}</span>`)}${card('Status do CAR', esc(p['Status do CAR'] || '–'))}${card('Condição', esc(p.situacao || p['Condição'] || '–'))}
-  ${card('Data de cadastro / atualização', esc(p['Data de cadastro/atualização'] || '–'))}${card('Área calculada', `${rxF(area)} ha`, decl ? `declarada: ${rxF(decl)} ha` : '')}${card('Módulos fiscais', esc(p['Módulos fiscais'] || '–'), esc(p.Porte || ''))}
-  ${card('Município', esc(mun))}${card('Microbacia', esc(r.mbac[0] || '–'))}${card('Tipo', esc(p.Tipo || '–'))}</div>
+  <div class="cds">${card('CAR', `<span class="mono">${esc(u.nome)}</span>`, '', 'l2')}${card('Status do CAR', esc(p['Status do CAR'] || '–'))}
+  ${card('Condição', esc(p.situacao || p['Condição'] || '–'), '', 'l2')}${card('Cadastro / atualização', esc(p['Data de cadastro/atualização'] || '–'))}
+  ${card('Área calculada', `${rxF(area)} ha`, decl ? `declarada: ${rxF(decl)} ha` : '')}${card('Módulos fiscais', esc(p['Módulos fiscais'] || '–'), esc(p.Porte || ''))}${card('Tipo', esc(p.Tipo || '–'))}
+  ${card('Município', esc(mun))}${card('Microbacia', esc(r.mbac[0] || '–'), '', 'l2')}</div>
   ${F.foto ? `<img class="mapa" src="${F.foto}" alt="Localização"><div class="leg">Perímetro do imóvel (vermelho) sobre imagem de satélite (Esri World Imagery).</div>` : ''}`)}
 
 ${sec('Resultado da análise', 'Resumo dos indicadores consultados', `
