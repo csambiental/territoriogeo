@@ -1,0 +1,11 @@
+name: Sondar hidrografia (temporário)
+on: { workflow_dispatch: {} }
+jobs:
+  s:
+    runs-on: ubuntu-24.04
+    steps:
+      - run: |
+          set +e
+          curl -s -m 60 "https://www.snirh.gov.br/arcgis/rest/services/SPR?f=json" | python3 -c "import json,sys; d=json.load(sys.stdin); print([s['name'] for s in d.get('services',[])])"
+          curl -s -m 60 "https://geopr.iat.pr.gov.br/server/rest/services/00_PUBLICACOES?f=json" | python3 -c "import json,sys; d=json.load(sys.stdin); print([s['name'] for s in d.get('services',[]) if any(k in s['name'].lower() for k in ['hidro','rio','drena','agua','nascen','massa'])])"
+          curl -s -m 60 "https://geopr.iat.pr.gov.br/server/rest/services?f=json" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('folders')); print([s['name'] for s in d.get('services',[])][:50])"
