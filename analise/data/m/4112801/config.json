@@ -9,7 +9,7 @@
   ],
   "zoom": 10.5
  },
- "atualizado_em": "2026-11-10",
+ "atualizado_em": "2026-11-13",
  "resumo": [
   {
    "valor": "845",
@@ -831,6 +831,8 @@
   "massas": "data/m/4112801/massas_dagua.geojson",
   "microbacias": "data/m/4112801/microbacias.geojson",
   "declividade": "data/m/4112801/declividade.json",
-  "municipio": "Joaquim Távora/PR"
+  "municipio": "Joaquim Távora/PR",
+  "rios": "data/m/4112801/rios_fbds.geojson",
+  "nascentes": "data/m/4112801/nascentes_fbds.geojson"
  }
 }

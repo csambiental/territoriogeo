@@ -1,0 +1,19 @@
+/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:39: DeprecationWarning: ssl.TLSVersion.TLSv1 is deprecated
+  SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
+Município 4112801 Joaquim Távora
+
+===== Hidrografia FBDS (IAT) =====
+   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 696
+fbds_rio_ate10m_larg 2628
+   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 260
+fbds_nascentes 538
+----- Hidrografia FBDS (IAT) ok (15s)
+
+===== Config =====
+config ok Joaquim Távora 845 imóveis
+----- Config ok (1s)

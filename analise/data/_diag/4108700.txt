@@ -1,0 +1,17 @@
+/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:39: DeprecationWarning: ssl.TLSVersion.TLSv1 is deprecated
+  SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
+Município 4108700 Grandes Rios
+
+===== Hidrografia FBDS (IAT) =====
+   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 999
+fbds_rio_ate10m_larg 1347
+   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 971
+fbds_nascentes 506
+----- Hidrografia FBDS (IAT) ok (15s)
+
+===== Config =====
+config ok Grandes Rios 911 imóveis
+----- Config ok (0s)
