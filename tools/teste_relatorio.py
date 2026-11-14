@@ -13,6 +13,14 @@ with sync_playwright() as p:
         pg.on('pageerror', lambda e: print('erro na página:', e))
         pg.goto(f'{BASE}/analise/index.html?m=4108700&car=PR-4108700-EXEMPLO-FICTICIO')
         pg.wait_for_function("() => !document.getElementById('raioxPdf').disabled", timeout=180000)
+        if not pdf:   # camadas Sentinel-2 no mapa
+            pg.evaluate("() => document.getElementById('raioxDialog').close()")
+            for cam in ('s2-cor', 's2-ndvi'):
+                pg.evaluate(f"() => document.querySelector('.camada-row[data-id=\"{cam}\"]').click()"); pg.wait_for_timeout(9000)
+                pg.screenshot(path=f'{OUT}/mapa_{cam}.png')
+                print('rotulo', pg.evaluate(f"() => document.querySelector('.camada-row[data-id=\"{cam}\"] .camada-nome').textContent"))
+                pg.evaluate(f"() => document.querySelector('.camada-row[data-id=\"{cam}\"]').click()")
+            pg.evaluate("() => document.getElementById('raioxDialog').showModal()")
         if pdf:
             pg.set_input_files('#raioxItr', pdf)
             pg.wait_for_function("() => RX.ultimo && RX.ultimo.itr && RX.ultimo.previa", timeout=240000)

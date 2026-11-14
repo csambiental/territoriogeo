@@ -282,6 +282,7 @@ async function analisarImovel(nome) {
         RX.itr = RX.itr || {};
         RX.ultimo = { nome, html, codigo, quando, alvo, viz: r.car, sigef: r.sigef, pontos: pontosFoto, p, r, area, uso, flags, N, pend, B, C, itr: (RX.itr || {})[nome] || null };
         rxMostrarItr();
+        { const a = document.getElementById('raioxCopernicus'); if (a && typeof s2LinkCopernicus === 'function') { const [lg, lt] = turf.centroid(alvo).geometry.coordinates; a.href = s2LinkCopernicus(lg, lt, null, false); a.hidden = false; } }
         itrPrevia(RX.ultimo).then(pv => { if (RX.ultimo && RX.ultimo.nome === nome) { RX.ultimo.previa = pv; rxMostrarItr(); } }).catch(e => console.error('prévia ITR', e));
         document.getElementById('raioxPdf').disabled = false;
     } catch (e) {
@@ -416,8 +417,10 @@ async function gerarRelatorioRaiox() {
     const foto3 = parc.length ? await rxFotoSigef(u.alvo, parc) : null;
     etapa('mapa de outorgas e licenças (4/4)');
     const foto4 = (u.pontos || []).length ? await rxFotoPontos(u.alvo, u.pontos) : null;
+    etapa('imagem Sentinel-2 mais recente e NDVI');
+    const s2 = typeof s2DadosRelatorio === 'function' ? await s2DadosRelatorio(u.alvo).catch(e => (console.error(e), null)) : null;
     map.jumpTo({ center: centro, zoom });
-    const janela = { partes: [rxRelatorioHtml(u, { foto, foto2, foto3, foto4 })] };
+    const janela = { partes: [rxRelatorioHtml(u, { foto, foto2, foto3, foto4, s2 })] };
     const url = URL.createObjectURL(new Blob(janela.partes, { type: 'text/html;charset=utf-8' }));
     const nomeArq = `raio-x_${u.nome}.html`;
     aviso.innerHTML = `<div><b>Relatório pronto</b><a class="btn btn-solid" href="${url}" target="_blank" rel="noopener" id="rxAbrir">Abrir relatório</a>
@@ -592,6 +595,9 @@ function rxRelatorioHtml(u, F) {
  .itr-cds span { display: block; font-size: 7.5pt; text-transform: uppercase; letter-spacing: .06em; color: #6b7a72; } .itr-cds b { font-size: 13pt; color: #1f4933; }
  .itr-duas { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
  .dk.rx-tab th { background: #1d2a24; color: #fff; }
+ .s2-cds { display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 8px; margin: 4px 0 8px; } .s2-cds div { border: 1px solid #dfe8e2; border-radius: 10px; padding: 8px 10px; background: #fafcfb; }
+ .s2-cds span { display: block; font-size: 7.5pt; text-transform: uppercase; letter-spacing: .06em; color: #6b7a72; } .s2-cds b { font-size: 13pt; color: #1f4933; } .s2-cds b.s2-leit { font-size: 9.5pt; line-height: 1.3; display: block; }
+ .s2-duas { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .s2-duas figure { margin: 0; } .s2-duas figcaption { font-size: 8pt; color: #5f6d66; } .s2-duas img.mapa { max-height: 105mm; object-fit: cover; }
  .noprint { text-align: center; padding: 14px; } .noprint button { padding: 10px 20px; font-size: 14px; background: #1f4933; color: #fff; border: 0; border-radius: 8px; cursor: pointer; }
  @media print { body { background: #fff; } .noprint { display: none; } h4 { break-after: avoid; } img.mapa { break-inside: avoid; max-height: 125mm; object-fit: cover; } }
 </style></head><body>
@@ -613,6 +619,8 @@ ${sec('Detalhes do imóvel', 'Informações cadastrais e localização', `
   ${card('Área calculada', `${rxF(area)} ha`, decl ? `declarada: ${rxF(decl)} ha` : '')}${card('Módulos fiscais', esc(p['Módulos fiscais'] || '–'), esc(p.Porte || ''))}${card('Tipo', esc(p.Tipo || '–'))}
   ${card('Município', esc(mun))}${card('Microbacia', esc(r.mbac[0] || '–'), '', 'l2')}</div>
   ${F.foto ? `<img class="mapa" src="${F.foto}" alt="Localização"><div class="leg">Perímetro do imóvel (vermelho) sobre imagem de satélite (Esri World Imagery).</div>` : ''}`)}
+
+${F.s2 ? sec('Imagem de satélite mais recente', 'Sentinel-2: como o imóvel está hoje', s2Html(F.s2)) : ''}
 
 ${sec('Resultado da análise', 'Resumo dos indicadores consultados', `
   <div class="placar"><div class="g"><b>${emAcordo}/${avaliados}</b><span>indicadores em acordo</span></div><div class="ok"><b>${cont('ok')}</b><span>✓ em acordo</span></div><div class="at"><b>${cont('at')}</b><span>! atenção</span></div><div class="no"><b>${cont('no')}</b><span>✕ em desacordo</span></div></div>
@@ -655,6 +663,7 @@ ${sec('Metodologia e fontes', 'Como esta análise foi feita', `
    <b>IBAMA</b><span>Áreas embargadas (situação e data do embargo).</span>
    <b>MapBiomas Alerta</b><span>Alertas de desmatamento validados, com data de detecção.</span>
    <b>Uso do solo</b><span>${u.B.usoFonte || 'MapBiomas / Esri'} – percentuais por classe dentro do perímetro.</span>
+   <b>Sentinel-2 (Copernicus)</b><span>Imagem mais recente sem nuvens (10 m) e NDVI – vigor da vegetação – dentro do perímetro; serviço Esri Sentinel-2 Views (ESA/Comissão Europeia, AWS), atualizado diariamente.</span>
    <b>Copernicus DEM (30 m)</b><span>Declividade em classes da Embrapa.</span>
    <b>Declaração do ITR</b><span>Quando anexada: DIAC/DIAT da Receita Federal lida no computador do usuário (áreas, VTN, grau de utilização, rebanho). Dados pessoais do contribuinte não são lidos.</span>
    <b>IAT – SIGARH</b><span>Outorgas e declarações de uso da água (tipo, número da portaria e vencimento).</span>

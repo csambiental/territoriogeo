@@ -216,6 +216,7 @@ function desenharOpcional(o) {
     // mapa ainda carregando (satélite/dados): desenha assim que terminar
     if (!map.isStyleLoaded()) { map.once('idle', () => { if (opcionaisAtivas.has(o.id)) { desenharOpcional(o); aplicarVisibilidadeCamadas(); } }); return; }
     const antes = (o.antes && map.getLayer(o.antes)) ? o.antes : antesDasFazendas();
+    if (o.tipo === 's2') { s2Desenhar(o, antes); return; }
     if (o.geometria === 'ponto') {
         map.addSource(`op-${o.id}`, { type: 'geojson', data: g });
         const cor = o.cor_por && o.cores ? ['match', ['get', o.cor_por], ...Object.entries(o.cores).flat(), o.cor || '#777777'] : o.cor;
@@ -357,7 +358,7 @@ function renderOpcionais() {
         } else {
             b.classList.add('carregando');
             try {
-                if (o.tipo === 'vetor') opcionaisData[o.id] = opcionaisData[o.id] || { vetor: true };
+                if (o.tipo === 'vetor' || o.tipo === 's2') opcionaisData[o.id] = opcionaisData[o.id] || { vetor: true };
                 else if (!opcionaisData[o.id]) opcionaisData[o.id] = await (await fetch(o.arquivo, { cache: 'no-cache' })).json();
                 opcionaisAtivas.add(o.id); desenharOpcional(o); aplicarVisibilidadeCamadas();
             } catch (err) { console.error(err); alertaCamada(b); }
@@ -1181,6 +1182,7 @@ async function iniciar() {
             console.error(`Não foi possível carregar ${f.arquivo}`, err);
         }
     }));
+    if (typeof s2AdicionarCamadas === 'function') s2AdicionarCamadas(dados);
     dadosGerais = dados;
     renderPrograma(dados.programa);
     if (dados.lista_titulo) document.getElementById('listaTitulo').textContent = dados.lista_titulo;
