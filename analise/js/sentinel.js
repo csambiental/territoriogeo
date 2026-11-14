@@ -9,7 +9,7 @@ const S2_CAMADAS = [
     { id: 's2-cor', tipo: 's2', regra: 'cor', secao: 'Satélite recente (Sentinel-2)', nome: 'Imagem Sentinel-2 mais recente (cor natural, 10 m)', opacidade: 1,
       fonte: 'Copernicus Sentinel-2 (ESA/Comissão Europeia) via Esri/AWS – cena mais recente com até 10% de nuvens em cada ponto, últimos 14 meses.' },
     { id: 's2-ndvi', tipo: 's2', regra: 'ndvi', secao: 'Satélite recente (Sentinel-2)', nome: 'NDVI recente – vigor da vegetação (Sentinel-2)', opacidade: 0.85,
-      legenda_itens: [{ rotulo: 'solo exposto / água', cor: '#a50026' }, { rotulo: 'vegetação rala ou seca', cor: '#fdae61' }, { rotulo: 'vegetação moderada', cor: '#d9ef8b' }, { rotulo: 'vegetação densa e vigorosa', cor: '#1a9850' }],
+      legenda_itens: [{ rotulo: 'solo exposto, palha ou água', cor: '#b5651d' }, { rotulo: 'vegetação rala ou seca', cor: '#e8d84a' }, { rotulo: 'vegetação moderada', cor: '#a6c93a' }, { rotulo: 'vegetação densa e vigorosa', cor: '#2f8f2f' }],
       fonte: 'NDVI do Sentinel-2: quanto mais verde, mais folha viva. Mesma imagem recente da camada em cor natural.' }];
 const s2q = o => encodeURIComponent(JSON.stringify(o));
 const s2Tiles = regra => `${S2_URL}/exportImage?bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857&size=256,256&format=jpgpng&f=image&renderingRule=${s2q({ rasterFunction: S2_REGRAS[regra] })}&mosaicRule=${s2q(S2_MOSAICO)}`;
@@ -66,7 +66,7 @@ async function s2EstatNdvi(alvo) {   // NDVI médio e distribuição por classes
         mosaicRule: JSON.stringify(S2_MOSAICO), pixelSize: '10', f: 'json' });
     const r = await (await fetch(`${S2_URL}/computeStatisticsHistograms`, { method: 'POST', body: p })).json();
     const st = r.statistics?.[0], h = r.histograms?.[0]; if (!st || !h) return null;
-    const passo = (h.max - h.min) / h.size, cls = [[-1, 0.2, 'Solo exposto, palha ou água'], [0.2, 0.4, 'Vegetação rala ou seca'], [0.4, 0.6, 'Vegetação moderada'], [0.6, 1.01, 'Vegetação densa e vigorosa']];
+    const passo = (h.max - h.min) / h.size, cls = [[-1, 0.15, 'Solo exposto, palha ou água'], [0.15, 0.3, 'Vegetação rala ou seca'], [0.3, 0.45, 'Vegetação moderada'], [0.45, 1.01, 'Vegetação densa e vigorosa']];   // limites ajustados ao NDVI deste serviço (reflectância de topo da atmosfera)
     const tot = h.counts.reduce((a, b) => a + b, 0) || 1;
     const dist = cls.map(([a, b, nome]) => ({ nome, pct: 100 * h.counts.reduce((s, c, i) => { const v = h.min + (i + 0.5) * passo; return s + (v >= a && v < b ? c : 0); }, 0) / tot }));
     return { media: st.mean, mediana: st.median, min: st.min, max: st.max, dist };
@@ -79,8 +79,8 @@ async function s2DadosRelatorio(alvo) {
 }
 function s2Html(s) {
     if (!s || (!s.cor && !s.ndvi)) return '<p class="hint">Imagem Sentinel-2 indisponível no momento.</p>';
-    const d = s.data ? s.data.toLocaleDateString('pt-BR') : '–', cores = ['#a50026', '#fdae61', '#d9ef8b', '#1a9850'];
-    const leitura = !s.est ? '' : s.est.media >= 0.6 ? 'vegetação densa e vigorosa na maior parte do imóvel' : s.est.media >= 0.4 ? 'cobertura vegetal moderada (lavoura em desenvolvimento, pastagem ou mata mista)' : s.est.media >= 0.2 ? 'vegetação rala ou seca em boa parte do imóvel (entressafra, pasto degradado ou palhada)' : 'predomínio de solo exposto, palhada ou água';
+    const d = s.data ? s.data.toLocaleDateString('pt-BR') : '–', cores = ['#b5651d', '#e8d84a', '#a6c93a', '#2f8f2f'];
+    const leitura = !s.est ? '' : s.est.media >= 0.45 ? 'vegetação densa e vigorosa na maior parte do imóvel' : s.est.media >= 0.3 ? 'cobertura vegetal moderada (lavoura em desenvolvimento, pastagem ou mata mista)' : s.est.media >= 0.15 ? 'vegetação rala ou seca em boa parte do imóvel (entressafra, pasto degradado ou palhada)' : 'predomínio de solo exposto, palhada ou água';
     return `<div class="s2-cds"><div><span>Cena mais recente sem nuvens</span><b>${d}</b></div><div><span>NDVI médio do imóvel</span><b>${s.est ? s.est.media.toFixed(2).replace('.', ',') : '–'}</b></div>
         <div><span>Leitura</span><b class="s2-leit">${leitura || '–'}</b></div></div>
       <div class="s2-duas">${s.cor ? `<figure><img class="mapa" src="${s.cor}" alt="Sentinel-2 cor natural"><figcaption>Cor natural (Sentinel-2, 10 m)</figcaption></figure>` : ''}${s.ndvi ? `<figure><img class="mapa" src="${s.ndvi}" alt="NDVI"><figcaption>NDVI – vigor da vegetação</figcaption></figure>` : ''}</div>
