@@ -1,0 +1,23 @@
+name: Sondar Sentinel-2 (temporário)
+on: { workflow_dispatch: {} }
+jobs:
+  s:
+    runs-on: ubuntu-24.04
+    steps:
+      - run: |
+          set +e
+          B=https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer
+          curl -s -m 60 "$B?f=json" > s.json; python3 - <<'PY'
+          import json; d = json.load(open('s.json'))
+          print('keys', list(d)[:40]); print('pixel', d.get('pixelSizeX'), 'time', d.get('timeInfo')); print('caps', d.get('capabilities'), d.get('allowedMosaicMethods'))
+          print('rf', [r.get('name') for r in d.get('rasterFunctionInfos', [])]); print('fields', [f['name'] for f in d.get('fields', [])][:40])
+          print('licenca', d.get('copyrightText'), d.get('serviceDescription', '')[:300])
+          PY
+          BB="-5687000,-2704000,-5684000,-2701000"
+          for rf in "Natural Color with DRA" "NDVI Colorized" "NDVI Raw"; do
+            R=$(python3 -c "import json,urllib.parse;print(urllib.parse.quote(json.dumps({'rasterFunction':'$rf'})))")
+            curl -s -m 60 -o "t.png" "$B/exportImage?bbox=$BB&bboxSR=3857&imageSR=3857&size=256,256&format=jpgpng&renderingRule=$R&f=image"; echo "$rf -> $(file -b t.png | cut -c1-60) $(wc -c < t.png)"
+          done
+          curl -s -m 60 "$B/query?where=1%3D1&geometry=-51.37,-23.62&geometryType=esriGeometryPoint&inSR=4326&outFields=acquisitiondate,cloudcover,name&orderByFields=acquisitiondate+DESC&resultRecordCount=5&returnGeometry=false&f=json" | head -c 900; echo
+          curl -s -m 60 "$B/getSamples?geometry=%7B%22x%22%3A-51.37%2C%22y%22%3A-23.62%2C%22spatialReference%22%3A%7B%22wkid%22%3A4326%7D%7D&geometryType=esriGeometryPoint&returnFirstValueOnly=true&outFields=acquisitiondate&f=json" | head -c 500; echo
+          curl -sI -m 30 "$B/exportImage?bbox=$BB&bboxSR=3857&size=256,256&f=image" | grep -i "access-control\|content-type"
