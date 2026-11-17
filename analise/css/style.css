@@ -560,3 +560,38 @@ table.ind tr.pos td { color: #1d6b3e; font-weight: 600; }
 .raiox-corpo .def { color: #c62828; font-weight: 700; } .raiox-corpo .bom { color: #1b6b3a; font-weight: 700; }
 .itr-box { border: 2px solid #83bb4e; border-radius: 10px; padding: 8px 12px; margin: 10px 0; background: #fbfdf8; }
 @media (max-width: 640px) { .itr-cds { grid-template-columns: 1fr 1fr; } .itr-duas { grid-template-columns: 1fr; } }
+
+/* ---------- escolha do município ---------- */
+.mun-btn { display: inline-flex; align-items: baseline; gap: 8px; margin: 4px 0 0 8px; vertical-align: middle; font: inherit; font-size: .82rem; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--verde); background: #eef5ef; color: var(--verde-escuro); cursor: pointer; max-width: 100%; }
+.mun-btn:hover { background: #e0eee3; }
+.mun-btn-nome { font-weight: 700; }
+.mun-btn-acao { font-size: .74rem; text-decoration: underline; }
+.mun-dialog { width: min(980px, calc(100vw - 24px)); max-height: calc(100vh - 32px); padding: 0; border: none; border-radius: var(--raio); box-shadow: 0 10px 40px rgba(0,0,0,.25); color: var(--texto); }
+.mun-dialog::backdrop { background: rgba(10, 25, 15, .45); }
+.mun-dialog header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 3px solid var(--verde); }
+.mun-dialog h2 { margin: 0; font-size: 1.05rem; color: var(--verde-escuro); }
+.mun-fechar { border: none; background: none; font-size: 1.1rem; cursor: pointer; color: var(--texto-suave); padding: 4px 8px; }
+.mun-corpo { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 16px; padding: 14px 16px 16px; max-height: calc(100vh - 110px); overflow: auto; }
+.mun-esq { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+#munBusca { font: inherit; padding: 8px 10px; border: 1px solid var(--borda); border-radius: 8px; width: 100%; box-sizing: border-box; }
+.mun-cont { margin: 0; font-size: .75rem; color: var(--texto-suave); }
+.mun-lista { display: flex; flex-direction: column; gap: 10px; max-height: 52vh; overflow: auto; }
+.mun-grupo h3 { margin: 0 0 4px; font-size: .72rem; letter-spacing: .05em; text-transform: uppercase; color: var(--texto-suave); }
+.mun-grupo button { display: flex; justify-content: space-between; gap: 8px; width: 100%; text-align: left; font: inherit; font-size: .86rem; padding: 6px 8px; border: none; border-radius: 6px; background: none; cursor: pointer; color: var(--texto); }
+.mun-grupo button:hover, .mun-grupo button:focus-visible { background: #eef5ef; }
+.mun-grupo button.atual { background: var(--verde); color: #fff; }
+.mun-grupo button small { color: inherit; opacity: .7; white-space: nowrap; }
+.mun-vazio { font-size: .82rem; color: var(--texto-suave); }
+.mun-mapa { min-width: 0; }
+#munSvg { width: 100%; height: auto; display: block; }
+#munSvg path { stroke: #fff; stroke-width: .5; }
+#munSvg path.no { fill: #dfe4e0; }
+#munSvg path.ok { fill: #83bb4e; cursor: pointer; }
+#munSvg path.ok:hover { fill: #5f9a33; }
+#munSvg path.at { fill: #1f4933; }
+#munSvg path.busca { stroke: #d97706; stroke-width: 1.8; }
+.mun-leg { margin: 6px 0 0; font-size: .74rem; color: var(--texto-suave); display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; }
+.mun-leg i { display: inline-block; width: 11px; height: 11px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
+.mun-leg .l-ok { background: #83bb4e; } .mun-leg .l-at { background: #1f4933; } .mun-leg .l-no { background: #dfe4e0; }
+.mun-dica { margin: 4px 0 0; font-size: .78rem; color: var(--verde-escuro); }
+@media (max-width: 720px) { .mun-corpo { grid-template-columns: minmax(0, 1fr); } .mun-mapa { order: -1; } .mun-lista { max-height: 40vh; } }
