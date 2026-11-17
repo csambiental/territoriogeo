@@ -1,0 +1,91 @@
+/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:39: DeprecationWarning: ssl.TLSVersion.TLSv1 is deprecated
+  SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
+Município 4109708 Ibaiti
+limite: IBGE
+
+===== CAR =====
+  CAR baixados 1806
+imóveis 1806 Counter({'Aguardando análise': 959, 'Analisado – em conformidade': 629, 'Analisado – notificação pendente': 171, 'Em análise': 42, 'Cancelado': 5}) [('Aguardando análise', 959), ('Analisado, em conformidade com a Lei nº 12.651/2012', 473), ('Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)', 145), ('Analisado, aguardando atendimento a notificação', 130), ('Em análise', 42), ('Aguardando análise, após revisão ou atendimento da notificação', 41), ('Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais', 11), ('Cancelado por decisão administrativa', 5)]
+----- CAR ok (2s)
+
+===== SIGEF =====
+parcelas 419 Counter({'Registrada': 407, 'Titulada, não registrada': 12})
+----- SIGEF ok (9s)
+
+===== IBAMA =====
+/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:171: DeprecationWarning: The 'shapely.ops.transform()' function is deprecated. Use 'shapely.transform()' or 'shapely.transform_coordseq()' instead. See https://shapely.readthedocs.io/en/latest/manual.html#shapely.ops.transform for more details.
+  g = transform(geo, transform(utm, Point(lon, lat)).buffer(60)); aprox = True
+embargos 1 Counter({'Embargo vigente': 1})
+----- IBAMA ok (21s)
+
+===== Microbacias =====
+microbacias 143
+----- Microbacias ok (15s)
+
+===== MapBiomas cobertura =====
+  indisponível: lulc_10m/collection_2/integration/mapbiomas_10m_collection2_integration_v1-classification_2023.tif HTTP response code: 403
+  indisponível: collection_10/lulc/coverage/brazil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lulc/coverage/brasil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lclu/coverage/brazil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lclu/coverage/brasil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lulc/coverage/brazil_coverage_2023.tif HTTP response code: 403
+  indisponível: collection_9/lclu/coverage/brasil_coverage_2023.tif HTTP response code: 403
+  indisponível: collection_9/lulc/coverage/brasil_coverage_2023.tif HTTP response code: 403
+  indisponível: collection_8/lclu/coverage/brasil_coverage_2022.tif HTTP response code: 403
+uso do solo: reserva Impact Observatory 2023 (4692, 4121)
+grupos (%) {'Vegetação arbórea': 32.4, 'Agricultura': 29.6, 'Pastagem e campos': 36.1, 'Área urbanizada': 1.6, 'Água': 0.3, 'Outras áreas': 0.0}
+----- MapBiomas cobertura ok (6s)
+
+===== MapBiomas alertas =====
+camada mapbiomas-alertas:dashboard-alert-rural-properties-shapefile
+alertas 9
+----- MapBiomas alertas ok (1s)
+
+===== Outorgas SIGARH =====
+   00_PUBLICACOES/outorgas_sigarh/FeatureServer camada 0 lote 968
+outorgas rural 273 fora do CAR 32
+----- Outorgas SIGARH ok (4s)
+
+===== Licenças ambientais IAT (SGA/SIA) =====
+  GeoPR: 818 licenças (com histórico); SGA consulta pública: 272
+  88 licenças só no SGA (sem coordenada no GeoPR)
+  873 licenças, 211 vigentes e 221 vencidas no mapa; pontos genéricos: 5; {'Vence em até 6 meses': 11, 'Vigente': 248, 'Vencida': 283, 'Vencida (substituída por licença mais recente)': 331}
+  grupos: {'Licença Prévia / de Instalação': 268, 'Licença de Operação': 254, 'Dispensa de licenciamento': 211, 'Autorização Ambiental': 64, 'Licença Simplificada': 62, 'Licença por Adesão e Compromisso': 14}
+----- Licenças ambientais IAT (SGA/SIA) ok (12s)
+
+===== Barragens IAT + SNISB =====
+   IG/SNISB/FeatureServer camada 0 lote 24
+   Hosted/barragens_dashboard_publico/FeatureServer camada 0 lote 42
+barragens 27 SNISB 9 IAT 26
+----- Barragens IAT + SNISB ok (46s)
+
+===== Massas d'água (ANA) =====
+   SPR/Massa_dagua/FeatureServer camada 0 lote 191
+massas d'água 95
+----- Massas d'água (ANA) ok (3s)
+
+===== Hidrografia FBDS (IAT) =====
+   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 997
+fbds_rio_ate10m_larg 156
+   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 366
+fbds_nascentes 2865
+----- Hidrografia FBDS (IAT) ok (19s)
+
+===== Relevo =====
+relevo: cotas 454.2608642578125 1000.4802856445312
+----- Relevo ok (12s)
+
+===== Pendências =====
+Counter({'Atenção': 958, 'Sem pendência identificada': 616, 'Prioridade média': 182, 'Prioridade alta': 45, 'Cancelado': 5})
+----- Pendências ok (0s)
+
+===== Config =====
+config ok Ibaiti 1801 imóveis
+----- Config ok (1s)

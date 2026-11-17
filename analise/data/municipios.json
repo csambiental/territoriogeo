@@ -18,6 +18,12 @@
   "atualizado_em": "2026-11-13"
  },
  {
+  "codigo": "4109708",
+  "nome": "Ibaiti",
+  "imoveis": 1801,
+  "atualizado_em": "2026-11-17"
+ },
+ {
   "codigo": "4112801",
   "nome": "Joaquim Távora",
   "imoveis": 845,
@@ -51,6 +57,12 @@
   "codigo": "4128401",
   "nome": "Uraí",
   "imoveis": 865,
+  "atualizado_em": "2026-11-17"
+ },
+ {
+  "codigo": "4128500",
+  "nome": "Wenceslau Braz",
+  "imoveis": 1704,
   "atualizado_em": "2026-11-17"
  }
 ]

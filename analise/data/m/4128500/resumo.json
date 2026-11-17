@@ -1,0 +1,111 @@
+{
+ "codigo": "4128500",
+ "nome": "Wenceslau Braz",
+ "atualizado_em": "2026-11-17",
+ "area_municipio_ha": 39704.4,
+ "car": {
+  "imoveis_total": 1720,
+  "imoveis_ativos": 1704,
+  "area_ativos_ha": 45647.7,
+  "status": {
+   "Ativo": 1703,
+   "Pendente": 1,
+   "Cancelado": 16
+  },
+  "condicao": {
+   "Aguardando análise": 1374,
+   "Em análise": 43,
+   "Analisado, aguardando atendimento a notificação": 45,
+   "Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)": 24,
+   "Analisado, em conformidade com a Lei nº 12.651/2012": 170,
+   "Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais": 21,
+   "Aguardando análise, após revisão ou atendimento da notificação": 27
+  },
+  "porte": {
+   "Pequena (até 4 MF)": 1578,
+   "Média (4 a 15 MF)": 117,
+   "Grande (acima de 15 MF)": 9
+  },
+  "porte_area_ha": {
+   "Média (4 a 15 MF)": 14528.7,
+   "Grande (acima de 15 MF)": 3455.6,
+   "Pequena (até 4 MF)": 27663.4
+  },
+  "faixa_vegetacao": {
+   "20% ou mais": 935,
+   "Sem informação": 188,
+   "5% a 10%": 101,
+   "Menos de 5%": 230,
+   "10% a 20%": 250
+  },
+  "pendencia_nivel": {
+   "Atenção": 1366,
+   "Prioridade média": 112,
+   "Prioridade alta": 14,
+   "Sem pendência identificada": 212
+  },
+  "georreferenciamento": {
+   "Certificado (≥ 50% da área)": 294,
+   "Não localizado no SIGEF": 1315,
+   "Parcial": 95
+  },
+  "possivel_deficit_rl": 27,
+  "atividade_sem_outorga": 38,
+  "com_alerta": 3,
+  "com_embargo_vigente": 0
+ },
+ "sigef": {
+  "parcelas": 463,
+  "area_ha": 11172.5
+ },
+ "alertas": {
+  "n": 1,
+  "area_ha": 2.7,
+  "imoveis": 3
+ },
+ "embargos": {
+  "n": 0,
+  "situacao": {}
+ },
+ "outorgas_rurais": {
+  "n": 92,
+  "tipo": {
+   "Poço (água subterrânea)": 28,
+   "Captação superficial": 61,
+   "Obras e intervenções em rios": 1,
+   "Lançamento de efluentes": 2
+  }
+ },
+ "licencas": {
+  "n": 154,
+  "tipo": {
+   "Dispensa de licenciamento": 89,
+   "Licença Simplificada": 15,
+   "Licença de Operação": 31,
+   "Autorização Ambiental": 11,
+   "Licença Prévia / de Instalação": 3,
+   "Licença por Adesão e Compromisso": 5
+  },
+  "situacao": {
+   "Vigente": 140,
+   "Vence em até 6 meses": 14
+  },
+  "vencidas_sem_renovacao": 187
+ },
+ "barragens": 3,
+ "massas_dagua": 11,
+ "nascentes": 1006,
+ "rios_km": 74.3,
+ "uso_solo": {
+  "ano": 2023,
+  "fonte": "Esri/Impact Observatory 10 m, 2023 (MapBiomas indisponível para download)",
+  "grupos": {
+   "Vegetação arbórea": 12354.9,
+   "Agricultura": 21841.1,
+   "Pastagem e campos": 4701.3,
+   "Área urbanizada": 790.2,
+   "Água": 16.8,
+   "Outras áreas": 0.0
+  }
+ }
+}

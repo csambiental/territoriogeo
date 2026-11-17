@@ -1,0 +1,113 @@
+{
+ "codigo": "4109708",
+ "nome": "Ibaiti",
+ "atualizado_em": "2026-11-17",
+ "area_municipio_ha": 89636.1,
+ "car": {
+  "imoveis_total": 1806,
+  "imoveis_ativos": 1801,
+  "area_ativos_ha": 91165.8,
+  "status": {
+   "Ativo": 1798,
+   "Pendente": 3,
+   "Cancelado": 5
+  },
+  "condicao": {
+   "Aguardando análise": 959,
+   "Em análise": 42,
+   "Analisado, aguardando atendimento a notificação": 130,
+   "Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)": 145,
+   "Analisado, em conformidade com a Lei nº 12.651/2012": 473,
+   "Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais": 11,
+   "Aguardando análise, após revisão ou atendimento da notificação": 41
+  },
+  "porte": {
+   "Pequena (até 4 MF)": 1613,
+   "Grande (acima de 15 MF)": 71,
+   "Média (4 a 15 MF)": 117
+  },
+  "porte_area_ha": {
+   "Pequena (até 4 MF)": 27509.6,
+   "Média (4 a 15 MF)": 16192.5,
+   "Grande (acima de 15 MF)": 47463.7
+  },
+  "faixa_vegetacao": {
+   "20% ou mais": 1000,
+   "10% a 20%": 309,
+   "5% a 10%": 170,
+   "Sem informação": 23,
+   "Menos de 5%": 299
+  },
+  "pendencia_nivel": {
+   "Atenção": 958,
+   "Prioridade média": 182,
+   "Prioridade alta": 45,
+   "Sem pendência identificada": 616
+  },
+  "georreferenciamento": {
+   "Não localizado no SIGEF": 1513,
+   "Certificado (≥ 50% da área)": 254,
+   "Parcial": 34
+  },
+  "possivel_deficit_rl": 55,
+  "atividade_sem_outorga": 38,
+  "com_alerta": 7,
+  "com_embargo_vigente": 1
+ },
+ "sigef": {
+  "parcelas": 419,
+  "area_ha": 42346.4
+ },
+ "alertas": {
+  "n": 3,
+  "area_ha": 7.4,
+  "imoveis": 9
+ },
+ "embargos": {
+  "n": 1,
+  "situacao": {
+   "Embargo vigente": 1
+  }
+ },
+ "outorgas_rurais": {
+  "n": 273,
+  "tipo": {
+   "Captação superficial": 236,
+   "Poço (água subterrânea)": 28,
+   "Barragem / soleira": 3,
+   "Obras e intervenções em rios": 4,
+   "Lançamento de efluentes": 2
+  }
+ },
+ "licencas": {
+  "n": 211,
+  "tipo": {
+   "Dispensa de licenciamento": 132,
+   "Licença Prévia / de Instalação": 17,
+   "Licença Simplificada": 19,
+   "Licença de Operação": 32,
+   "Licença por Adesão e Compromisso": 8,
+   "Autorização Ambiental": 3
+  },
+  "situacao": {
+   "Vigente": 203,
+   "Vence em até 6 meses": 8
+  },
+  "vencidas_sem_renovacao": 221
+ },
+ "barragens": 27,
+ "massas_dagua": 95,
+ "nascentes": 2865,
+ "rios_km": 85.9,
+ "uso_solo": {
+  "ano": 2023,
+  "fonte": "Esri/Impact Observatory 10 m, 2023 (MapBiomas indisponível para download)",
+  "grupos": {
+   "Vegetação arbórea": 28999.8,
+   "Agricultura": 26570.0,
+   "Pastagem e campos": 32398.9,
+   "Área urbanizada": 1441.3,
+   "Água": 226.1
+  }
+ }
+}
