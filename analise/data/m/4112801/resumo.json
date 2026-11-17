@@ -1,0 +1,109 @@
+{
+ "codigo": "4112801",
+ "nome": "Joaquim Távora",
+ "atualizado_em": "2026-11-13",
+ "area_municipio_ha": 28752.7,
+ "car": {
+  "imoveis_total": 847,
+  "imoveis_ativos": 845,
+  "area_ativos_ha": 32140.6,
+  "status": {
+   "Ativo": 839,
+   "Pendente": 6,
+   "Cancelado": 2
+  },
+  "condicao": {
+   "Aguardando análise": 468,
+   "Em análise": 2,
+   "Analisado, aguardando atendimento a notificação": 59,
+   "Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)": 61,
+   "Analisado, em conformidade com a Lei nº 12.651/2012": 239,
+   "Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais": 4,
+   "Aguardando análise, após revisão ou atendimento da notificação": 12
+  },
+  "porte": {
+   "Pequena (até 4 MF)": 772,
+   "Grande (acima de 15 MF)": 16,
+   "Média (4 a 15 MF)": 57
+  },
+  "porte_area_ha": {
+   "Média (4 a 15 MF)": 8033.4,
+   "Grande (acima de 15 MF)": 11319.9,
+   "Pequena (até 4 MF)": 12787.3
+  },
+  "faixa_vegetacao": {
+   "Menos de 5%": 306,
+   "10% a 20%": 178,
+   "20% ou mais": 246,
+   "Sem informação": 14,
+   "5% a 10%": 101
+  },
+  "pendencia_nivel": {
+   "Atenção": 436,
+   "Prioridade média": 86,
+   "Prioridade alta": 40,
+   "Sem pendência identificada": 283
+  },
+  "georreferenciamento": {
+   "Certificado (≥ 50% da área)": 237,
+   "Não localizado no SIGEF": 575,
+   "Parcial": 33
+  },
+  "possivel_deficit_rl": 50,
+  "atividade_sem_outorga": 48,
+  "com_alerta": 0,
+  "com_embargo_vigente": 0
+ },
+ "sigef": {
+  "parcelas": 315,
+  "area_ha": 12979.3
+ },
+ "alertas": {
+  "n": 0,
+  "area_ha": 0,
+  "imoveis": 0
+ },
+ "embargos": {
+  "n": 0,
+  "situacao": {}
+ },
+ "outorgas_rurais": {
+  "n": 83,
+  "tipo": {
+   "Captação superficial": 63,
+   "Poço (água subterrânea)": 17,
+   "Barragem / soleira": 1,
+   "Lançamento de efluentes": 2
+  }
+ },
+ "licencas": {
+  "n": 129,
+  "tipo": {
+   "Dispensa de licenciamento": 83,
+   "Licença Simplificada": 18,
+   "Licença de Operação": 18,
+   "Licença Prévia / de Instalação": 4,
+   "Licença por Adesão e Compromisso": 6
+  },
+  "situacao": {
+   "Vigente": 126,
+   "Vence em até 6 meses": 3
+  },
+  "vencidas_sem_renovacao": 157
+ },
+ "barragens": 4,
+ "massas_dagua": 30,
+ "nascentes": 538,
+ "rios_km": 706.1,
+ "uso_solo": {
+  "ano": 2023,
+  "fonte": "Esri/Impact Observatory 10 m, 2023 (MapBiomas indisponível para download)",
+  "grupos": {
+   "Vegetação arbórea": 5463.2,
+   "Agricultura": 6662.3,
+   "Pastagem e campos": 15894.1,
+   "Área urbanizada": 717.0,
+   "Água": 16.1
+  }
+ }
+}

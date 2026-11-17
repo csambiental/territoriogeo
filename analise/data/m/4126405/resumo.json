@@ -1,0 +1,112 @@
+{
+ "codigo": "4126405",
+ "nome": "Sertaneja",
+ "atualizado_em": "2026-11-17",
+ "area_municipio_ha": 44361.6,
+ "car": {
+  "imoveis_total": 455,
+  "imoveis_ativos": 451,
+  "area_ativos_ha": 34779.8,
+  "status": {
+   "Ativo": 450,
+   "Pendente": 1,
+   "Cancelado": 4
+  },
+  "condicao": {
+   "Aguardando análise": 231,
+   "Em análise": 14,
+   "Analisado, aguardando atendimento a notificação": 68,
+   "Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)": 11,
+   "Analisado, em conformidade com a Lei nº 12.651/2012": 119,
+   "Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais": 1,
+   "Aguardando análise, após revisão ou atendimento da notificação": 7
+  },
+  "porte": {
+   "Pequena (até 4 MF)": 344,
+   "Média (4 a 15 MF)": 78,
+   "Grande (acima de 15 MF)": 29
+  },
+  "porte_area_ha": {
+   "Média (4 a 15 MF)": 10050.7,
+   "Grande (acima de 15 MF)": 16822.2,
+   "Pequena (até 4 MF)": 7906.9
+  },
+  "faixa_vegetacao": {
+   "Menos de 5%": 332,
+   "5% a 10%": 55,
+   "10% a 20%": 37,
+   "20% ou mais": 26,
+   "Sem informação": 1
+  },
+  "pendencia_nivel": {
+   "Atenção": 193,
+   "Prioridade média": 77,
+   "Prioridade alta": 54,
+   "Sem pendência identificada": 127
+  },
+  "georreferenciamento": {
+   "Não localizado no SIGEF": 203,
+   "Certificado (≥ 50% da área)": 230,
+   "Parcial": 18
+  },
+  "possivel_deficit_rl": 101,
+  "atividade_sem_outorga": 10,
+  "com_alerta": 1,
+  "com_embargo_vigente": 0
+ },
+ "sigef": {
+  "parcelas": 366,
+  "area_ha": 18549.1
+ },
+ "alertas": {
+  "n": 1,
+  "area_ha": 4.1,
+  "imoveis": 1
+ },
+ "embargos": {
+  "n": 1,
+  "situacao": {
+   "Embargo vigente": 1
+  }
+ },
+ "outorgas_rurais": {
+  "n": 8,
+  "tipo": {
+   "Poço (água subterrânea)": 4,
+   "Captação superficial": 2,
+   "Obras e intervenções em rios": 2
+  }
+ },
+ "licencas": {
+  "n": 53,
+  "tipo": {
+   "Licença de Operação": 17,
+   "Dispensa de licenciamento": 15,
+   "Licença Simplificada": 7,
+   "Licença Prévia / de Instalação": 10,
+   "Licença por Adesão e Compromisso": 1,
+   "Autorização Ambiental": 3
+  },
+  "situacao": {
+   "Vigente": 43,
+   "Vence em até 6 meses": 10
+  },
+  "vencidas_sem_renovacao": 102
+ },
+ "barragens": 15,
+ "massas_dagua": 22,
+ "nascentes": 72,
+ "rios_km": 342.1,
+ "uso_solo": {
+  "ano": 2023,
+  "fonte": "Esri/Impact Observatory 10 m, 2023 (MapBiomas indisponível para download)",
+  "grupos": {
+   "Vegetação arbórea": 3030.6,
+   "Agricultura": 31556.7,
+   "Pastagem e campos": 426.6,
+   "Área urbanizada": 512.9,
+   "Água": 8834.7,
+   "Outras áreas": 0.2
+  }
+ }
+}

@@ -1,0 +1,115 @@
+{
+ "codigo": "4106407",
+ "nome": "Cornélio Procópio",
+ "atualizado_em": "2026-11-17",
+ "area_municipio_ha": 63379.4,
+ "car": {
+  "imoveis_total": 981,
+  "imoveis_ativos": 968,
+  "area_ativos_ha": 57977.7,
+  "status": {
+   "Ativo": 965,
+   "Pendente": 3,
+   "Cancelado": 13
+  },
+  "condicao": {
+   "Aguardando análise": 490,
+   "Em análise": 23,
+   "Analisado, aguardando atendimento a notificação": 78,
+   "Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)": 55,
+   "Analisado, em conformidade com a Lei nº 12.651/2012": 279,
+   "Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais": 25,
+   "Aguardando análise, após revisão ou atendimento da notificação": 18
+  },
+  "porte": {
+   "Média (4 a 15 MF)": 133,
+   "Pequena (até 4 MF)": 795,
+   "Grande (acima de 15 MF)": 40
+  },
+  "porte_area_ha": {
+   "Média (4 a 15 MF)": 18157.5,
+   "Grande (acima de 15 MF)": 24384.4,
+   "Pequena (até 4 MF)": 15435.9
+  },
+  "faixa_vegetacao": {
+   "5% a 10%": 144,
+   "20% ou mais": 318,
+   "10% a 20%": 219,
+   "Menos de 5%": 277,
+   "Sem informação": 10
+  },
+  "pendencia_nivel": {
+   "Prioridade média": 123,
+   "Atenção": 450,
+   "Prioridade alta": 43,
+   "Sem pendência identificada": 352
+  },
+  "georreferenciamento": {
+   "Certificado (≥ 50% da área)": 343,
+   "Não localizado no SIGEF": 587,
+   "Parcial": 38
+  },
+  "possivel_deficit_rl": 99,
+  "atividade_sem_outorga": 9,
+  "com_alerta": 4,
+  "com_embargo_vigente": 1
+ },
+ "sigef": {
+  "parcelas": 639,
+  "area_ha": 27905.6
+ },
+ "alertas": {
+  "n": 2,
+  "area_ha": 6.6,
+  "imoveis": 6
+ },
+ "embargos": {
+  "n": 2,
+  "situacao": {
+   "Desembargado": 1,
+   "Embargo vigente": 1
+  }
+ },
+ "outorgas_rurais": {
+  "n": 53,
+  "tipo": {
+   "Captação superficial": 22,
+   "Poço (água subterrânea)": 18,
+   "Lançamento de efluentes": 5,
+   "Obras e intervenções em rios": 1,
+   "Barragem / soleira": 7
+  }
+ },
+ "licencas": {
+  "n": 190,
+  "tipo": {
+   "Licença de Operação": 60,
+   "Dispensa de licenciamento": 83,
+   "Licença Prévia / de Instalação": 22,
+   "Licença Simplificada": 18,
+   "Autorização Ambiental": 6,
+   "Licença por Adesão e Compromisso": 1
+  },
+  "situacao": {
+   "Vigente": 177,
+   "Vence em até 6 meses": 13
+  },
+  "vencidas_sem_renovacao": 336
+ },
+ "barragens": 35,
+ "massas_dagua": 80,
+ "nascentes": 368,
+ "rios_km": 768.1,
+ "uso_solo": {
+  "ano": 2023,
+  "fonte": "Esri/Impact Observatory 10 m, 2023 (MapBiomas indisponível para download)",
+  "grupos": {
+   "Vegetação arbórea": 13688.0,
+   "Agricultura": 40065.2,
+   "Pastagem e campos": 7583.3,
+   "Área urbanizada": 1741.7,
+   "Água": 300.9,
+   "Outras áreas": 0.3
+  }
+ }
+}

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Regional – Análise Rural CS</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+:root{--verde:#1f4933;--verde2:#83bb4e;--verde-claro:#eef5ef;--fundo:#f3f5f2;--painel:#fff;--texto:#1d2a22;--suave:#5d6b62;--borda:#e2e7e3;--alerta:#b45309;--alerta-bg:#fdf1d6;--critico:#a63a2b;--critico-bg:#f9e2de;--raio:10px}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--texto);background:var(--fundo);font-size:15px;line-height:1.45}
+.topo{display:flex;align-items:center;gap:14px;padding:10px 20px;background:var(--painel);border-bottom:3px solid var(--verde)}
+.topo img{height:44px;width:auto}
+.topo h1{margin:0;font-size:1.25rem;color:var(--verde)}
+.topo p{margin:2px 0 0;font-size:.82rem;color:var(--suave)}
+.topo .tt{flex:1;min-width:0}
+.btn{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:.82rem;font-weight:600;padding:7px 12px;border-radius:8px;border:1px solid var(--verde);background:var(--painel);color:var(--verde);cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn.cheio{background:var(--verde);color:#fff}
+.btn:focus-visible,button:focus-visible{outline:2px solid var(--verde2);outline-offset:2px}
+main{display:grid;grid-template-columns:minmax(0,330px) minmax(0,1fr);gap:18px;padding:18px 20px 40px;max-width:1500px;margin:0 auto}
+.caixa{background:var(--painel);border:1px solid var(--borda);border-radius:var(--raio);padding:14px 16px;min-width:0}
+.caixa h2{margin:0 0 8px;font-size:1rem;color:var(--verde)}
+.caixa h3{margin:0 0 8px;font-size:.92rem;color:var(--verde)}
+.dica{margin:0 0 8px;font-size:.78rem;color:var(--suave)}
+aside{display:flex;flex-direction:column;gap:14px;min-width:0}
+#mapa svg{width:100%;height:auto;display:block}
+#mapa path{stroke:#fff;stroke-width:.5}
+#mapa path.no{fill:#dfe4e0}
+#mapa path.ok{fill:#c6dfb0;cursor:pointer}
+#mapa path.ok:hover{fill:#a5cb84}
+#mapa path.sel{fill:var(--verde);cursor:pointer}
+.atalhos{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.atalhos button{font:inherit;font-size:.76rem;padding:4px 9px;border-radius:999px;border:1px solid var(--borda);background:var(--painel);cursor:pointer;color:var(--texto)}
+.atalhos button:hover{border-color:var(--verde)}
+.lista{display:flex;flex-direction:column;gap:8px;max-height:46vh;overflow:auto}
+.lista h4{margin:4px 0 2px;font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;color:var(--suave)}
+.lista label{display:flex;gap:8px;align-items:center;font-size:.86rem;padding:3px 4px;border-radius:6px;cursor:pointer}
+.lista label:hover{background:var(--verde-claro)}
+.lista input{accent-color:var(--verde);width:16px;height:16px}
+.lista small{margin-left:auto;color:var(--suave);font-variant-numeric:tabular-nums}
+section.res{display:flex;flex-direction:column;gap:16px;min-width:0}
+.cab{display:flex;flex-wrap:wrap;gap:10px;align-items:baseline;justify-content:space-between}
+.cab h2{margin:0;font-size:1.15rem;color:var(--verde)}
+.cab p{margin:2px 0 0;font-size:.82rem;color:var(--suave)}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.kpi{background:var(--painel);border:1px solid var(--borda);border-radius:var(--raio);padding:12px 14px;min-width:0}
+.kpi b{display:block;font-size:1.45rem;color:var(--verde);font-variant-numeric:tabular-nums;line-height:1.15}
+.kpi span{display:block;font-size:.78rem;color:var(--suave);margin-top:3px}
+.kpi.at b{color:var(--alerta)} .kpi.cr b{color:var(--critico)}
+.grade2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.barras{display:flex;flex-direction:column;gap:7px}
+.barra{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;font-size:.82rem}
+.barra .tr{grid-column:1/-1;height:8px;background:#edf1ee;border-radius:4px;overflow:hidden}
+.barra .tr i{display:block;height:100%;background:var(--verde2);border-radius:4px}
+.barra em{font-style:normal;color:var(--suave);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tab{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.82rem;min-width:900px}
+th,td{padding:7px 8px;border-bottom:1px solid var(--borda);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+th:first-child,td:first-child{text-align:left}
+th{font-size:.7rem;letter-spacing:.04em;text-transform:uppercase;color:var(--suave);cursor:pointer;user-select:none;vertical-align:bottom;white-space:normal}
+th:hover{color:var(--verde)}
+tfoot td{font-weight:700;background:var(--verde-claro);border-top:2px solid var(--verde)}
+td a{color:var(--verde);font-weight:600}
+.vazio{padding:30px;text-align:center;color:var(--suave)}
+.nota{font-size:.74rem;color:var(--suave);margin:0}
+@media (max-width:1100px){.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:860px){main{grid-template-columns:minmax(0,1fr);padding:12px}.grade2{grid-template-columns:minmax(0,1fr)}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.topo{padding:8px 12px}.topo h1{font-size:1.02rem}.topo img{height:34px}.lista{max-height:32vh}}
+</style>
+</head>
+<body>
+<header class="topo">
+  <img src="logo.png" alt="CS Consultoria Ambiental">
+  <div class="tt"><h1>Painel Regional</h1><p>Análise Rural · soma dos municípios escolhidos</p></div>
+  <a class="btn" href="index.html" id="voltar">← Análise por município</a>
+</header>
+<main>
+  <aside>
+    <div class="caixa" id="mapa"><h2>Escolha os municípios</h2><p class="dica">Toque no mapa ou marque na lista. Verde-escuro: incluído na soma.</p><svg role="img" aria-label="Mapa do Paraná"></svg></div>
+    <div class="caixa">
+      <div class="atalhos" id="atalhos"></div>
+      <div class="lista" id="lista"></div>
+    </div>
+  </aside>
+  <section class="res" id="res"><div class="caixa vazio">Carregando…</div></section>
+</main>
+<script src="js/regiao.js?v=20261116"></script>
+</body>
+</html>

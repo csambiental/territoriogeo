@@ -1,0 +1,104 @@
+{
+ "codigo": "4128401",
+ "nome": "Uraí",
+ "atualizado_em": "2026-11-17",
+ "area_municipio_ha": 23733.6,
+ "car": {
+  "imoveis_total": 888,
+  "imoveis_ativos": 865,
+  "area_ativos_ha": 23133.1,
+  "status": {
+   "Ativo": 865,
+   "Cancelado": 23
+  },
+  "condicao": {
+   "Aguardando análise": 517,
+   "Em análise": 7,
+   "Analisado, aguardando atendimento a notificação": 39,
+   "Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)": 25,
+   "Analisado, em conformidade com a Lei nº 12.651/2012": 248,
+   "Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais": 12,
+   "Aguardando análise, após revisão ou atendimento da notificação": 17
+  },
+  "porte": {
+   "Pequena (até 4 MF)": 813,
+   "Média (4 a 15 MF)": 49,
+   "Grande (acima de 15 MF)": 3
+  },
+  "porte_area_ha": {
+   "Média (4 a 15 MF)": 6200.4,
+   "Grande (acima de 15 MF)": 1282.5,
+   "Pequena (até 4 MF)": 15650.2
+  },
+  "faixa_vegetacao": {
+   "Menos de 5%": 225,
+   "5% a 10%": 159,
+   "20% ou mais": 269,
+   "Sem informação": 8,
+   "10% a 20%": 204
+  },
+  "pendencia_nivel": {
+   "Atenção": 500,
+   "Prioridade média": 75,
+   "Prioridade alta": 8,
+   "Sem pendência identificada": 282
+  },
+  "georreferenciamento": {
+   "Certificado (≥ 50% da área)": 172,
+   "Não localizado no SIGEF": 666,
+   "Parcial": 27
+  },
+  "possivel_deficit_rl": 31,
+  "atividade_sem_outorga": 3,
+  "com_alerta": 2,
+  "com_embargo_vigente": 0
+ },
+ "sigef": {
+  "parcelas": 286,
+  "area_ha": 7137.2
+ },
+ "alertas": {
+  "n": 2,
+  "area_ha": 12.9,
+  "imoveis": 5
+ },
+ "embargos": {
+  "n": 0,
+  "situacao": {}
+ },
+ "outorgas_rurais": {
+  "n": 73,
+  "tipo": {
+   "Poço (água subterrânea)": 21,
+   "Captação superficial": 52
+  }
+ },
+ "licencas": {
+  "n": 51,
+  "tipo": {
+   "Dispensa de licenciamento": 35,
+   "Licença Simplificada": 1,
+   "Licença de Operação": 14,
+   "Licença Prévia / de Instalação": 1
+  },
+  "situacao": {
+   "Vigente": 51
+  },
+  "vencidas_sem_renovacao": 103
+ },
+ "barragens": 1,
+ "massas_dagua": 12,
+ "nascentes": 159,
+ "rios_km": 58.3,
+ "uso_solo": {
+  "ano": 2023,
+  "fonte": "Esri/Impact Observatory 10 m, 2023 (MapBiomas indisponível para download)",
+  "grupos": {
+   "Vegetação arbórea": 3979.2,
+   "Agricultura": 17090.9,
+   "Pastagem e campos": 2071.5,
+   "Área urbanizada": 555.0,
+   "Água": 37.1
+  }
+ }
+}

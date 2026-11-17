@@ -29,6 +29,7 @@ async function munMontarPainel(lista, atual) {
         <div class="mun-esq">
           <input type="search" id="munBusca" placeholder="Digite o nome do município" autocomplete="off" aria-label="Buscar município">
           <p class="mun-cont">${lista.length} municípios disponíveis de 399 no Paraná</p>
+          <a class="mun-regional" href="regiao.html">Σ Somar vários municípios (painel regional)</a>
           <div class="mun-lista" id="munLista"></div>
         </div>
         <div class="mun-mapa"><svg id="munSvg" role="img" aria-label="Mapa do Paraná com os municípios disponíveis"></svg>

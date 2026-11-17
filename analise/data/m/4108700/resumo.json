@@ -1,0 +1,110 @@
+{
+ "codigo": "4108700",
+ "nome": "Grandes Rios",
+ "atualizado_em": "2026-11-13",
+ "area_municipio_ha": 31020.7,
+ "car": {
+  "imoveis_total": 915,
+  "imoveis_ativos": 911,
+  "area_ativos_ha": 30354.9,
+  "status": {
+   "Ativo": 905,
+   "Pendente": 6,
+   "Cancelado": 4
+  },
+  "condicao": {
+   "Aguardando análise": 556,
+   "Em análise": 34,
+   "Analisado, aguardando atendimento a notificação": 47,
+   "Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)": 45,
+   "Analisado, em conformidade com a Lei nº 12.651/2012": 200,
+   "Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais": 9,
+   "Aguardando análise, após revisão ou atendimento da notificação": 20
+  },
+  "porte": {
+   "Pequena (até 4 MF)": 837,
+   "Média (4 a 15 MF)": 53,
+   "Grande (acima de 15 MF)": 21
+  },
+  "porte_area_ha": {
+   "Média (4 a 15 MF)": 8109.4,
+   "Grande (acima de 15 MF)": 9849.1,
+   "Pequena (até 4 MF)": 12396.4
+  },
+  "faixa_vegetacao": {
+   "Menos de 5%": 194,
+   "10% a 20%": 209,
+   "20% ou mais": 378,
+   "5% a 10%": 123,
+   "Sem informação": 7
+  },
+  "pendencia_nivel": {
+   "Atenção": 560,
+   "Prioridade média": 83,
+   "Prioridade alta": 17,
+   "Sem pendência identificada": 251
+  },
+  "georreferenciamento": {
+   "Não localizado no SIGEF": 731,
+   "Certificado (≥ 50% da área)": 147,
+   "Parcial": 33
+  },
+  "possivel_deficit_rl": 36,
+  "atividade_sem_outorga": 15,
+  "com_alerta": 0,
+  "com_embargo_vigente": 0
+ },
+ "sigef": {
+  "parcelas": 285,
+  "area_ha": 14541.7
+ },
+ "alertas": {
+  "n": 1,
+  "area_ha": 0.0,
+  "imoveis": 0
+ },
+ "embargos": {
+  "n": 0,
+  "situacao": {}
+ },
+ "outorgas_rurais": {
+  "n": 93,
+  "tipo": {
+   "Captação superficial": 90,
+   "Obras e intervenções em rios": 1,
+   "Poço (água subterrânea)": 1,
+   "Lançamento de efluentes": 1
+  }
+ },
+ "licencas": {
+  "n": 65,
+  "tipo": {
+   "Licença de Operação": 5,
+   "Dispensa de licenciamento": 46,
+   "Licença Prévia / de Instalação": 3,
+   "Licença Simplificada": 5,
+   "Licença por Adesão e Compromisso": 3,
+   "Autorização Ambiental": 3
+  },
+  "situacao": {
+   "Vence em até 6 meses": 1,
+   "Vigente": 64
+  },
+  "vencidas_sem_renovacao": 31
+ },
+ "barragens": 1,
+ "massas_dagua": 9,
+ "nascentes": 506,
+ "rios_km": 372.9,
+ "uso_solo": {
+  "ano": 2023,
+  "fonte": "Esri/Impact Observatory 10 m, 2023 (MapBiomas indisponível para download)",
+  "grupos": {
+   "Vegetação arbórea": 7867.5,
+   "Agricultura": 10111.8,
+   "Pastagem e campos": 12173.8,
+   "Área urbanizada": 330.8,
+   "Água": 536.8
+  }
+ }
+}

@@ -595,3 +595,5 @@ table.ind tr.pos td { color: #1d6b3e; font-weight: 600; }
 .mun-leg .l-ok { background: #83bb4e; } .mun-leg .l-at { background: #1f4933; } .mun-leg .l-no { background: #dfe4e0; }
 .mun-dica { margin: 4px 0 0; font-size: .78rem; color: var(--verde-escuro); }
 @media (max-width: 720px) { .mun-corpo { grid-template-columns: minmax(0, 1fr); } .mun-mapa { order: -1; } .mun-lista { max-height: 40vh; } }
+.mun-regional { display: block; text-align: center; font-size: .82rem; font-weight: 600; padding: 7px 10px; border-radius: 8px; background: var(--verde); color: #fff; text-decoration: none; }
+.mun-regional:hover { background: var(--verde-escuro); }

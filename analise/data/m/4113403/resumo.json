@@ -1,0 +1,107 @@
+{
+ "codigo": "4113403",
+ "nome": "Leópolis",
+ "atualizado_em": "2026-11-17",
+ "area_municipio_ha": 34421.7,
+ "car": {
+  "imoveis_total": 610,
+  "imoveis_ativos": 604,
+  "area_ativos_ha": 33702.9,
+  "status": {
+   "Ativo": 603,
+   "Cancelado": 6,
+   "Pendente": 1
+  },
+  "condicao": {
+   "Aguardando análise": 366,
+   "Em análise": 3,
+   "Analisado, aguardando atendimento a notificação": 55,
+   "Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)": 21,
+   "Analisado, em conformidade com a Lei nº 12.651/2012": 143,
+   "Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais": 4,
+   "Aguardando análise, após revisão ou atendimento da notificação": 12
+  },
+  "porte": {
+   "Pequena (até 4 MF)": 514,
+   "Média (4 a 15 MF)": 68,
+   "Grande (acima de 15 MF)": 22
+  },
+  "porte_area_ha": {
+   "Média (4 a 15 MF)": 9003.4,
+   "Grande (acima de 15 MF)": 14985.7,
+   "Pequena (até 4 MF)": 9713.9
+  },
+  "faixa_vegetacao": {
+   "10% a 20%": 100,
+   "20% ou mais": 142,
+   "Menos de 5%": 270,
+   "5% a 10%": 86,
+   "Sem informação": 6
+  },
+  "pendencia_nivel": {
+   "Atenção": 336,
+   "Prioridade média": 61,
+   "Prioridade alta": 42,
+   "Sem pendência identificada": 165
+  },
+  "georreferenciamento": {
+   "Certificado (≥ 50% da área)": 222,
+   "Não localizado no SIGEF": 336,
+   "Parcial": 46
+  },
+  "possivel_deficit_rl": 62,
+  "atividade_sem_outorga": 14,
+  "com_alerta": 3,
+  "com_embargo_vigente": 0
+ },
+ "sigef": {
+  "parcelas": 355,
+  "area_ha": 13771.5
+ },
+ "alertas": {
+  "n": 2,
+  "area_ha": 10.0,
+  "imoveis": 5
+ },
+ "embargos": {
+  "n": 0,
+  "situacao": {}
+ },
+ "outorgas_rurais": {
+  "n": 41,
+  "tipo": {
+   "Poço (água subterrânea)": 29,
+   "Captação superficial": 12
+  }
+ },
+ "licencas": {
+  "n": 38,
+  "tipo": {
+   "Dispensa de licenciamento": 31,
+   "Licença de Operação": 3,
+   "Licença Prévia / de Instalação": 1,
+   "Licença por Adesão e Compromisso": 2,
+   "Licença Simplificada": 1
+  },
+  "situacao": {
+   "Vigente": 37,
+   "Vence em até 6 meses": 1
+  },
+  "vencidas_sem_renovacao": 47
+ },
+ "barragens": 18,
+ "massas_dagua": 13,
+ "nascentes": 168,
+ "rios_km": 20.5,
+ "uso_solo": {
+  "ano": 2023,
+  "fonte": "Esri/Impact Observatory 10 m, 2023 (MapBiomas indisponível para download)",
+  "grupos": {
+   "Vegetação arbórea": 5209.4,
+   "Agricultura": 22197.9,
+   "Pastagem e campos": 4694.6,
+   "Área urbanizada": 272.9,
+   "Água": 2046.8
+  }
+ }
+}

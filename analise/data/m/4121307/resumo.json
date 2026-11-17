@@ -1,0 +1,102 @@
+{
+ "codigo": "4121307",
+ "nome": "Rancho Alegre",
+ "atualizado_em": "2026-11-17",
+ "area_municipio_ha": 16725.3,
+ "car": {
+  "imoveis_total": 407,
+  "imoveis_ativos": 404,
+  "area_ativos_ha": 13639.1,
+  "status": {
+   "Ativo": 404,
+   "Cancelado": 3
+  },
+  "condicao": {
+   "Aguardando análise": 199,
+   "Analisado, aguardando atendimento a notificação": 44,
+   "Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)": 11,
+   "Analisado, em conformidade com a Lei nº 12.651/2012": 141,
+   "Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais": 1,
+   "Aguardando análise, após revisão ou atendimento da notificação": 8
+  },
+  "porte": {
+   "Pequena (até 4 MF)": 374,
+   "Média (4 a 15 MF)": 25,
+   "Grande (acima de 15 MF)": 5
+  },
+  "porte_area_ha": {
+   "Média (4 a 15 MF)": 3147.4,
+   "Grande (acima de 15 MF)": 3394.4,
+   "Pequena (até 4 MF)": 7097.3
+  },
+  "faixa_vegetacao": {
+   "20% ou mais": 31,
+   "Menos de 5%": 240,
+   "10% a 20%": 52,
+   "5% a 10%": 77,
+   "Sem informação": 4
+  },
+  "pendencia_nivel": {
+   "Atenção": 183,
+   "Prioridade média": 55,
+   "Prioridade alta": 14,
+   "Sem pendência identificada": 152
+  },
+  "georreferenciamento": {
+   "Não localizado no SIGEF": 277,
+   "Certificado (≥ 50% da área)": 104,
+   "Parcial": 23
+  },
+  "possivel_deficit_rl": 28,
+  "atividade_sem_outorga": 3,
+  "com_alerta": 0,
+  "com_embargo_vigente": 0
+ },
+ "sigef": {
+  "parcelas": 169,
+  "area_ha": 5499.8
+ },
+ "alertas": {
+  "n": 1,
+  "area_ha": 0.0,
+  "imoveis": 0
+ },
+ "embargos": {
+  "n": 0,
+  "situacao": {}
+ },
+ "outorgas_rurais": {
+  "n": 20,
+  "tipo": {
+   "Captação superficial": 8,
+   "Poço (água subterrânea)": 11,
+   "Lançamento de efluentes": 1
+  }
+ },
+ "licencas": {
+  "n": 15,
+  "tipo": {
+   "Licença de Operação": 5,
+   "Dispensa de licenciamento": 10
+  },
+  "situacao": {
+   "Vigente": 15
+  },
+  "vencidas_sem_renovacao": 45
+ },
+ "barragens": 6,
+ "massas_dagua": 21,
+ "nascentes": 32,
+ "rios_km": 13.2,
+ "uso_solo": {
+  "ano": 2023,
+  "fonte": "Esri/Impact Observatory 10 m, 2023 (MapBiomas indisponível para download)",
+  "grupos": {
+   "Vegetação arbórea": 1691.8,
+   "Agricultura": 13144.3,
+   "Pastagem e campos": 259.6,
+   "Área urbanizada": 172.3,
+   "Água": 1457.4
+  }
+ }
+}

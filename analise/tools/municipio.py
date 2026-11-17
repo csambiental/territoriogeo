@@ -646,6 +646,9 @@ def config():
     lista = [m for m in lista if m['codigo'] != COD] + [{'codigo': COD, 'nome': NOME, 'imoveis': len(ativos), 'atualizado_em': c['atualizado_em']}]
     json.dump(sorted(lista, key=lambda m: m['nome']), open(L, 'w'), ensure_ascii=False, indent=1)
     log('config ok', NOME, len(ativos), 'imóveis')
+    try:  # resumo quantitativo para o painel regional
+        import resumo_regional; resumo_regional.gerar(D)
+    except Exception as e: log('resumo regional falhou', e)
 
 ETAPAS = os.environ.get('ETAPAS', 'car,sigef,ibama,microbacias,mb_cobertura,mb_alertas,outorgas,licencas,barragens,massas,hidrografia,relevo,pendencias,config').split(',')
 for e in ETAPAS: globals()[e.strip()]()

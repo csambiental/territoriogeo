@@ -1,0 +1,110 @@
+{
+ "codigo": "4102406",
+ "nome": "Bandeirantes",
+ "atualizado_em": "2026-11-17",
+ "area_municipio_ha": 44429.3,
+ "car": {
+  "imoveis_total": 1635,
+  "imoveis_ativos": 1607,
+  "area_ativos_ha": 44192.3,
+  "status": {
+   "Ativo": 1603,
+   "Pendente": 4,
+   "Cancelado": 28
+  },
+  "condicao": {
+   "Aguardando análise": 874,
+   "Em análise": 20,
+   "Analisado, aguardando atendimento a notificação": 125,
+   "Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)": 36,
+   "Analisado, em conformidade com a Lei nº 12.651/2012": 523,
+   "Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais": 7,
+   "Aguardando análise, após revisão ou atendimento da notificação": 22
+  },
+  "porte": {
+   "Pequena (até 4 MF)": 1516,
+   "Média (4 a 15 MF)": 75,
+   "Grande (acima de 15 MF)": 16
+  },
+  "porte_area_ha": {
+   "Média (4 a 15 MF)": 10551.4,
+   "Grande (acima de 15 MF)": 11758.7,
+   "Pequena (até 4 MF)": 21882.2
+  },
+  "faixa_vegetacao": {
+   "Sem informação": 17,
+   "Menos de 5%": 858,
+   "5% a 10%": 256,
+   "10% a 20%": 277,
+   "20% ou mais": 199
+  },
+  "pendencia_nivel": {
+   "Atenção": 844,
+   "Prioridade alta": 36,
+   "Prioridade média": 167,
+   "Sem pendência identificada": 560
+  },
+  "georreferenciamento": {
+   "Certificado (≥ 50% da área)": 224,
+   "Não localizado no SIGEF": 1332,
+   "Parcial": 51
+  },
+  "possivel_deficit_rl": 76,
+  "atividade_sem_outorga": 13,
+  "com_alerta": 3,
+  "com_embargo_vigente": 2
+ },
+ "sigef": {
+  "parcelas": 389,
+  "area_ha": 13356.3
+ },
+ "alertas": {
+  "n": 2,
+  "area_ha": 1.8,
+  "imoveis": 3
+ },
+ "embargos": {
+  "n": 2,
+  "situacao": {
+   "Embargo vigente": 2
+  }
+ },
+ "outorgas_rurais": {
+  "n": 67,
+  "tipo": {
+   "Captação superficial": 35,
+   "Poço (água subterrânea)": 26,
+   "Obras e intervenções em rios": 6
+  }
+ },
+ "licencas": {
+  "n": 107,
+  "tipo": {
+   "Dispensa de licenciamento": 51,
+   "Licença de Operação": 21,
+   "Licença Simplificada": 15,
+   "Licença Prévia / de Instalação": 14,
+   "Licença por Adesão e Compromisso": 6
+  },
+  "situacao": {
+   "Vigente": 96,
+   "Vence em até 6 meses": 11
+  },
+  "vencidas_sem_renovacao": 187
+ },
+ "barragens": 18,
+ "massas_dagua": 35,
+ "nascentes": 158,
+ "rios_km": 414.8,
+ "uso_solo": {
+  "ano": 2023,
+  "fonte": "Esri/Impact Observatory 10 m, 2023 (MapBiomas indisponível para download)",
+  "grupos": {
+   "Vegetação arbórea": 5365.8,
+   "Agricultura": 35622.3,
+   "Pastagem e campos": 1739.7,
+   "Área urbanizada": 1243.6,
+   "Água": 457.9
+  }
+ }
+}
