@@ -1,0 +1,96 @@
+/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:39: DeprecationWarning: ssl.TLSVersion.TLSv1 is deprecated
+  SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
+Município 4126405 Sertaneja
+limite: IBGE
+
+===== CAR =====
+  CAR baixados 455
+imóveis 455 Counter({'Aguardando análise': 231, 'Analisado – em conformidade': 131, 'Analisado – notificação pendente': 75, 'Em análise': 14, 'Cancelado': 4}) [('Aguardando análise', 231), ('Analisado, em conformidade com a Lei nº 12.651/2012', 119), ('Analisado, aguardando atendimento a notificação', 68), ('Em análise', 14), ('Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)', 11), ('Aguardando análise, após revisão ou atendimento da notificação', 7), ('Cancelado por decisão administrativa', 4), ('Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais', 1)]
+----- CAR ok (1s)
+
+===== SIGEF =====
+parcelas 366 Counter({'Registrada': 366})
+----- SIGEF ok (7s)
+
+===== IBAMA =====
+/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:171: DeprecationWarning: The 'shapely.ops.transform()' function is deprecated. Use 'shapely.transform()' or 'shapely.transform_coordseq()' instead. See https://shapely.readthedocs.io/en/latest/manual.html#shapely.ops.transform for more details.
+  g = transform(geo, transform(utm, Point(lon, lat)).buffer(60)); aprox = True
+embargos 1 Counter({'Embargo vigente': 1})
+----- IBAMA ok (25s)
+
+===== Microbacias =====
+microbacias 79
+----- Microbacias ok (2s)
+
+===== MapBiomas cobertura =====
+  indisponível: lulc_10m/collection_2/integration/mapbiomas_10m_collection2_integration_v1-classification_2023.tif HTTP response code: 403
+  indisponível: collection_10/lulc/coverage/brazil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lulc/coverage/brasil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lclu/coverage/brazil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lclu/coverage/brasil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lulc/coverage/brazil_coverage_2023.tif HTTP response code: 403
+  indisponível: collection_9/lclu/coverage/brasil_coverage_2023.tif HTTP response code: 403
+  indisponível: collection_9/lulc/coverage/brasil_coverage_2023.tif HTTP response code: 403
+  indisponível: collection_8/lclu/coverage/brasil_coverage_2022.tif HTTP response code: 403
+uso do solo: reserva Impact Observatory 2023 (3882, 2781)
+grupos (%) {'Vegetação arbórea': 6.8, 'Agricultura': 71.1, 'Pastagem e campos': 1.0, 'Área urbanizada': 1.2, 'Água': 19.9, 'Outras áreas': 0.0}
+----- MapBiomas cobertura ok (5s)
+
+===== MapBiomas alertas =====
+camada mapbiomas-alertas:dashboard-alert-rural-properties-shapefile
+alertas 1
+----- MapBiomas alertas ok (2s)
+
+===== Outorgas SIGARH =====
+   00_PUBLICACOES/outorgas_sigarh/FeatureServer camada 0 lote 131
+outorgas rural 8 fora do CAR 14
+----- Outorgas SIGARH ok (7s)
+
+===== Licenças ambientais IAT (SGA/SIA) =====
+Traceback (most recent call last):
+  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 63, in run
+    try: fn(); log(f'----- {nome} ok ({time.time() - t0:.0f}s)')
+         ^^^^
+  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 459, in licencas
+    licencas_iat.gerar(COD, D)
+  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/licencas_iat.py", line 99, in gerar
+    geo = baixar_geopr(cod)
+          ^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/licencas_iat.py", line 61, in baixar_geopr
+    if 'error' in d: raise RuntimeError(d['error'])
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: {'code': 503, 'message': 'Error handling service request :Wait timeout for the request exceeded.', 'details': []}
+----- Licenças ambientais IAT (SGA/SIA) FALHOU
+
+===== Barragens IAT + SNISB =====
+   IG/SNISB/FeatureServer camada 0 lote 14
+   Hosted/barragens_dashboard_publico/FeatureServer camada 0 lote 22
+barragens 15 SNISB 9 IAT 9
+----- Barragens IAT + SNISB ok (19s)
+
+===== Massas d'água (ANA) =====
+   SPR/Massa_dagua/FeatureServer camada 0 lote 61
+massas d'água 22
+----- Massas d'água (ANA) ok (7s)
+
+===== Hidrografia FBDS (IAT) =====
+   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 838
+fbds_rio_ate10m_larg 1718
+   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 122
+fbds_nascentes 72
+----- Hidrografia FBDS (IAT) ok (16s)
+
+===== Relevo =====
+relevo: cotas 328.6483459472656 519.3721313476562
+----- Relevo ok (6s)
+
+===== Pendências =====
+Counter({'Atenção': 196, 'Sem pendência identificada': 131, 'Prioridade média': 72, 'Prioridade alta': 52, 'Cancelado': 4})
+----- Pendências ok (0s)
+
+===== Config =====
+config ok Sertaneja 451 imóveis
+----- Config ok (0s)

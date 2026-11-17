@@ -1,0 +1,86 @@
+/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:39: DeprecationWarning: ssl.TLSVersion.TLSv1 is deprecated
+  SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
+Município 4128401 Uraí
+limite: IBGE
+
+===== CAR =====
+  CAR baixados 888
+imóveis 888 Counter({'Aguardando análise': 517, 'Analisado – em conformidade': 285, 'Analisado – notificação pendente': 56, 'Cancelado': 23, 'Em análise': 7}) [('Aguardando análise', 517), ('Analisado, em conformidade com a Lei nº 12.651/2012', 248), ('Analisado, aguardando atendimento a notificação', 39), ('Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)', 25), ('Cancelado por decisão administrativa', 23), ('Aguardando análise, após revisão ou atendimento da notificação', 17), ('Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais', 12), ('Em análise', 7)]
+----- CAR ok (2s)
+
+===== SIGEF =====
+parcelas 286 Counter({'Registrada': 286})
+----- SIGEF ok (2s)
+
+===== IBAMA =====
+/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:171: DeprecationWarning: The 'shapely.ops.transform()' function is deprecated. Use 'shapely.transform()' or 'shapely.transform_coordseq()' instead. See https://shapely.readthedocs.io/en/latest/manual.html#shapely.ops.transform for more details.
+  g = transform(geo, transform(utm, Point(lon, lat)).buffer(60)); aprox = True
+embargos 0 Counter()
+----- IBAMA ok (16s)
+
+===== Microbacias =====
+microbacias 41
+----- Microbacias ok (1s)
+
+===== MapBiomas cobertura =====
+  indisponível: lulc_10m/collection_2/integration/mapbiomas_10m_collection2_integration_v1-classification_2023.tif HTTP response code: 403
+  indisponível: collection_10/lulc/coverage/brazil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lulc/coverage/brasil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lclu/coverage/brazil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lclu/coverage/brasil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lulc/coverage/brazil_coverage_2023.tif HTTP response code: 403
+  indisponível: collection_9/lclu/coverage/brasil_coverage_2023.tif HTTP response code: 403
+  indisponível: collection_9/lulc/coverage/brasil_coverage_2023.tif HTTP response code: 403
+  indisponível: collection_8/lclu/coverage/brasil_coverage_2022.tif HTTP response code: 403
+uso do solo: reserva Impact Observatory 2023 (2310, 2093)
+grupos (%) {'Vegetação arbórea': 16.8, 'Agricultura': 72.0, 'Pastagem e campos': 8.7, 'Área urbanizada': 2.3, 'Água': 0.2, 'Outras áreas': 0.0}
+----- MapBiomas cobertura ok (4s)
+
+===== MapBiomas alertas =====
+camada mapbiomas-alertas:dashboard-alert-rural-properties-shapefile
+alertas 5
+----- MapBiomas alertas ok (1s)
+
+===== Outorgas SIGARH =====
+   00_PUBLICACOES/outorgas_sigarh/FeatureServer camada 0 lote 249
+outorgas rural 73 fora do CAR 20
+----- Outorgas SIGARH ok (3s)
+
+===== Licenças ambientais IAT (SGA/SIA) =====
+  GeoPR: 346 licenças (com histórico); SGA consulta pública: 84
+  44 licenças só no SGA (sem coordenada no GeoPR)
+  347 licenças, 51 vigentes e 103 vencidas no mapa; pontos genéricos: 2; {'Vence em até 6 meses': 2, 'Vigente': 81, 'Vencida': 154, 'Vencida (substituída por licença mais recente)': 110}
+  grupos: {'Dispensa de licenciamento': 105, 'Licença Prévia / de Instalação': 91, 'Autorização Ambiental': 68, 'Licença de Operação': 62, 'Licença Simplificada': 20, 'Licença por Adesão e Compromisso': 1}
+----- Licenças ambientais IAT (SGA/SIA) ok (3s)
+
+===== Barragens IAT + SNISB =====
+   IG/SNISB/FeatureServer camada 0 lote 2
+   Hosted/barragens_dashboard_publico/FeatureServer camada 0 lote 2
+barragens 1 SNISB 1 IAT 0
+----- Barragens IAT + SNISB ok (3s)
+
+===== Massas d'água (ANA) =====
+   SPR/Massa_dagua/FeatureServer camada 0 lote 16
+massas d'água 12
+----- Massas d'água (ANA) ok (2s)
+
+===== Hidrografia FBDS (IAT) =====
+   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 996
+fbds_rio_ate10m_larg 519
+   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 233
+fbds_nascentes 159
+----- Hidrografia FBDS (IAT) ok (8s)
+
+===== Relevo =====
+relevo: cotas 333.0 618.2056884765625
+----- Relevo ok (4s)
+
+===== Pendências =====
+Counter({'Atenção': 500, 'Sem pendência identificada': 282, 'Prioridade média': 75, 'Cancelado': 23, 'Prioridade alta': 8})
+----- Pendências ok (0s)
+
+===== Config =====
+config ok Uraí 865 imóveis
+----- Config ok (0s)

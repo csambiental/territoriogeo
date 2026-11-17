@@ -1,5 +1,17 @@
 [
  {
+  "codigo": "4102406",
+  "nome": "Bandeirantes",
+  "imoveis": 1607,
+  "atualizado_em": "2026-11-17"
+ },
+ {
+  "codigo": "4106407",
+  "nome": "Cornélio Procópio",
+  "imoveis": 968,
+  "atualizado_em": "2026-11-17"
+ },
+ {
   "codigo": "4108700",
   "nome": "Grandes Rios",
   "imoveis": 911,
@@ -10,5 +22,35 @@
   "nome": "Joaquim Távora",
   "imoveis": 845,
   "atualizado_em": "2026-11-13"
+ },
+ {
+  "codigo": "4113403",
+  "nome": "Leópolis",
+  "imoveis": 604,
+  "atualizado_em": "2026-11-17"
+ },
+ {
+  "codigo": "4121307",
+  "nome": "Rancho Alegre",
+  "imoveis": 404,
+  "atualizado_em": "2026-11-17"
+ },
+ {
+  "codigo": "4126405",
+  "nome": "Sertaneja",
+  "imoveis": 451,
+  "atualizado_em": "2026-11-17"
+ },
+ {
+  "codigo": "4126504",
+  "nome": "Sertanópolis",
+  "imoveis": 1181,
+  "atualizado_em": "2026-11-17"
+ },
+ {
+  "codigo": "4128401",
+  "nome": "Uraí",
+  "imoveis": 865,
+  "atualizado_em": "2026-11-17"
  }
 ]

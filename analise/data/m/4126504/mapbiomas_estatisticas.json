@@ -1,0 +1,37 @@
+{
+ "ano": 2023,
+ "fonte": "Esri/Impact Observatory 10 m, 2023 (MapBiomas indisponível para download)",
+ "area_total_ha": 50455.7,
+ "grupos": [
+  {
+   "grupo": "Vegetação arbórea",
+   "cor": "#397d49",
+   "area_ha": 7207.2,
+   "pct": 14.28
+  },
+  {
+   "grupo": "Agricultura",
+   "cor": "#e49635",
+   "area_ha": 38511.6,
+   "pct": 76.33
+  },
+  {
+   "grupo": "Pastagem e campos",
+   "cor": "#e3e2c3",
+   "area_ha": 1624.2,
+   "pct": 3.22
+  },
+  {
+   "grupo": "Área urbanizada",
+   "cor": "#c4281b",
+   "area_ha": 1167.4,
+   "pct": 2.31
+  },
+  {
+   "grupo": "Água",
+   "cor": "#419bdf",
+   "area_ha": 1945.2,
+   "pct": 3.86
+  }
+ ]
+}
