@@ -1,0 +1,2396 @@
+[
+{
+"cod": "4100103",
+"nome": "Abatiá",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Cornélio Procópio"
+},
+{
+"cod": "4100202",
+"nome": "Adrianópolis",
+"meso": "Metropolitana de Curitiba",
+"micro": "Cerro Azul"
+},
+{
+"cod": "4100301",
+"nome": "Agudos do Sul",
+"meso": "Metropolitana de Curitiba",
+"micro": "Rio Negro"
+},
+{
+"cod": "4100400",
+"nome": "Almirante Tamandaré",
+"meso": "Metropolitana de Curitiba",
+"micro": "Curitiba"
+},
+{
+"cod": "4100459",
+"nome": "Altamira do Paraná",
+"meso": "Centro Ocidental Paranaense",
+"micro": "Goioerê"
+},
+{
+"cod": "4100509",
+"nome": "Altônia",
+"meso": "Noroeste Paranaense",
+"micro": "Umuarama"
+},
+{
+"cod": "4100608",
+"nome": "Alto Paraná",
+"meso": "Noroeste Paranaense",
+"micro": "Paranavaí"
+},
+{
+"cod": "4100707",
+"nome": "Alto Piquiri",
+"meso": "Noroeste Paranaense",
+"micro": "Umuarama"
+},
+{
+"cod": "4100806",
+"nome": "Alvorada do Sul",
+"meso": "Norte Central Paranaense",
+"micro": "Porecatu"
+},
+{
+"cod": "4100905",
+"nome": "Amaporã",
+"meso": "Noroeste Paranaense",
+"micro": "Paranavaí"
+},
+{
+"cod": "4101002",
+"nome": "Ampére",
+"meso": "Sudoeste Paranaense",
+"micro": "Capanema"
+},
+{
+"cod": "4101051",
+"nome": "Anahy",
+"meso": "Oeste Paranaense",
+"micro": "Cascavel"
+},
+{
+"cod": "4101101",
+"nome": "Andirá",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Cornélio Procópio"
+},
+{
+"cod": "4101150",
+"nome": "Ângulo",
+"meso": "Norte Central Paranaense",
+"micro": "Astorga"
+},
+{
+"cod": "4101200",
+"nome": "Antonina",
+"meso": "Metropolitana de Curitiba",
+"micro": "Paranaguá"
+},
+{
+"cod": "4101309",
+"nome": "Antônio Olinto",
+"meso": "Sudeste Paranaense",
+"micro": "São Mateus do Sul"
+},
+{
+"cod": "4101408",
+"nome": "Apucarana",
+"meso": "Norte Central Paranaense",
+"micro": "Apucarana"
+},
+{
+"cod": "4101507",
+"nome": "Arapongas",
+"meso": "Norte Central Paranaense",
+"micro": "Apucarana"
+},
+{
+"cod": "4101606",
+"nome": "Arapoti",
+"meso": "Centro Oriental Paranaense",
+"micro": "Jaguariaíva"
+},
+{
+"cod": "4101655",
+"nome": "Arapuã",
+"meso": "Norte Central Paranaense",
+"micro": "Ivaiporã"
+},
+{
+"cod": "4101705",
+"nome": "Araruna",
+"meso": "Centro Ocidental Paranaense",
+"micro": "Campo Mourão"
+},
+{
+"cod": "4101804",
+"nome": "Araucária",
+"meso": "Metropolitana de Curitiba",
+"micro": "Curitiba"
+},
+{
+"cod": "4101853",
+"nome": "Ariranha do Ivaí",
+"meso": "Norte Central Paranaense",
+"micro": "Ivaiporã"
+},
+{
+"cod": "4101903",
+"nome": "Assaí",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Assaí"
+},
+{
+"cod": "4102000",
+"nome": "Assis Chateaubriand",
+"meso": "Oeste Paranaense",
+"micro": "Toledo"
+},
+{
+"cod": "4102109",
+"nome": "Astorga",
+"meso": "Norte Central Paranaense",
+"micro": "Astorga"
+},
+{
+"cod": "4102208",
+"nome": "Atalaia",
+"meso": "Norte Central Paranaense",
+"micro": "Astorga"
+},
+{
+"cod": "4102307",
+"nome": "Balsa Nova",
+"meso": "Metropolitana de Curitiba",
+"micro": "Curitiba"
+},
+{
+"cod": "4102406",
+"nome": "Bandeirantes",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Cornélio Procópio"
+},
+{
+"cod": "4102505",
+"nome": "Barbosa Ferraz",
+"meso": "Centro Ocidental Paranaense",
+"micro": "Campo Mourão"
+},
+{
+"cod": "4102604",
+"nome": "Barracão",
+"meso": "Sudoeste Paranaense",
+"micro": "Francisco Beltrão"
+},
+{
+"cod": "4102703",
+"nome": "Barra do Jacaré",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Jacarezinho"
+},
+{
+"cod": "4102752",
+"nome": "Bela Vista da Caroba",
+"meso": "Sudoeste Paranaense",
+"micro": "Capanema"
+},
+{
+"cod": "4102802",
+"nome": "Bela Vista do Paraíso",
+"meso": "Norte Central Paranaense",
+"micro": "Porecatu"
+},
+{
+"cod": "4102901",
+"nome": "Bituruna",
+"meso": "Sudeste Paranaense",
+"micro": "União da Vitória"
+},
+{
+"cod": "4103008",
+"nome": "Boa Esperança",
+"meso": "Centro Ocidental Paranaense",
+"micro": "Goioerê"
+},
+{
+"cod": "4103024",
+"nome": "Boa Esperança do Iguaçu",
+"meso": "Sudoeste Paranaense",
+"micro": "Francisco Beltrão"
+},
+{
+"cod": "4103040",
+"nome": "Boa Ventura de São Roque",
+"meso": "Centro-Sul Paranaense",
+"micro": "Pitanga"
+},
+{
+"cod": "4103057",
+"nome": "Boa Vista da Aparecida",
+"meso": "Oeste Paranaense",
+"micro": "Cascavel"
+},
+{
+"cod": "4103107",
+"nome": "Bocaiúva do Sul",
+"meso": "Metropolitana de Curitiba",
+"micro": "Curitiba"
+},
+{
+"cod": "4103156",
+"nome": "Bom Jesus do Sul",
+"meso": "Sudoeste Paranaense",
+"micro": "Francisco Beltrão"
+},
+{
+"cod": "4103206",
+"nome": "Bom Sucesso",
+"meso": "Norte Central Paranaense",
+"micro": "Faxinal"
+},
+{
+"cod": "4103222",
+"nome": "Bom Sucesso do Sul",
+"meso": "Sudoeste Paranaense",
+"micro": "Pato Branco"
+},
+{
+"cod": "4103305",
+"nome": "Borrazópolis",
+"meso": "Norte Central Paranaense",
+"micro": "Faxinal"
+},
+{
+"cod": "4103354",
+"nome": "Braganey",
+"meso": "Oeste Paranaense",
+"micro": "Cascavel"
+},
+{
+"cod": "4103370",
+"nome": "Brasilândia do Sul",
+"meso": "Noroeste Paranaense",
+"micro": "Umuarama"
+},
+{
+"cod": "4103404",
+"nome": "Cafeara",
+"meso": "Norte Central Paranaense",
+"micro": "Astorga"
+},
+{
+"cod": "4103453",
+"nome": "Cafelândia",
+"meso": "Oeste Paranaense",
+"micro": "Cascavel"
+},
+{
+"cod": "4103479",
+"nome": "Cafezal do Sul",
+"meso": "Noroeste Paranaense",
+"micro": "Umuarama"
+},
+{
+"cod": "4103503",
+"nome": "Califórnia",
+"meso": "Norte Central Paranaense",
+"micro": "Apucarana"
+},
+{
+"cod": "4103602",
+"nome": "Cambará",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Jacarezinho"
+},
+{
+"cod": "4103701",
+"nome": "Cambé",
+"meso": "Norte Central Paranaense",
+"micro": "Londrina"
+},
+{
+"cod": "4103800",
+"nome": "Cambira",
+"meso": "Norte Central Paranaense",
+"micro": "Apucarana"
+},
+{
+"cod": "4103909",
+"nome": "Campina da Lagoa",
+"meso": "Centro Ocidental Paranaense",
+"micro": "Goioerê"
+},
+{
+"cod": "4103958",
+"nome": "Campina do Simão",
+"meso": "Centro-Sul Paranaense",
+"micro": "Guarapuava"
+},
+{
+"cod": "4104006",
+"nome": "Campina Grande do Sul",
+"meso": "Metropolitana de Curitiba",
+"micro": "Curitiba"
+},
+{
+"cod": "4104055",
+"nome": "Campo Bonito",
+"meso": "Oeste Paranaense",
+"micro": "Cascavel"
+},
+{
+"cod": "4104105",
+"nome": "Campo do Tenente",
+"meso": "Metropolitana de Curitiba",
+"micro": "Rio Negro"
+},
+{
+"cod": "4104204",
+"nome": "Campo Largo",
+"meso": "Metropolitana de Curitiba",
+"micro": "Curitiba"
+},
+{
+"cod": "4104253",
+"nome": "Campo Magro",
+"meso": "Metropolitana de Curitiba",
+"micro": "Curitiba"
+},
+{
+"cod": "4104303",
+"nome": "Campo Mourão",
+"meso": "Centro Ocidental Paranaense",
+"micro": "Campo Mourão"
+},
+{
+"cod": "4104402",
+"nome": "Cândido de Abreu",
+"meso": "Norte Central Paranaense",
+"micro": "Ivaiporã"
+},
+{
+"cod": "4104428",
+"nome": "Candói",
+"meso": "Centro-Sul Paranaense",
+"micro": "Guarapuava"
+},
+{
+"cod": "4104451",
+"nome": "Cantagalo",
+"meso": "Centro-Sul Paranaense",
+"micro": "Guarapuava"
+},
+{
+"cod": "4104501",
+"nome": "Capanema",
+"meso": "Sudoeste Paranaense",
+"micro": "Capanema"
+},
+{
+"cod": "4104600",
+"nome": "Capitão Leônidas Marques",
+"meso": "Oeste Paranaense",
+"micro": "Cascavel"
+},
+{
+"cod": "4104659",
+"nome": "Carambeí",
+"meso": "Centro Oriental Paranaense",
+"micro": "Ponta Grossa"
+},
+{
+"cod": "4104709",
+"nome": "Carlópolis",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Wenceslau Braz"
+},
+{
+"cod": "4104808",
+"nome": "Cascavel",
+"meso": "Oeste Paranaense",
+"micro": "Cascavel"
+},
+{
+"cod": "4104907",
+"nome": "Castro",
+"meso": "Centro Oriental Paranaense",
+"micro": "Ponta Grossa"
+},
+{
+"cod": "4105003",
+"nome": "Catanduvas",
+"meso": "Oeste Paranaense",
+"micro": "Cascavel"
+},
+{
+"cod": "4105102",
+"nome": "Centenário do Sul",
+"meso": "Norte Central Paranaense",
+"micro": "Astorga"
+},
+{
+"cod": "4105201",
+"nome": "Cerro Azul",
+"meso": "Metropolitana de Curitiba",
+"micro": "Cerro Azul"
+},
+{
+"cod": "4105300",
+"nome": "Céu Azul",
+"meso": "Oeste Paranaense",
+"micro": "Foz do Iguaçu"
+},
+{
+"cod": "4105409",
+"nome": "Chopinzinho",
+"meso": "Sudoeste Paranaense",
+"micro": "Pato Branco"
+},
+{
+"cod": "4105508",
+"nome": "Cianorte",
+"meso": "Noroeste Paranaense",
+"micro": "Cianorte"
+},
+{
+"cod": "4105607",
+"nome": "Cidade Gaúcha",
+"meso": "Noroeste Paranaense",
+"micro": "Cianorte"
+},
+{
+"cod": "4105706",
+"nome": "Clevelândia",
+"meso": "Centro-Sul Paranaense",
+"micro": "Palmas"
+},
+{
+"cod": "4105805",
+"nome": "Colombo",
+"meso": "Metropolitana de Curitiba",
+"micro": "Curitiba"
+},
+{
+"cod": "4105904",
+"nome": "Colorado",
+"meso": "Norte Central Paranaense",
+"micro": "Astorga"
+},
+{
+"cod": "4106001",
+"nome": "Congonhinhas",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Cornélio Procópio"
+},
+{
+"cod": "4106100",
+"nome": "Conselheiro Mairinck",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Ibaiti"
+},
+{
+"cod": "4106209",
+"nome": "Contenda",
+"meso": "Metropolitana de Curitiba",
+"micro": "Curitiba"
+},
+{
+"cod": "4106308",
+"nome": "Corbélia",
+"meso": "Oeste Paranaense",
+"micro": "Cascavel"
+},
+{
+"cod": "4106407",
+"nome": "Cornélio Procópio",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Cornélio Procópio"
+},
+{
+"cod": "4106456",
+"nome": "Coronel Domingos Soares",
+"meso": "Centro-Sul Paranaense",
+"micro": "Palmas"
+},
+{
+"cod": "4106506",
+"nome": "Coronel Vivida",
+"meso": "Sudoeste Paranaense",
+"micro": "Pato Branco"
+},
+{
+"cod": "4106555",
+"nome": "Corumbataí do Sul",
+"meso": "Centro Ocidental Paranaense",
+"micro": "Campo Mourão"
+},
+{
+"cod": "4106571",
+"nome": "Cruzeiro do Iguaçu",
+"meso": "Sudoeste Paranaense",
+"micro": "Francisco Beltrão"
+},
+{
+"cod": "4106605",
+"nome": "Cruzeiro do Oeste",
+"meso": "Noroeste Paranaense",
+"micro": "Umuarama"
+},
+{
+"cod": "4106704",
+"nome": "Cruzeiro do Sul",
+"meso": "Noroeste Paranaense",
+"micro": "Paranavaí"
+},
+{
+"cod": "4106803",
+"nome": "Cruz Machado",
+"meso": "Sudeste Paranaense",
+"micro": "União da Vitória"
+},
+{
+"cod": "4106852",
+"nome": "Cruzmaltina",
+"meso": "Norte Central Paranaense",
+"micro": "Faxinal"
+},
+{
+"cod": "4106902",
+"nome": "Curitiba",
+"meso": "Metropolitana de Curitiba",
+"micro": "Curitiba"
+},
+{
+"cod": "4107009",
+"nome": "Curiúva",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Ibaiti"
+},
+{
+"cod": "4107108",
+"nome": "Diamante do Norte",
+"meso": "Noroeste Paranaense",
+"micro": "Paranavaí"
+},
+{
+"cod": "4107124",
+"nome": "Diamante do Sul",
+"meso": "Oeste Paranaense",
+"micro": "Cascavel"
+},
+{
+"cod": "4107157",
+"nome": "Diamante D'Oeste",
+"meso": "Oeste Paranaense",
+"micro": "Toledo"
+},
+{
+"cod": "4107207",
+"nome": "Dois Vizinhos",
+"meso": "Sudoeste Paranaense",
+"micro": "Francisco Beltrão"
+},
+{
+"cod": "4107256",
+"nome": "Douradina",
+"meso": "Noroeste Paranaense",
+"micro": "Umuarama"
+},
+{
+"cod": "4107306",
+"nome": "Doutor Camargo",
+"meso": "Norte Central Paranaense",
+"micro": "Floraí"
+},
+{
+"cod": "4107405",
+"nome": "Enéas Marques",
+"meso": "Sudoeste Paranaense",
+"micro": "Francisco Beltrão"
+},
+{
+"cod": "4107504",
+"nome": "Engenheiro Beltrão",
+"meso": "Centro Ocidental Paranaense",
+"micro": "Campo Mourão"
+},
+{
+"cod": "4107520",
+"nome": "Esperança Nova",
+"meso": "Noroeste Paranaense",
+"micro": "Umuarama"
+},
+{
+"cod": "4107538",
+"nome": "Entre Rios do Oeste",
+"meso": "Oeste Paranaense",
+"micro": "Toledo"
+},
+{
+"cod": "4107546",
+"nome": "Espigão Alto do Iguaçu",
+"meso": "Centro-Sul Paranaense",
+"micro": "Guarapuava"
+},
+{
+"cod": "4107553",
+"nome": "Farol",
+"meso": "Centro Ocidental Paranaense",
+"micro": "Campo Mourão"
+},
+{
+"cod": "4107603",
+"nome": "Faxinal",
+"meso": "Norte Central Paranaense",
+"micro": "Faxinal"
+},
+{
+"cod": "4107652",
+"nome": "Fazenda Rio Grande",
+"meso": "Metropolitana de Curitiba",
+"micro": "Curitiba"
+},
+{
+"cod": "4107702",
+"nome": "Fênix",
+"meso": "Centro Ocidental Paranaense",
+"micro": "Campo Mourão"
+},
+{
+"cod": "4107736",
+"nome": "Fernandes Pinheiro",
+"meso": "Sudeste Paranaense",
+"micro": "Prudentópolis"
+},
+{
+"cod": "4107751",
+"nome": "Figueira",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Ibaiti"
+},
+{
+"cod": "4107801",
+"nome": "Floraí",
+"meso": "Norte Central Paranaense",
+"micro": "Floraí"
+},
+{
+"cod": "4107850",
+"nome": "Flor da Serra do Sul",
+"meso": "Sudoeste Paranaense",
+"micro": "Francisco Beltrão"
+},
+{
+"cod": "4107900",
+"nome": "Floresta",
+"meso": "Norte Central Paranaense",
+"micro": "Floraí"
+},
+{
+"cod": "4108007",
+"nome": "Florestópolis",
+"meso": "Norte Central Paranaense",
+"micro": "Porecatu"
+},
+{
+"cod": "4108106",
+"nome": "Flórida",
+"meso": "Norte Central Paranaense",
+"micro": "Astorga"
+},
+{
+"cod": "4108205",
+"nome": "Formosa do Oeste",
+"meso": "Oeste Paranaense",
+"micro": "Toledo"
+},
+{
+"cod": "4108304",
+"nome": "Foz do Iguaçu",
+"meso": "Oeste Paranaense",
+"micro": "Foz do Iguaçu"
+},
+{
+"cod": "4108320",
+"nome": "Francisco Alves",
+"meso": "Noroeste Paranaense",
+"micro": "Umuarama"
+},
+{
+"cod": "4108403",
+"nome": "Francisco Beltrão",
+"meso": "Sudoeste Paranaense",
+"micro": "Francisco Beltrão"
+},
+{
+"cod": "4108452",
+"nome": "Foz do Jordão",
+"meso": "Centro-Sul Paranaense",
+"micro": "Guarapuava"
+},
+{
+"cod": "4108502",
+"nome": "General Carneiro",
+"meso": "Sudeste Paranaense",
+"micro": "União da Vitória"
+},
+{
+"cod": "4108551",
+"nome": "Godoy Moreira",
+"meso": "Norte Central Paranaense",
+"micro": "Ivaiporã"
+},
+{
+"cod": "4108601",
+"nome": "Goioerê",
+"meso": "Centro Ocidental Paranaense",
+"micro": "Goioerê"
+},
+{
+"cod": "4108650",
+"nome": "Goioxim",
+"meso": "Centro-Sul Paranaense",
+"micro": "Guarapuava"
+},
+{
+"cod": "4108700",
+"nome": "Grandes Rios",
+"meso": "Norte Central Paranaense",
+"micro": "Ivaiporã"
+},
+{
+"cod": "4108809",
+"nome": "Guaíra",
+"meso": "Oeste Paranaense",
+"micro": "Toledo"
+},
+{
+"cod": "4108908",
+"nome": "Guairaçá",
+"meso": "Noroeste Paranaense",
+"micro": "Paranavaí"
+},
+{
+"cod": "4108957",
+"nome": "Guamiranga",
+"meso": "Sudeste Paranaense",
+"micro": "Prudentópolis"
+},
+{
+"cod": "4109005",
+"nome": "Guapirama",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Wenceslau Braz"
+},
+{
+"cod": "4109104",
+"nome": "Guaporema",
+"meso": "Noroeste Paranaense",
+"micro": "Cianorte"
+},
+{
+"cod": "4109203",
+"nome": "Guaraci",
+"meso": "Norte Central Paranaense",
+"micro": "Astorga"
+},
+{
+"cod": "4109302",
+"nome": "Guaraniaçu",
+"meso": "Oeste Paranaense",
+"micro": "Cascavel"
+},
+{
+"cod": "4109401",
+"nome": "Guarapuava",
+"meso": "Centro-Sul Paranaense",
+"micro": "Guarapuava"
+},
+{
+"cod": "4109500",
+"nome": "Guaraqueçaba",
+"meso": "Metropolitana de Curitiba",
+"micro": "Paranaguá"
+},
+{
+"cod": "4109609",
+"nome": "Guaratuba",
+"meso": "Metropolitana de Curitiba",
+"micro": "Paranaguá"
+},
+{
+"cod": "4109658",
+"nome": "Honório Serpa",
+"meso": "Centro-Sul Paranaense",
+"micro": "Palmas"
+},
+{
+"cod": "4109708",
+"nome": "Ibaiti",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Ibaiti"
+},
+{
+"cod": "4109757",
+"nome": "Ibema",
+"meso": "Oeste Paranaense",
+"micro": "Cascavel"
+},
+{
+"cod": "4109807",
+"nome": "Ibiporã",
+"meso": "Norte Central Paranaense",
+"micro": "Londrina"
+},
+{
+"cod": "4109906",
+"nome": "Icaraíma",
+"meso": "Noroeste Paranaense",
+"micro": "Umuarama"
+},
+{
+"cod": "4110003",
+"nome": "Iguaraçu",
+"meso": "Norte Central Paranaense",
+"micro": "Astorga"
+},
+{
+"cod": "4110052",
+"nome": "Iguatu",
+"meso": "Oeste Paranaense",
+"micro": "Cascavel"
+},
+{
+"cod": "4110078",
+"nome": "Imbaú",
+"meso": "Centro Oriental Paranaense",
+"micro": "Telêmaco Borba"
+},
+{
+"cod": "4110102",
+"nome": "Imbituva",
+"meso": "Sudeste Paranaense",
+"micro": "Prudentópolis"
+},
+{
+"cod": "4110201",
+"nome": "Inácio Martins",
+"meso": "Centro-Sul Paranaense",
+"micro": "Guarapuava"
+},
+{
+"cod": "4110300",
+"nome": "Inajá",
+"meso": "Noroeste Paranaense",
+"micro": "Paranavaí"
+},
+{
+"cod": "4110409",
+"nome": "Indianópolis",
+"meso": "Noroeste Paranaense",
+"micro": "Cianorte"
+},
+{
+"cod": "4110508",
+"nome": "Ipiranga",
+"meso": "Sudeste Paranaense",
+"micro": "Prudentópolis"
+},
+{
+"cod": "4110607",
+"nome": "Iporã",
+"meso": "Noroeste Paranaense",
+"micro": "Umuarama"
+},
+{
+"cod": "4110656",
+"nome": "Iracema do Oeste",
+"meso": "Oeste Paranaense",
+"micro": "Toledo"
+},
+{
+"cod": "4110706",
+"nome": "Irati",
+"meso": "Sudeste Paranaense",
+"micro": "Irati"
+},
+{
+"cod": "4110805",
+"nome": "Iretama",
+"meso": "Centro Ocidental Paranaense",
+"micro": "Campo Mourão"
+},
+{
+"cod": "4110904",
+"nome": "Itaguajé",
+"meso": "Norte Central Paranaense",
+"micro": "Astorga"
+},
+{
+"cod": "4110953",
+"nome": "Itaipulândia",
+"meso": "Oeste Paranaense",
+"micro": "Foz do Iguaçu"
+},
+{
+"cod": "4111001",
+"nome": "Itambaracá",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Cornélio Procópio"
+},
+{
+"cod": "4111100",
+"nome": "Itambé",
+"meso": "Norte Central Paranaense",
+"micro": "Floraí"
+},
+{
+"cod": "4111209",
+"nome": "Itapejara d'Oeste",
+"meso": "Sudoeste Paranaense",
+"micro": "Pato Branco"
+},
+{
+"cod": "4111258",
+"nome": "Itaperuçu",
+"meso": "Metropolitana de Curitiba",
+"micro": "Curitiba"
+},
+{
+"cod": "4111308",
+"nome": "Itaúna do Sul",
+"meso": "Noroeste Paranaense",
+"micro": "Paranavaí"
+},
+{
+"cod": "4111407",
+"nome": "Ivaí",
+"meso": "Sudeste Paranaense",
+"micro": "Prudentópolis"
+},
+{
+"cod": "4111506",
+"nome": "Ivaiporã",
+"meso": "Norte Central Paranaense",
+"micro": "Ivaiporã"
+},
+{
+"cod": "4111555",
+"nome": "Ivaté",
+"meso": "Noroeste Paranaense",
+"micro": "Umuarama"
+},
+{
+"cod": "4111605",
+"nome": "Ivatuba",
+"meso": "Norte Central Paranaense",
+"micro": "Floraí"
+},
+{
+"cod": "4111704",
+"nome": "Jaboti",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Ibaiti"
+},
+{
+"cod": "4111803",
+"nome": "Jacarezinho",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Jacarezinho"
+},
+{
+"cod": "4111902",
+"nome": "Jaguapitã",
+"meso": "Norte Central Paranaense",
+"micro": "Astorga"
+},
+{
+"cod": "4112009",
+"nome": "Jaguariaíva",
+"meso": "Centro Oriental Paranaense",
+"micro": "Jaguariaíva"
+},
+{
+"cod": "4112108",
+"nome": "Jandaia do Sul",
+"meso": "Norte Central Paranaense",
+"micro": "Apucarana"
+},
+{
+"cod": "4112207",
+"nome": "Janiópolis",
+"meso": "Centro Ocidental Paranaense",
+"micro": "Goioerê"
+},
+{
+"cod": "4112306",
+"nome": "Japira",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Ibaiti"
+},
+{
+"cod": "4112405",
+"nome": "Japurá",
+"meso": "Noroeste Paranaense",
+"micro": "Cianorte"
+},
+{
+"cod": "4112504",
+"nome": "Jardim Alegre",
+"meso": "Norte Central Paranaense",
+"micro": "Ivaiporã"
+},
+{
+"cod": "4112603",
+"nome": "Jardim Olinda",
+"meso": "Noroeste Paranaense",
+"micro": "Paranavaí"
+},
+{
+"cod": "4112702",
+"nome": "Jataizinho",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Assaí"
+},
+{
+"cod": "4112751",
+"nome": "Jesuítas",
+"meso": "Oeste Paranaense",
+"micro": "Toledo"
+},
+{
+"cod": "4112801",
+"nome": "Joaquim Távora",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Wenceslau Braz"
+},
+{
+"cod": "4112900",
+"nome": "Jundiaí do Sul",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Jacarezinho"
+},
+{
+"cod": "4112959",
+"nome": "Juranda",
+"meso": "Centro Ocidental Paranaense",
+"micro": "Goioerê"
+},
+{
+"cod": "4113007",
+"nome": "Jussara",
+"meso": "Noroeste Paranaense",
+"micro": "Cianorte"
+},
+{
+"cod": "4113106",
+"nome": "Kaloré",
+"meso": "Norte Central Paranaense",
+"micro": "Faxinal"
+},
+{
+"cod": "4113205",
+"nome": "Lapa",
+"meso": "Metropolitana de Curitiba",
+"micro": "Lapa"
+},
+{
+"cod": "4113254",
+"nome": "Laranjal",
+"meso": "Centro-Sul Paranaense",
+"micro": "Pitanga"
+},
+{
+"cod": "4113304",
+"nome": "Laranjeiras do Sul",
+"meso": "Centro-Sul Paranaense",
+"micro": "Guarapuava"
+},
+{
+"cod": "4113403",
+"nome": "Leópolis",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Cornélio Procópio"
+},
+{
+"cod": "4113429",
+"nome": "Lidianópolis",
+"meso": "Norte Central Paranaense",
+"micro": "Ivaiporã"
+},
+{
+"cod": "4113452",
+"nome": "Lindoeste",
+"meso": "Oeste Paranaense",
+"micro": "Cascavel"
+},
+{
+"cod": "4113502",
+"nome": "Loanda",
+"meso": "Noroeste Paranaense",
+"micro": "Paranavaí"
+},
+{
+"cod": "4113601",
+"nome": "Lobato",
+"meso": "Norte Central Paranaense",
+"micro": "Astorga"
+},
+{
+"cod": "4113700",
+"nome": "Londrina",
+"meso": "Norte Central Paranaense",
+"micro": "Londrina"
+},
+{
+"cod": "4113734",
+"nome": "Luiziana",
+"meso": "Centro Ocidental Paranaense",
+"micro": "Campo Mourão"
+},
+{
+"cod": "4113759",
+"nome": "Lunardelli",
+"meso": "Norte Central Paranaense",
+"micro": "Ivaiporã"
+},
+{
+"cod": "4113809",
+"nome": "Lupionópolis",
+"meso": "Norte Central Paranaense",
+"micro": "Astorga"
+},
+{
+"cod": "4113908",
+"nome": "Mallet",
+"meso": "Sudeste Paranaense",
+"micro": "Irati"
+},
+{
+"cod": "4114005",
+"nome": "Mamborê",
+"meso": "Centro Ocidental Paranaense",
+"micro": "Campo Mourão"
+},
+{
+"cod": "4114104",
+"nome": "Mandaguaçu",
+"meso": "Norte Central Paranaense",
+"micro": "Astorga"
+},
+{
+"cod": "4114203",
+"nome": "Mandaguari",
+"meso": "Norte Central Paranaense",
+"micro": "Maringá"
+},
+{
+"cod": "4114302",
+"nome": "Mandirituba",
+"meso": "Metropolitana de Curitiba",
+"micro": "Curitiba"
+},
+{
+"cod": "4114351",
+"nome": "Manfrinópolis",
+"meso": "Sudoeste Paranaense",
+"micro": "Francisco Beltrão"
+},
+{
+"cod": "4114401",
+"nome": "Mangueirinha",
+"meso": "Centro-Sul Paranaense",
+"micro": "Palmas"
+},
+{
+"cod": "4114500",
+"nome": "Manoel Ribas",
+"meso": "Norte Central Paranaense",
+"micro": "Ivaiporã"
+},
+{
+"cod": "4114609",
+"nome": "Marechal Cândido Rondon",
+"meso": "Oeste Paranaense",
+"micro": "Toledo"
+},
+{
+"cod": "4114708",
+"nome": "Maria Helena",
+"meso": "Noroeste Paranaense",
+"micro": "Umuarama"
+},
+{
+"cod": "4114807",
+"nome": "Marialva",
+"meso": "Norte Central Paranaense",
+"micro": "Maringá"
+},
+{
+"cod": "4114906",
+"nome": "Marilândia do Sul",
+"meso": "Norte Central Paranaense",
+"micro": "Apucarana"
+},
+{
+"cod": "4115002",
+"nome": "Marilena",
+"meso": "Noroeste Paranaense",
+"micro": "Paranavaí"
+},
+{
+"cod": "4115101",
+"nome": "Mariluz",
+"meso": "Noroeste Paranaense",
+"micro": "Umuarama"
+},
+{
+"cod": "4115200",
+"nome": "Maringá",
+"meso": "Norte Central Paranaense",
+"micro": "Maringá"
+},
+{
+"cod": "4115309",
+"nome": "Mariópolis",
+"meso": "Sudoeste Paranaense",
+"micro": "Pato Branco"
+},
+{
+"cod": "4115358",
+"nome": "Maripá",
+"meso": "Oeste Paranaense",
+"micro": "Toledo"
+},
+{
+"cod": "4115408",
+"nome": "Marmeleiro",
+"meso": "Sudoeste Paranaense",
+"micro": "Francisco Beltrão"
+},
+{
+"cod": "4115457",
+"nome": "Marquinho",
+"meso": "Centro-Sul Paranaense",
+"micro": "Guarapuava"
+},
+{
+"cod": "4115507",
+"nome": "Marumbi",
+"meso": "Norte Central Paranaense",
+"micro": "Faxinal"
+},
+{
+"cod": "4115606",
+"nome": "Matelândia",
+"meso": "Oeste Paranaense",
+"micro": "Foz do Iguaçu"
+},
+{
+"cod": "4115705",
+"nome": "Matinhos",
+"meso": "Metropolitana de Curitiba",
+"micro": "Paranaguá"
+},
+{
+"cod": "4115739",
+"nome": "Mato Rico",
+"meso": "Centro-Sul Paranaense",
+"micro": "Pitanga"
+},
+{
+"cod": "4115754",
+"nome": "Mauá da Serra",
+"meso": "Norte Central Paranaense",
+"micro": "Apucarana"
+},
+{
+"cod": "4115804",
+"nome": "Medianeira",
+"meso": "Oeste Paranaense",
+"micro": "Foz do Iguaçu"
+},
+{
+"cod": "4115853",
+"nome": "Mercedes",
+"meso": "Oeste Paranaense",
+"micro": "Toledo"
+},
+{
+"cod": "4115903",
+"nome": "Mirador",
+"meso": "Noroeste Paranaense",
+"micro": "Paranavaí"
+},
+{
+"cod": "4116000",
+"nome": "Miraselva",
+"meso": "Norte Central Paranaense",
+"micro": "Porecatu"
+},
+{
+"cod": "4116059",
+"nome": "Missal",
+"meso": "Oeste Paranaense",
+"micro": "Foz do Iguaçu"
+},
+{
+"cod": "4116109",
+"nome": "Moreira Sales",
+"meso": "Centro Ocidental Paranaense",
+"micro": "Goioerê"
+},
+{
+"cod": "4116208",
+"nome": "Morretes",
+"meso": "Metropolitana de Curitiba",
+"micro": "Paranaguá"
+},
+{
+"cod": "4116307",
+"nome": "Munhoz de Melo",
+"meso": "Norte Central Paranaense",
+"micro": "Astorga"
+},
+{
+"cod": "4116406",
+"nome": "Nossa Senhora das Graças",
+"meso": "Norte Central Paranaense",
+"micro": "Astorga"
+},
+{
+"cod": "4116505",
+"nome": "Nova Aliança do Ivaí",
+"meso": "Noroeste Paranaense",
+"micro": "Paranavaí"
+},
+{
+"cod": "4116604",
+"nome": "Nova América da Colina",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Cornélio Procópio"
+},
+{
+"cod": "4116703",
+"nome": "Nova Aurora",
+"meso": "Oeste Paranaense",
+"micro": "Cascavel"
+},
+{
+"cod": "4116802",
+"nome": "Nova Cantu",
+"meso": "Centro Ocidental Paranaense",
+"micro": "Goioerê"
+},
+{
+"cod": "4116901",
+"nome": "Nova Esperança",
+"meso": "Norte Central Paranaense",
+"micro": "Astorga"
+},
+{
+"cod": "4116950",
+"nome": "Nova Esperança do Sudoeste",
+"meso": "Sudoeste Paranaense",
+"micro": "Francisco Beltrão"
+},
+{
+"cod": "4117008",
+"nome": "Nova Fátima",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Cornélio Procópio"
+},
+{
+"cod": "4117057",
+"nome": "Nova Laranjeiras",
+"meso": "Centro-Sul Paranaense",
+"micro": "Guarapuava"
+},
+{
+"cod": "4117107",
+"nome": "Nova Londrina",
+"meso": "Noroeste Paranaense",
+"micro": "Paranavaí"
+},
+{
+"cod": "4117206",
+"nome": "Nova Olímpia",
+"meso": "Noroeste Paranaense",
+"micro": "Umuarama"
+},
+{
+"cod": "4117214",
+"nome": "Nova Santa Bárbara",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Assaí"
+},
+{
+"cod": "4117222",
+"nome": "Nova Santa Rosa",
+"meso": "Oeste Paranaense",
+"micro": "Toledo"
+},
+{
+"cod": "4117255",
+"nome": "Nova Prata do Iguaçu",
+"meso": "Sudoeste Paranaense",
+"micro": "Francisco Beltrão"
+},
+{
+"cod": "4117271",
+"nome": "Nova Tebas",
+"meso": "Norte Central Paranaense",
+"micro": "Ivaiporã"
+},
+{
+"cod": "4117297",
+"nome": "Novo Itacolomi",
+"meso": "Norte Central Paranaense",
+"micro": "Apucarana"
+},
+{
+"cod": "4117305",
+"nome": "Ortigueira",
+"meso": "Centro Oriental Paranaense",
+"micro": "Telêmaco Borba"
+},
+{
+"cod": "4117404",
+"nome": "Ourizona",
+"meso": "Norte Central Paranaense",
+"micro": "Floraí"
+},
+{
+"cod": "4117453",
+"nome": "Ouro Verde do Oeste",
+"meso": "Oeste Paranaense",
+"micro": "Toledo"
+},
+{
+"cod": "4117503",
+"nome": "Paiçandu",
+"meso": "Norte Central Paranaense",
+"micro": "Maringá"
+},
+{
+"cod": "4117602",
+"nome": "Palmas",
+"meso": "Centro-Sul Paranaense",
+"micro": "Palmas"
+},
+{
+"cod": "4117701",
+"nome": "Palmeira",
+"meso": "Centro Oriental Paranaense",
+"micro": "Ponta Grossa"
+},
+{
+"cod": "4117800",
+"nome": "Palmital",
+"meso": "Centro-Sul Paranaense",
+"micro": "Pitanga"
+},
+{
+"cod": "4117909",
+"nome": "Palotina",
+"meso": "Oeste Paranaense",
+"micro": "Toledo"
+},
+{
+"cod": "4118006",
+"nome": "Paraíso do Norte",
+"meso": "Noroeste Paranaense",
+"micro": "Paranavaí"
+},
+{
+"cod": "4118105",
+"nome": "Paranacity",
+"meso": "Noroeste Paranaense",
+"micro": "Paranavaí"
+},
+{
+"cod": "4118204",
+"nome": "Paranaguá",
+"meso": "Metropolitana de Curitiba",
+"micro": "Paranaguá"
+},
+{
+"cod": "4118303",
+"nome": "Paranapoema",
+"meso": "Noroeste Paranaense",
+"micro": "Paranavaí"
+},
+{
+"cod": "4118402",
+"nome": "Paranavaí",
+"meso": "Noroeste Paranaense",
+"micro": "Paranavaí"
+},
+{
+"cod": "4118451",
+"nome": "Pato Bragado",
+"meso": "Oeste Paranaense",
+"micro": "Toledo"
+},
+{
+"cod": "4118501",
+"nome": "Pato Branco",
+"meso": "Sudoeste Paranaense",
+"micro": "Pato Branco"
+},
+{
+"cod": "4118600",
+"nome": "Paula Freitas",
+"meso": "Sudeste Paranaense",
+"micro": "União da Vitória"
+},
+{
+"cod": "4118709",
+"nome": "Paulo Frontin",
+"meso": "Sudeste Paranaense",
+"micro": "União da Vitória"
+},
+{
+"cod": "4118808",
+"nome": "Peabiru",
+"meso": "Centro Ocidental Paranaense",
+"micro": "Campo Mourão"
+},
+{
+"cod": "4118857",
+"nome": "Perobal",
+"meso": "Noroeste Paranaense",
+"micro": "Umuarama"
+},
+{
+"cod": "4118907",
+"nome": "Pérola",
+"meso": "Noroeste Paranaense",
+"micro": "Umuarama"
+},
+{
+"cod": "4119004",
+"nome": "Pérola d'Oeste",
+"meso": "Sudoeste Paranaense",
+"micro": "Capanema"
+},
+{
+"cod": "4119103",
+"nome": "Piên",
+"meso": "Metropolitana de Curitiba",
+"micro": "Rio Negro"
+},
+{
+"cod": "4119152",
+"nome": "Pinhais",
+"meso": "Metropolitana de Curitiba",
+"micro": "Curitiba"
+},
+{
+"cod": "4119202",
+"nome": "Pinhalão",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Ibaiti"
+},
+{
+"cod": "4119251",
+"nome": "Pinhal de São Bento",
+"meso": "Sudoeste Paranaense",
+"micro": "Francisco Beltrão"
+},
+{
+"cod": "4119301",
+"nome": "Pinhão",
+"meso": "Centro-Sul Paranaense",
+"micro": "Guarapuava"
+},
+{
+"cod": "4119400",
+"nome": "Piraí do Sul",
+"meso": "Centro Oriental Paranaense",
+"micro": "Jaguariaíva"
+},
+{
+"cod": "4119509",
+"nome": "Piraquara",
+"meso": "Metropolitana de Curitiba",
+"micro": "Curitiba"
+},
+{
+"cod": "4119608",
+"nome": "Pitanga",
+"meso": "Centro-Sul Paranaense",
+"micro": "Pitanga"
+},
+{
+"cod": "4119657",
+"nome": "Pitangueiras",
+"meso": "Norte Central Paranaense",
+"micro": "Londrina"
+},
+{
+"cod": "4119707",
+"nome": "Planaltina do Paraná",
+"meso": "Noroeste Paranaense",
+"micro": "Paranavaí"
+},
+{
+"cod": "4119806",
+"nome": "Planalto",
+"meso": "Sudoeste Paranaense",
+"micro": "Capanema"
+},
+{
+"cod": "4119905",
+"nome": "Ponta Grossa",
+"meso": "Centro Oriental Paranaense",
+"micro": "Ponta Grossa"
+},
+{
+"cod": "4119954",
+"nome": "Pontal do Paraná",
+"meso": "Metropolitana de Curitiba",
+"micro": "Paranaguá"
+},
+{
+"cod": "4120002",
+"nome": "Porecatu",
+"meso": "Norte Central Paranaense",
+"micro": "Porecatu"
+},
+{
+"cod": "4120101",
+"nome": "Porto Amazonas",
+"meso": "Metropolitana de Curitiba",
+"micro": "Lapa"
+},
+{
+"cod": "4120150",
+"nome": "Porto Barreiro",
+"meso": "Centro-Sul Paranaense",
+"micro": "Guarapuava"
+},
+{
+"cod": "4120200",
+"nome": "Porto Rico",
+"meso": "Noroeste Paranaense",
+"micro": "Paranavaí"
+},
+{
+"cod": "4120309",
+"nome": "Porto Vitória",
+"meso": "Sudeste Paranaense",
+"micro": "União da Vitória"
+},
+{
+"cod": "4120333",
+"nome": "Prado Ferreira",
+"meso": "Norte Central Paranaense",
+"micro": "Porecatu"
+},
+{
+"cod": "4120358",
+"nome": "Pranchita",
+"meso": "Sudoeste Paranaense",
+"micro": "Capanema"
+},
+{
+"cod": "4120408",
+"nome": "Presidente Castelo Branco",
+"meso": "Norte Central Paranaense",
+"micro": "Astorga"
+},
+{
+"cod": "4120507",
+"nome": "Primeiro de Maio",
+"meso": "Norte Central Paranaense",
+"micro": "Porecatu"
+},
+{
+"cod": "4120606",
+"nome": "Prudentópolis",
+"meso": "Sudeste Paranaense",
+"micro": "Prudentópolis"
+},
+{
+"cod": "4120655",
+"nome": "Quarto Centenário",
+"meso": "Centro Ocidental Paranaense",
+"micro": "Goioerê"
+},
+{
+"cod": "4120705",
+"nome": "Quatiguá",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Wenceslau Braz"
+},
+{
+"cod": "4120804",
+"nome": "Quatro Barras",
+"meso": "Metropolitana de Curitiba",
+"micro": "Curitiba"
+},
+{
+"cod": "4120853",
+"nome": "Quatro Pontes",
+"meso": "Oeste Paranaense",
+"micro": "Toledo"
+},
+{
+"cod": "4120903",
+"nome": "Quedas do Iguaçu",
+"meso": "Centro-Sul Paranaense",
+"micro": "Guarapuava"
+},
+{
+"cod": "4121000",
+"nome": "Querência do Norte",
+"meso": "Noroeste Paranaense",
+"micro": "Paranavaí"
+},
+{
+"cod": "4121109",
+"nome": "Quinta do Sol",
+"meso": "Centro Ocidental Paranaense",
+"micro": "Campo Mourão"
+},
+{
+"cod": "4121208",
+"nome": "Quitandinha",
+"meso": "Metropolitana de Curitiba",
+"micro": "Rio Negro"
+},
+{
+"cod": "4121257",
+"nome": "Ramilândia",
+"meso": "Oeste Paranaense",
+"micro": "Foz do Iguaçu"
+},
+{
+"cod": "4121307",
+"nome": "Rancho Alegre",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Assaí"
+},
+{
+"cod": "4121356",
+"nome": "Rancho Alegre D'Oeste",
+"meso": "Centro Ocidental Paranaense",
+"micro": "Goioerê"
+},
+{
+"cod": "4121406",
+"nome": "Realeza",
+"meso": "Sudoeste Paranaense",
+"micro": "Capanema"
+},
+{
+"cod": "4121505",
+"nome": "Rebouças",
+"meso": "Sudeste Paranaense",
+"micro": "Irati"
+},
+{
+"cod": "4121604",
+"nome": "Renascença",
+"meso": "Sudoeste Paranaense",
+"micro": "Francisco Beltrão"
+},
+{
+"cod": "4121703",
+"nome": "Reserva",
+"meso": "Centro Oriental Paranaense",
+"micro": "Telêmaco Borba"
+},
+{
+"cod": "4121752",
+"nome": "Reserva do Iguaçu",
+"meso": "Centro-Sul Paranaense",
+"micro": "Guarapuava"
+},
+{
+"cod": "4121802",
+"nome": "Ribeirão Claro",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Jacarezinho"
+},
+{
+"cod": "4121901",
+"nome": "Ribeirão do Pinhal",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Cornélio Procópio"
+},
+{
+"cod": "4122008",
+"nome": "Rio Azul",
+"meso": "Sudeste Paranaense",
+"micro": "Irati"
+},
+{
+"cod": "4122107",
+"nome": "Rio Bom",
+"meso": "Norte Central Paranaense",
+"micro": "Faxinal"
+},
+{
+"cod": "4122156",
+"nome": "Rio Bonito do Iguaçu",
+"meso": "Centro-Sul Paranaense",
+"micro": "Guarapuava"
+},
+{
+"cod": "4122172",
+"nome": "Rio Branco do Ivaí",
+"meso": "Norte Central Paranaense",
+"micro": "Ivaiporã"
+},
+{
+"cod": "4122206",
+"nome": "Rio Branco do Sul",
+"meso": "Metropolitana de Curitiba",
+"micro": "Curitiba"
+},
+{
+"cod": "4122305",
+"nome": "Rio Negro",
+"meso": "Metropolitana de Curitiba",
+"micro": "Rio Negro"
+},
+{
+"cod": "4122404",
+"nome": "Rolândia",
+"meso": "Norte Central Paranaense",
+"micro": "Londrina"
+},
+{
+"cod": "4122503",
+"nome": "Roncador",
+"meso": "Centro Ocidental Paranaense",
+"micro": "Campo Mourão"
+},
+{
+"cod": "4122602",
+"nome": "Rondon",
+"meso": "Noroeste Paranaense",
+"micro": "Cianorte"
+},
+{
+"cod": "4122651",
+"nome": "Rosário do Ivaí",
+"meso": "Norte Central Paranaense",
+"micro": "Ivaiporã"
+},
+{
+"cod": "4122701",
+"nome": "Sabáudia",
+"meso": "Norte Central Paranaense",
+"micro": "Apucarana"
+},
+{
+"cod": "4122800",
+"nome": "Salgado Filho",
+"meso": "Sudoeste Paranaense",
+"micro": "Francisco Beltrão"
+},
+{
+"cod": "4122909",
+"nome": "Salto do Itararé",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Wenceslau Braz"
+},
+{
+"cod": "4123006",
+"nome": "Salto do Lontra",
+"meso": "Sudoeste Paranaense",
+"micro": "Francisco Beltrão"
+},
+{
+"cod": "4123105",
+"nome": "Santa Amélia",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Cornélio Procópio"
+},
+{
+"cod": "4123204",
+"nome": "Santa Cecília do Pavão",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Assaí"
+},
+{
+"cod": "4123303",
+"nome": "Santa Cruz de Monte Castelo",
+"meso": "Noroeste Paranaense",
+"micro": "Paranavaí"
+},
+{
+"cod": "4123402",
+"nome": "Santa Fé",
+"meso": "Norte Central Paranaense",
+"micro": "Astorga"
+},
+{
+"cod": "4123501",
+"nome": "Santa Helena",
+"meso": "Oeste Paranaense",
+"micro": "Toledo"
+},
+{
+"cod": "4123600",
+"nome": "Santa Inês",
+"meso": "Norte Central Paranaense",
+"micro": "Astorga"
+},
+{
+"cod": "4123709",
+"nome": "Santa Isabel do Ivaí",
+"meso": "Noroeste Paranaense",
+"micro": "Paranavaí"
+},
+{
+"cod": "4123808",
+"nome": "Santa Izabel do Oeste",
+"meso": "Sudoeste Paranaense",
+"micro": "Capanema"
+},
+{
+"cod": "4123824",
+"nome": "Santa Lúcia",
+"meso": "Oeste Paranaense",
+"micro": "Cascavel"
+},
+{
+"cod": "4123857",
+"nome": "Santa Maria do Oeste",
+"meso": "Centro-Sul Paranaense",
+"micro": "Pitanga"
+},
+{
+"cod": "4123907",
+"nome": "Santa Mariana",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Cornélio Procópio"
+},
+{
+"cod": "4123956",
+"nome": "Santa Mônica",
+"meso": "Noroeste Paranaense",
+"micro": "Paranavaí"
+},
+{
+"cod": "4124004",
+"nome": "Santana do Itararé",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Wenceslau Braz"
+},
+{
+"cod": "4124020",
+"nome": "Santa Tereza do Oeste",
+"meso": "Oeste Paranaense",
+"micro": "Cascavel"
+},
+{
+"cod": "4124053",
+"nome": "Santa Terezinha de Itaipu",
+"meso": "Oeste Paranaense",
+"micro": "Foz do Iguaçu"
+},
+{
+"cod": "4124103",
+"nome": "Santo Antônio da Platina",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Jacarezinho"
+},
+{
+"cod": "4124202",
+"nome": "Santo Antônio do Caiuá",
+"meso": "Noroeste Paranaense",
+"micro": "Paranavaí"
+},
+{
+"cod": "4124301",
+"nome": "Santo Antônio do Paraíso",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Cornélio Procópio"
+},
+{
+"cod": "4124400",
+"nome": "Santo Antônio do Sudoeste",
+"meso": "Sudoeste Paranaense",
+"micro": "Francisco Beltrão"
+},
+{
+"cod": "4124509",
+"nome": "Santo Inácio",
+"meso": "Norte Central Paranaense",
+"micro": "Astorga"
+},
+{
+"cod": "4124608",
+"nome": "São Carlos do Ivaí",
+"meso": "Noroeste Paranaense",
+"micro": "Paranavaí"
+},
+{
+"cod": "4124707",
+"nome": "São Jerônimo da Serra",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Assaí"
+},
+{
+"cod": "4124806",
+"nome": "São João",
+"meso": "Sudoeste Paranaense",
+"micro": "Pato Branco"
+},
+{
+"cod": "4124905",
+"nome": "São João do Caiuá",
+"meso": "Noroeste Paranaense",
+"micro": "Paranavaí"
+},
+{
+"cod": "4125001",
+"nome": "São João do Ivaí",
+"meso": "Norte Central Paranaense",
+"micro": "Ivaiporã"
+},
+{
+"cod": "4125100",
+"nome": "São João do Triunfo",
+"meso": "Sudeste Paranaense",
+"micro": "São Mateus do Sul"
+},
+{
+"cod": "4125209",
+"nome": "São Jorge d'Oeste",
+"meso": "Sudoeste Paranaense",
+"micro": "Francisco Beltrão"
+},
+{
+"cod": "4125308",
+"nome": "São Jorge do Ivaí",
+"meso": "Norte Central Paranaense",
+"micro": "Floraí"
+},
+{
+"cod": "4125357",
+"nome": "São Jorge do Patrocínio",
+"meso": "Noroeste Paranaense",
+"micro": "Umuarama"
+},
+{
+"cod": "4125407",
+"nome": "São José da Boa Vista",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Wenceslau Braz"
+},
+{
+"cod": "4125456",
+"nome": "São José das Palmeiras",
+"meso": "Oeste Paranaense",
+"micro": "Toledo"
+},
+{
+"cod": "4125506",
+"nome": "São José dos Pinhais",
+"meso": "Metropolitana de Curitiba",
+"micro": "Curitiba"
+},
+{
+"cod": "4125555",
+"nome": "São Manoel do Paraná",
+"meso": "Noroeste Paranaense",
+"micro": "Cianorte"
+},
+{
+"cod": "4125605",
+"nome": "São Mateus do Sul",
+"meso": "Sudeste Paranaense",
+"micro": "São Mateus do Sul"
+},
+{
+"cod": "4125704",
+"nome": "São Miguel do Iguaçu",
+"meso": "Oeste Paranaense",
+"micro": "Foz do Iguaçu"
+},
+{
+"cod": "4125753",
+"nome": "São Pedro do Iguaçu",
+"meso": "Oeste Paranaense",
+"micro": "Toledo"
+},
+{
+"cod": "4125803",
+"nome": "São Pedro do Ivaí",
+"meso": "Norte Central Paranaense",
+"micro": "Ivaiporã"
+},
+{
+"cod": "4125902",
+"nome": "São Pedro do Paraná",
+"meso": "Noroeste Paranaense",
+"micro": "Paranavaí"
+},
+{
+"cod": "4126009",
+"nome": "São Sebastião da Amoreira",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Assaí"
+},
+{
+"cod": "4126108",
+"nome": "São Tomé",
+"meso": "Noroeste Paranaense",
+"micro": "Cianorte"
+},
+{
+"cod": "4126207",
+"nome": "Sapopema",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Ibaiti"
+},
+{
+"cod": "4126256",
+"nome": "Sarandi",
+"meso": "Norte Central Paranaense",
+"micro": "Maringá"
+},
+{
+"cod": "4126272",
+"nome": "Saudade do Iguaçu",
+"meso": "Sudoeste Paranaense",
+"micro": "Pato Branco"
+},
+{
+"cod": "4126306",
+"nome": "Sengés",
+"meso": "Centro Oriental Paranaense",
+"micro": "Jaguariaíva"
+},
+{
+"cod": "4126355",
+"nome": "Serranópolis do Iguaçu",
+"meso": "Oeste Paranaense",
+"micro": "Foz do Iguaçu"
+},
+{
+"cod": "4126405",
+"nome": "Sertaneja",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Cornélio Procópio"
+},
+{
+"cod": "4126504",
+"nome": "Sertanópolis",
+"meso": "Norte Central Paranaense",
+"micro": "Porecatu"
+},
+{
+"cod": "4126603",
+"nome": "Siqueira Campos",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Wenceslau Braz"
+},
+{
+"cod": "4126652",
+"nome": "Sulina",
+"meso": "Sudoeste Paranaense",
+"micro": "Pato Branco"
+},
+{
+"cod": "4126678",
+"nome": "Tamarana",
+"meso": "Norte Central Paranaense",
+"micro": "Londrina"
+},
+{
+"cod": "4126702",
+"nome": "Tamboara",
+"meso": "Noroeste Paranaense",
+"micro": "Paranavaí"
+},
+{
+"cod": "4126801",
+"nome": "Tapejara",
+"meso": "Noroeste Paranaense",
+"micro": "Cianorte"
+},
+{
+"cod": "4126900",
+"nome": "Tapira",
+"meso": "Noroeste Paranaense",
+"micro": "Umuarama"
+},
+{
+"cod": "4127007",
+"nome": "Teixeira Soares",
+"meso": "Sudeste Paranaense",
+"micro": "Prudentópolis"
+},
+{
+"cod": "4127106",
+"nome": "Telêmaco Borba",
+"meso": "Centro Oriental Paranaense",
+"micro": "Telêmaco Borba"
+},
+{
+"cod": "4127205",
+"nome": "Terra Boa",
+"meso": "Centro Ocidental Paranaense",
+"micro": "Campo Mourão"
+},
+{
+"cod": "4127304",
+"nome": "Terra Rica",
+"meso": "Noroeste Paranaense",
+"micro": "Paranavaí"
+},
+{
+"cod": "4127403",
+"nome": "Terra Roxa",
+"meso": "Oeste Paranaense",
+"micro": "Toledo"
+},
+{
+"cod": "4127502",
+"nome": "Tibagi",
+"meso": "Centro Oriental Paranaense",
+"micro": "Telêmaco Borba"
+},
+{
+"cod": "4127601",
+"nome": "Tijucas do Sul",
+"meso": "Metropolitana de Curitiba",
+"micro": "Rio Negro"
+},
+{
+"cod": "4127700",
+"nome": "Toledo",
+"meso": "Oeste Paranaense",
+"micro": "Toledo"
+},
+{
+"cod": "4127809",
+"nome": "Tomazina",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Wenceslau Braz"
+},
+{
+"cod": "4127858",
+"nome": "Três Barras do Paraná",
+"meso": "Oeste Paranaense",
+"micro": "Cascavel"
+},
+{
+"cod": "4127882",
+"nome": "Tunas do Paraná",
+"meso": "Metropolitana de Curitiba",
+"micro": "Curitiba"
+},
+{
+"cod": "4127908",
+"nome": "Tuneiras do Oeste",
+"meso": "Noroeste Paranaense",
+"micro": "Cianorte"
+},
+{
+"cod": "4127957",
+"nome": "Tupãssi",
+"meso": "Oeste Paranaense",
+"micro": "Toledo"
+},
+{
+"cod": "4127965",
+"nome": "Turvo",
+"meso": "Centro-Sul Paranaense",
+"micro": "Guarapuava"
+},
+{
+"cod": "4128005",
+"nome": "Ubiratã",
+"meso": "Centro Ocidental Paranaense",
+"micro": "Goioerê"
+},
+{
+"cod": "4128104",
+"nome": "Umuarama",
+"meso": "Noroeste Paranaense",
+"micro": "Umuarama"
+},
+{
+"cod": "4128203",
+"nome": "União da Vitória",
+"meso": "Sudeste Paranaense",
+"micro": "União da Vitória"
+},
+{
+"cod": "4128302",
+"nome": "Uniflor",
+"meso": "Norte Central Paranaense",
+"micro": "Astorga"
+},
+{
+"cod": "4128401",
+"nome": "Uraí",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Assaí"
+},
+{
+"cod": "4128500",
+"nome": "Wenceslau Braz",
+"meso": "Norte Pioneiro Paranaense",
+"micro": "Wenceslau Braz"
+},
+{
+"cod": "4128534",
+"nome": "Ventania",
+"meso": "Centro Oriental Paranaense",
+"micro": "Telêmaco Borba"
+},
+{
+"cod": "4128559",
+"nome": "Vera Cruz do Oeste",
+"meso": "Oeste Paranaense",
+"micro": "Foz do Iguaçu"
+},
+{
+"cod": "4128609",
+"nome": "Verê",
+"meso": "Sudoeste Paranaense",
+"micro": "Francisco Beltrão"
+},
+{
+"cod": "4128625",
+"nome": "Alto Paraíso",
+"meso": "Noroeste Paranaense",
+"micro": "Umuarama"
+},
+{
+"cod": "4128633",
+"nome": "Doutor Ulysses",
+"meso": "Metropolitana de Curitiba",
+"micro": "Cerro Azul"
+},
+{
+"cod": "4128658",
+"nome": "Virmond",
+"meso": "Centro-Sul Paranaense",
+"micro": "Guarapuava"
+},
+{
+"cod": "4128708",
+"nome": "Vitorino",
+"meso": "Sudoeste Paranaense",
+"micro": "Pato Branco"
+},
+{
+"cod": "4128807",
+"nome": "Xambrê",
+"meso": "Noroeste Paranaense",
+"micro": "Umuarama"
+}
+]
