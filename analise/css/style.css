@@ -530,7 +530,8 @@ table.ind tr.pos td { color: #1d6b3e; font-weight: 600; }
 .raiox-corpo { padding: 12px 18px; overflow-y: auto; max-height: 72vh; font-size: .86rem; }
 .raiox-corpo h3 { font-size: .92rem; margin: 14px 0 6px; color: var(--verde, #1e5a3c); }
 .rx-cab { display: flex; justify-content: space-between; gap: 12px; background: #f3f7f4; border-radius: 8px; padding: 10px 12px; }
-.rx-cod { font-size: .8rem; font-weight: 700; word-break: break-all; }
+.rx-cod { font-size: .8rem; font-weight: 700; word-break: break-all; line-height: 1.35; margin-bottom: 3px; }
+.rx-cab .hint { line-height: 1.35; }
 .rx-area { text-align: right; font-size: 1rem; white-space: nowrap; }
 .rx-flags { list-style: none; padding: 0; margin: 10px 0; }
 .rx-flags li { padding: 5px 9px; border-radius: 6px; margin: 3px 0; font-weight: 600; font-size: .82rem; }
