@@ -4,8 +4,8 @@ import sys, os, json
 from playwright.sync_api import sync_playwright
 BASE, OUT = sys.argv[1].rstrip('/'), sys.argv[2]
 os.makedirs(OUT, exist_ok=True)
-car = json.load(open('analise/data/m/4108700/car.geojson'))
-fic = next(f for f in car['features'] if f['properties'].get('ficticio'))
+demo = json.load(open('analise/data/m/4108700/demo.geojson'))
+fic = next(f for f in demo['features'] if 'FICTICIO' in str(f['properties'].get('nome', '')) and 'Polygon' in f['geometry']['type'])
 anel = fic['geometry']['coordinates'][0] if fic['geometry']['type'] == 'Polygon' else fic['geometry']['coordinates'][0][0]
 kml = '<?xml version="1.0"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document><Placemark><name>teste</name><Polygon><outerBoundaryIs><LinearRing><coordinates>' + \
       ' '.join(f'{x},{y},0' for x, y in anel) + '</coordinates></LinearRing></outerBoundaryIs></Polygon></Placemark></Document></kml>'
