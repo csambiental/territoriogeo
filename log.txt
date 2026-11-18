@@ -1,0 +1,11 @@
+serie: [[2013, 0.61], [2014, 0.622], [2015, 0.672], [2016, 0.598], [2017, 0.649], [2018, 0.668], [2019, 0.712], [2020, 0.633], [2021, 0.659], [2022, 0.629], [2023, 0.701], [2024, 0.58], [2025, 0.587], [2026, 0.669]]
+erro área: 
+flags: ['Área coberta por 8 imóvel(is) do CAR – o maior cobre 48% da área', 'Nenhuma parcela SIGEF/INCRA sobre o imóvel', '38% do imóvel em relevo forte ondulado ou mais (≥ 20%)']
+uso: [['Vegetação arbórea', 45.886792452830186], ['Pastagem e campos', 28.07547169811321], ['Agricultura', 26.037735849056602]]
+cab: Área importada (area_teste.kml)
+Área sem CAR (desenhada ou importada)
+44,13 ha
+
+codigo: F18C-6E48-134F-8582 link: https://csambiental.github.io/territoriogeo/analise/verificar.html#eyJ2IjoxLCJjYXIiOiIiLCJub21lIjoiw4FyZWEgaW1wb3J0YWRhI
+verif: F18C-6E48-134F-8582
+landsat: ['Landsat/MS', ['1972-07-25', '2026-11-08'], 'Agriculture with DRA | Bathymetric with DRA | Color Infrared with DRA | Geology with DRA | Natural Color with DRA | Short-wave Infrared with DRA | Agriculture | Bathymetric | Color Infrared | Geology | Natural Color | Short-wave Infrared | NDVI Colorized | Normalized Difference Moisture Index Colorized | NDVI Raw | NBR Raw | Band 10 Surface Temperature in Celsius | Band 10 Surface Temperature in F', None]
