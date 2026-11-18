@@ -1,0 +1,16 @@
+name: Teste análise de área
+on: { workflow_dispatch: {} }
+permissions: { contents: write }
+jobs:
+  t:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install -q playwright && python -m playwright install chromium
+      - run: mkdir -p /tmp/ta && (python3 tools/teste_area.py https://csambiental.github.io/territoriogeo /tmp/ta 2>&1 | tee /tmp/ta/log.txt) || true
+      - run: |
+          mkdir -p /tmp/ta; cd /tmp/ta
+          git init -q -b teste-area && git add -A
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -q -m teste
+          git push -f -q "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" teste-area
