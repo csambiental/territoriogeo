@@ -604,3 +604,5 @@ table.ind tr.pos td { color: #1d6b3e; font-weight: 600; }
 #areaErro { color: #c62828; margin: 6px 0 0; }
 #areaErro:empty { display: none; }
 .rx-resp { font: inherit; font-size: .82rem; padding: 7px 9px; border: 1px solid var(--borda); border-radius: 8px; min-width: 220px; flex: 1 1 220px; }
+.ls-box { margin: 10px 0; padding: 10px 12px; border: 1px solid var(--borda); border-radius: 8px; background: #fbfcfb; }
+.ls-box h3 { margin-top: 0; }

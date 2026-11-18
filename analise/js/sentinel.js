@@ -88,3 +88,43 @@ function s2Html(s) {
       ${s.cenas.length > 1 ? `<p class="hint">Outras cenas sem nuvens recentes: ${s.cenas.slice(1).map(c => c.data.toLocaleDateString('pt-BR')).filter((v, i, a) => a.indexOf(v) === i).join(' · ')}.</p>` : ''}
       <p class="hint">Mosaico da cena mais recente com até 10% de nuvens em cada ponto (Copernicus Sentinel-2, via Esri). Para comparar outras datas: <a href="${s.link}">abrir no Copernicus Browser (cor natural)</a> · <a href="${s.linkNdvi}">NDVI</a>.</p>`;
 }
+
+// ---------- série histórica do NDVI (Landsat 8/9, via Esri; sem conta) ----------
+const LS_URL = 'https://landsat2.arcgis.com/arcgis/rest/services/Landsat/MS/ImageServer';
+async function lsNdviAno(alvo, ano) {
+    const g = turf.simplify(alvo, { tolerance: 0.0002, highQuality: false });
+    const rings = g.geometry.type === 'Polygon' ? g.geometry.coordinates : g.geometry.coordinates.flat();
+    // mesma estação todo ano (maio a setembro, mais seca e com menos nuvens no PR) e a cena menos nublada
+    const where = `Category = 1 AND CloudCover >= 0 AND CloudCover < 0.2 AND AcquisitionDate >= date '${ano}-05-01' AND AcquisitionDate <= date '${ano}-09-30'`;
+    const p = new URLSearchParams({ geometry: JSON.stringify({ rings, spatialReference: { wkid: 4326 } }), geometryType: 'esriGeometryPolygon',
+        mosaicRule: JSON.stringify({ mosaicMethod: 'esriMosaicAttribute', sortField: 'CloudCover', sortValue: '0', ascending: true, where }),
+        renderingRule: JSON.stringify({ rasterFunction: 'NDVI Raw' }), pixelSize: JSON.stringify({ x: 30, y: 30, spatialReference: { wkid: 102100 } }), f: 'json' });
+    const r = await (await fetch(`${LS_URL}/computeStatisticsHistograms?${p}`)).json();
+    const m = r && r.statistics && r.statistics[0] && r.statistics[0].mean;
+    return typeof m === 'number' && m !== 0 ? { ano, ndvi: m } : null;
+}
+async function lsSerieNdvi(alvo) {
+    const fim = new Date().getFullYear(), anos = []; for (let a = 2013; a <= fim; a++) anos.push(a);
+    const out = [];
+    for (let i = 0; i < anos.length; i += 4) out.push(...await Promise.all(anos.slice(i, i + 4).map(a => lsNdviAno(alvo, a).catch(() => null))));
+    return out.filter(Boolean);
+}
+function lsSerieSvg(s, larg = 640, alt = 190) {
+    if (!s || s.length < 2) return '';
+    const x0 = 44, x1 = larg - 16, y0 = 16, y1 = alt - 34, a0 = s[0].ano, a1 = s[s.length - 1].ano;
+    const X = a => x0 + (a - a0) / Math.max(1, a1 - a0) * (x1 - x0), Y = v => y1 - Math.max(0, Math.min(0.9, v)) / 0.9 * (y1 - y0);
+    const pts = s.map(p => `${X(p.ano).toFixed(1)},${Y(p.ndvi).toFixed(1)}`).join(' ');
+    const faixas = [[0.45, 0.9, '#2f8f2f'], [0.3, 0.45, '#a6c93a'], [0.15, 0.3, '#e8d84a'], [0, 0.15, '#b5651d']];
+    return `<svg viewBox="0 0 ${larg} ${alt}" width="100%" role="img" aria-label="Série histórica do NDVI do imóvel" style="font:11px Arial">
+      ${faixas.map(([a, b, c]) => `<rect x="${x0}" y="${Y(b)}" width="${x1 - x0}" height="${Y(a) - Y(b)}" fill="${c}" opacity=".12"/>`).join('')}
+      ${[0, 0.3, 0.6, 0.9].map(v => `<line x1="${x0}" x2="${x1}" y1="${Y(v)}" y2="${Y(v)}" stroke="#d6dbd7"/><text x="${x0 - 6}" y="${Y(v) + 4}" text-anchor="end" fill="#5f6d66">${v.toFixed(1).replace('.', ',')}</text>`).join('')}
+      <polyline points="${pts}" fill="none" stroke="#1f4933" stroke-width="2.2"/>
+      ${s.map(p => `<circle cx="${X(p.ano)}" cy="${Y(p.ndvi)}" r="3.2" fill="#1f4933"/><text x="${X(p.ano)}" y="${alt - 16}" text-anchor="middle" fill="#5f6d66">${String(p.ano).slice(2)}</text>`).join('')}
+      <text x="${x0}" y="${alt - 2}" fill="#5f6d66">ano (20xx) · NDVI médio do imóvel entre maio e setembro</text></svg>`;
+}
+function lsSerieHtml(s) {
+    if (!s || s.length < 2) return '<p class="hint">Série histórica do NDVI indisponível no momento.</p>';
+    const ini = s[0], fim = s[s.length - 1], dif = fim.ndvi - ini.ndvi, min = s.reduce((a, b) => b.ndvi < a.ndvi ? b : a);
+    const leitura = Math.abs(dif) < 0.05 ? 'vigor da vegetação estável no período' : dif > 0 ? 'aumento do vigor da vegetação no período (regeneração ou lavoura mais vigorosa)' : 'queda do vigor da vegetação no período (supressão, degradação ou mudança de uso) – vale conferir nas imagens';
+    return `${lsSerieSvg(s)}<p class="hint">NDVI médio de ${ini.ano} a ${fim.ano}: de ${ini.ndvi.toFixed(2).replace('.', ',')} para ${fim.ndvi.toFixed(2).replace('.', ',')} – ${leitura}. Menor valor em ${min.ano} (${min.ndvi.toFixed(2).replace('.', ',')}). Fonte: Landsat 8 e 9 (USGS/NASA, via Esri), cena com menos nuvens de maio a setembro de cada ano.</p>`;
+}

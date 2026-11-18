@@ -271,8 +271,8 @@ async function analisarImovel(nome, alvoCustom) {
         B.resumo = rxResumoHtml(N);
         const html = `
             <div class="rx-cab"><div><div class="mono rx-cod">${esc(nome)}</div>
-              <div class="hint">${esc(p['Status do CAR'] || '')} · ${esc(p.situacao || '')} · ${esc(p.Tipo || '')}</div></div>
-              <div class="rx-area"><b>${rxF(area)}</b> ha<br><span class="hint">${esc(p['Módulos fiscais'] || '–')} módulos fiscais</span></div></div>
+              <div class="hint">${[p['Status do CAR'], p.situacao, p.Tipo].filter(Boolean).map(esc).join(' · ')}</div></div>
+              <div class="rx-area"><b>${rxF(area)}</b> ha<br>${alvoCustom ? '' : `<span class="hint">${esc(p['Módulos fiscais'] || '–')} módulos fiscais</span>`}</div></div>
             ${p.ficticio ? `<p class="rx-ficticio">⚠️ IMÓVEL FICTÍCIO – exemplo criado só para demonstração. Os dados deste relatório não correspondem a nenhum imóvel ou pessoa real.</p>` : ''}<ul class="rx-flags">${flags.map(([c, t]) => `<li class="rx-${c}">${esc(t)}</li>`).join('')}</ul>
             ${pend.length ? `<h3>Pendências apontadas no mapa</h3><ul>${pend.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
             <h3>Uso e cobertura do solo (${B.usoFonte})</h3>${B.uso}
@@ -293,6 +293,9 @@ async function analisarImovel(nome, alvoCustom) {
         RX.ultimo = { nome, html, codigo, quando, alvo, viz: r.car, sigef: r.sigef, pontos: pontosFoto, p, r, area, uso, flags, N, pend, B, C, itr: (RX.itr || {})[nome] || null };
         rxMostrarItr();
         { const a = document.getElementById('raioxCopernicus'); if (a && typeof s2LinkCopernicus === 'function') { const [lg, lt] = turf.centroid(alvo).geometry.coordinates; a.href = s2LinkCopernicus(lg, lt, null, false); a.hidden = false; } }
+        if (typeof lsSerieNdvi === 'function') lsSerieNdvi(alvo).then(sr => { if (!RX.ultimo || RX.ultimo.nome !== nome || !sr || sr.length < 2) return; RX.ultimo.serie = sr;
+            const box = document.createElement('div'); box.className = 'ls-box'; box.innerHTML = `<h3>Série histórica do NDVI (${sr[0].ano}–${sr[sr.length - 1].ano})</h3>${lsSerieHtml(sr)}`;
+            document.getElementById('raioxCorpo').querySelector('.rx-flags')?.after(box); }).catch(e => console.error('série NDVI', e));
         itrPrevia(RX.ultimo).then(pv => { if (RX.ultimo && RX.ultimo.nome === nome) { RX.ultimo.previa = pv; rxMostrarItr(); } }).catch(e => console.error('prévia ITR', e));
         document.getElementById('raioxPdf').disabled = false;
     } catch (e) {
@@ -444,8 +447,10 @@ async function gerarRelatorioRaiox() {
     const foto4 = (u.pontos || []).length ? await rxFotoPontos(u.alvo, u.pontos) : null;
     etapa('imagem Sentinel-2 mais recente e NDVI');
     const s2 = typeof s2DadosRelatorio === 'function' ? await s2DadosRelatorio(u.alvo).catch(e => (console.error(e), null)) : null;
+    etapa('série histórica do NDVI (Landsat)');
+    const serie = u.serie || (typeof lsSerieNdvi === 'function' ? await lsSerieNdvi(u.alvo).catch(e => (console.error(e), null)) : null);
     map.jumpTo({ center: centro, zoom });
-    const janela = { partes: [rxRelatorioHtml(u, { foto, foto2, foto3, foto4, s2 })] };
+    const janela = { partes: [rxRelatorioHtml(u, { foto, foto2, foto3, foto4, s2, serie })] };
     const url = URL.createObjectURL(new Blob(janela.partes, { type: 'text/html;charset=utf-8' }));
     const nomeArq = `raio-x_${u.nome}.html`;
     aviso.innerHTML = `<div><b>Relatório pronto</b><a class="btn btn-solid" href="${url}" target="_blank" rel="noopener" id="rxAbrir">Abrir relatório</a>
@@ -647,6 +652,7 @@ ${sec('Detalhes do imóvel', 'Informações cadastrais e localização', `
   ${F.foto ? `<img class="mapa" src="${F.foto}" alt="Localização"><div class="leg">Perímetro do imóvel (vermelho) sobre imagem de satélite (Esri World Imagery).</div>` : ''}`)}
 
 ${F.s2 ? sec('Imagem de satélite mais recente', 'Sentinel-2: como o imóvel está hoje', s2Html(F.s2)) : ''}
+${F.serie && F.serie.length > 1 ? sec('Série histórica do vigor da vegetação', `NDVI anual ${F.serie[0].ano}–${F.serie[F.serie.length - 1].ano} (Landsat)`, lsSerieHtml(F.serie)) : ''}
 
 ${sec('Resultado da análise', 'Resumo dos indicadores consultados', `
   <div class="placar"><div class="g"><b>${emAcordo}/${avaliados}</b><span>indicadores em acordo</span></div><div class="ok"><b>${cont('ok')}</b><span>✓ em acordo</span></div><div class="at"><b>${cont('at')}</b><span>! atenção</span></div><div class="no"><b>${cont('no')}</b><span>✕ em desacordo</span></div></div>
