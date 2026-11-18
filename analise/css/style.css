@@ -597,3 +597,10 @@ table.ind tr.pos td { color: #1d6b3e; font-weight: 600; }
 @media (max-width: 720px) { .mun-corpo { grid-template-columns: minmax(0, 1fr); } .mun-mapa { order: -1; } .mun-lista { max-height: 40vh; } }
 .mun-regional { display: block; text-align: center; font-size: .82rem; font-weight: 600; padding: 7px 10px; border-radius: 8px; background: var(--verde); color: #fff; text-decoration: none; }
 .mun-regional:hover { background: var(--verde-escuro); }
+
+/* ---------- análise de área desenhada/importada e responsável técnico ---------- */
+.area-botoes { display: flex; flex-wrap: wrap; gap: 6px; }
+.area-botoes .btn { font-size: .8rem; }
+#areaErro { color: #c62828; margin: 6px 0 0; }
+#areaErro:empty { display: none; }
+.rx-resp { font: inherit; font-size: .82rem; padding: 7px 9px; border: 1px solid var(--borda); border-radius: 8px; min-width: 220px; flex: 1 1 220px; }

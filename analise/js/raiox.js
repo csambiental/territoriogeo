@@ -76,6 +76,12 @@ async function rxDeclividade(alvo) {
     }
     return tot ? RX_CLASSES.map(([nome], j) => ({ nome, pct: cont[j] / tot * 100 })) : [];
 }
+// mesmo cálculo em verificar.html: SHA-256 do resumo em JSON, 16 primeiros caracteres em grupos de 4
+async function rxCodigoVerif(v) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(v)));
+    const h = [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+    return h.slice(0, 16).match(/.{4}/g).join('-');
+}
 async function rxCodigo(obj) {
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(obj)));
     const h = [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
@@ -159,15 +165,18 @@ function rxResumoHtml(N) {
         <p class="hint">Lista indicativa para orientar o orçamento de adequação ambiental e fundiária. Itens e quantidades devem ser confirmados em vistoria.</p>`;
 }
 
-async function analisarImovel(nome) {
+async function analisarImovel(nome, alvoCustom) {
     const dlg = document.getElementById('raioxDialog'), corpo = document.getElementById('raioxCorpo');
     corpo.innerHTML = '<p class="hint">Cruzando o imóvel com as camadas do mapa…</p>'; dlg.showModal();
     try {
         const C = dadosGerais.raiox || {};
         const cars = (camadasData.imoveis || (await rxJSON(C.car))).features;
-        const alvo = cars.find(f => f.properties.nome === nome);
+        const alvo = alvoCustom || cars.find(f => f.properties.nome === nome);
         if (!alvo) { corpo.innerHTML = '<p>Imóvel não encontrado.</p>'; return; }
-        const p = alvo.properties, area = rxHa(alvo);
+        // área desenhada ou importada: sem dados do CAR; o uso do solo é calculado na hora
+        const p = alvoCustom ? { nome: alvo.properties.nome || 'Área informada', situacao: '', 'Status do CAR': 'Área sem CAR (desenhada ou importada)', Tipo: '' } : alvo.properties, area = rxHa(alvo);
+        if (alvoCustom) nome = p.nome;
+        const usoArea = alvoCustom ? await areaUsoSolo(alvo).catch(e => { console.error(e); return { uso: [], ano: '' }; }) : null;
         let [sigef, emb, alertas, outR, outU, lic, barr, mbac, mass] = await Promise.all([C.sigef, C.embargos, C.alertas, (C.outorgas || [])[0], (C.outorgas || [])[1], C.licencas, C.barragens, C.microbacias, C.massas].map(a => a ? rxJSON(a).catch(() => ({ features: [] })) : Promise.resolve({ features: [] })));
         let licV = (C.licencas ? C.licencas.replace('.geojson', '_vencidas.geojson') : null) ? await rxJSON(C.licencas ? C.licencas.replace('.geojson', '_vencidas.geojson') : null).catch(() => ({ features: [] })) : { features: [] };
         let vizinhos = cars.filter(f => f.properties.situacao !== 'Cancelado' && !f.properties.ficticio);
@@ -188,7 +197,7 @@ async function analisarImovel(nome) {
             decl: await rxDeclividade(alvo).catch(() => []),
             mbac: mbac.features.filter(m => rxCaixasCruzam(turf.bbox(m), turf.bbox(alvo)) && turf.booleanPointInPolygon(turf.pointOnFeature(alvo), m)).map(m => m.properties.nome || m.properties.rio).slice(0, 1)
         };
-        const uso = Object.keys(p).filter(k => /^(MapBiomas|Uso do solo) \d{4} – /.test(k)).map(k => [k.replace(/^(MapBiomas|Uso do solo) \d{4} – /, '').replace(' (%)', ''), rxNum(p[k])]).sort((a, b) => b[1] - a[1]);
+        const uso = usoArea ? usoArea.uso : Object.keys(p).filter(k => /^(MapBiomas|Uso do solo) \d{4} – /.test(k)).map(k => [k.replace(/^(MapBiomas|Uso do solo) \d{4} – /, '').replace(' (%)', ''), rxNum(p[k])]).sort((a, b) => b[1] - a[1]);
         const pend = Object.keys(p).filter(k => /^Pendência \d+$/.test(k)).map(k => p[k]);
         const sobreCar = r.car.reduce((s, x) => s + x.ha, 0), sobreSigef = r.sigef.reduce((s, x) => s + x.ha, 0);
         const quando = new Date();
@@ -198,7 +207,8 @@ async function analisarImovel(nome) {
         if (r.emb.length) flags.push(['vermelho', `${r.emb.length} área(s) embargada(s) pelo IBAMA dentro do imóvel`]);
         if (r.alertas.length) flags.push(['vermelho', `${r.alertas.length} alerta(s) de desmatamento MapBiomas dentro do imóvel`]);
         const maiorCar = r.car.length ? r.car[0].ha : 0;
-        if (maiorCar >= Math.max(1, area * 0.02)) flags.push(['amarelo', `Sobreposição relevante com outro CAR: ${rxF(maiorCar)} ha (${rxF(maiorCar / area * 100, 1)}% do imóvel)`]);
+        if (alvoCustom) flags.push(r.car.length ? ['verde', `Área coberta por ${r.car.length} imóvel(is) do CAR – o maior cobre ${rxF(maiorCar / area * 100, 0)}% da área`] : ['amarelo', 'Nenhum imóvel do CAR cobre esta área']);
+        else if (maiorCar >= Math.max(1, area * 0.02)) flags.push(['amarelo', `Sobreposição relevante com outro CAR: ${rxF(maiorCar)} ha (${rxF(maiorCar / area * 100, 1)}% do imóvel)`]);
         else if (r.car.length) flags.push(['verde', `Só pequenas sobreposições nas divisas (${rxF(sobreCar)} ha com ${r.car.length} CAR vizinho(s)) – provável diferença de traçado`]);
         if (r.sigef.length && sobreSigef < area * 0.5) flags.push(['amarelo', `Parcelas SIGEF cobrem só ${rxF(sobreSigef / area * 100, 0)}% do imóvel`]);
         if (!r.sigef.length) flags.push(['amarelo', 'Nenhuma parcela SIGEF/INCRA sobre o imóvel']);
@@ -228,7 +238,7 @@ async function analisarImovel(nome) {
             return [`<b>${nPt}</b>`, esc(x.f.properties.nome || ''), esc(x.f.properties[campo] || x.f.properties.grupo || ''), x.km ? `a ${rxF(x.km * 1000, 0)} m` : 'dentro', coord(x.f)]; });
         const B = {};
         B.uso = tab(['Classe', '% do imóvel', 'ha (aprox.)'], uso.map(([k, v]) => [esc(k), rxF(v, 1) + '%', rxF(v / 100 * area, 1)]));
-        B.usoFonte = esc(((Object.keys(p).find(k => /^(MapBiomas|Uso do solo) \d{4}/.test(k)) || '').match(/^(MapBiomas \d{4}|Uso do solo \d{4})/) || [''])[0].replace('Uso do solo', 'Esri/Impact Observatory'));
+        B.usoFonte = usoArea ? `cobertura ${esc(usoArea.ano)}, calculada sobre a área` : esc(((Object.keys(p).find(k => /^(MapBiomas|Uso do solo) \d{4}/.test(k)) || '').match(/^(MapBiomas \d{4}|Uso do solo \d{4})/) || [''])[0].replace('Uso do solo', 'Esri/Impact Observatory'));
         B.decl = tab(['Classe de relevo', '% do imóvel', 'ha (aprox.)'], r.decl.filter(d => d.pct >= 0.05).map(d => [d.nome, rxF(d.pct, 1) + '%', rxF(d.pct / 100 * area, 1)]));
         B.car = tab(['Nº', 'CAR', 'Situação', 'Sobreposição (ha)', '% do imóvel'], r.car.slice(0, 15).map((x, i) => [`<b>${i + 1}</b>`, `<span class="mono">${esc(x.f.properties.nome)}</span>`, esc(x.f.properties.situacao || ''), rxF(x.ha), (x.ha / area * 100 < 0.1 ? '< 0,1%' : rxF(x.ha / area * 100, 1) + '%')]));
         B.sigefCob = (() => { const cob = {}; r.sigef.forEach(x => { const k = rxSigefRot(x.f.properties); cob[k] = (cob[k] || [rxSigefCor(x.f.properties), 0]); cob[k][1] += x.ha; });
@@ -267,7 +277,7 @@ async function analisarImovel(nome) {
             ${pend.length ? `<h3>Pendências apontadas no mapa</h3><ul>${pend.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
             <h3>Uso e cobertura do solo (${B.usoFonte})</h3>${B.uso}
             <h3>Declividade (Copernicus DEM, classes Embrapa)</h3>${B.decl}
-            <h3>Sobreposição com outros imóveis do CAR</h3>${B.car}
+            <h3>${alvoCustom ? 'Imóveis do CAR que cobrem esta área' : 'Sobreposição com outros imóveis do CAR'}</h3>${B.car}
             <h3>Imóveis certificados no SIGEF/INCRA</h3>${B.sigefCob}${B.sigef}
             <h3>Embargos do IBAMA</h3>${B.emb}
             <h3>Alertas de desmatamento (MapBiomas Alerta)</h3>${B.alertas}
@@ -400,6 +410,21 @@ async function rxFotoPontos(alvo, pontos) {
 }
 async function gerarRelatorioRaiox() {
     const u = RX.ultimo; if (!u) return;
+    // código de autenticidade: resumo do laudo + responsável técnico, conferível pelo QR na página verificar.html
+    try {
+        const resp = (document.getElementById('raioxResp')?.value || '').trim();
+        try { localStorage.setItem('rx-resp', resp); } catch (e) { }
+        const cnt = c => (u.flags || []).filter(f => f[0] === c).length, nat = (u.uso || []).find(([k]) => /Vegetação (nativa|arbórea)/.test(k));
+        const [lg, lt] = turf.centroid(u.alvo).geometry.coordinates;
+        const v = { v: 1, car: u.alvo.properties && u.alvo.properties.nome === u.nome && !/^Área /.test(u.nome) ? u.nome : '', nome: u.nome, mun: (dadosGerais.raiox || {}).municipio || '',
+            cod: new URLSearchParams(location.search).get('m') || '', ha: +u.area.toFixed(2), lat: +lt.toFixed(5), lon: +lg.toFixed(5),
+            emitido: u.quando.toISOString(), dados: dadosGerais.atualizado_em || '', resp,
+            alertas: { vermelho: cnt('vermelho'), amarelo: cnt('amarelo') }, nativa: nat ? +nat[1].toFixed(1) : null,
+            embargos: (u.r.emb || []).length, desmate: (u.r.alertas || []).length, sigef_ha: +((u.sigef || []).reduce((a, x) => a + x.ha, 0)).toFixed(2) };
+        u.verif = v; u.resp = resp; u.codigo = await rxCodigoVerif(v);
+        const b64 = btoa(unescape(encodeURIComponent(JSON.stringify(v)))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        u.linkVerif = `${location.origin}${location.pathname.replace(/[^/]*$/, '')}verificar.html#${b64}`;
+    } catch (e) { console.error('código de autenticidade', e); }
     if (!u.previa) { try { u.previa = await itrPrevia(u); } catch (e) { console.error(e); } }
     // monta tudo nesta aba (o mapa precisa estar visível para desenhar) e só no fim abre o relatório
     document.getElementById('raioxDialog').close();
@@ -433,6 +458,7 @@ async function gerarRelatorioRaiox() {
 function rxPrecarregar() {
     if (typeof dadosGerais === 'undefined' || !dadosGerais.camadas) return setTimeout(rxPrecarregar, 2000);
     const C = dadosGerais.raiox;
+    if (C && typeof areaMontarCard === 'function') areaMontarCard();
     const lista = C ? [C.sigef, C.embargos, C.alertas, ...(C.outorgas || []), C.licencas, C.barragens, C.microbacias, C.massas, C.declividade]
         : ['data/fundiario/sigef_londrina.geojson', 'data/ibama/embargos_londrina.geojson', 'data/mapbiomas/alertas_londrina.geojson', 'data/iat/outorgas_rural.geojson',
            'data/iat/outorgas_urbana.geojson', 'data/iat/licencas_localizadas.geojson', 'data/iat/barragens_londrina.geojson', 'data/bacias/microbacias_regiao.geojson', 'data/relevo/declividade.json'];
@@ -504,7 +530,7 @@ function rxRelatorioHtml(u, F) {
     const dataHora = u.quando.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
     const mun = (u.C.municipio || ((dadosGerais.cliente || {}).nome || '').replace(/^.*– */, '')) || '–';
     const cod = (String(u.C.car || '').match(/data\/m\/(\d{7})\//) || [])[1];
-    const link = `${location.origin}${location.pathname}?${cod ? `m=${cod}&` : ''}car=${encodeURIComponent(u.nome)}`;
+    const link = u.linkVerif || `${location.origin}${location.pathname}?${cod ? `m=${cod}&` : ''}car=${encodeURIComponent(u.nome)}`;
     const qr = (txt, px) => { try { const q = qrcode(0, 'M'); q.addData(txt); q.make(); return q.createSvgTag({ cellSize: Math.max(2, Math.round(px / (q.getModuleCount() + 8))), margin: 4, scalable: true }); } catch (e) { return ''; } };
     const todos = G.flatMap(g => g.itens), cont = k => todos.filter(i => i.st === k).length;
     const avaliados = todos.filter(i => i.st !== 'na').length, emAcordo = cont('ok');
@@ -534,7 +560,7 @@ function rxRelatorioHtml(u, F) {
  @page { size: A4; margin: 22mm 14mm 20mm;
    @top-left { content: "CS Consultoria Ambiental  ·  RAIO-X DO IMÓVEL RURAL"; font: 600 8pt Arial; color: #1f4933; }
    @top-right { content: "${esc(dataHora)}   ·   Página " counter(page) " de " counter(pages); font: 8pt Arial; color: #5f6d66; }
-   @bottom-left { content: "Código de conferência ${u.codigo}"; font: 8pt Consolas, monospace; color: #5f6d66; }
+   @bottom-left { content: "Código de autenticidade ${u.codigo}${u.resp ? '  ·  ' + esc(u.resp).replace(/"/g, '') : ''}"; font: 8pt Consolas, monospace; color: #5f6d66; }
    @bottom-right { content: "Análise automática sobre bases públicas – não substitui vistoria"; font: 7.5pt Arial; color: #8a978f; } }
  @page :first { margin: 0; @top-left { content: none } @top-right { content: none } @bottom-left { content: none } @bottom-right { content: none } }
  * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -672,7 +698,7 @@ ${sec('Metodologia e fontes', 'Como esta análise foi feita', `
   </div>
   <p class="hint">Legenda dos selos: <b>Em acordo</b> – nada encontrado ou situação regular; <b>Atenção</b> – item a verificar ou que pode exigir adequação; <b>Em desacordo</b> – restrição ou pendência identificada nas bases; <b>Não se aplica</b> – não há o elemento no imóvel ou não há dado.</p>
   <p class="hint">Privacidade: este relatório não exibe CPF, CNPJ nem dados pessoais de proprietários. Titulares de outorgas e licenças aparecem como constam nas consultas públicas do IAT.</p>
-  <div class="valida"><div class="qr">${qr(link, 96)}</div><div><b>Conferência do relatório</b><br><span class="mono">${u.codigo}</span><br><span class="hint">Aponte a câmera para o QR code para abrir este imóvel no mapa e refazer a análise com os dados mais recentes. Dados do mapa atualizados em ${esc(dadosGerais.atualizado_em || '')}. Emitido em ${esc(dataHora)}.</span></div></div>${blocoCS}`)}
+  <div class="valida"><div class="qr">${qr(link, 96)}</div><div><b>Código de autenticidade</b><br><span class="mono">${u.codigo}</span>${u.resp ? `<br>Responsável técnico: <b>${esc(u.resp)}</b>` : ''}<br><span class="hint">Aponte a câmera para o QR code para conferir a autenticidade deste relatório (código, data, hora, responsável e resultados) e refazer a análise com os dados mais recentes. Dados do mapa atualizados em ${esc(dadosGerais.atualizado_em || '')}. Emitido em ${esc(dataHora)}.</span></div></div>${blocoCS}`)}
 </div></body></html>`;
 }
 // abre o Raio-X direto quando o link traz ?car=… (usado pelo QR code do relatório)

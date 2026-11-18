@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conferência de Relatório – CS Consultoria Ambiental</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+:root{--verde:#1f4933;--verde2:#83bb4e;--fundo:#f3f5f2;--texto:#1d2a22;--suave:#5d6b62;--borda:#e2e7e3;--ok:#2e7d32;--erro:#c62828;--at:#b45309}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--fundo);color:var(--texto);font-size:15px;line-height:1.45}
+.topo{display:flex;align-items:center;gap:12px;padding:10px 16px;background:#fff;border-bottom:3px solid var(--verde)}
+.topo img{height:40px}.topo h1{margin:0;font-size:1.1rem;color:var(--verde)}
+main{max-width:720px;margin:0 auto;padding:18px 16px 40px;display:flex;flex-direction:column;gap:14px}
+.caixa{background:#fff;border:1px solid var(--borda);border-radius:10px;padding:16px 18px}
+.selo{display:flex;gap:12px;align-items:center;font-weight:700;font-size:1.05rem}
+.selo i{font-style:normal;font-size:1.6rem}
+.ok{color:var(--ok)}.erro{color:var(--erro)}
+.cod{font-family:Consolas,monospace;font-size:1.15rem;letter-spacing:.04em}
+dl{display:grid;grid-template-columns:minmax(0,42%) minmax(0,1fr);gap:6px 12px;margin:0;font-size:.9rem}
+dt{color:var(--suave)}dd{margin:0;overflow-wrap:anywhere}
+.btn{display:inline-block;padding:9px 14px;border-radius:8px;background:var(--verde);color:#fff;text-decoration:none;font-weight:600;font-size:.88rem}
+.nota{font-size:.8rem;color:var(--suave);margin:0}
+</style>
+</head>
+<body>
+<header class="topo"><img src="logo.png" alt="CS Consultoria Ambiental"><h1>Conferência de relatório Raio-X</h1></header>
+<main id="m"><div class="caixa">Conferindo…</div></main>
+<script>
+(async () => {
+  const m = document.getElementById('m');
+  const esc = t => String(t ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  let v;
+  try { const b = location.hash.slice(1).replace(/-/g, '+').replace(/_/g, '/'); v = JSON.parse(decodeURIComponent(escape(atob(b + '='.repeat((4 - b.length % 4) % 4))))); }
+  catch (e) { m.innerHTML = '<div class="caixa"><div class="selo erro"><i>✕</i>Link de conferência inválido ou incompleto.</div><p class="nota">Abra o link pelo QR code impresso no relatório.</p></div>'; return; }
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(v)));
+  const cod = [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase().slice(0, 16).match(/.{4}/g).join('-');
+  const f = n => Number(n).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const quando = new Date(v.emitido).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+  const refazer = v.car ? `index.html?${v.cod ? 'm=' + encodeURIComponent(v.cod) + '&' : ''}car=${encodeURIComponent(v.car)}` : `index.html${v.cod ? '?m=' + encodeURIComponent(v.cod) : ''}`;
+  m.innerHTML = `
+    <div class="caixa"><div class="selo ok"><i>✓</i>Código de autenticidade <span class="cod">${cod}</span></div>
+      <p class="nota">Confira se este código é o mesmo impresso no relatório. Se os números do relatório forem diferentes dos mostrados abaixo, o documento foi alterado depois de emitido.</p></div>
+    <div class="caixa"><dl>
+      <dt>Imóvel / área</dt><dd>${esc(v.nome)}</dd>
+      <dt>Município</dt><dd>${esc(v.mun)}</dd>
+      <dt>Área</dt><dd>${f(v.ha)} ha</dd>
+      <dt>Localização (centro)</dt><dd>${v.lat}, ${v.lon} · <a href="https://www.google.com/maps?q=${v.lat},${v.lon}" target="_blank" rel="noopener">ver no mapa ↗</a></dd>
+      <dt>Emitido em</dt><dd>${esc(quando)}</dd>
+      <dt>Responsável técnico</dt><dd>${esc(v.resp || 'não informado')}</dd>
+      <dt>Base de dados de</dt><dd>${esc(v.dados)}</dd>
+      <dt>Alertas no relatório</dt><dd>${v.alertas.vermelho} vermelho(s) · ${v.alertas.amarelo} amarelo(s)</dd>
+      <dt>Embargos IBAMA na área</dt><dd>${v.embargos}</dd>
+      <dt>Alertas de desmatamento na área</dt><dd>${v.desmate}</dd>
+      <dt>Vegetação nativa</dt><dd>${v.nativa == null ? '–' : f(v.nativa) + '%'}</dd>
+      <dt>Área com parcelas SIGEF</dt><dd>${f(v.sigef_ha)} ha</dd>
+    </dl></div>
+    <div class="caixa"><a class="btn" href="${refazer}">Refazer a análise com os dados de hoje</a>
+      <p class="nota" style="margin-top:10px">Relatório gerado pela Análise Rural da CS Consultoria Ambiental sobre bases públicas oficiais. A análise automática não substitui vistoria nem consulta oficial aos órgãos.</p></div>`;
+})();
+</script>
+</body>
+</html>
