@@ -1056,6 +1056,7 @@ function popupHtml(f) {
 }
 
 map.on('click', (e) => {
+    if (window.modoMedir || (typeof AREA !== 'undefined' && AREA.ativo) || e.originalEvent._pt) return;
     if ((dadosGerais.camadas_opcionais || []).some(o => o.prioridade && opcionaisAtivas.has(o.id)) && popupOpcional(e, true)) return;
     if (map.getLayer('pontos')) {
         const pt = map.queryRenderedFeatures(e.point, { layers: ['pontos'] });
