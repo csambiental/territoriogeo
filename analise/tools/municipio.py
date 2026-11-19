@@ -615,7 +615,10 @@ def arcgis_geojson(base, extra=None, pagina=1000, margem=0.0):
         if not fs: break
         off += len(fs)
     zona = MUN.buffer(margem) if margem else MUN
-    return [f for f in feats if f.get('geometry') and shape(f['geometry']).buffer(0).intersects(zona)]
+    def geo(f):
+        g = shape(f['geometry'])
+        return g if g.geom_type in ('Point', 'MultiPoint') else g.buffer(0)   # buffer(0) apaga pontos
+    return [f for f in feats if f.get('geometry') and geo(f).intersects(zona)]
 
 PJ_RX = re.compile(r'\b(LTDA|S/?A|S\.A|EIRELI|ME|EPP|CIA|COMPANHIA|MUNICIPIO|MUNICÍPIO|PREFEITURA|ASSOCIACAO|ASSOCIAÇÃO|COOPERATIVA|MINERA[CÇ][AÃ]O|MINERADORA|PEDREIRA|CER[AÂ]MICA|AREAL|INDUSTRIA|INDÚSTRIA|COMERCIO|COMÉRCIO|CONSTRUTORA|ENGENHARIA|EMPREENDIMENTOS?|INCORPORADORA|AGROPECU[AÁ]RIA|TRANSPORTES?|EXTRA[CÇ][AÃ]O|SANEAMENTO|DEPARTAMENTO|ESTADO)\b', re.I)
 def grupo_fase(f):
