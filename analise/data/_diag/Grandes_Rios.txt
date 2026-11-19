@@ -2,22 +2,14 @@
   SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
 Município 4108700 Grandes Rios
 
-===== Mineração (ANM/SIGMINE) =====
-  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
-processos minerários 12 Counter({'Pesquisa mineral': 6, 'Lavra / extração': 5, 'Disponibilidade': 1})
------ Mineração (ANM/SIGMINE) ok (2s)
-
-===== Setores de risco (SGB) =====
-setores de risco SGB 0
------ Setores de risco (SGB) ok (1s)
-
 ===== Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas =====
-sítios arqueológicos 0
+  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
+sítios arqueológicos 28
 terras indígenas e quilombolas (até 10 km) 0 Counter()
------ Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas ok (3s)
+----- Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas ok (2s)
 
 ===== Pendências =====
-Counter({'Atenção': 598, 'Sem pendência identificada': 205, 'Prioridade média': 84, 'Prioridade alta': 24, 'Cancelado': 4})
+Counter({'Atenção': 628, 'Sem pendência identificada': 159, 'Prioridade média': 95, 'Prioridade alta': 29, 'Cancelado': 4})
 ----- Pendências ok (0s)
 
 ===== Config =====

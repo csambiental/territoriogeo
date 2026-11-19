@@ -27,8 +27,8 @@
    "Grande (acima de 15 MF)": 21
   },
   "porte_area_ha": {
-   "Pequena (até 4 MF)": 20697.0,
    "Média (4 a 15 MF)": 15859.8,
+   "Pequena (até 4 MF)": 20697.0,
    "Grande (acima de 15 MF)": 8939.8
   },
   "faixa_vegetacao": {
@@ -110,8 +110,8 @@
   "imoveis": 0
  },
  "patrimonio": {
-  "sitios": 0,
-  "imoveis_perto_sitio": 0,
+  "sitios": 1,
+  "imoveis_perto_sitio": 8,
   "comunidades": 0
  },
  "barragens": 23,

@@ -2,22 +2,14 @@
   SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
 Município 4128500 Wenceslau Braz
 
-===== Mineração (ANM/SIGMINE) =====
-  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
-processos minerários 19 Counter({'Lavra / extração': 11, 'Pesquisa mineral': 6, 'Disponibilidade': 2})
------ Mineração (ANM/SIGMINE) ok (2s)
-
-===== Setores de risco (SGB) =====
-setores de risco SGB 0
------ Setores de risco (SGB) ok (1s)
-
 ===== Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas =====
-sítios arqueológicos 0
+  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
+sítios arqueológicos 3
 terras indígenas e quilombolas (até 10 km) 0 Counter()
 ----- Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas ok (2s)
 
 ===== Pendências =====
-Counter({'Atenção': 1335, 'Sem pendência identificada': 203, 'Prioridade média': 149, 'Prioridade alta': 17, 'Cancelado': 16})
+Counter({'Atenção': 1336, 'Sem pendência identificada': 201, 'Prioridade média': 149, 'Prioridade alta': 18, 'Cancelado': 16})
 ----- Pendências ok (0s)
 
 ===== Config =====

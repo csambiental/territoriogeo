@@ -2,16 +2,8 @@
   SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
 Município 4121307 Rancho Alegre
 
-===== Mineração (ANM/SIGMINE) =====
-  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
-processos minerários 10 Counter({'Lavra / extração': 7, 'Disponibilidade': 3})
------ Mineração (ANM/SIGMINE) ok (3s)
-
-===== Setores de risco (SGB) =====
-setores de risco SGB 0
------ Setores de risco (SGB) ok (1s)
-
 ===== Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas =====
+  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
 sítios arqueológicos 0
 terras indígenas e quilombolas (até 10 km) 0 Counter()
 ----- Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas ok (2s)

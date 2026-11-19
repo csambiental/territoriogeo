@@ -27,9 +27,9 @@
    "Grande (acima de 15 MF)": 29
   },
   "porte_area_ha": {
-   "Grande (acima de 15 MF)": 16822.2,
    "Pequena (até 4 MF)": 7906.9,
-   "Média (4 a 15 MF)": 10050.7
+   "Média (4 a 15 MF)": 10050.7,
+   "Grande (acima de 15 MF)": 16822.2
   },
   "faixa_vegetacao": {
    "Menos de 5%": 332,

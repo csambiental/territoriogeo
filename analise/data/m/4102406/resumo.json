@@ -39,10 +39,10 @@
    "20% ou mais": 199
   },
   "pendencia_nivel": {
-   "Atenção": 967,
+   "Atenção": 984,
    "Prioridade alta": 46,
-   "Prioridade média": 171,
-   "Sem pendência identificada": 423
+   "Prioridade média": 173,
+   "Sem pendência identificada": 404
   },
   "georreferenciamento": {
    "Certificado (≥ 50% da área)": 224,
@@ -107,8 +107,8 @@
   "imoveis": 0
  },
  "patrimonio": {
-  "sitios": 0,
-  "imoveis_perto_sitio": 0,
+  "sitios": 3,
+  "imoveis_perto_sitio": 34,
   "comunidades": 2
  },
  "barragens": 18,

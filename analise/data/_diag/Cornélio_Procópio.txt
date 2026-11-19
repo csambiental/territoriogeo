@@ -2,19 +2,11 @@
   SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
 Município 4106407 Cornélio Procópio
 
-===== Mineração (ANM/SIGMINE) =====
-  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
-processos minerários 19 Counter({'Pesquisa mineral': 11, 'Lavra / extração': 8})
------ Mineração (ANM/SIGMINE) ok (3s)
-
-===== Setores de risco (SGB) =====
-setores de risco SGB 0
------ Setores de risco (SGB) ok (1s)
-
 ===== Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas =====
+  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
 sítios arqueológicos 0
 terras indígenas e quilombolas (até 10 km) 2 Counter({'Terra indígena': 2})
------ Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas ok (3s)
+----- Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas ok (2s)
 
 ===== Pendências =====
 Counter({'Atenção': 464, 'Sem pendência identificada': 325, 'Prioridade média': 126, 'Prioridade alta': 53, 'Cancelado': 13})

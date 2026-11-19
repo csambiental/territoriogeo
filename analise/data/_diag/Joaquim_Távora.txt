@@ -2,22 +2,14 @@
   SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
 Município 4112801 Joaquim Távora
 
-===== Mineração (ANM/SIGMINE) =====
-  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
-processos minerários 19 Counter({'Pesquisa mineral': 13, 'Lavra / extração': 6})
------ Mineração (ANM/SIGMINE) ok (3s)
-
-===== Setores de risco (SGB) =====
-setores de risco SGB 0
------ Setores de risco (SGB) ok (1s)
-
 ===== Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas =====
-sítios arqueológicos 0
+  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
+sítios arqueológicos 2
 terras indígenas e quilombolas (até 10 km) 1 Counter({'Terra indígena': 1})
 ----- Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas ok (2s)
 
 ===== Pendências =====
-Counter({'Atenção': 546, 'Sem pendência identificada': 154, 'Prioridade média': 99, 'Prioridade alta': 46, 'Cancelado': 2})
+Counter({'Atenção': 546, 'Sem pendência identificada': 145, 'Prioridade média': 103, 'Prioridade alta': 51, 'Cancelado': 2})
 ----- Pendências ok (0s)
 
 ===== Config =====

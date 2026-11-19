@@ -2,19 +2,11 @@
   SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
 Município 4126504 Sertanópolis
 
-===== Mineração (ANM/SIGMINE) =====
-  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
-processos minerários 4 Counter({'Lavra / extração': 2, 'Pesquisa mineral': 1, 'Disponibilidade': 1})
------ Mineração (ANM/SIGMINE) ok (3s)
-
-===== Setores de risco (SGB) =====
-setores de risco SGB 0
------ Setores de risco (SGB) ok (1s)
-
 ===== Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas =====
-sítios arqueológicos 0
+  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
+sítios arqueológicos 1
 terras indígenas e quilombolas (até 10 km) 0 Counter()
------ Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas ok (3s)
+----- Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas ok (2s)
 
 ===== Pendências =====
 Counter({'Atenção': 531, 'Sem pendência identificada': 473, 'Prioridade alta': 94, 'Prioridade média': 83, 'Cancelado': 10})

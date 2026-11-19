@@ -2,22 +2,14 @@
   SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
 Município 4113403 Leópolis
 
-===== Mineração (ANM/SIGMINE) =====
-  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
-processos minerários 4 Counter({'Pesquisa mineral': 3, 'Disponibilidade': 1})
------ Mineração (ANM/SIGMINE) ok (1s)
-
-===== Setores de risco (SGB) =====
-setores de risco SGB 0
------ Setores de risco (SGB) ok (1s)
-
 ===== Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas =====
-sítios arqueológicos 0
+  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
+sítios arqueológicos 1
 terras indígenas e quilombolas (até 10 km) 0 Counter()
------ Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas ok (3s)
+----- Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas ok (2s)
 
 ===== Pendências =====
-Counter({'Atenção': 336, 'Sem pendência identificada': 165, 'Prioridade média': 61, 'Prioridade alta': 42, 'Cancelado': 6})
+Counter({'Atenção': 337, 'Sem pendência identificada': 164, 'Prioridade média': 59, 'Prioridade alta': 44, 'Cancelado': 6})
 ----- Pendências ok (0s)
 
 ===== Config =====

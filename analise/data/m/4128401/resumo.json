@@ -27,8 +27,8 @@
   },
   "porte_area_ha": {
    "Pequena (até 4 MF)": 15650.2,
-   "Grande (acima de 15 MF)": 1282.5,
-   "Média (4 a 15 MF)": 6200.4
+   "Média (4 a 15 MF)": 6200.4,
+   "Grande (acima de 15 MF)": 1282.5
   },
   "faixa_vegetacao": {
    "Menos de 5%": 225,
@@ -38,10 +38,10 @@
    "10% a 20%": 204
   },
   "pendencia_nivel": {
-   "Atenção": 498,
-   "Prioridade média": 77,
+   "Atenção": 499,
+   "Prioridade média": 78,
    "Prioridade alta": 8,
-   "Sem pendência identificada": 282
+   "Sem pendência identificada": 280
   },
   "georreferenciamento": {
    "Certificado (≥ 50% da área)": 172,
@@ -99,8 +99,8 @@
   "imoveis": 0
  },
  "patrimonio": {
-  "sitios": 0,
-  "imoveis_perto_sitio": 0,
+  "sitios": 1,
+  "imoveis_perto_sitio": 7,
   "comunidades": 0
  },
  "barragens": 1,
