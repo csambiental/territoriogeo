@@ -1,88 +1,24 @@
 /home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:39: DeprecationWarning: ssl.TLSVersion.TLSv1 is deprecated
   SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
 Município 4126504 Sertanópolis
-limite: IBGE
 
-===== CAR =====
-  CAR baixados 1191
-imóveis 1191 Counter({'Aguardando análise': 535, 'Analisado – em conformidade': 498, 'Analisado – notificação pendente': 122, 'Em análise': 26, 'Cancelado': 10}) [('Aguardando análise', 535), ('Analisado, em conformidade com a Lei nº 12.651/2012', 453), ('Analisado, aguardando atendimento a notificação', 81), ('Aguardando análise, após revisão ou atendimento da notificação', 41), ('Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)', 27), ('Em análise', 26), ('Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais', 18), ('Cancelado por decisão administrativa', 10)]
------ CAR ok (2s)
+===== Mineração (ANM/SIGMINE) =====
+  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
+processos minerários 4 Counter({'Lavra / extração': 2, 'Pesquisa mineral': 1, 'Disponibilidade': 1})
+----- Mineração (ANM/SIGMINE) ok (3s)
 
-===== SIGEF =====
-parcelas 889 Counter({'Registrada': 889})
------ SIGEF ok (4s)
+===== Setores de risco (SGB) =====
+setores de risco SGB 0
+----- Setores de risco (SGB) ok (1s)
 
-===== IBAMA =====
-/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:171: DeprecationWarning: The 'shapely.ops.transform()' function is deprecated. Use 'shapely.transform()' or 'shapely.transform_coordseq()' instead. See https://shapely.readthedocs.io/en/latest/manual.html#shapely.ops.transform for more details.
-  g = transform(geo, transform(utm, Point(lon, lat)).buffer(60)); aprox = True
-embargos 6 Counter({'Embargo vigente': 6})
------ IBAMA ok (16s)
-
-===== Microbacias =====
-microbacias 63
------ Microbacias ok (1s)
-
-===== MapBiomas cobertura =====
-  indisponível: lulc_10m/collection_2/integration/mapbiomas_10m_collection2_integration_v1-classification_2023.tif HTTP response code: 403
-  indisponível: collection_10/lulc/coverage/brazil_coverage_2024.tif HTTP response code: 403
-  indisponível: collection_10/lulc/coverage/brasil_coverage_2024.tif HTTP response code: 403
-  indisponível: collection_10/lclu/coverage/brazil_coverage_2024.tif HTTP response code: 403
-  indisponível: collection_10/lclu/coverage/brasil_coverage_2024.tif HTTP response code: 403
-  indisponível: collection_10/lulc/coverage/brazil_coverage_2023.tif HTTP response code: 403
-  indisponível: collection_9/lclu/coverage/brasil_coverage_2023.tif HTTP response code: 403
-  indisponível: collection_9/lulc/coverage/brasil_coverage_2023.tif HTTP response code: 403
-  indisponível: collection_8/lclu/coverage/brasil_coverage_2022.tif HTTP response code: 403
-uso do solo: reserva Impact Observatory 2023 (3092, 2678)
-grupos (%) {'Vegetação arbórea': 14.3, 'Agricultura': 76.3, 'Pastagem e campos': 3.2, 'Área urbanizada': 2.3, 'Água': 3.9, 'Outras áreas': 0.0}
------ MapBiomas cobertura ok (4s)
-
-===== MapBiomas alertas =====
-  tentativa 1 HTTP Error 400: Bad Request
-  tentativa 2 HTTP Error 400: Bad Request
-  tentativa 1 HTTP Error 400: Bad Request
-  tentativa 2 HTTP Error 400: Bad Request
-camada mapbiomas-alertas:v_deforestation_authorizations
-alertas 1
------ MapBiomas alertas ok (118s)
-
-===== Outorgas SIGARH =====
-   00_PUBLICACOES/outorgas_sigarh/FeatureServer camada 0 lote 174
-outorgas rural 49 fora do CAR 34
------ Outorgas SIGARH ok (3s)
-
-===== Licenças ambientais IAT (SGA/SIA) =====
-  GeoPR: 650 licenças (com histórico); SGA consulta pública: 141
-  56 licenças só no SGA (sem coordenada no GeoPR)
-  652 licenças, 87 vigentes e 227 vencidas no mapa; pontos genéricos: 2; {'Vence em até 6 meses': 9, 'Vigente': 127, 'Vencida': 259, 'Vencida (substituída por licença mais recente)': 257}
-  grupos: {'Licença de Operação': 230, 'Licença Prévia / de Instalação': 197, 'Dispensa de licenciamento': 148, 'Licença Simplificada': 48, 'Autorização Ambiental': 25, 'Licença por Adesão e Compromisso': 2, 'Renovação de Licença de Instalação (Ampliação)': 1, '': 1}
------ Licenças ambientais IAT (SGA/SIA) ok (5s)
-
-===== Barragens IAT + SNISB =====
-   IG/SNISB/FeatureServer camada 0 lote 18
-   Hosted/barragens_dashboard_publico/FeatureServer camada 0 lote 26
-barragens 23 SNISB 11 IAT 18
------ Barragens IAT + SNISB ok (18s)
-
-===== Massas d'água (ANA) =====
-   SPR/Massa_dagua/FeatureServer camada 0 lote 81
-massas d'água 43
------ Massas d'água (ANA) ok (7s)
-
-===== Hidrografia FBDS (IAT) =====
-   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
-   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 998
-fbds_rio_ate10m_larg 628
-   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 193
-fbds_nascentes 140
------ Hidrografia FBDS (IAT) ok (15s)
-
-===== Relevo =====
-relevo: cotas 328.8387145996094 633.1025390625
------ Relevo ok (7s)
+===== Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas =====
+sítios arqueológicos 0
+terras indígenas e quilombolas (até 10 km) 0 Counter()
+----- Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas ok (3s)
 
 ===== Pendências =====
-Counter({'Atenção': 522, 'Sem pendência identificada': 485, 'Prioridade alta': 92, 'Prioridade média': 82, 'Cancelado': 10})
------ Pendências ok (1s)
+Counter({'Atenção': 531, 'Sem pendência identificada': 473, 'Prioridade alta': 94, 'Prioridade média': 83, 'Cancelado': 10})
+----- Pendências ok (0s)
 
 ===== Config =====
 config ok Sertanópolis 1181 imóveis

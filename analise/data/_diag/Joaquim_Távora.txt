@@ -3,32 +3,21 @@
 Município 4112801 Joaquim Távora
 
 ===== Mineração (ANM/SIGMINE) =====
-  tentativa 1 <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
-  tentativa 2 <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
-  tentativa 3 <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
-  tentativa 4 <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
-  tentativa 5 <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
-Traceback (most recent call last):
-  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 63, in run
-    try: fn(); log(f'----- {nome} ok ({time.time() - t0:.0f}s)')
-         ^^^^
-  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 614, in mineracao
-    fs = arcgis_geojson('https://geo.anm.gov.br/arcgis/rest/services/SIGMINE/dados_anm/FeatureServer/0')
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 600, in arcgis_geojson
-    r = http(base + '/query?' + urllib.parse.urlencode(q), timeout=240)
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 49, in http
-    raise RuntimeError('falhou ' + url[:200])
-RuntimeError: falhou https://geo.anm.gov.br/arcgis/rest/services/SIGMINE/dados_anm/FeatureServer/0/query?geometry=%7B%22xmin%22%3A+-50.0264990699%2C+%22ymin%22%3A+-23.5709257888%2C+%22xmax%22%3A+-49.8119825852%2C+%22ymax%
------ Mineração (ANM/SIGMINE) FALHOU
+  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
+processos minerários 19 Counter({'Pesquisa mineral': 13, 'Lavra / extração': 6})
+----- Mineração (ANM/SIGMINE) ok (3s)
 
 ===== Setores de risco (SGB) =====
 setores de risco SGB 0
 ----- Setores de risco (SGB) ok (1s)
 
+===== Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas =====
+sítios arqueológicos 0
+terras indígenas e quilombolas (até 10 km) 1 Counter({'Terra indígena': 1})
+----- Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas ok (2s)
+
 ===== Pendências =====
-Counter({'Atenção': 436, 'Sem pendência identificada': 283, 'Prioridade média': 86, 'Prioridade alta': 40, 'Cancelado': 2})
+Counter({'Atenção': 546, 'Sem pendência identificada': 154, 'Prioridade média': 99, 'Prioridade alta': 46, 'Cancelado': 2})
 ----- Pendências ok (0s)
 
 ===== Config =====

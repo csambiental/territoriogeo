@@ -2,15 +2,22 @@
   SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
 Município 4126405 Sertaneja
 
-===== Licenças ambientais IAT (SGA/SIA) =====
-  GeoPR: 298 licenças (com histórico); SGA consulta pública: 89
-  36 licenças só no SGA (sem coordenada no GeoPR)
-  326 licenças, 53 vigentes e 102 vencidas no mapa; pontos genéricos: 3; {'Vence em até 6 meses': 10, 'Vigente': 77, 'Vencida': 136, 'Vencida (substituída por licença mais recente)': 103}
-  grupos: {'Licença Prévia / de Instalação': 117, 'Licença de Operação': 76, 'Dispensa de licenciamento': 59, 'Autorização Ambiental': 47, 'Licença Simplificada': 25, 'Licença por Adesão e Compromisso': 2}
------ Licenças ambientais IAT (SGA/SIA) ok (11s)
+===== Mineração (ANM/SIGMINE) =====
+  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
+processos minerários 16 Counter({'Lavra / extração': 7, 'Disponibilidade': 6, 'Pesquisa mineral': 3})
+----- Mineração (ANM/SIGMINE) ok (2s)
+
+===== Setores de risco (SGB) =====
+setores de risco SGB 0
+----- Setores de risco (SGB) ok (1s)
+
+===== Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas =====
+sítios arqueológicos 0
+terras indígenas e quilombolas (até 10 km) 0 Counter()
+----- Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas ok (4s)
 
 ===== Pendências =====
-Counter({'Atenção': 193, 'Sem pendência identificada': 127, 'Prioridade média': 77, 'Prioridade alta': 54, 'Cancelado': 4})
+Counter({'Atenção': 193, 'Sem pendência identificada': 127, 'Prioridade média': 76, 'Prioridade alta': 55, 'Cancelado': 4})
 ----- Pendências ok (0s)
 
 ===== Config =====

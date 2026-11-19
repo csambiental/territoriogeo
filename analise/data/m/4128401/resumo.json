@@ -1,7 +1,7 @@
 {
  "codigo": "4128401",
  "nome": "Uraí",
- "atualizado_em": "2026-11-17",
+ "atualizado_em": "2026-11-19",
  "area_municipio_ha": 23733.6,
  "car": {
   "imoveis_total": 888,
@@ -26,9 +26,9 @@
    "Grande (acima de 15 MF)": 3
   },
   "porte_area_ha": {
-   "Média (4 a 15 MF)": 6200.4,
+   "Pequena (até 4 MF)": 15650.2,
    "Grande (acima de 15 MF)": 1282.5,
-   "Pequena (até 4 MF)": 15650.2
+   "Média (4 a 15 MF)": 6200.4
   },
   "faixa_vegetacao": {
    "Menos de 5%": 225,
@@ -38,8 +38,8 @@
    "10% a 20%": 204
   },
   "pendencia_nivel": {
-   "Atenção": 500,
-   "Prioridade média": 75,
+   "Atenção": 498,
+   "Prioridade média": 77,
    "Prioridade alta": 8,
    "Sem pendência identificada": 282
   },
@@ -85,6 +85,23 @@
    "Vigente": 51
   },
   "vencidas_sem_renovacao": 103
+ },
+ "mineracao": {
+  "n": 1,
+  "fase": {
+   "Lavra / extração": 1
+  },
+  "imoveis": 2
+ },
+ "risco_sgb": {
+  "n": 0,
+  "mapeado": false,
+  "imoveis": 0
+ },
+ "patrimonio": {
+  "sitios": 0,
+  "imoveis_perto_sitio": 0,
+  "comunidades": 0
  },
  "barragens": 1,
  "massas_dagua": 12,

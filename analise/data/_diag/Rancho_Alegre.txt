@@ -3,8 +3,23 @@
 Município 4121307 Rancho Alegre
 
 ===== Mineração (ANM/SIGMINE) =====
-  tentativa 1 <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
-  tentativa 2 <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
-  tentativa 3 <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
-  tentativa 4 <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
-  tentativa 5 <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
+processos minerários 10 Counter({'Lavra / extração': 7, 'Disponibilidade': 3})
+----- Mineração (ANM/SIGMINE) ok (3s)
+
+===== Setores de risco (SGB) =====
+setores de risco SGB 0
+----- Setores de risco (SGB) ok (1s)
+
+===== Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas =====
+sítios arqueológicos 0
+terras indígenas e quilombolas (até 10 km) 0 Counter()
+----- Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas ok (2s)
+
+===== Pendências =====
+Counter({'Atenção': 180, 'Sem pendência identificada': 151, 'Prioridade média': 59, 'Prioridade alta': 14, 'Cancelado': 3})
+----- Pendências ok (0s)
+
+===== Config =====
+config ok Rancho Alegre 404 imóveis
+----- Config ok (0s)

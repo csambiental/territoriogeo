@@ -31,7 +31,7 @@
  "lista_titulo": "Buscar imóvel rural / pendências",
  "programa": {
   "titulo": "Sobre esta análise",
-  "texto": "Imóveis rurais do CAR de Ibaiti cruzados com SIGEF/INCRA, embargos do IBAMA, alertas de desmatamento, uso do solo (MapBiomas), outorgas e licenças ambientais do IAT, barragens do SNISB/IAT, açudes e represas (ANA), processos minerários da ANM, setores de risco geológico do SGB, microbacias e relevo. Clique num imóvel e use o Raio-X para gerar o relatório.",
+  "texto": "Imóveis rurais do CAR de Ibaiti cruzados com SIGEF/INCRA, embargos do IBAMA, alertas de desmatamento, uso do solo (MapBiomas), outorgas e licenças ambientais do IAT, barragens do SNISB/IAT, açudes e represas (ANA), processos minerários da ANM, setores de risco geológico do SGB, sítios arqueológicos do IPHAN, terras indígenas e quilombolas, microbacias e relevo. Clique num imóvel e use o Raio-X para gerar o relatório.",
   "etapas": [],
   "graficos": [
    {
@@ -320,6 +320,49 @@
    "fonte": "IBAMA – dados abertos, Fiscalização: termo de embargo (atualização mensal). Pessoas físicas sem polígono não são exibidas."
   },
   {
+   "id": "mineracao",
+   "secao": "Mineração (ANM)",
+   "nome": "Processos minerários – ANM (67)",
+   "arquivo": "data/m/4109708/mineracao.geojson",
+   "icone": "fill",
+   "cor": "#8d6e63",
+   "cor_por": "grupo",
+   "cores": {
+    "Lavra / extração": "#6d4c41",
+    "Pesquisa mineral": "#ffb300",
+    "Disponibilidade": "#9e9e9e"
+   },
+   "largura": 1.6,
+   "preenchimento": 0.22,
+   "clicavel": true,
+   "prioridade": true,
+   "campos": [
+    "Processo",
+    "Fase",
+    "Substância",
+    "Uso",
+    "Área (ha)",
+    "Ano",
+    "Titular",
+    "Último evento"
+   ],
+   "legenda_itens": [
+    {
+     "rotulo": "Lavra / extração (concessão, licenciamento, registro)",
+     "cor": "#6d4c41"
+    },
+    {
+     "rotulo": "Pesquisa mineral",
+     "cor": "#ffb300"
+    },
+    {
+     "rotulo": "Em disponibilidade",
+     "cor": "#9e9e9e"
+    }
+   ],
+   "fonte": "ANM – SIGMINE, processos minerários ativos. Titular pessoa física não é exibido."
+  },
+  {
    "id": "risco-sgb",
    "secao": "Riscos geológicos (SGB)",
    "nome": "Setores de risco – SGB (município ainda não mapeado)",
@@ -359,6 +402,65 @@
     }
    ],
    "fonte": "Serviço Geológico do Brasil (SGB) – setorização de áreas de risco geológico, com a Defesa Civil. Município sem setor não significa ausência de risco: pode ainda não ter sido mapeado."
+  },
+  {
+   "id": "sitios-arqueologicos",
+   "secao": "Patrimônio e comunidades tradicionais",
+   "nome": "Sítios arqueológicos – IPHAN (0)",
+   "arquivo": "data/m/4109708/sitios_arqueologicos.geojson",
+   "geometria": "ponto",
+   "icone": "dot",
+   "cor": "#6a1b9a",
+   "rotulo_campo": "nome",
+   "rotulo_minzoom": 13,
+   "clicavel": true,
+   "prioridade": true,
+   "campos": [
+    "Código IPHAN (CNSA)"
+   ],
+   "legenda_itens": [
+    {
+     "rotulo": "Sítio arqueológico cadastrado (CNSA/IPHAN)",
+     "cor": "#6a1b9a"
+    }
+   ],
+   "fonte": "IPHAN – Cadastro Nacional de Sítios Arqueológicos (CNSA), via serviço geográfico da ANM. A localização é a cadastrada no IPHAN."
+  },
+  {
+   "id": "comunidades",
+   "secao": "Patrimônio e comunidades tradicionais",
+   "nome": "Terras indígenas e quilombolas até 10 km (0)",
+   "arquivo": "data/m/4109708/comunidades_tradicionais.geojson",
+   "icone": "fill",
+   "cor": "#f57c00",
+   "cor_por": "grupo",
+   "cores": {
+    "Terra indígena": "#e65100",
+    "Território quilombola": "#00897b"
+   },
+   "largura": 2,
+   "preenchimento": 0.2,
+   "clicavel": true,
+   "prioridade": true,
+   "enquadrar": false,
+   "campos": [
+    "Situação",
+    "Processo",
+    "Domínio",
+    "Responsável",
+    "Área (ha)"
+   ],
+   "legenda_itens": [
+    {
+     "rotulo": "Terra indígena (Funai)",
+     "cor": "#e65100"
+    },
+    {
+     "rotulo": "Território quilombola (Incra)",
+     "cor": "#00897b"
+    }
+   ],
+   "fonte": "Funai (terras indígenas) e Incra (territórios quilombolas), via serviço geográfico da ANM. Inclui as áreas a até 10 km do município."
   },
   {
    "id": "licencas",
@@ -883,6 +985,9 @@
   "municipio": "Ibaiti/PR",
   "rios": "data/m/4109708/rios_fbds.geojson",
   "nascentes": "data/m/4109708/nascentes_fbds.geojson",
-  "risco": "data/m/4109708/risco_sgb.geojson"
+  "mineracao": "data/m/4109708/mineracao.geojson",
+  "risco": "data/m/4109708/risco_sgb.geojson",
+  "sitios": "data/m/4109708/sitios_arqueologicos.geojson",
+  "comunidades": "data/m/4109708/comunidades_tradicionais.geojson"
  }
 }

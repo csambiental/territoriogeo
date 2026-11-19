@@ -27,9 +27,9 @@
    "Média (4 a 15 MF)": 117
   },
   "porte_area_ha": {
+   "Média (4 a 15 MF)": 16192.5,
    "Grande (acima de 15 MF)": 47463.7,
-   "Pequena (até 4 MF)": 27509.6,
-   "Média (4 a 15 MF)": 16192.5
+   "Pequena (até 4 MF)": 27509.6
   },
   "faixa_vegetacao": {
    "20% ou mais": 1000,
@@ -39,10 +39,10 @@
    "Menos de 5%": 299
   },
   "pendencia_nivel": {
-   "Atenção": 958,
-   "Prioridade média": 182,
-   "Prioridade alta": 45,
-   "Sem pendência identificada": 616
+   "Atenção": 1165,
+   "Prioridade média": 237,
+   "Prioridade alta": 71,
+   "Sem pendência identificada": 328
   },
   "georreferenciamento": {
    "Não localizado no SIGEF": 1513,
@@ -96,14 +96,23 @@
   "vencidas_sem_renovacao": 221
  },
  "mineracao": {
-  "n": 0,
-  "fase": {},
-  "imoveis": 0
+  "n": 67,
+  "fase": {
+   "Lavra / extração": 29,
+   "Pesquisa mineral": 37,
+   "Disponibilidade": 1
+  },
+  "imoveis": 852
  },
  "risco_sgb": {
   "n": 0,
   "mapeado": false,
   "imoveis": 0
+ },
+ "patrimonio": {
+  "sitios": 0,
+  "imoveis_perto_sitio": 0,
+  "comunidades": 0
  },
  "barragens": 27,
  "massas_dagua": 95,

@@ -28,8 +28,8 @@
   },
   "porte_area_ha": {
    "Pequena (até 4 MF)": 9713.9,
-   "Média (4 a 15 MF)": 9003.4,
-   "Grande (acima de 15 MF)": 14985.7
+   "Grande (acima de 15 MF)": 14985.7,
+   "Média (4 a 15 MF)": 9003.4
   },
   "faixa_vegetacao": {
    "10% a 20%": 100,
@@ -90,14 +90,22 @@
   "vencidas_sem_renovacao": 47
  },
  "mineracao": {
-  "n": 0,
-  "fase": {},
-  "imoveis": 0
+  "n": 4,
+  "fase": {
+   "Disponibilidade": 1,
+   "Pesquisa mineral": 3
+  },
+  "imoveis": 6
  },
  "risco_sgb": {
   "n": 0,
   "mapeado": false,
   "imoveis": 0
+ },
+ "patrimonio": {
+  "sitios": 0,
+  "imoveis_perto_sitio": 0,
+  "comunidades": 0
  },
  "barragens": 18,
  "massas_dagua": 13,

@@ -1,7 +1,7 @@
 {
  "codigo": "4121307",
  "nome": "Rancho Alegre",
- "atualizado_em": "2026-11-17",
+ "atualizado_em": "2026-11-19",
  "area_municipio_ha": 16725.3,
  "car": {
   "imoveis_total": 407,
@@ -26,8 +26,8 @@
   },
   "porte_area_ha": {
    "Média (4 a 15 MF)": 3147.4,
-   "Grande (acima de 15 MF)": 3394.4,
-   "Pequena (até 4 MF)": 7097.3
+   "Pequena (até 4 MF)": 7097.3,
+   "Grande (acima de 15 MF)": 3394.4
   },
   "faixa_vegetacao": {
    "20% ou mais": 31,
@@ -37,10 +37,10 @@
    "Sem informação": 4
   },
   "pendencia_nivel": {
-   "Atenção": 183,
-   "Prioridade média": 55,
+   "Atenção": 180,
+   "Prioridade média": 59,
    "Prioridade alta": 14,
-   "Sem pendência identificada": 152
+   "Sem pendência identificada": 151
   },
   "georreferenciamento": {
    "Não localizado no SIGEF": 277,
@@ -83,6 +83,24 @@
    "Vigente": 15
   },
   "vencidas_sem_renovacao": 45
+ },
+ "mineracao": {
+  "n": 10,
+  "fase": {
+   "Lavra / extração": 7,
+   "Disponibilidade": 3
+  },
+  "imoveis": 6
+ },
+ "risco_sgb": {
+  "n": 0,
+  "mapeado": false,
+  "imoveis": 0
+ },
+ "patrimonio": {
+  "sitios": 0,
+  "imoveis_perto_sitio": 0,
+  "comunidades": 0
  },
  "barragens": 6,
  "massas_dagua": 21,
