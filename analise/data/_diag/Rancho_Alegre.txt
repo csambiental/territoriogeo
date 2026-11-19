@@ -1,88 +1,10 @@
 /home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:39: DeprecationWarning: ssl.TLSVersion.TLSv1 is deprecated
   SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
 Município 4121307 Rancho Alegre
-limite: IBGE
 
-===== CAR =====
-  CAR baixados 407
-imóveis 407 Counter({'Aguardando análise': 199, 'Analisado – em conformidade': 153, 'Analisado – notificação pendente': 52, 'Cancelado': 3}) [('Aguardando análise', 199), ('Analisado, em conformidade com a Lei nº 12.651/2012', 141), ('Analisado, aguardando atendimento a notificação', 44), ('Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)', 11), ('Aguardando análise, após revisão ou atendimento da notificação', 8), ('Cancelado por decisão administrativa', 3), ('Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais', 1)]
------ CAR ok (1s)
-
-===== SIGEF =====
-parcelas 169 Counter({'Registrada': 169})
------ SIGEF ok (2s)
-
-===== IBAMA =====
-/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:171: DeprecationWarning: The 'shapely.ops.transform()' function is deprecated. Use 'shapely.transform()' or 'shapely.transform_coordseq()' instead. See https://shapely.readthedocs.io/en/latest/manual.html#shapely.ops.transform for more details.
-  g = transform(geo, transform(utm, Point(lon, lat)).buffer(60)); aprox = True
-embargos 0 Counter()
------ IBAMA ok (16s)
-
-===== Microbacias =====
-microbacias 40
------ Microbacias ok (1s)
-
-===== MapBiomas cobertura =====
-  indisponível: lulc_10m/collection_2/integration/mapbiomas_10m_collection2_integration_v1-classification_2023.tif HTTP response code: 403
-  indisponível: collection_10/lulc/coverage/brazil_coverage_2024.tif HTTP response code: 403
-  indisponível: collection_10/lulc/coverage/brasil_coverage_2024.tif HTTP response code: 403
-  indisponível: collection_10/lclu/coverage/brazil_coverage_2024.tif HTTP response code: 403
-  indisponível: collection_10/lclu/coverage/brasil_coverage_2024.tif HTTP response code: 403
-  indisponível: collection_10/lulc/coverage/brazil_coverage_2023.tif HTTP response code: 403
-  indisponível: collection_9/lclu/coverage/brasil_coverage_2023.tif HTTP response code: 403
-  indisponível: collection_9/lulc/coverage/brasil_coverage_2023.tif HTTP response code: 403
-  indisponível: collection_8/lclu/coverage/brasil_coverage_2022.tif HTTP response code: 403
-uso do solo: reserva Impact Observatory 2023 (2040, 1846)
-grupos (%) {'Vegetação arbórea': 10.1, 'Agricultura': 78.6, 'Pastagem e campos': 1.6, 'Área urbanizada': 1.0, 'Água': 8.7, 'Outras áreas': 0.0}
------ MapBiomas cobertura ok (3s)
-
-===== MapBiomas alertas =====
-  tentativa 1 HTTP Error 400: Bad Request
-  tentativa 2 HTTP Error 400: Bad Request
-  tentativa 1 HTTP Error 400: Bad Request
-  tentativa 2 HTTP Error 400: Bad Request
-camada mapbiomas-alertas:v_deforestation_authorizations
-alertas 1
------ MapBiomas alertas ok (123s)
-
-===== Outorgas SIGARH =====
-   00_PUBLICACOES/outorgas_sigarh/FeatureServer camada 0 lote 64
-outorgas rural 20 fora do CAR 2
------ Outorgas SIGARH ok (2s)
-
-===== Licenças ambientais IAT (SGA/SIA) =====
-  GeoPR: 139 licenças (com histórico); SGA consulta pública: 27
-  13 licenças só no SGA (sem coordenada no GeoPR)
-  145 licenças, 15 vigentes e 45 vencidas no mapa; pontos genéricos: 2; {'Vigente': 26, 'Vencida': 74, 'Vencida (substituída por licença mais recente)': 45}
-  grupos: {'Licença Prévia / de Instalação': 45, 'Licença de Operação': 35, 'Autorização Ambiental': 31, 'Dispensa de licenciamento': 22, 'Licença Simplificada': 12}
------ Licenças ambientais IAT (SGA/SIA) ok (3s)
-
-===== Barragens IAT + SNISB =====
-   IG/SNISB/FeatureServer camada 0 lote 8
-   Hosted/barragens_dashboard_publico/FeatureServer camada 0 lote 9
-barragens 6 SNISB 3 IAT 4
------ Barragens IAT + SNISB ok (3s)
-
-===== Massas d'água (ANA) =====
-   SPR/Massa_dagua/FeatureServer camada 0 lote 40
-massas d'água 21
------ Massas d'água (ANA) ok (3s)
-
-===== Hidrografia FBDS (IAT) =====
-   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 999
-fbds_rio_ate10m_larg 645
-   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 58
-fbds_nascentes 32
------ Hidrografia FBDS (IAT) ok (5s)
-
-===== Relevo =====
-relevo: cotas 328.6483459472656 486.5484619140625
------ Relevo ok (4s)
-
-===== Pendências =====
-Counter({'Atenção': 183, 'Sem pendência identificada': 152, 'Prioridade média': 55, 'Prioridade alta': 14, 'Cancelado': 3})
------ Pendências ok (0s)
-
-===== Config =====
-config ok Rancho Alegre 404 imóveis
------ Config ok (0s)
+===== Mineração (ANM/SIGMINE) =====
+  tentativa 1 <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+  tentativa 2 <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+  tentativa 3 <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+  tentativa 4 <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+  tentativa 5 <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>

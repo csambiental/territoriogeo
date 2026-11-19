@@ -1,91 +1,35 @@
 /home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:39: DeprecationWarning: ssl.TLSVersion.TLSv1 is deprecated
   SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
 Município 4106407 Cornélio Procópio
-limite: IBGE
 
-===== CAR =====
-  CAR baixados 981
-imóveis 981 Counter({'Aguardando análise': 490, 'Analisado – em conformidade': 359, 'Analisado – notificação pendente': 96, 'Em análise': 23, 'Cancelado': 13}) [('Aguardando análise', 490), ('Analisado, em conformidade com a Lei nº 12.651/2012', 279), ('Analisado, aguardando atendimento a notificação', 78), ('Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)', 55), ('Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais', 25), ('Em análise', 23), ('Aguardando análise, após revisão ou atendimento da notificação', 18), ('Cancelado por decisão administrativa', 13)]
------ CAR ok (2s)
+===== Mineração (ANM/SIGMINE) =====
+  tentativa 1 <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+  tentativa 2 <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+  tentativa 3 <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+  tentativa 4 <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+  tentativa 5 <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+Traceback (most recent call last):
+  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 63, in run
+    try: fn(); log(f'----- {nome} ok ({time.time() - t0:.0f}s)')
+         ^^^^
+  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 614, in mineracao
+    fs = arcgis_geojson('https://geo.anm.gov.br/arcgis/rest/services/SIGMINE/dados_anm/FeatureServer/0')
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 600, in arcgis_geojson
+    r = http(base + '/query?' + urllib.parse.urlencode(q), timeout=240)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 49, in http
+    raise RuntimeError('falhou ' + url[:200])
+RuntimeError: falhou https://geo.anm.gov.br/arcgis/rest/services/SIGMINE/dados_anm/FeatureServer/0/query?geometry=%7B%22xmin%22%3A+-50.8138%2C+%22ymin%22%3A+-23.3753%2C+%22xmax%22%3A+-50.4651%2C+%22ymax%22%3A+-23.0146%2C+
+----- Mineração (ANM/SIGMINE) FALHOU
 
-===== SIGEF =====
-parcelas 639 Counter({'Registrada': 639})
------ SIGEF ok (5s)
-
-===== IBAMA =====
-/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:171: DeprecationWarning: The 'shapely.ops.transform()' function is deprecated. Use 'shapely.transform()' or 'shapely.transform_coordseq()' instead. See https://shapely.readthedocs.io/en/latest/manual.html#shapely.ops.transform for more details.
-  g = transform(geo, transform(utm, Point(lon, lat)).buffer(60)); aprox = True
-embargos 2 Counter({'Desembargado': 1, 'Embargo vigente': 1})
------ IBAMA ok (16s)
-
-===== Microbacias =====
-microbacias 98
------ Microbacias ok (1s)
-
-===== MapBiomas cobertura =====
-  indisponível: lulc_10m/collection_2/integration/mapbiomas_10m_collection2_integration_v1-classification_2023.tif HTTP response code: 403
-  indisponível: collection_10/lulc/coverage/brazil_coverage_2024.tif HTTP response code: 403
-  indisponível: collection_10/lulc/coverage/brasil_coverage_2024.tif HTTP response code: 403
-  indisponível: collection_10/lclu/coverage/brazil_coverage_2024.tif HTTP response code: 403
-  indisponível: collection_10/lclu/coverage/brasil_coverage_2024.tif HTTP response code: 403
-  indisponível: collection_10/lulc/coverage/brazil_coverage_2023.tif HTTP response code: 403
-  indisponível: collection_9/lclu/coverage/brasil_coverage_2023.tif HTTP response code: 403
-  indisponível: collection_9/lulc/coverage/brasil_coverage_2023.tif HTTP response code: 403
-  indisponível: collection_8/lclu/coverage/brasil_coverage_2022.tif HTTP response code: 403
-uso do solo: reserva Impact Observatory 2023 (4081, 3956)
-grupos (%) {'Vegetação arbórea': 21.6, 'Agricultura': 63.2, 'Pastagem e campos': 12.0, 'Área urbanizada': 2.7, 'Água': 0.5, 'Outras áreas': 0.0}
------ MapBiomas cobertura ok (5s)
-
-===== MapBiomas alertas =====
-camada mapbiomas-alertas:dashboard-alert-rural-properties-shapefile
-alertas 6
------ MapBiomas alertas ok (1s)
-
-===== Outorgas SIGARH =====
-   00_PUBLICACOES/outorgas_sigarh/FeatureServer camada 0 lote 424
-outorgas rural 53 fora do CAR 19
------ Outorgas SIGARH ok (3s)
-
-===== Licenças ambientais IAT (SGA/SIA) =====
-  GeoPR: 1233 licenças (com histórico); SGA consulta pública: 257
-  84 licenças só no SGA (sem coordenada no GeoPR)
-  1233 licenças, 190 vigentes e 336 vencidas no mapa; pontos genéricos: 5; {'Vence em até 6 meses': 15, 'Vigente': 240, 'Vencida': 498, 'Vencida (substituída por licença mais recente)': 480}
-  grupos: {'Licença Prévia / de Instalação': 400, 'Licença de Operação': 324, 'Dispensa de licenciamento': 236, 'Autorização Ambiental': 193, 'Licença Simplificada': 74, 'Licença por Adesão e Compromisso': 3, 'LIR': 1, '': 1, 'Renovação de Licença de Instalação (Ampliação)': 1}
------ Licenças ambientais IAT (SGA/SIA) ok (5s)
-
-===== Barragens IAT + SNISB =====
-   IG/SNISB/FeatureServer camada 0 lote 34
-   Hosted/barragens_dashboard_publico/FeatureServer camada 0 lote 45
-barragens 35 SNISB 20 IAT 28
------ Barragens IAT + SNISB ok (12s)
-
-===== Massas d'água (ANA) =====
-   SPR/Massa_dagua/FeatureServer camada 0 lote 124
-massas d'água 80
------ Massas d'água (ANA) ok (3s)
-
-===== Hidrografia FBDS (IAT) =====
-   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
-   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
-   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
-   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
-   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
-   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
-   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
-   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
-   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 999
-fbds_rio_ate10m_larg 4416
-   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 710
-fbds_nascentes 368
------ Hidrografia FBDS (IAT) ok (21s)
-
-===== Relevo =====
-relevo: cotas 334.12225341796875 702.8031005859375
------ Relevo ok (8s)
+===== Setores de risco (SGB) =====
+setores de risco SGB 0
+----- Setores de risco (SGB) ok (1s)
 
 ===== Pendências =====
 Counter({'Atenção': 450, 'Sem pendência identificada': 352, 'Prioridade média': 123, 'Prioridade alta': 43, 'Cancelado': 13})
------ Pendências ok (1s)
+----- Pendências ok (0s)
 
 ===== Config =====
 config ok Cornélio Procópio 968 imóveis

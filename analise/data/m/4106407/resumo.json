@@ -1,7 +1,7 @@
 {
  "codigo": "4106407",
  "nome": "Cornélio Procópio",
- "atualizado_em": "2026-11-17",
+ "atualizado_em": "2026-11-19",
  "area_municipio_ha": 63379.4,
  "car": {
   "imoveis_total": 981,
@@ -27,9 +27,9 @@
    "Grande (acima de 15 MF)": 40
   },
   "porte_area_ha": {
+   "Pequena (até 4 MF)": 15435.9,
    "Média (4 a 15 MF)": 18157.5,
-   "Grande (acima de 15 MF)": 24384.4,
-   "Pequena (até 4 MF)": 15435.9
+   "Grande (acima de 15 MF)": 24384.4
   },
   "faixa_vegetacao": {
    "5% a 10%": 144,
@@ -95,6 +95,16 @@
    "Vence em até 6 meses": 13
   },
   "vencidas_sem_renovacao": 336
+ },
+ "mineracao": {
+  "n": 0,
+  "fase": {},
+  "imoveis": 0
+ },
+ "risco_sgb": {
+  "n": 0,
+  "mapeado": false,
+  "imoveis": 0
  },
  "barragens": 35,
  "massas_dagua": 80,

@@ -1,7 +1,7 @@
 {
  "codigo": "4109708",
  "nome": "Ibaiti",
- "atualizado_em": "2026-11-17",
+ "atualizado_em": "2026-11-19",
  "area_municipio_ha": 89636.1,
  "car": {
   "imoveis_total": 1806,
@@ -27,9 +27,9 @@
    "Média (4 a 15 MF)": 117
   },
   "porte_area_ha": {
+   "Grande (acima de 15 MF)": 47463.7,
    "Pequena (até 4 MF)": 27509.6,
-   "Média (4 a 15 MF)": 16192.5,
-   "Grande (acima de 15 MF)": 47463.7
+   "Média (4 a 15 MF)": 16192.5
   },
   "faixa_vegetacao": {
    "20% ou mais": 1000,
@@ -94,6 +94,16 @@
    "Vence em até 6 meses": 8
   },
   "vencidas_sem_renovacao": 221
+ },
+ "mineracao": {
+  "n": 0,
+  "fase": {},
+  "imoveis": 0
+ },
+ "risco_sgb": {
+  "n": 0,
+  "mapeado": false,
+  "imoveis": 0
  },
  "barragens": 27,
  "massas_dagua": 95,

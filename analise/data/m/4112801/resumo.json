@@ -1,7 +1,7 @@
 {
  "codigo": "4112801",
  "nome": "Joaquim Távora",
- "atualizado_em": "2026-11-13",
+ "atualizado_em": "2026-11-19",
  "area_municipio_ha": 28752.7,
  "car": {
   "imoveis_total": 847,
@@ -90,6 +90,16 @@
    "Vence em até 6 meses": 3
   },
   "vencidas_sem_renovacao": 157
+ },
+ "mineracao": {
+  "n": 0,
+  "fase": {},
+  "imoveis": 0
+ },
+ "risco_sgb": {
+  "n": 0,
+  "mapeado": false,
+  "imoveis": 0
  },
  "barragens": 4,
  "massas_dagua": 30,

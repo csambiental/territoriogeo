@@ -2,12 +2,30 @@
   SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
 Município 4112801 Joaquim Távora
 
-===== Licenças ambientais IAT (SGA/SIA) =====
-  GeoPR: 573 licenças (com histórico); SGA consulta pública: 162
-  45 licenças só no SGA (sem coordenada no GeoPR)
-  589 licenças, 129 vigentes e 157 vencidas no mapa; pontos genéricos: 3; {'Vence em até 6 meses': 3, 'Vigente': 155, 'Vencida': 196, 'Vencida (substituída por licença mais recente)': 235}
-  grupos: {'Licença Prévia / de Instalação': 184, 'Dispensa de licenciamento': 160, 'Licença de Operação': 121, 'Autorização Ambiental': 60, 'Licença Simplificada': 54, 'Licença por Adesão e Compromisso': 10}
------ Licenças ambientais IAT (SGA/SIA) ok (6s)
+===== Mineração (ANM/SIGMINE) =====
+  tentativa 1 <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+  tentativa 2 <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+  tentativa 3 <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+  tentativa 4 <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+  tentativa 5 <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+Traceback (most recent call last):
+  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 63, in run
+    try: fn(); log(f'----- {nome} ok ({time.time() - t0:.0f}s)')
+         ^^^^
+  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 614, in mineracao
+    fs = arcgis_geojson('https://geo.anm.gov.br/arcgis/rest/services/SIGMINE/dados_anm/FeatureServer/0')
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 600, in arcgis_geojson
+    r = http(base + '/query?' + urllib.parse.urlencode(q), timeout=240)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 49, in http
+    raise RuntimeError('falhou ' + url[:200])
+RuntimeError: falhou https://geo.anm.gov.br/arcgis/rest/services/SIGMINE/dados_anm/FeatureServer/0/query?geometry=%7B%22xmin%22%3A+-50.0264990699%2C+%22ymin%22%3A+-23.5709257888%2C+%22xmax%22%3A+-49.8119825852%2C+%22ymax%
+----- Mineração (ANM/SIGMINE) FALHOU
+
+===== Setores de risco (SGB) =====
+setores de risco SGB 0
+----- Setores de risco (SGB) ok (1s)
 
 ===== Pendências =====
 Counter({'Atenção': 436, 'Sem pendência identificada': 283, 'Prioridade média': 86, 'Prioridade alta': 40, 'Cancelado': 2})
