@@ -9,7 +9,7 @@ with sync_playwright() as p:
     for tela, vp in [('celular', {'width': 390, 'height': 844}), ('pc', {'width': 1400, 'height': 900})]:
         for car in CARS:
             pg = b.new_page(viewport=vp); erros = []; pg.on('pageerror', lambda e: erros.append(str(e)))
-            pg.goto(f'https://csambiental.github.io/territoriogeo/analise/index.html?m=4102406&car={car.replace("-", "")}')
+            pg.goto(f'https://csambiental.github.io/territoriogeo/analise/index.html?m=4102406&car={car}')
             pg.wait_for_function("() => typeof RX !== 'undefined' && RX.ultimo && RX.ultimo.sigef", timeout=180000); pg.wait_for_timeout(1500)
             fotos = pg.evaluate("""async () => { const u = RX.ultimo;
                 const parc = (u.sigef || []).slice(0, 15);
