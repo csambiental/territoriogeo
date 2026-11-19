@@ -337,7 +337,19 @@ async function analisarImovel(nome, alvoCustom) {
 }
 // ---------- fotos do mapa para o relatório ----------
 const RX_FONTES_BASE = ['esri', 'composite', 'mapbox', 'mapbox-satellite'];
+// as fotos do relatório saem sempre no mesmo tamanho (também no celular): o mapa é ampliado durante a captura
+const RX_FOTO = { w: 1200, h: 860 };
+function rxTamanhoFoto(on) {
+    const el = map.getContainer();
+    if (on && !el.dataset.rxEst) {
+        el.dataset.rxEst = el.getAttribute('style') || '';
+        if (el.clientWidth < RX_FOTO.w || el.clientHeight < RX_FOTO.h * 0.8) { Object.assign(el.style, { width: RX_FOTO.w + 'px', height: RX_FOTO.h + 'px' }); map.resize(); }
+    } else if (!on && el.dataset.rxEst !== undefined) {
+        el.setAttribute('style', el.dataset.rxEst); delete el.dataset.rxEst; map.resize();
+    }
+}
 function rxEsconderCamadas() {
+    rxTamanhoFoto(true);
     const estado = [];
     for (const l of map.getStyle().layers) {
         if (!l.source || RX_FONTES_BASE.includes(l.source) || l.id.startsWith('rx-')) continue;
@@ -348,11 +360,41 @@ function rxEsconderCamadas() {
     return estado;
 }
 function rxRestaurar(estado) {
+    rxTamanhoFoto(false);
     for (const [id, v] of estado) if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', v);
     ['rx-viz-rot', 'rx-inter', 'rx-viz', 'rx-alvo-linha', 'rx-alvo'].forEach(id => map.getLayer(id) && map.removeLayer(id));
     ['rx-alvo', 'rx-viz', 'rx-inter', 'rx-rot'].forEach(id => map.getSource(id) && map.removeSource(id));
 }
-async function rxCapturar(alvo) {
+// etiquetas numeradas sem sobreposição: cada número tenta ficar sobre a sua área; se colidir, é afastado do centro do imóvel e ligado por uma linha
+function rxEtiquetas(ctx, k, alvo, rot) {
+    if (!rot || !rot.length) return;
+    const R = 13 * k, ocup = [], cen = map.project(turf.centroid(alvo).geometry.coordinates);
+    const livre = (x, y) => ocup.every(o => Math.hypot(o[0] - x, o[1] - y) >= 2 * R + 3 * k) && x > R && y > R && x < ctx.canvas.width - R && y < ctx.canvas.height - R;
+    const pos = rot.map(r => { const p = map.project(r.c); return { r, ax: p.x * k, ay: p.y * k }; });
+    for (const q of pos) {
+        let x = q.ax, y = q.ay;
+        if (!livre(x, y)) {
+            const ang0 = Math.atan2(q.ay - cen.y * k, q.ax - cen.x * k) || 0;
+            busca: for (let d = 2.4 * R; d < 14 * R; d += 1.2 * R) for (let t = 0; t < 12; t++) {
+                const a = ang0 + (t % 2 ? 1 : -1) * Math.ceil(t / 2) * Math.PI / 8, nx = q.ax + Math.cos(a) * d, ny = q.ay + Math.sin(a) * d;
+                if (livre(nx, ny)) { x = nx; y = ny; break busca; }
+            }
+        }
+        q.x = x; q.y = y; ocup.push([x, y]);
+    }
+    for (const q of pos) if (Math.hypot(q.x - q.ax, q.y - q.ay) > 1) {   // linhas de chamada primeiro, por baixo
+        ctx.beginPath(); ctx.moveTo(q.ax, q.ay); ctx.lineTo(q.x, q.y); ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 3.2 * k; ctx.stroke();
+        ctx.strokeStyle = '#1b1b1b'; ctx.lineWidth = 1.4 * k; ctx.stroke();
+        ctx.beginPath(); ctx.arc(q.ax, q.ay, 3.2 * k, 0, 2 * Math.PI); ctx.fillStyle = q.r.cor || '#1b1b1b'; ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.2 * k; ctx.stroke();
+    }
+    for (const q of pos) {
+        ctx.beginPath(); ctx.arc(q.x, q.y, R, 0, 2 * Math.PI); ctx.fillStyle = '#ffffff'; ctx.fill();
+        ctx.lineWidth = 3 * k; ctx.strokeStyle = q.r.cor || '#1b1b1b'; ctx.stroke();
+        ctx.fillStyle = '#111'; ctx.font = `bold ${Math.round((String(q.r.n).length > 1 ? 12.5 : 14) * k)}px Arial, sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(String(q.r.n), q.x, q.y + 0.5 * k);
+    }
+}
+async function rxCapturar(alvo, rotulos) {
     await new Promise(res => { map.once('idle', res); setTimeout(res, 8000); });
     await new Promise(res => setTimeout(res, 400));
     try {
@@ -368,6 +410,7 @@ async function rxCapturar(alvo) {
             ctx.lineJoin = 'round'; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 7 * k; ctx.stroke();
             ctx.strokeStyle = '#ff1744'; ctx.lineWidth = 4 * k; ctx.stroke();
         }
+        if (alvo && rotulos) rxEtiquetas(ctx, src.width / src.clientWidth, alvo, rotulos);
         return cv.toDataURL('image/jpeg', 0.9);
     } catch (e) { return null; }
 }
@@ -396,13 +439,11 @@ async function rxFotoSobreposicao(alvo, viz) {
         map.addSource('rx-inter', { type: 'geojson', data: inter });
         map.addLayer({ id: 'rx-viz', type: 'line', source: 'rx-viz', paint: { 'line-color': '#ffea00', 'line-width': 2.5, 'line-dasharray': [2, 1.2] } });
         map.addLayer({ id: 'rx-inter', type: 'fill', source: 'rx-inter', paint: { 'fill-color': '#ff9100', 'fill-opacity': 0.8, 'fill-outline-color': '#ffffff' } });
-        map.addSource('rx-rot', { type: 'geojson', data: turf.featureCollection(viz.map((x, i) => { const it = rxInter(alvo, x.f); return turf.point(turf.pointOnFeature(it || x.f).geometry.coordinates, { n: String(i + 1) }); })) });
-        map.addLayer({ id: 'rx-viz-rot', type: 'symbol', source: 'rx-rot', layout: { 'text-field': ['get', 'n'], 'text-size': 15, 'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'], 'text-allow-overlap': true, 'text-offset': [0, -1.1] },
-            paint: { 'text-color': '#1a1a1a', 'text-halo-color': '#ffea00', 'text-halo-width': 2.5 } });
-        map.moveLayer('rx-alvo-linha', 'rx-viz-rot');
+        const rot = viz.map((x, i) => { const it = rxInter(alvo, x.f); return { c: turf.pointOnFeature(it || x.f).geometry.coordinates, n: i + 1, cor: '#ff9100' }; });
+        map.moveLayer('rx-alvo-linha');
         const caixa = turf.bbox(turf.featureCollection([alvo, ...inter.features]));
         map.fitBounds([[caixa[0], caixa[1]], [caixa[2], caixa[3]]], { padding: 90, maxZoom: 16, duration: 0 });
-        return await rxCapturar(alvo);
+        return await rxCapturar(alvo, rot);
     } finally { rxRestaurar(estado); }
 }
 // imagem 3: SIGEF – parcelas sobre o imóvel coloridas pela situação no registro, imóvel só com contorno
@@ -415,11 +456,9 @@ async function rxFotoSigef(alvo, parc) {
         map.addLayer({ id: 'rx-sig-linha', type: 'line', source: 'rx-sig', paint: { 'line-color': ['get', 'cor'], 'line-width': 2.2 } });
         map.addSource('rx-alvo', { type: 'geojson', data: alvo });
         map.addLayer({ id: 'rx-alvo-linha', type: 'line', source: 'rx-alvo', paint: { 'line-color': '#ff1744', 'line-width': 3.5 } });
-        map.addSource('rx-rot', { type: 'geojson', data: turf.featureCollection(parc.map((x, i) => { const it = rxInter(alvo, x.f); return turf.point(turf.pointOnFeature(it || x.f).geometry.coordinates, { n: String(i + 1) }); })) });
-        map.addLayer({ id: 'rx-viz-rot', type: 'symbol', source: 'rx-rot', layout: { 'text-field': ['get', 'n'], 'text-size': 14, 'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'], 'text-allow-overlap': true },
-            paint: { 'text-color': '#ffffff', 'text-halo-color': '#1b3a2a', 'text-halo-width': 2.2 } });
-        map.fitBounds(boundsDe(alvo), { padding: 90, maxZoom: 16, duration: 0 });
-        return await rxCapturar(alvo);
+        const rot = parc.map((x, i) => { const it = rxInter(alvo, x.f); return { c: turf.pointOnFeature(it || x.f).geometry.coordinates, n: i + 1, cor: rxSigefCor(x.f.properties) }; });
+        map.fitBounds(boundsDe(alvo), { padding: 110, maxZoom: 16, duration: 0 });
+        return await rxCapturar(alvo, rot);
     } finally {
         ['rx-sig', 'rx-sig-linha'].forEach(id => map.getLayer(id) && map.removeLayer(id));
         rxRestaurar(estado); map.getSource('rx-sig') && map.removeSource('rx-sig');
@@ -433,12 +472,10 @@ async function rxFotoPontos(alvo, pontos) {
         rxDesenharAlvo(alvo, false);
         const fc = turf.featureCollection(pontos.map(p => turf.point(p.c, { n: String(p.n), cor: RX_PT_COR[p.tipo] })));
         map.addSource('rx-pt', { type: 'geojson', data: fc });
-        map.addLayer({ id: 'rx-pt', type: 'circle', source: 'rx-pt', paint: { 'circle-radius': 9, 'circle-color': ['get', 'cor'], 'circle-stroke-color': '#ffffff', 'circle-stroke-width': 2 } });
-        map.addSource('rx-rot', { type: 'geojson', data: fc });
-        map.addLayer({ id: 'rx-viz-rot', type: 'symbol', source: 'rx-rot', layout: { 'text-field': ['get', 'n'], 'text-size': 11, 'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'], 'text-allow-overlap': true }, paint: { 'text-color': '#ffffff' } });
+        map.addLayer({ id: 'rx-pt', type: 'circle', source: 'rx-pt', paint: { 'circle-radius': 4, 'circle-color': ['get', 'cor'], 'circle-stroke-color': '#ffffff', 'circle-stroke-width': 1.5 } });
         const caixa = turf.bbox(turf.featureCollection([alvo, ...fc.features]));
-        map.fitBounds([[caixa[0], caixa[1]], [caixa[2], caixa[3]]], { padding: 90, maxZoom: 16, duration: 0 });
-        return await rxCapturar(alvo);
+        map.fitBounds([[caixa[0], caixa[1]], [caixa[2], caixa[3]]], { padding: 100, maxZoom: 16, duration: 0 });
+        return await rxCapturar(alvo, pontos.map(p => ({ c: p.c, n: p.n, cor: RX_PT_COR[p.tipo] })));
     } finally {
         map.getLayer('rx-pt') && map.removeLayer('rx-pt');
         rxRestaurar(estado); map.getSource('rx-pt') && map.removeSource('rx-pt');
