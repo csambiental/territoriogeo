@@ -54,7 +54,7 @@ async function montarMapa() {
 }
 
 function somar(cods) {
-    const T = { n: cods.length, area_mun: 0, imoveis: 0, area_car: 0, sig_area: 0, sig_n: 0, conf: 0, aguard: 0, alta: 0, rl: 0, sem_out: 0, alertas: 0, alertas_ha: 0, emb: 0, emb_vig: 0, outorgas: 0, lic: 0, lic_venc: 0, nasc: 0, rios: 0, barr: 0, c_alerta: 0, min: 0, min_lav: 0, min_imv: 0, rsk: 0, rsk_map: 0,
+    const T = { n: cods.length, area_mun: 0, imoveis: 0, area_car: 0, sig_area: 0, sig_n: 0, conf: 0, aguard: 0, alta: 0, rl: 0, sem_out: 0, alertas: 0, alertas_ha: 0, emb: 0, emb_vig: 0, outorgas: 0, lic: 0, lic_venc: 0, nasc: 0, rios: 0, barr: 0, c_alerta: 0, min: 0, min_lav: 0, min_imv: 0, rsk: 0, rsk_map: 0, sit: 0, sit_imv: 0,
         porte: {}, porte_ha: {}, condicao: {}, veg: {}, pend: {}, geo: {}, uso: {}, out_tipo: {}, lic_tipo: {} };
     const add = (o, src) => Object.entries(src || {}).forEach(([k, v]) => { o[k] = (o[k] || 0) + v; });
     cods.forEach(c => {
@@ -67,6 +67,7 @@ function somar(cods) {
         T.outorgas += r.outorgas_rurais.n; T.lic += r.licencas.n; T.lic_venc += r.licencas.vencidas_sem_renovacao;
         T.nasc += r.nascentes; T.rios += r.rios_km; T.barr += r.barragens;
         if (r.mineracao) { T.min += r.mineracao.n; T.min_lav += (r.mineracao.fase || {})['Lavra / extração'] || 0; T.min_imv += r.mineracao.imoveis || 0; }
+        if (r.patrimonio) { T.sit += r.patrimonio.sitios; T.sit_imv += r.patrimonio.imoveis_perto_sitio; }
         if (r.risco_sgb) { T.rsk += r.risco_sgb.n; T.rsk_map += r.risco_sgb.mapeado ? 1 : 0; }
         add(T.porte, car.porte); add(T.porte_ha, car.porte_area_ha); add(T.condicao, car.condicao); add(T.veg, car.faixa_vegetacao); add(T.pend, car.pendencia_nivel);
         add(T.geo, car.georreferenciamento); add(T.uso, r.uso_solo.grupos); add(T.out_tipo, r.outorgas_rurais.tipo); add(T.lic_tipo, r.licencas.tipo);
@@ -125,6 +126,7 @@ function atualizar() {
         ${k(fmt(T.rios) + ' km', 'de rios até 10 m de largura (FBDS)')}
         ${k(fmt(T.barr), 'barragens cadastradas (SNISB/IAT)')}
         ${k(fmt(T.min), `processos minerários (ANM) · ${fmt(T.min_lav)} de lavra/extração · ${fmt(T.min_imv)} imóveis do CAR afetados`)}
+        ${k(fmt(T.sit), `sítios arqueológicos (IPHAN) · ${fmt(T.sit_imv)} imóveis do CAR a até 1 km`)}
         ${k(fmt(T.rsk), `setores de risco geológico (SGB) · ${T.rsk_map} de ${T.n} município(s) mapeado(s)`, T.rsk ? 'cr' : '')}
       </div>
       <div class="grade2">

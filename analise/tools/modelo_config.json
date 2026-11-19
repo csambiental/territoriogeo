@@ -447,6 +447,65 @@
    "fonte": "Serviço Geológico do Brasil (SGB) – setorização de áreas de risco geológico, com a Defesa Civil. Município sem setor não significa ausência de risco: pode ainda não ter sido mapeado."
   },
   {
+   "id": "sitios-arqueologicos",
+   "secao": "Patrimônio e comunidades tradicionais",
+   "nome": "Sítios arqueológicos – IPHAN",
+   "arquivo": "",
+   "geometria": "ponto",
+   "icone": "dot",
+   "cor": "#6a1b9a",
+   "rotulo_campo": "nome",
+   "rotulo_minzoom": 13,
+   "clicavel": true,
+   "prioridade": true,
+   "campos": [
+    "Código IPHAN (CNSA)"
+   ],
+   "legenda_itens": [
+    {
+     "rotulo": "Sítio arqueológico cadastrado (CNSA/IPHAN)",
+     "cor": "#6a1b9a"
+    }
+   ],
+   "fonte": "IPHAN – Cadastro Nacional de Sítios Arqueológicos (CNSA), via serviço geográfico da ANM. A localização é a cadastrada no IPHAN."
+  },
+  {
+   "id": "comunidades",
+   "secao": "Patrimônio e comunidades tradicionais",
+   "nome": "Terras indígenas e quilombolas",
+   "arquivo": "",
+   "icone": "fill",
+   "cor": "#f57c00",
+   "cor_por": "grupo",
+   "cores": {
+    "Terra indígena": "#e65100",
+    "Território quilombola": "#00897b"
+   },
+   "largura": 2,
+   "preenchimento": 0.2,
+   "clicavel": true,
+   "prioridade": true,
+   "enquadrar": false,
+   "campos": [
+    "Situação",
+    "Processo",
+    "Domínio",
+    "Responsável",
+    "Área (ha)"
+   ],
+   "legenda_itens": [
+    {
+     "rotulo": "Terra indígena (Funai)",
+     "cor": "#e65100"
+    },
+    {
+     "rotulo": "Território quilombola (Incra)",
+     "cor": "#00897b"
+    }
+   ],
+   "fonte": "Funai (terras indígenas) e Incra (territórios quilombolas), via serviço geográfico da ANM. Inclui as áreas a até 10 km do município."
+  },
+  {
    "id": "licencas",
    "secao": "Licenciamento",
    "nome": "Licenças ambientais IAT – vigentes",

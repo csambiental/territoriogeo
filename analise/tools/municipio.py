@@ -5,7 +5,7 @@ Fontes: IBGE (limite), SICAR (CAR), IAT/INCRA (SIGEF), IBAMA (embargos), MapBiom
 IAT (outorgas SIGARH e barragens), ANA/SNIRH (microbacias), Copernicus DEM (declividade e curvas de nível)."""
 import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))
-import nomes_rios
+import nomes_rios, ssl_aia
 import json, os, sys, re, io, csv, time, datetime, unicodedata, traceback, subprocess, urllib.request, urllib.parse
 from collections import Counter, defaultdict
 import numpy as np
@@ -42,7 +42,7 @@ def http(url, dados=None, tent=5, timeout=180, raw=False):
     for t in range(tent):
         try:
             req = urllib.request.Request(url, data=urllib.parse.urlencode(dados).encode() if dados else None, headers=UA)
-            r = urllib.request.urlopen(req, timeout=timeout, context=SSL_LEGADO if 'car.gov.br' in url else None).read()
+            r = urllib.request.urlopen(req, timeout=timeout, context=SSL_LEGADO if 'car.gov.br' in url else ssl_aia.contexto(url) if 'anm.gov.br' in url else None).read()
             return r if raw else json.loads(r)
         except Exception as e:
             log('  tentativa', t + 1, str(e)[:200]); time.sleep(10 * (t + 1))
@@ -545,10 +545,12 @@ def pendencias():
     ler_fs = lambda a: json.load(open(f'{D}/{a}'))['features'] if os.path.exists(f'{D}/{a}') else []
     minf = [f for f in ler_fs('mineracao.geojson') if f['properties'].get('grupo') != 'Disponibilidade']; ming = [shape(f['geometry']).buffer(0) for f in minf]; marv = STRtree(ming) if ming else None
     rskf = [f for f in ler_fs('risco_sgb.geojson') if re.search(r'alto', f['properties'].get('Grau de risco', ''), re.I)]; rskg = [shape(f['geometry']).buffer(0) for f in rskf]; rarv = STRtree(rskg) if rskg else None
+    sitf = ler_fs('sitios_arqueologicos.geojson'); sitg = [Point(f['geometry']['coordinates'][:2]) for f in sitf]; sarv = STRtree(sitg) if sitg else None
+    comf = ler_fs('comunidades_tradicionais.geojson'); comg = [shape(f['geometry']).buffer(0) for f in comf]
     classes = Counter()
     for f in imv['features']:
         p = f['properties']
-        for k in [k for k in p if k.startswith('Pendência') or k in ('pendencia_nivel', 'pendencias_n', 'Georreferenciamento SIGEF', 'Embargo IBAMA', 'Uso da água × licença', 'Mineração (ANM)', 'Risco geológico (SGB)')]: p.pop(k)
+        for k in [k for k in p if k.startswith('Pendência') or k in ('pendencia_nivel', 'pendencias_n', 'Georreferenciamento SIGEF', 'Embargo IBAMA', 'Uso da água × licença', 'Mineração (ANM)', 'Risco geológico (SGB)', 'Patrimônio arqueológico (IPHAN)', 'Terra indígena / quilombola')]: p.pop(k)
         if p.get('situacao') == 'Cancelado': p['pendencia_nivel'] = 'Cancelado'; classes['Cancelado'] += 1; continue
         g = shape(f['geometry']).buffer(0); a = g.area or 1
         cob = sum(g.intersection(sig[i]).area for i in arv.query(g)) / a if arv is not None else 0
@@ -578,6 +580,16 @@ def pendencias():
             if rr:
                 p['Risco geológico (SGB)'] = f"{len(rr)} setor(es) de risco {', '.join(sorted({x.get('Grau de risco', '').lower() for x in rr}))} ({', '.join(sorted({x.get('Processo', '') for x in rr})[:2])})"
                 pend.append(f"Setor de risco geológico mapeado pelo SGB no imóvel: {p['Risco geológico (SGB)']}"); pts += 2
+        if sarv is not None:
+            km_lat = 1 / 111.32
+            ss = [sitf[i]['properties'] for i in sarv.query(g.buffer(km_lat)) if g.distance(sitg[i]) <= km_lat]
+            if ss:
+                p['Patrimônio arqueológico (IPHAN)'] = f"{len(ss)} sítio(s) arqueológico(s) no imóvel ou a até 1 km: " + ', '.join(x['nome'].replace('Sítio arqueológico ', '') for x in ss[:3])
+                pend.append(p['Patrimônio arqueológico (IPHAN)'] + ' – avaliar FCA/estudo arqueológico no IPHAN antes de obras'); pts += 1
+        if comg:
+            cc = [(comf[i]['properties'], g.distance(comg[i]) * 111.32) for i in range(len(comg))]
+            cc = [(x, d) for x, d in cc if d <= 10]
+            if cc: p['Terra indígena / quilombola'] = '; '.join(f"{x['nome']} a {d:.1f} km".replace('.', ',') if d > 0 else f"{x['nome']} (sobreposição)" for x, d in sorted(cc, key=lambda t: t[1])[:2]); pend.append(f"Comunidade tradicional a menos de 10 km ({p['Terra indígena / quilombola']}) – verificar consulta à Funai/Incra no licenciamento"); pts += 0.5
         if p.get('Alertas MapBiomas'): pend.append(f"{p['Alertas MapBiomas']} alerta(s) de desmatamento MapBiomas"); pts += 3
         rot_veg = 'Vegetação nativa' if any(k.startswith('MapBiomas') for k in p) else 'Cobertura arbórea (inclui silvicultura)'
         if veg is not None and mf > 4 and veg < 20: pend.append(f'{rot_veg} de {veg:.1f}% (abaixo de 20%) em imóvel acima de 4 módulos – possível déficit de Reserva Legal'.replace('.', ',')); pts += 2
@@ -590,9 +602,9 @@ def pendencias():
     log(classes)
 
 # ---------- 8b) mineração (ANM/SIGMINE) e setores de risco (SGB) ----------
-def arcgis_geojson(base, extra=None, pagina=1000):
-    """Consulta um FeatureServer do ArcGIS pela caixa do município, em páginas, e devolve feições GeoJSON (WGS84)."""
-    env = json.dumps({'xmin': MINX, 'ymin': MINY, 'xmax': MAXX, 'ymax': MAXY, 'spatialReference': {'wkid': 4326}})
+def arcgis_geojson(base, extra=None, pagina=1000, margem=0.0):
+    """Consulta um serviço ArcGIS pela caixa do município (+ margem em graus), em páginas, e devolve feições GeoJSON (WGS84)."""
+    env = json.dumps({'xmin': MINX - margem, 'ymin': MINY - margem, 'xmax': MAXX + margem, 'ymax': MAXY + margem, 'spatialReference': {'wkid': 4326}})
     feats, off = [], 0
     while True:
         q = {'geometry': env, 'geometryType': 'esriGeometryEnvelope', 'spatialRel': 'esriSpatialRelIntersects', 'outFields': '*',
@@ -602,7 +614,8 @@ def arcgis_geojson(base, extra=None, pagina=1000):
         if len(fs) < pagina and not r.get('exceededTransferLimit') and not (r.get('properties') or {}).get('exceededTransferLimit'): break
         if not fs: break
         off += len(fs)
-    return [f for f in feats if f.get('geometry') and shape(f['geometry']).buffer(0).intersects(MUN)]
+    zona = MUN.buffer(margem) if margem else MUN
+    return [f for f in feats if f.get('geometry') and shape(f['geometry']).buffer(0).intersects(zona)]
 
 PJ_RX = re.compile(r'\b(LTDA|S/?A|S\.A|EIRELI|ME|EPP|CIA|COMPANHIA|MUNICIPIO|MUNICÍPIO|PREFEITURA|ASSOCIACAO|ASSOCIAÇÃO|COOPERATIVA|MINERA[CÇ][AÃ]O|MINERADORA|PEDREIRA|CER[AÂ]MICA|AREAL|INDUSTRIA|INDÚSTRIA|COMERCIO|COMÉRCIO|CONSTRUTORA|ENGENHARIA|EMPREENDIMENTOS?|INCORPORADORA|AGROPECU[AÁ]RIA|TRANSPORTES?|EXTRA[CÇ][AÃ]O|SANEAMENTO|DEPARTAMENTO|ESTADO)\b', re.I)
 def grupo_fase(f):
@@ -643,6 +656,27 @@ def risco_sgb():
         feats.append({'type': 'Feature', 'geometry': arred(mapping(shape(f['geometry']).buffer(0))), 'properties': {k: v for k, v in p.items() if v}})
     salvar('risco_sgb.geojson', feats, mapeado=bool(feats)); log('setores de risco SGB', len(feats))
 
+SC = 'https://geo.anm.gov.br/arcgis/rest/services/SIGMINE/sociedade_cultura/MapServer'
+@etapa('Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas')
+def patrimonio():
+    sit = []
+    for f in arcgis_geojson(SC + '/1', margem=0.012):
+        a = f['properties']; nm = re.sub(r'\s+', ' ', a.get('NMSitioArqueologico') or '').strip()
+        sit.append({'type': 'Feature', 'geometry': arred(f['geometry']), 'properties': {'nome': f'Sítio arqueológico {nm}'.strip(), 'grupo': 'Sítio arqueológico',
+            'Código IPHAN (CNSA)': a.get('CDSitioArqueologico') or '', 'link': 'https://www.gov.br/iphan/pt-br/patrimonio-cultural/patrimonio-arqueologico', 'link_texto': 'Patrimônio arqueológico (IPHAN) ↗'}})
+    salvar('sitios_arqueologicos.geojson', sit); log('sítios arqueológicos', len(sit))
+    com = []
+    for f in arcgis_geojson(SC + '/2', margem=0.1):
+        a = f['properties']
+        com.append({'type': 'Feature', 'geometry': arred(mapping(shape(f['geometry']).buffer(0))), 'properties': {k: v for k, v in {'nome': f"Terra indígena {a.get('NMTerraIndigena') or ''}".strip(), 'grupo': 'Terra indígena',
+            'Situação': a.get('DSSituacao') or '', 'Área (ha)': br(float(a.get('QTAreaHA') or 0)), 'link': 'https://www.gov.br/funai/pt-br/atuacao/terras-indigenas/geoprocessamento-e-mapas', 'link_texto': 'Terras indígenas (Funai) ↗'}.items() if v}})
+    for f in arcgis_geojson(SC + '/3', margem=0.1):
+        a = f['properties']
+        com.append({'type': 'Feature', 'geometry': arred(mapping(shape(f['geometry']).buffer(0))), 'properties': {k: v for k, v in {'nome': f"Território quilombola {a.get('NMTerritorioQuilombola') or ''}".strip(), 'grupo': 'Território quilombola',
+            'Processo': a.get('DSProcesso') or '', 'Domínio': (a.get('DSDominio') or '').capitalize(), 'Responsável': a.get('NMResponsavel') or '', 'Área (ha)': br(float(a.get('QTAreaHA') or 0)),
+            'link': 'https://www.gov.br/incra/pt-br/assuntos/governanca-fundiaria/quilombolas', 'link_texto': 'Territórios quilombolas (Incra) ↗'}.items() if v}})
+    salvar('comunidades_tradicionais.geojson', com); log('terras indígenas e quilombolas (até 10 km)', len(com), Counter(f['properties']['grupo'] for f in com))
+
 # ---------- 9) config do município ----------
 @etapa('Config')
 def config():
@@ -661,7 +695,7 @@ def config():
     c['resumo'] = [{'valor': f'{len(ativos):,}'.replace(',', '.'), 'rotulo': 'imóveis rurais ativos no CAR'},
                    {'valor': f'{area / 1000:,.1f} mil'.replace('.', ',') if area >= 1000 else f'{area:,.0f}'.replace(',', '.'), 'rotulo': 'hectares cadastrados'},
                    {'valor': f'{100 * conf / max(1, len(ativos)):.0f}%', 'rotulo': 'analisados e em conformidade'}]
-    c['programa'] = {'titulo': 'Sobre esta análise', 'texto': f'Imóveis rurais do CAR de {NOME} cruzados com SIGEF/INCRA, embargos do IBAMA, alertas de desmatamento, uso do solo (MapBiomas), outorgas e licenças ambientais do IAT, barragens do SNISB/IAT, açudes e represas (ANA), processos minerários da ANM, setores de risco geológico do SGB, microbacias e relevo. Clique num imóvel e use o Raio-X para gerar o relatório.', 'etapas': []}
+    c['programa'] = {'titulo': 'Sobre esta análise', 'texto': f'Imóveis rurais do CAR de {NOME} cruzados com SIGEF/INCRA, embargos do IBAMA, alertas de desmatamento, uso do solo (MapBiomas), outorgas e licenças ambientais do IAT, barragens do SNISB/IAT, açudes e represas (ANA), processos minerários da ANM, setores de risco geológico do SGB, sítios arqueológicos do IPHAN, terras indígenas e quilombolas, microbacias e relevo. Clique num imóvel e use o Raio-X para gerar o relatório.', 'etapas': []}
     c['termos']['texto'] = c['termos']['texto'].replace('do município de Londrina', f'do município de {NOME}')
     if os.path.exists(P0 := f'{D}/licencas.json'):
         c['licencas'].update({'arquivo': P0, 'titulo': f'Licenças ambientais em {NOME}',
@@ -694,6 +728,10 @@ def config():
         elif i == 'risco-sgb' and os.path.exists(P('risco_sgb.geojson')):
             n = cnt('risco_sgb.geojson')
             o.update({'arquivo': P('risco_sgb.geojson'), 'nome': f"Setores de risco geológico – SGB ({n})" if n else 'Setores de risco – SGB (município ainda não mapeado)'})
+        elif i == 'sitios-arqueologicos' and os.path.exists(P('sitios_arqueologicos.geojson')):
+            o.update({'arquivo': P('sitios_arqueologicos.geojson'), 'nome': f"Sítios arqueológicos – IPHAN ({cnt('sitios_arqueologicos.geojson')})"})
+        elif i == 'comunidades' and os.path.exists(P('comunidades_tradicionais.geojson')):
+            o.update({'arquivo': P('comunidades_tradicionais.geojson'), 'nome': f"Terras indígenas e quilombolas até 10 km ({cnt('comunidades_tradicionais.geojson')})"})
         elif i == 'declividade': o['arquivo'] = P('declividade.json')
         elif i == 'curvas': o['tiles'] = P('curvas/{z}/{x}/{y}.pbf')
         else: continue
@@ -702,7 +740,7 @@ def config():
     c['raiox'] = {'car': P('car.geojson'), 'sigef': P('sigef.geojson'), 'embargos': P('embargos.geojson'), 'alertas': P('alertas.geojson'),
                   'outorgas': [P('outorgas_rural.geojson'), P('outorgas_urbana.geojson')], 'licencas': P('licencas.geojson') if os.path.exists(P('licencas.geojson')) else None, 'barragens': P('barragens.geojson'), 'massas': P('massas_dagua.geojson'),
                   'microbacias': P('microbacias.geojson'), 'declividade': P('declividade.json'), 'municipio': f'{NOME}/PR'}
-    for k, a in (('rios', 'rios_fbds.geojson'), ('nascentes', 'nascentes_fbds.geojson'), ('mineracao', 'mineracao.geojson'), ('risco', 'risco_sgb.geojson')):
+    for k, a in (('rios', 'rios_fbds.geojson'), ('nascentes', 'nascentes_fbds.geojson'), ('mineracao', 'mineracao.geojson'), ('risco', 'risco_sgb.geojson'), ('sitios', 'sitios_arqueologicos.geojson'), ('comunidades', 'comunidades_tradicionais.geojson')):
         if os.path.exists(P(a)): c['raiox'][k] = P(a)
     if os.path.exists(P('demo.geojson')):  # imóvel fictício de demonstração
         c['raiox']['demo'] = P('demo.geojson')
@@ -723,5 +761,5 @@ def config():
         import resumo_regional; resumo_regional.gerar(D)
     except Exception as e: log('resumo regional falhou', e)
 
-ETAPAS = os.environ.get('ETAPAS', 'car,sigef,ibama,microbacias,mb_cobertura,mb_alertas,outorgas,licencas,barragens,massas,hidrografia,relevo,mineracao,risco_sgb,pendencias,config').split(',')
+ETAPAS = os.environ.get('ETAPAS', 'car,sigef,ibama,microbacias,mb_cobertura,mb_alertas,outorgas,licencas,barragens,massas,hidrografia,relevo,mineracao,risco_sgb,patrimonio,pendencias,config').split(',')
 for e in ETAPAS: globals()[e.strip()]()

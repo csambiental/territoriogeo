@@ -63,6 +63,8 @@ def gerar(D):
                       'imoveis': sum(1 for p in ativos if p.get('Mineração (ANM)'))},
         'risco_sgb': {'n': len(feats(f'{D}/risco_sgb.geojson')), 'mapeado': bool((ler(f'{D}/risco_sgb.geojson') or {}).get('mapeado')),
                       'imoveis': sum(1 for p in ativos if p.get('Risco geológico (SGB)'))},
+        'patrimonio': {'sitios': len(feats(f'{D}/sitios_arqueologicos.geojson')), 'imoveis_perto_sitio': sum(1 for p in ativos if p.get('Patrimônio arqueológico (IPHAN)')),
+                       'comunidades': len(feats(f'{D}/comunidades_tradicionais.geojson'))},
         'barragens': len(feats(f'{D}/barragens.geojson')),
         'massas_dagua': len(feats(f'{D}/massas_dagua.geojson')),
         'nascentes': len(feats(f'{D}/nascentes_fbds.geojson')),

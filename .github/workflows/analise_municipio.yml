@@ -16,7 +16,7 @@ jobs:
       - run: |
           (sudo apt-get update -qq || sudo apt-get update -qq || true) && sudo apt-get install -y -qq gdal-bin libsqlite3-dev zlib1g-dev
           git clone -q --depth 1 https://github.com/felt/tippecanoe.git /tmp/tc && make -C /tmp/tc -j4 -s && sudo make -C /tmp/tc install -s
-          pip install -q "numpy<2" rasterio shapely pyproj pillow scipy pystac-client planetary-computer
+          pip install -q cryptography "numpy<2" rasterio shapely pyproj pillow scipy pystac-client planetary-computer
       - working-directory: analise
         env: { ETAPAS_IN: '${{ github.event.inputs.etapas }}', MUNS: '${{ github.event.inputs.municipios }}' }
         run: |
