@@ -542,10 +542,13 @@ def pendencias():
             if RX_CAPTA.search(f"{f['properties'].get('Interferência', '')} {f['properties'].get('Documento', '')} {f['properties'].get('grupo', '')}")]
     licg = [Point(f['geometry']['coordinates'][:2]) for f in licp]; outg = [Point(f['geometry']['coordinates'][:2]) for f in outc]
     larv = STRtree(licg) if licg else None; oarv = STRtree(outg) if outg else None
+    ler_fs = lambda a: json.load(open(f'{D}/{a}'))['features'] if os.path.exists(f'{D}/{a}') else []
+    minf = [f for f in ler_fs('mineracao.geojson') if f['properties'].get('grupo') != 'Disponibilidade']; ming = [shape(f['geometry']).buffer(0) for f in minf]; marv = STRtree(ming) if ming else None
+    rskf = [f for f in ler_fs('risco_sgb.geojson') if re.search(r'alto', f['properties'].get('Grau de risco', ''), re.I)]; rskg = [shape(f['geometry']).buffer(0) for f in rskf]; rarv = STRtree(rskg) if rskg else None
     classes = Counter()
     for f in imv['features']:
         p = f['properties']
-        for k in [k for k in p if k.startswith('Pendência') or k in ('pendencia_nivel', 'pendencias_n', 'Georreferenciamento SIGEF', 'Embargo IBAMA', 'Uso da água × licença')]: p.pop(k)
+        for k in [k for k in p if k.startswith('Pendência') or k in ('pendencia_nivel', 'pendencias_n', 'Georreferenciamento SIGEF', 'Embargo IBAMA', 'Uso da água × licença', 'Mineração (ANM)', 'Risco geológico (SGB)')]: p.pop(k)
         if p.get('situacao') == 'Cancelado': p['pendencia_nivel'] = 'Cancelado'; classes['Cancelado'] += 1; continue
         g = shape(f['geometry']).buffer(0); a = g.area or 1
         cob = sum(g.intersection(sig[i]).area for i in arv.query(g)) / a if arv is not None else 0
@@ -564,6 +567,17 @@ def pendencias():
             if la and not tem_capta:
                 p['Uso da água × licença'] = f"Atividade licenciada ({', '.join(sorted(set(la))[:2])}) sem outorga de captação localizada"
                 pend.append(f"Atividade licenciada com consumo de água ({', '.join(sorted(set(la))[:2])}) sem outorga de captação no imóvel"); pts += 2
+        if marv is not None:
+            mm = [minf[i]['properties'] for i in marv.query(g) if g.intersection(ming[i]).area > 0.01 * min(a, ming[i].area)]
+            if mm:
+                lav = [m for m in mm if m.get('grupo') == 'Lavra / extração']
+                p['Mineração (ANM)'] = f"{len(mm)} processo(s): " + '; '.join(sorted({f"{m.get('Fase', '')} – {m.get('Substância', '')}".lower() for m in mm})[:3])
+                pend.append(f"Direito minerário ANM sobre o imóvel ({p['Mineração (ANM)']})"); pts += 1.5 if lav else 1
+        if rarv is not None:
+            rr = [rskf[i]['properties'] for i in rarv.query(g) if g.intersects(rskg[i])]
+            if rr:
+                p['Risco geológico (SGB)'] = f"{len(rr)} setor(es) de risco {', '.join(sorted({x.get('Grau de risco', '').lower() for x in rr}))} ({', '.join(sorted({x.get('Processo', '') for x in rr})[:2])})"
+                pend.append(f"Setor de risco geológico mapeado pelo SGB no imóvel: {p['Risco geológico (SGB)']}"); pts += 2
         if p.get('Alertas MapBiomas'): pend.append(f"{p['Alertas MapBiomas']} alerta(s) de desmatamento MapBiomas"); pts += 3
         rot_veg = 'Vegetação nativa' if any(k.startswith('MapBiomas') for k in p) else 'Cobertura arbórea (inclui silvicultura)'
         if veg is not None and mf > 4 and veg < 20: pend.append(f'{rot_veg} de {veg:.1f}% (abaixo de 20%) em imóvel acima de 4 módulos – possível déficit de Reserva Legal'.replace('.', ',')); pts += 2
@@ -574,6 +588,60 @@ def pendencias():
         classes[nivel] += 1
     json.dump(imv, open(f'{D}/car.geojson', 'w'), ensure_ascii=False, separators=(',', ':'))
     log(classes)
+
+# ---------- 8b) mineração (ANM/SIGMINE) e setores de risco (SGB) ----------
+def arcgis_geojson(base, extra=None, pagina=1000):
+    """Consulta um FeatureServer do ArcGIS pela caixa do município, em páginas, e devolve feições GeoJSON (WGS84)."""
+    env = json.dumps({'xmin': MINX, 'ymin': MINY, 'xmax': MAXX, 'ymax': MAXY, 'spatialReference': {'wkid': 4326}})
+    feats, off = [], 0
+    while True:
+        q = {'geometry': env, 'geometryType': 'esriGeometryEnvelope', 'spatialRel': 'esriSpatialRelIntersects', 'outFields': '*',
+             'returnGeometry': 'true', 'outSR': '4326', 'resultOffset': off, 'resultRecordCount': pagina, 'f': 'geojson', **(extra or {})}
+        r = http(base + '/query?' + urllib.parse.urlencode(q), timeout=240)
+        fs = r.get('features', []); feats += fs
+        if len(fs) < pagina and not r.get('exceededTransferLimit') and not (r.get('properties') or {}).get('exceededTransferLimit'): break
+        if not fs: break
+        off += len(fs)
+    return [f for f in feats if f.get('geometry') and shape(f['geometry']).buffer(0).intersects(MUN)]
+
+PJ_RX = re.compile(r'\b(LTDA|S/?A|S\.A|EIRELI|ME|EPP|CIA|COMPANHIA|MUNICIPIO|MUNICÍPIO|PREFEITURA|ASSOCIACAO|ASSOCIAÇÃO|COOPERATIVA|MINERA[CÇ][AÃ]O|MINERADORA|PEDREIRA|CER[AÂ]MICA|AREAL|INDUSTRIA|INDÚSTRIA|COMERCIO|COMÉRCIO|CONSTRUTORA|ENGENHARIA|EMPREENDIMENTOS?|INCORPORADORA|AGROPECU[AÁ]RIA|TRANSPORTES?|EXTRA[CÇ][AÃ]O|SANEAMENTO|DEPARTAMENTO|ESTADO)\b', re.I)
+def grupo_fase(f):
+    f = (f or '').upper()
+    return 'Pesquisa mineral' if 'PESQUISA' in f else 'Disponibilidade' if 'DISPONIBILIDADE' in f else 'Lavra / extração'
+
+@etapa('Mineração (ANM/SIGMINE)')
+def mineracao():
+    fs = arcgis_geojson('https://geo.anm.gov.br/arcgis/rest/services/SIGMINE/dados_anm/FeatureServer/0')
+    feats = []
+    for f in fs:
+        a = f['properties']; tit = (a.get('NOME') or '').strip(); pj = bool(PJ_RX.search(tit))
+        proc = a.get('DSProcesso') or a.get('PROCESSO') or ''
+        p = {'nome': f'Processo ANM {proc}', 'grupo': grupo_fase(a.get('FASE')), 'Processo': proc, 'Fase': (a.get('FASE') or '').capitalize(),
+             'Substância': (a.get('SUBS') or '').capitalize(), 'Uso': a.get('USO') or '', 'Área (ha)': br(float(a.get('AREA_HA') or 0)),
+             'Ano': str(a.get('ANO') or ''), 'Titular': tit if pj else 'Pessoa física (consultar na ANM)', 'Último evento': (a.get('ULT_EVENTO') or '').strip(),
+             'link': 'https://sistemas.anm.gov.br/SCM/Extra/site/admin/pesquisarProcessos.aspx', 'link_texto': 'Consultar o processo no Cadastro Mineiro (ANM) ↗'}
+        g = shape(f['geometry']).buffer(0)
+        feats.append({'type': 'Feature', 'geometry': arred(mapping(g)), 'properties': {k: v for k, v in p.items() if v}})
+    salvar('mineracao.geojson', feats); log('processos minerários', len(feats), Counter(f['properties']['grupo'] for f in feats))
+
+@etapa('Setores de risco (SGB)')
+def risco_sgb():
+    fs = arcgis_geojson('https://geoportal.sgb.gov.br/server/rest/services/gestaoterritorial/risco/FeatureServer/0')
+    feats = []
+    for f in fs:
+        a = f['properties']
+        tip = '; '.join(dict.fromkeys(t.strip() for t in [a.get(f'tipolo_e{i}') or a.get(f'tipolo_g{i}') or '' for i in range(1, 6)] if t and t.strip()))
+        d = str(a.get('data_setor') or '')
+        m = re.match(r'(\d{4})-(\d{2})-(\d{2})', d) or None
+        if m: d = f'{m.group(3)}/{m.group(2)}/{m.group(1)}'
+        elif re.match(r'^\d{12,}$', d): d = datetime.datetime.utcfromtimestamp(int(d) / 1000).strftime('%d/%m/%Y')
+        n = lambda k: f"{int(a[k]):,}".replace(',', '.') if isinstance(a.get(k), (int, float)) and a.get(k) else ''
+        p = {'nome': f"Setor de risco {a.get('num_setor') or ''}".strip(), 'Grau de risco': (a.get('grau_risco') or '').strip(), 'Processo': tip,
+             'Local': (a.get('local') or '').strip(), 'Mapeado em': d, 'Edificações': n('num_edif'), 'Pessoas (estimativa)': n('num_pess'),
+             'Descrição': re.sub(r'\s+', ' ', (a.get('descricao') or '')).strip()[:400], 'Intervenção sugerida': re.sub(r'\s+', ' ', (a.get('sug_interv') or '')).strip()[:300],
+             'link': 'https://geoportal.sgb.gov.br/desastres/', 'link_texto': 'Mapa para Prevenção de Desastres (SGB) ↗'}
+        feats.append({'type': 'Feature', 'geometry': arred(mapping(shape(f['geometry']).buffer(0))), 'properties': {k: v for k, v in p.items() if v}})
+    salvar('risco_sgb.geojson', feats, mapeado=bool(feats)); log('setores de risco SGB', len(feats))
 
 # ---------- 9) config do município ----------
 @etapa('Config')
@@ -593,7 +661,7 @@ def config():
     c['resumo'] = [{'valor': f'{len(ativos):,}'.replace(',', '.'), 'rotulo': 'imóveis rurais ativos no CAR'},
                    {'valor': f'{area / 1000:,.1f} mil'.replace('.', ',') if area >= 1000 else f'{area:,.0f}'.replace(',', '.'), 'rotulo': 'hectares cadastrados'},
                    {'valor': f'{100 * conf / max(1, len(ativos)):.0f}%', 'rotulo': 'analisados e em conformidade'}]
-    c['programa'] = {'titulo': 'Sobre esta análise', 'texto': f'Imóveis rurais do CAR de {NOME} cruzados com SIGEF/INCRA, embargos do IBAMA, alertas de desmatamento, uso do solo (MapBiomas), outorgas e licenças ambientais do IAT, barragens do SNISB/IAT, açudes e represas (ANA), microbacias e relevo. Clique num imóvel e use o Raio-X para gerar o relatório.', 'etapas': []}
+    c['programa'] = {'titulo': 'Sobre esta análise', 'texto': f'Imóveis rurais do CAR de {NOME} cruzados com SIGEF/INCRA, embargos do IBAMA, alertas de desmatamento, uso do solo (MapBiomas), outorgas e licenças ambientais do IAT, barragens do SNISB/IAT, açudes e represas (ANA), processos minerários da ANM, setores de risco geológico do SGB, microbacias e relevo. Clique num imóvel e use o Raio-X para gerar o relatório.', 'etapas': []}
     c['termos']['texto'] = c['termos']['texto'].replace('do município de Londrina', f'do município de {NOME}')
     if os.path.exists(P0 := f'{D}/licencas.json'):
         c['licencas'].update({'arquivo': P0, 'titulo': f'Licenças ambientais em {NOME}',
@@ -621,6 +689,11 @@ def config():
             o.update({'arquivo': P('licencas.geojson'), 'nome': f"Licenças ambientais IAT – vigentes ({cnt('licencas.geojson')})"})
         elif i == 'licencas-vencidas' and os.path.exists(P('licencas_vencidas.geojson')):
             o.update({'arquivo': P('licencas_vencidas.geojson'), 'nome': f"Licenças ambientais IAT – vencidas sem renovação ({cnt('licencas_vencidas.geojson')})"})
+        elif i == 'mineracao' and os.path.exists(P('mineracao.geojson')):
+            o.update({'arquivo': P('mineracao.geojson'), 'nome': f"Processos minerários – ANM ({cnt('mineracao.geojson')})"})
+        elif i == 'risco-sgb' and os.path.exists(P('risco_sgb.geojson')):
+            n = cnt('risco_sgb.geojson')
+            o.update({'arquivo': P('risco_sgb.geojson'), 'nome': f"Setores de risco geológico – SGB ({n})" if n else 'Setores de risco – SGB (município ainda não mapeado)'})
         elif i == 'declividade': o['arquivo'] = P('declividade.json')
         elif i == 'curvas': o['tiles'] = P('curvas/{z}/{x}/{y}.pbf')
         else: continue
@@ -629,7 +702,7 @@ def config():
     c['raiox'] = {'car': P('car.geojson'), 'sigef': P('sigef.geojson'), 'embargos': P('embargos.geojson'), 'alertas': P('alertas.geojson'),
                   'outorgas': [P('outorgas_rural.geojson'), P('outorgas_urbana.geojson')], 'licencas': P('licencas.geojson') if os.path.exists(P('licencas.geojson')) else None, 'barragens': P('barragens.geojson'), 'massas': P('massas_dagua.geojson'),
                   'microbacias': P('microbacias.geojson'), 'declividade': P('declividade.json'), 'municipio': f'{NOME}/PR'}
-    for k, a in (('rios', 'rios_fbds.geojson'), ('nascentes', 'nascentes_fbds.geojson')):
+    for k, a in (('rios', 'rios_fbds.geojson'), ('nascentes', 'nascentes_fbds.geojson'), ('mineracao', 'mineracao.geojson'), ('risco', 'risco_sgb.geojson')):
         if os.path.exists(P(a)): c['raiox'][k] = P(a)
     if os.path.exists(P('demo.geojson')):  # imóvel fictício de demonstração
         c['raiox']['demo'] = P('demo.geojson')
@@ -650,5 +723,5 @@ def config():
         import resumo_regional; resumo_regional.gerar(D)
     except Exception as e: log('resumo regional falhou', e)
 
-ETAPAS = os.environ.get('ETAPAS', 'car,sigef,ibama,microbacias,mb_cobertura,mb_alertas,outorgas,licencas,barragens,massas,hidrografia,relevo,pendencias,config').split(',')
+ETAPAS = os.environ.get('ETAPAS', 'car,sigef,ibama,microbacias,mb_cobertura,mb_alertas,outorgas,licencas,barragens,massas,hidrografia,relevo,mineracao,risco_sgb,pendencias,config').split(',')
 for e in ETAPAS: globals()[e.strip()]()

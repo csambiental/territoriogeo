@@ -105,6 +105,11 @@ function rxNecessidades(p, r, area, uso) {
     // embargos e alertas
     r.emb.filter(x => x.f.properties['Situação'] !== 'Desembargado').forEach(x => add(1, 'Embargo IBAMA', `${x.f.properties.nome} (${rxF(x.ha, 2)} ha no imóvel)`, 'Defesa administrativa e/ou regularização do embargo, com Projeto de Recuperação de Área Degradada (PRAD) se aplicável'));
     if (r.alertas.length) add(1, 'Desmatamento', `${r.alertas.length} alerta(s) MapBiomas (${rxF(r.alertas.reduce((a, x) => a + x.ha, 0), 2)} ha)`, 'Laudo técnico do alerta (supressão autorizada, falso positivo ou infração) e, se for o caso, PRAD ou regularização da supressão');
+    // mineração e risco geológico
+    (r.min || []).forEach(x => add(x.f.properties.grupo === 'Lavra / extração' ? 2 : 3, 'Mineração (ANM)', `${x.f.properties.Fase || 'Processo'} ${x.f.properties.Processo || ''} – ${x.f.properties.Substância || ''} (${rxF(x.ha, 2)} ha no imóvel)`,
+        'Verificar o direito minerário na ANM: fase, titular, servidão e renda/indenização ao superficiário (Código de Mineração, art. 11 e 27) e licenciamento ambiental da atividade'));
+    (r.risco || []).forEach(x => add(/alto/i.test(x.f.properties['Grau de risco'] || '') ? 1 : 2, 'Risco geológico (SGB)', `${x.f.properties.nome} – risco ${(x.f.properties['Grau de risco'] || '').toLowerCase()} (${x.f.properties.Processo || ''})`,
+        'Avaliação geotécnica local e articulação com a Defesa Civil; seguir a intervenção sugerida pelo SGB antes de novas edificações'));
     // Reserva Legal
     const nat = uso.find(([k]) => /Vegetação (nativa|arbórea)/.test(k));
     const pv = nat ? nat[1] : (p.veg_nativa_pct ?? null);
@@ -178,12 +183,13 @@ async function analisarImovel(nome, alvoCustom) {
         if (alvoCustom) nome = p.nome;
         const usoArea = alvoCustom ? await areaUsoSolo(alvo).catch(e => { console.error(e); return { uso: [], ano: '' }; }) : null;
         let [sigef, emb, alertas, outR, outU, lic, barr, mbac, mass] = await Promise.all([C.sigef, C.embargos, C.alertas, (C.outorgas || [])[0], (C.outorgas || [])[1], C.licencas, C.barragens, C.microbacias, C.massas].map(a => a ? rxJSON(a).catch(() => ({ features: [] })) : Promise.resolve({ features: [] })));
+        const [minA, rskA] = await Promise.all([C.mineracao, C.risco].map(a => a ? rxJSON(a).catch(() => ({ features: [] })) : Promise.resolve({ features: [] })));
         let licV = (C.licencas ? C.licencas.replace('.geojson', '_vencidas.geojson') : null) ? await rxJSON(C.licencas ? C.licencas.replace('.geojson', '_vencidas.geojson') : null).catch(() => ({ features: [] })) : { features: [] };
         let vizinhos = cars.filter(f => f.properties.situacao !== 'Cancelado' && !f.properties.ficticio);
         if (p.ficticio && C.demo) {  // imóvel de exemplo: só as camadas fictícias, nada de dados reais de terceiros
             const dm = await rxJSON(C.demo), so = k => ({ features: dm.features.filter(f => f.properties.camada === k) }), vazio = { features: [] };
             vizinhos = so('car').features; sigef = so('sigef'); emb = vazio; alertas = vazio; outR = so('outorga'); outU = vazio;
-            lic = so('licenca'); licV = vazio; barr = so('barragem'); mass = so('massa');
+            lic = so('licenca'); licV = vazio; barr = so('barragem'); mass = so('massa'); minA.features = []; rskA.features = [];
         }
         const r = {
             car: rxSobreposicoes(alvo, vizinhos, 0.05),
@@ -194,6 +200,9 @@ async function analisarImovel(nome, alvoCustom) {
             lic: rxPontos(alvo, lic.features.concat(licV.features)),
             barr: rxPontos(alvo, barr.features),
             massas: rxSobreposicoes(alvo, mass.features, 0.01).map(x => ({ ...x, barr: rxBarragemDaMassa(x.f, barr.features) })),
+            min: rxSobreposicoes(alvo, minA.features, 0.0001),
+            risco: rxSobreposicoes(alvo, rskA.features, 0.0001),
+            riscoMapeado: !!(rskA.mapeado || rskA.features.length),
             decl: await rxDeclividade(alvo).catch(() => []),
             mbac: mbac.features.filter(m => rxCaixasCruzam(turf.bbox(m), turf.bbox(alvo)) && turf.booleanPointInPolygon(turf.pointOnFeature(alvo), m)).map(m => m.properties.nome || m.properties.rio).slice(0, 1)
         };
@@ -226,6 +235,12 @@ async function analisarImovel(nome, alvoCustom) {
           const la = (r.lic?.dentro || []).filter(x => !/substituída|^Vencida$/.test(x.f.properties.situacao || '') && RXA.test(`${x.f.properties.Atividade || ''} ${x.f.properties['Atividade específica'] || ''}`));
           if (la.length && !r.agua.dentro.some(x => RXC.test(`${x.f.properties.Interferência || ''} ${x.f.properties.Documento || ''} ${x.f.properties.grupo || ''}`)))
               flags.push(['amarelo', `Atividade licenciada com consumo de água (${la[0].f.properties.Atividade}) sem outorga de captação localizada no imóvel`]); }
+        { const lav = r.min.filter(x => x.f.properties.grupo === 'Lavra / extração'), pes = r.min.filter(x => x.f.properties.grupo !== 'Lavra / extração');
+          const d = l => l.slice(0, 3).map(x => `${x.f.properties.Processo} – ${(x.f.properties.Substância || '').toLowerCase()}`).join('; ') + (l.length > 3 ? ' …' : '');
+          if (lav.length) flags.push(['amarelo', `${lav.length} direito(s) de lavra/extração mineral (ANM) sobre o imóvel: ${d(lav)}`]);
+          if (pes.length) flags.push(['amarelo', `${pes.length} processo(s) minerário(s) de pesquisa ou em disponibilidade (ANM) sobre o imóvel: ${d(pes)}`]); }
+        if (r.risco.length) { const g = [...new Set(r.risco.map(x => (x.f.properties['Grau de risco'] || '').toLowerCase()))].join(', ');
+          flags.push([/alto/.test(g) ? 'vermelho' : 'amarelo', `${r.risco.length} setor(es) de risco geológico mapeado(s) pelo SGB no imóvel (risco ${g})`]); }
         const barrAlto = r.barr.dentro.filter(x => x.f.properties.risco === 'Alto');
         if (barrAlto.length) flags.push(['amarelo', `${barrAlto.length} barragem(ns) com categoria de risco ALTO dentro do imóvel`]);
         const acSem = r.massas.filter(x => /artificial/.test(x.f.properties.grupo) && !x.barr);
@@ -246,6 +261,9 @@ async function analisarImovel(nome, alvoCustom) {
                 return `<div class="rx-cob">${Object.entries(cob).map(([k, [c, ha]]) => `<span><i style="background:${c}"></i>${esc(k)}: <b>${rxF(Math.min(ha, area) / area * 100, 1)}%</b> (${rxF(ha, 1)} ha)</span>`).join('')}
                   <span><i style="background:#fff;border:1px solid #999"></i>Sem SIGEF: <b>${rxF(Math.max(0, area - tot) / area * 100, 1)}%</b></span></div>`; })();
         B.sigef = tab(['Nº', 'Parcela', 'Matrícula', 'Situação no registro', 'Sobre o imóvel (ha)'], r.sigef.slice(0, 15).map((x, i) => [`<b>${i + 1}</b>`, esc(x.f.properties.nome || ''), esc(x.f.properties['Matrícula / registro'] || ''), `<span class="rx-sw" style="background:${rxSigefCor(x.f.properties)}"></span>${esc(rxSigefRot(x.f.properties))}`, rxF(x.ha)]));
+        B.min = tab(['Processo', 'Fase', 'Substância', 'Uso', 'Titular', 'No imóvel (ha)'], r.min.map(x => [esc(x.f.properties.Processo || ''), esc(x.f.properties.Fase || ''), esc(x.f.properties.Substância || ''), esc(x.f.properties.Uso || ''), esc(x.f.properties.Titular || ''), rxF(x.ha, 2)]));
+        B.risco = r.risco.length ? tab(['Setor', 'Grau de risco', 'Processo', 'Local', 'Mapeado em', 'Intervenção sugerida'], r.risco.map(x => [esc(x.f.properties.nome || ''), esc(x.f.properties['Grau de risco'] || ''), esc(x.f.properties.Processo || ''), esc(x.f.properties.Local || ''), esc(x.f.properties['Mapeado em'] || ''), esc(x.f.properties['Intervenção sugerida'] || '')]))
+            : `<p class="hint">${r.riscoMapeado ? 'Nenhum setor de risco do SGB no imóvel.' : 'Município ainda não mapeado pelo SGB na setorização de risco – ausência de setor não significa ausência de risco.'}</p>`;
         B.emb = tab(['Embargo', 'Situação', 'Data', 'Dentro do imóvel (ha)'], r.emb.map(x => [esc(x.f.properties.nome), esc(x.f.properties['Situação'] || ''), esc(x.f.properties['Data do embargo'] || ''), rxF(x.ha, 3)]));
         B.alertas = tab(['Alerta', 'Detectado em', 'Vetor', 'Dentro do imóvel (ha)'], r.alertas.map(x => [esc(x.f.properties.nome), esc(x.f.properties['Detectado em'] || ''), esc(x.f.properties['Vetor'] || ''), rxF(x.ha, 2)]));
         B.outorgas = (() => { const lista = [...r.agua.dentro, ...r.agua.perto].slice(0, 12), linhas = pts(r.agua, 'Interferência', 'agua'), hoje = new Date();
@@ -281,6 +299,8 @@ async function analisarImovel(nome, alvoCustom) {
             <h3>Imóveis certificados no SIGEF/INCRA</h3>${B.sigefCob}${B.sigef}
             <h3>Embargos do IBAMA</h3>${B.emb}
             <h3>Alertas de desmatamento (MapBiomas Alerta)</h3>${B.alertas}
+            <h3>Processos minerários (ANM/SIGMINE)</h3>${B.min}
+            <h3>Setores de risco geológico (SGB)</h3>${B.risco}
             <h3>Outorgas de água no imóvel ou a até 500 m</h3>${B.outorgas}
             ${C.licencas === null ? '' : `<h3>Licenças ambientais (IAT – SGA/SIA) no imóvel ou a até 500 m</h3>${B.licencas}`}
             <h3>Barragens cadastradas (SNISB/ANA e IAT) no imóvel ou a até 500 m</h3>${B.barragens}
@@ -674,6 +694,9 @@ ${sec('Situação fundiária', 'Sobreposições com o CAR e certificação no SI
   ${F.foto2 ? `<img class="mapa" src="${F.foto2}" alt="Sobreposições">${legSob}` : ''}${tabela('Sobreposição com outros imóveis do CAR', u.B.car)}
   ${F.foto3 ? `<img class="mapa" src="${F.foto3}" alt="SIGEF">${legSig}` : ''}${tabela('Parcelas certificadas no SIGEF/INCRA', u.B.sigefCob + u.B.sigef)}
   ${tabela('Embargos do IBAMA', u.B.emb)}${tabela('Alertas de desmatamento (MapBiomas Alerta)', u.B.alertas)}`)}
+
+${sec('Mineração e riscos geológicos', 'Direitos minerários da ANM e setores de risco mapeados pelo SGB sobre o imóvel', `
+  ${tabela('Processos minerários (ANM/SIGMINE)', u.B.min || '<p class="hint">Sem informação.</p>')}${tabela('Setores de risco geológico (SGB)', u.B.risco || '<p class="hint">Sem informação.</p>')}`)}
 
 ${sec('Água e licenciamento', 'Outorgas, licenças, barragens e açudes no imóvel ou a até 500 m', `
   ${F.foto4 ? `<img class="mapa" src="${F.foto4}" alt="Outorgas e licenças">${legPt}` : ''}
