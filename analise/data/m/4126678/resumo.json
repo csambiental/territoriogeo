@@ -1,0 +1,131 @@
+{
+ "codigo": "4126678",
+ "nome": "Tamarana",
+ "atualizado_em": "2026-11-20",
+ "area_municipio_ha": 47110.0,
+ "car": {
+  "imoveis_total": 641,
+  "imoveis_ativos": 634,
+  "area_ativos_ha": 41534.3,
+  "status": {
+   "Ativo": 631,
+   "Pendente": 3,
+   "Cancelado": 7
+  },
+  "condicao": {
+   "Aguardando análise": 353,
+   "Em análise": 30,
+   "Analisado, aguardando atendimento a notificação": 63,
+   "Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)": 24,
+   "Analisado, em conformidade com a Lei nº 12.651/2012": 115,
+   "Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais": 11,
+   "Aguardando análise, após revisão ou atendimento da notificação": 38
+  },
+  "porte": {
+   "Pequena (até 4 MF)": 486,
+   "Grande (acima de 15 MF)": 47,
+   "Média (4 a 15 MF)": 101
+  },
+  "porte_area_ha": {
+   "Média (4 a 15 MF)": 9279.1,
+   "Pequena (até 4 MF)": 11753.6,
+   "Grande (acima de 15 MF)": 20501.6
+  },
+  "faixa_vegetacao": {
+   "20% ou mais": 408,
+   "10% a 20%": 101,
+   "Sem informação": 13,
+   "Menos de 5%": 66,
+   "5% a 10%": 46
+  },
+  "pendencia_nivel": {
+   "Atenção": 390,
+   "Prioridade média": 136,
+   "Prioridade alta": 56,
+   "Sem pendência identificada": 52
+  },
+  "georreferenciamento": {
+   "Não localizado no SIGEF": 464,
+   "Certificado (≥ 50% da área)": 155,
+   "Parcial": 15
+  },
+  "possivel_deficit_rl": 40,
+  "atividade_sem_outorga": 14,
+  "com_alerta": 7,
+  "com_embargo_vigente": 0
+ },
+ "sigef": {
+  "parcelas": 318,
+  "area_ha": 17485.9
+ },
+ "alertas": {
+  "n": 7,
+  "area_ha": 118.1,
+  "imoveis": 11
+ },
+ "embargos": {
+  "n": 3,
+  "situacao": {
+   "Embargo vigente": 3
+  }
+ },
+ "outorgas_rurais": {
+  "n": 78,
+  "tipo": {
+   "Poço (água subterrânea)": 17,
+   "Captação superficial": 55,
+   "Obras e intervenções em rios": 6
+  }
+ },
+ "licencas": {
+  "n": 72,
+  "tipo": {
+   "Licença de Operação": 21,
+   "Dispensa de licenciamento": 33,
+   "Licença Simplificada": 10,
+   "Autorização Ambiental": 4,
+   "Licença Prévia / de Instalação": 1,
+   "Licença por Adesão e Compromisso": 3
+  },
+  "situacao": {
+   "Vence em até 6 meses": 8,
+   "Vigente": 64
+  },
+  "vencidas_sem_renovacao": 213
+ },
+ "mineracao": {
+  "n": 48,
+  "fase": {
+   "Lavra / extração": 24,
+   "Pesquisa mineral": 11,
+   "Disponibilidade": 13
+  },
+  "imoveis": 185
+ },
+ "risco_sgb": {
+  "n": 0,
+  "mapeado": false,
+  "imoveis": 0
+ },
+ "patrimonio": {
+  "sitios": 14,
+  "imoveis_perto_sitio": 17,
+  "comunidades": 2
+ },
+ "barragens": 20,
+ "massas_dagua": 52,
+ "nascentes": 911,
+ "rios_km": 2194.4,
+ "uso_solo": {
+  "ano": 2023,
+  "fonte": "Esri/Impact Observatory 10 m, 2023 (MapBiomas indisponível para download)",
+  "grupos": {
+   "Vegetação arbórea": 19989.7,
+   "Agricultura": 22190.5,
+   "Pastagem e campos": 4047.9,
+   "Área urbanizada": 593.0,
+   "Água": 288.9,
+   "Outras áreas": 0.0
+  }
+ }
+}

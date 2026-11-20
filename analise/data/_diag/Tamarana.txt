@@ -1,0 +1,135 @@
+/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:39: DeprecationWarning: ssl.TLSVersion.TLSv1 is deprecated
+  SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
+Município 4126678 Tamarana
+limite: IBGE
+
+===== CAR =====
+  CAR baixados 641
+imóveis 641 Counter({'Aguardando análise': 353, 'Analisado – em conformidade': 150, 'Analisado – notificação pendente': 101, 'Em análise': 30, 'Cancelado': 7}) [('Aguardando análise', 353), ('Analisado, em conformidade com a Lei nº 12.651/2012', 115), ('Analisado, aguardando atendimento a notificação', 63), ('Aguardando análise, após revisão ou atendimento da notificação', 38), ('Em análise', 30), ('Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)', 24), ('Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais', 11), ('Cancelado por decisão administrativa', 7)]
+----- CAR ok (3s)
+
+===== SIGEF =====
+  tentativa 1 HTTP Error 503: 503
+parcelas 318 Counter({'Registrada': 317, 'Titulada, não registrada': 1})
+----- SIGEF ok (80s)
+
+===== IBAMA =====
+/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:171: DeprecationWarning: The 'shapely.ops.transform()' function is deprecated. Use 'shapely.transform()' or 'shapely.transform_coordseq()' instead. See https://shapely.readthedocs.io/en/latest/manual.html#shapely.ops.transform for more details.
+  g = transform(geo, transform(utm, Point(lon, lat)).buffer(60)); aprox = True
+embargos 3 Counter({'Embargo vigente': 3})
+----- IBAMA ok (26s)
+
+===== Microbacias =====
+microbacias 69
+----- Microbacias ok (13s)
+
+===== MapBiomas cobertura =====
+  indisponível: lulc_10m/collection_2/integration/mapbiomas_10m_collection2_integration_v1-classification_2023.tif HTTP response code: 403
+  indisponível: collection_10/lulc/coverage/brazil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lulc/coverage/brasil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lclu/coverage/brazil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lclu/coverage/brasil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lulc/coverage/brazil_coverage_2023.tif HTTP response code: 403
+  indisponível: collection_9/lclu/coverage/brasil_coverage_2023.tif HTTP response code: 403
+  indisponível: collection_9/lulc/coverage/brasil_coverage_2023.tif HTTP response code: 403
+  indisponível: collection_8/lclu/coverage/brasil_coverage_2022.tif HTTP response code: 403
+uso do solo: reserva Impact Observatory 2023 (2592, 3524)
+grupos (%) {'Vegetação arbórea': 42.4, 'Agricultura': 47.1, 'Pastagem e campos': 8.6, 'Área urbanizada': 1.3, 'Água': 0.6, 'Outras áreas': 0.0}
+----- MapBiomas cobertura ok (6s)
+
+===== MapBiomas alertas =====
+camada mapbiomas-alertas:dashboard-alert-rural-properties-shapefile
+alertas 13
+----- MapBiomas alertas ok (3s)
+
+===== Outorgas SIGARH =====
+   00_PUBLICACOES/outorgas_sigarh/FeatureServer camada 0 lote 314
+outorgas rural 78 fora do CAR 17
+----- Outorgas SIGARH ok (9s)
+
+===== Licenças ambientais IAT (SGA/SIA) =====
+  GeoPR: 675 licenças (com histórico); SGA consulta pública: 97
+  47 licenças só no SGA (sem coordenada no GeoPR)
+  682 licenças, 72 vigentes e 213 vencidas no mapa; pontos genéricos: 3; {'Vence em até 6 meses': 10, 'Vigente': 86, 'Vencida': 289, 'Vencida (substituída por licença mais recente)': 297}
+  grupos: {'Autorização Ambiental': 205, 'Licença de Operação': 187, 'Licença Prévia / de Instalação': 137, 'Dispensa de licenciamento': 108, 'Licença Simplificada': 39, 'Licença por Adesão e Compromisso': 5, 'LIR': 1}
+----- Licenças ambientais IAT (SGA/SIA) ok (10s)
+
+===== Barragens IAT + SNISB =====
+   IG/SNISB/FeatureServer camada 0 lote 13
+   Hosted/barragens_dashboard_publico/FeatureServer camada 0 lote 18
+barragens 20 SNISB 9 IAT 13
+----- Barragens IAT + SNISB ok (11s)
+
+===== Massas d'água (ANA) =====
+   SPR/Massa_dagua/FeatureServer camada 0 lote 78
+massas d'água 52
+----- Massas d'água (ANA) ok (7s)
+
+===== Hidrografia FBDS (IAT) =====
+   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 996
+fbds_rio_ate10m_larg 48
+   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 522
+fbds_nascentes 911
+----- Hidrografia FBDS (IAT) ok (20s)
+
+===== Relevo =====
+Traceback (most recent call last):
+  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 63, in run
+    try: fn(); log(f'----- {nome} ok ({time.time() - t0:.0f}s)')
+         ^^^^
+  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 499, in relevo
+    srcs = [rasterio.open(i.assets['data'].href) for i in cat.search(collections=['cop-dem-glo-30'], bbox=bbox).items()]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 499, in <listcomp>
+    srcs = [rasterio.open(i.assets['data'].href) for i in cat.search(collections=['cop-dem-glo-30'], bbox=bbox).items()]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/pystac_client/item_search.py", line 797, in items
+    for item in self.items_as_dicts():
+  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/pystac_client/item_search.py", line 808, in items_as_dicts
+    for page in self.pages_as_dicts():
+  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/pystac_client/item_search.py", line 841, in pages_as_dicts
+    call_modifier(self.modifier, page)
+  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/pystac_client/_utils.py", line 22, in call_modifier
+    result = modifier(obj)
+             ^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/planetary_computer/sas.py", line 109, in sign_inplace
+    return sign(obj, copy=False)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/functools.py", line 909, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/planetary_computer/sas.py", line 408, in sign_mapping
+    v["href"] = sign_url(v["href"])
+                ^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/planetary_computer/sas.py", line 167, in sign_url
+    token = get_token(account, container)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/planetary_computer/sas.py", line 470, in get_token
+    response.raise_for_status()
+  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/requests/models.py", line 1167, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 404 Client Error: Not Found for url: https://planetarycomputer.microsoft.com/api/sas/v1/token/elevationeuwest/copernicus-dem
+----- Relevo FALHOU
+
+===== Mineração (ANM/SIGMINE) =====
+  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
+processos minerários 48 Counter({'Lavra / extração': 24, 'Disponibilidade': 13, 'Pesquisa mineral': 11})
+----- Mineração (ANM/SIGMINE) ok (2s)
+
+===== Setores de risco (SGB) =====
+setores de risco SGB 0
+----- Setores de risco (SGB) ok (1s)
+
+===== Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas =====
+sítios arqueológicos 14
+terras indígenas e quilombolas (até 10 km) 2 Counter({'Terra indígena': 2})
+----- Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas ok (3s)
+
+===== Pendências =====
+Counter({'Atenção': 390, 'Prioridade média': 136, 'Prioridade alta': 56, 'Sem pendência identificada': 52, 'Cancelado': 7})
+----- Pendências ok (1s)
+
+===== Config =====
+config ok Tamarana 634 imóveis
+----- Config ok (0s)
