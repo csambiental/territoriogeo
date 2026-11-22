@@ -1,0 +1,21 @@
+/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:39: DeprecationWarning: ssl.TLSVersion.TLSv1 is deprecated
+  SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
+Município 4126678 Tamarana
+
+===== Aptidão: clima, solos, calcário e unidades de conservação =====
+  altitude: grade NASA 674.86 m, local 820.0 m, correção -0.94 °C
+clima Cfa 1560 mm []
+solos 21 ['id1', 'cd_fcim', 'legenda', 'ar_poli_km', 'leg_ordem', 'legenda_2', 'cd_ord_id', 'cd_leg2_id']
+  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
+jazidas de calcário (PR, lavra/licenciamento) 462
+  camadas CNUC: ['cnuc_2025_08', 'cnuc_2025_08_pontos'] -> usando cnuc_2025_08
+unidades de conservação até 10 km 2 ['PARQUE ESTADUAL DO PENHASCO VERDE', 'MONUMENTO NATURAL PEDRA BRANCA']
+----- Aptidão: clima, solos, calcário e unidades de conservação ok (555s)
+
+===== Relevo =====
+relevo: cotas 422.5 1200.546630859375
+----- Relevo ok (7s)
+
+===== Config =====
+config ok Tamarana 634 imóveis
+----- Config ok (0s)

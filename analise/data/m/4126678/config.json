@@ -9,7 +9,7 @@
   ],
   "zoom": 10.5
  },
- "atualizado_em": "2026-11-20",
+ "atualizado_em": "2026-11-22",
  "resumo": [
   {
    "valor": "634",
@@ -987,6 +987,10 @@
   "microbacias": "data/m/4126678/microbacias.geojson",
   "declividade": "data/m/4126678/declividade.json",
   "municipio": "Tamarana/PR",
+  "aptidao": "data/m/4126678/aptidao.json",
+  "solos": "data/m/4126678/solos.geojson",
+  "calcario": "data/m/4126678/calcario.geojson",
+  "ucs": "data/m/4126678/ucs.geojson",
   "rios": "data/m/4126678/rios_fbds.geojson",
   "nascentes": "data/m/4126678/nascentes_fbds.geojson",
   "mineracao": "data/m/4126678/mineracao.geojson",
