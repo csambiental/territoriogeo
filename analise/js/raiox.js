@@ -190,7 +190,8 @@ async function analisarImovel(nome, alvoCustom) {
         const usoArea = alvoCustom ? await areaUsoSolo(alvo).catch(e => { console.error(e); return { uso: [], ano: '' }; }) : null;
         let [sigef, emb, alertas, outR, outU, lic, barr, mbac, mass] = await Promise.all([C.sigef, C.embargos, C.alertas, (C.outorgas || [])[0], (C.outorgas || [])[1], C.licencas, C.barragens, C.microbacias, C.massas].map(a => a ? rxJSON(a).catch(() => ({ features: [] })) : Promise.resolve({ features: [] })));
         const [minA, rskA, sitA, comA] = await Promise.all([C.mineracao, C.risco, C.sitios, C.comunidades].map(a => a ? rxJSON(a).catch(() => ({ features: [] })) : Promise.resolve({ features: [] })));
-        const [aptJ, solA, calA, ucA] = await Promise.all([C.aptidao, C.solos, C.calcario, C.ucs].map(a => a ? rxJSON(a).catch(() => null) : Promise.resolve(null)));
+        const [aptJ, solA, calA, ucA, logA] = await Promise.all([C.aptidao, C.solos, C.calcario, C.ucs, C.logistica].map(a => a ? rxJSON(a).catch(() => null) : Promise.resolve(null)));
+        RX_DERAL = RX_DERAL || await rxJSON('data/itr/precos_deral_2026.json').catch(() => null);
         let licV = (C.licencas ? C.licencas.replace('.geojson', '_vencidas.geojson') : null) ? await rxJSON(C.licencas ? C.licencas.replace('.geojson', '_vencidas.geojson') : null).catch(() => ({ features: [] })) : { features: [] };
         let vizinhos = cars.filter(f => f.properties.situacao !== 'Cancelado' && !f.properties.ficticio);
         if (p.ficticio && C.demo) {  // imóvel de exemplo: só as camadas fictícias, nada de dados reais de terceiros
@@ -216,6 +217,7 @@ async function analisarImovel(nome, alvoCustom) {
             clima: aptJ && aptJ.clima || null, fontesApt: aptJ && aptJ.fontes || {},
             solos: solA ? Object.values(rxSobreposicoes(alvo, solA.features, 0.0001).reduce((m, x) => { const k = x.f.properties.legenda || x.f.properties.nom_unidad || 'Solo'; (m[k] = m[k] || { f: x.f, ha: 0 }).ha += x.ha; return m; }, {})).sort((a, b) => b.ha - a.ha) : null,
             calc: calA ? (() => { const c = turf.centroid(alvo); return calA.features.filter(f => /calc[áa]rio|dolom|calcita/i.test(f.properties.Substância || '') && !/garimp/i.test(f.properties.Fase || '')).map(f => ({ f, km: turf.distance(c, f, { units: 'kilometers' }) })).sort((a, b) => a.km - b.km); })() : null,
+            log: logA ? rxLogistica(alvo, logA.features) : null,
             ucs: ucA ? (() => { const c = turf.centroid(alvo); return ucA.features.map(f => { let km = 0; try { km = turf.booleanIntersects(alvo, f) ? 0 : Math.min(...turf.flatten(turf.polygonToLine(f)).features.map(l => turf.pointToLineDistance(c, l))); } catch (e) { km = 99; } return { f, km }; }).filter(x => x.km <= 10).sort((a, b) => a.km - b.km); })() : null,
             mbac: mbac.features.filter(m => rxCaixasCruzam(turf.bbox(m), turf.bbox(alvo)) && turf.booleanPointInPolygon(turf.pointOnFeature(alvo), m)).map(m => m.properties.nome || m.properties.rio).slice(0, 1)
         };
@@ -283,6 +285,7 @@ async function analisarImovel(nome, alvoCustom) {
         B.sitios = (() => { const l = [...r.sitios.dentro, ...r.sitios.perto]; return l.length ? tab(['Sítio', 'Código IPHAN (CNSA)', 'Distância'], l.slice(0, 15).map(x => [esc(x.f.properties.nome.replace('Sítio arqueológico ', '')), esc(x.f.properties['Código IPHAN (CNSA)'] || ''), x.km ? `${rxF(x.km * 1000, 0)} m` : 'dentro do imóvel'])) : '<p class="hint">Nenhum sítio arqueológico cadastrado no IPHAN no imóvel ou a até 1 km.</p>'; })();
         B.comun = r.comun.length ? tab(['Área', 'Tipo', 'Situação / processo', 'Distância'], r.comun.map(x => [esc(x.f.properties.nome), esc(x.f.properties.grupo || ''), esc(x.f.properties['Situação'] || x.f.properties.Processo || ''), x.km ? `${rxF(x.km, 1)} km` : 'sobreposição'])) : '<p class="hint">Nenhuma terra indígena ou território quilombola a menos de 10 km.</p>';
         B.apt = rxAptidaoHtml(r, area, tab);
+        B.log = rxLogisticaHtml(r, tab);
         B.ucs = r.ucs && r.ucs.length ? tab(['Unidade de conservação', 'Categoria', 'Grupo', 'Esfera', 'Distância'], r.ucs.map(x => [esc(x.f.properties.nome || ''), esc(x.f.properties.Categoria || ''), esc(x.f.properties.Grupo || ''), esc(x.f.properties.Esfera || ''), x.km ? `${rxF(x.km, 1)} km` : '<b style="color:#c62828">imóvel dentro da UC</b>'])) : '<p class="hint">Nenhuma unidade de conservação a menos de 10 km.</p>';
         B.prot = rxProtegidasHtml(r, tab);
         B.emb = tab(['Embargo', 'Situação', 'Data', 'Dentro do imóvel (ha)'], r.emb.map(x => [esc(x.f.properties.nome), esc(x.f.properties['Situação'] || ''), esc(x.f.properties['Data do embargo'] || ''), rxF(x.ha, 3)]));
@@ -753,6 +756,7 @@ ${sec('Cobertura do solo e relevo', 'Declarado no CAR × medido por satélite', 
   ${(u.pend || []).length ? `<h4>Observações do cadastro</h4>${u.pend.map(t => `<div class="obs">${esc(t)}</div>`).join('')}` : ''}`)}
 
 ${u.B.apt ? sec('Aptidão agrícola e contexto regional', 'Clima, chuva, solos e acesso a calcário', u.B.apt) : ''}
+${(() => { const v = rxValorTerraHtml(u); return u.B.log || v ? sec('Logística e referência de valor da terra', 'Distâncias até a infraestrutura do agronegócio e preços de terra do DERAL/SEAB para o município', (u.B.log || '') + v) : ''; })()}
 
 ${u.itr ? sec(`Declaração do ITR${u.itr.exercicio ? ` – exercício ${u.itr.exercicio}` : ''}`, 'Dados quantitativos da DIAC/DIAT (Receita Federal) cruzados com o CAR e o satélite', itrBlocoHtml(u, true) + (u.previa ? `<h4>Declarado × estimado por satélite</h4>${itrComparacaoHtml(u)}` : '')) : ''}
 ${u.previa ? sec(u.itr ? 'Prévia do ITR – base da comparação' : 'Prévia do ITR (estimativa por satélite)', u.itr ? 'Como cada valor estimado foi calculado' : 'O que o imóvel deveria declarar, estimado sem a declaração oficial', itrPreviaHtml(u)) : ''}
@@ -900,4 +904,49 @@ function rxProtegidasHtml(r, tab) {
     const mont = (r.decl[4] || {}).pct || 0;
     lin(i++, 'Encostas muito íngremes (> 45%)', r.decl.length ? (mont >= 0.5 ? `${rxF(mont, 1)}% do imóvel` : 'Não identificadas') : 'Relevo não processado', r.decl.length ? mont < 0.5 : null, 'Modelo digital de terreno');
     return tab(['Nº', 'Critério analisado', 'Resultado', 'Situação', 'Fonte'], L);
+}
+
+
+// ---------- logística e referência de valor da terra ----------
+let RX_DERAL = null;
+const RX_PORTO = { nome: 'Porto de Paranaguá', c: [-48.5235, -25.5005] };
+function rxLogistica(alvo, feats) {
+    const c = turf.centroid(alvo), cats = {};
+    for (const f of feats) {
+        const k = f.properties.categoria; let km;
+        try { km = f.geometry.type === 'Point' ? turf.distance(c, f, { units: 'kilometers' }) : Math.min(...turf.flatten(f).features.map(l => turf.pointToLineDistance(c, l, { units: 'kilometers' }))); } catch (e) { continue; }
+        if (!cats[k] || km < cats[k].km) cats[k] = { f, km };
+    }
+    cats['Porto'] = { f: { properties: { nome: RX_PORTO.nome } }, km: turf.distance(c, turf.point(RX_PORTO.c), { units: 'kilometers' }) };
+    return cats;
+}
+function rxLogisticaHtml(r, tab) {
+    if (!r.log) return '';
+    const L = r.log, ord = [['Rodovia', 'Rodovia federal ou estadual mais próxima'], ['Cidade', 'Cidade mais próxima'], ['Armazém, silo ou cooperativa', 'Armazém, silo ou cooperativa'],
+        ['Usina de açúcar / etanol', 'Usina de açúcar / etanol'], ['Frigorífico / abatedouro', 'Frigorífico / abatedouro'], ['Ferrovia', 'Ferrovia'], ['Aeroporto com voos (IATA)', 'Aeroporto com voos regulares'], ['Porto', 'Porto de exportação']];
+    const lin = ord.map(([k, rot]) => [rot, L[k] ? esc(L[k].f.properties.nome || '') : '<span class="hint">não localizado na região</span>', L[k] ? `${rxF(L[k].km, L[k].km < 10 ? 1 : 0)} km` : '–']);
+    return `<h4>Distâncias até a infraestrutura (em linha reta, do centro do imóvel)</h4>${tab(['Item', 'Mais próximo', 'Distância'], lin)}
+      <p class="hint">Fonte: OpenStreetMap (mapeamento colaborativo) – algumas unidades podem não estar mapeadas; confirmar compradores e armazéns na região. A distância por estrada costuma ser 20–40% maior.</p>`;
+}
+function rxValorTerraHtml(u) {
+    const D = RX_DERAL; if (!D) return '';
+    const norm = t => String(t || '').replace(/\/PR$/i, '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    const m = D.municipios[norm(u.C.municipio || '')]; if (!m) return '';
+    const CL = D.classes, val = k => { if (m[k]) return m[k]; const i = CL.indexOf(k); for (let d = 1; d < CL.length; d++) { if (m[CL[i + d]]) return m[CL[i + d]]; if (m[CL[i - d]]) return m[CL[i - d]]; } return null; };
+    const { r, area, uso, p } = u;
+    const nat = uso.find(([k]) => /Vegetação (nativa|arbórea)/.test(k)), pv = Math.min(100, nat ? nat[1] : (p.veg_nativa_pct ?? 0)) / 100;
+    // relevo -> classes de capacidade de uso (faixa mínima e máxima)
+    const MAP = [['A-I', 'A-II'], ['A-II', 'A-III'], ['A-III', 'A-IV'], ['B-VI', 'B-VII'], ['B-VII', 'C-VIII']];
+    const dec = r.decl && r.decl.length ? r.decl.map(d => d.pct / 100) : [0, 1, 0, 0, 0];
+    const totD = dec.reduce((a, b) => a + b, 0) || 1, util = area * (1 - pv);
+    let lo = area * pv * val('C-VIII'), hi = lo;
+    dec.forEach((f, i) => { const ha = util * f / totD; const a = val(MAP[i][0]), b = val(MAP[i][1]); lo += ha * Math.min(a, b); hi += ha * Math.max(a, b); });
+    const R = v => 'R$ ' + rxF(v, 0);
+    const linhas = CL.map(k => `<td style="text-align:right">${m[k] ? rxF(m[k], 0) : '–'}</td>`).join('');
+    return `<h4>Preço médio de terras em ${esc(m.nome)} – DERAL/SEAB ${D.ano} (R$/ha)</h4>
+      <table class="rx-tab"><tr>${CL.map(k => `<th style="text-align:right">${k}</th>`).join('')}</tr><tr>${linhas}</tr></table>
+      <p class="hint">Classes de capacidade de uso: A-I a A-IV terras de lavoura (da melhor para a mais restrita); B-VI e B-VII pastagem e silvicultura; C-VIII preservação. A classe "V" não é publicada.</p>
+      <div class="cds"><div class="cd"><span>Faixa de referência para o imóvel</span><b>${R(lo)} a ${R(hi)}</b><small>${rxF(area, 1)} ha · ${R(lo / area)} a ${R(hi / area)} por ha</small></div>
+        <div class="cd l2"><span>Como foi estimada</span><small>Área com vegetação nativa (${rxF(pv * 100, 0)}%) na classe C-VIII; o restante distribuído pelas classes de relevo do imóvel (plano → A-I/A-II, suave ondulado → A-II/A-III, ondulado → A-III/A-IV, forte ondulado → B-VI/B-VII). Não considera benfeitorias, localização exata, acesso, solo nem situação documental.</small></div></div>
+      <p class="hint"><b>Referência, não é avaliação.</b> Para compra, venda, garantia bancária, partilha ou processo judicial é necessário laudo de avaliação conforme a NBR 14.653-3, com pesquisa de mercado e ART de engenheiro agrônomo – serviço oferecido pela CS Consultoria Ambiental. Fonte: ${esc(D.fonte)}.</p>`;
 }
