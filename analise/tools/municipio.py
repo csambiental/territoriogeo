@@ -486,6 +486,30 @@ def hidrografia():
         salvar(arq, out); log(camada, len(out))
 
 # ---------- 7) relevo: declividade e curvas de nível (Copernicus DEM) ----------
+def dem_terrarium(bbox, z=13):
+    """Mosaico das telhas de elevação Terrarium (AWS, públicas) reprojetado para graus (EPSG:4326)."""
+    import math, rasterio
+    from rasterio.warp import reproject, Resampling
+    from rasterio.transform import from_bounds
+    from PIL import Image
+    def til(lon, lat):
+        n = 2 ** z; x = (lon + 180) / 360 * n; y = (1 - math.asinh(math.tan(math.radians(lat))) / math.pi) / 2 * n; return x, y
+    x0, y1 = til(bbox[0], bbox[1]); x1, y0 = til(bbox[2], bbox[3])
+    xs, ys = range(int(x0), int(x1) + 1), range(int(y0), int(y1) + 1)
+    mos = np.zeros((len(ys) * 256, len(xs) * 256), 'float32')
+    for j, ty in enumerate(ys):
+        for i, tx in enumerate(xs):
+            im = np.asarray(Image.open(io.BytesIO(http(f'https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{tx}/{ty}.png', raw=True))).convert('RGB')).astype('float32')
+            mos[j * 256:(j + 1) * 256, i * 256:(i + 1) * 256] = im[..., 0] * 256 + im[..., 1] + im[..., 2] / 256 - 32768
+    R = 6378137.0; tam = 2 * math.pi * R / 2 ** z
+    mx0 = xs[0] * tam - math.pi * R; my0 = math.pi * R - ys[0] * tam
+    tr_m = rasterio.transform.from_origin(mx0, my0, tam, tam)
+    res = 1 / 3600  # ~30 m
+    W = int((bbox[2] - bbox[0]) / res); H = int((bbox[3] - bbox[1]) / res)
+    tr = from_bounds(*bbox, W, H); dst = np.zeros((H, W), 'float32')
+    reproject(mos, dst, src_transform=tr_m, src_crs='EPSG:3857', dst_transform=tr, dst_crs='EPSG:4326', resampling=Resampling.bilinear)
+    return dst, tr, rasterio.crs.CRS.from_epsg(4326)
+
 @etapa('Relevo')
 def relevo():
     import rasterio, planetary_computer as pc
@@ -495,9 +519,14 @@ def relevo():
     from scipy import ndimage
     from PIL import Image
     bbox = MUN.buffer(0.01).bounds
-    cat = Client.open('https://planetarycomputer.microsoft.com/api/stac/v1', modifier=pc.sign_inplace)
-    srcs = [rasterio.open(i.assets['data'].href) for i in cat.search(collections=['cop-dem-glo-30'], bbox=bbox).items()]
-    dem, tr = merge(srcs, bounds=bbox); dem = dem[0].astype('float32')
+    fonte = 'Copernicus DEM GLO-30 (ESA)'
+    try:
+        cat = Client.open('https://planetarycomputer.microsoft.com/api/stac/v1', modifier=pc.sign_inplace)
+        srcs = [rasterio.open(i.assets['data'].href) for i in cat.search(collections=['cop-dem-glo-30'], bbox=bbox).items()]
+        dem, tr = merge(srcs, bounds=bbox); dem = dem[0].astype('float32'); crs = srcs[0].crs
+    except Exception as e:
+        log('Copernicus DEM indisponível, usando o modelo de terreno público da AWS (Terrarium):', str(e)[:150])
+        dem, tr, crs = dem_terrarium(bbox); fonte = 'Modelo digital de terreno – AWS Terrain Tiles (SRTM/ALOS), ~20 m'
     falta = dem <= 1
     if falta.any():
         idx = ndimage.distance_transform_edt(falta, return_distances=False, return_indices=True)
@@ -511,10 +540,10 @@ def relevo():
     for lo, hi, cor in CL: im[(decl >= lo) & (decl < hi) & ~fora] = cor
     Image.fromarray(im, 'RGBA').save(f'{D}/declividade.png', optimize=True)
     w, s, e, n = rasterio.transform.array_bounds(H, W, tr)
-    json.dump({'imagem': f'{D}/declividade.png', 'cantos': [[w, n], [e, n], [e, s], [w, s]], 'fonte': 'Copernicus DEM GLO-30 (ESA)'}, open(f'{D}/declividade.json', 'w'))
+    json.dump({'imagem': f'{D}/declividade.png', 'cantos': [[w, n], [e, n], [e, s], [w, s]], 'fonte': fonte}, open(f'{D}/declividade.json', 'w'))
     # curvas de nível
     sm = ndimage.gaussian_filter(dem, 1.2)
-    with rasterio.open('/tmp/dem.tif', 'w', driver='GTiff', height=H, width=W, count=1, dtype='float32', crs=srcs[0].crs, transform=tr) as f: f.write(sm, 1)
+    with rasterio.open('/tmp/dem.tif', 'w', driver='GTiff', height=H, width=W, count=1, dtype='float32', crs=crs, transform=tr) as f: f.write(sm, 1)
     subprocess.run(['gdal_contour', '-q', '-i', '10', '-a', 'cota', '-f', 'GeoJSON', '/tmp/dem.tif', '/tmp/curvas.geojson'], check=True)
     with open('/tmp/curvas.ndjson', 'w') as out:
         for f in json.load(open('/tmp/curvas.geojson'))['features']:
@@ -680,6 +709,98 @@ def patrimonio():
             'link': 'https://www.gov.br/incra/pt-br/assuntos/governanca-fundiaria/quilombolas', 'link_texto': 'Territórios quilombolas (Incra) ↗'}.items() if v}})
     salvar('comunidades_tradicionais.geojson', com); log('terras indígenas e quilombolas (até 10 km)', len(com), Counter(f['properties']['grupo'] for f in com))
 
+
+# ---------- 8c) aptidão: clima (NASA POWER), solos (IBGE), calcário (ANM), unidades de conservação (MMA/CNUC) ----------
+MESES = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
+DIAS = [31, 28.25, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+NOMES_MES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez']
+def koppen(T, P):
+    Pa, Ta = sum(P), sum(T) / 12; tf, tq = min(T), max(T)
+    ver = [9, 10, 11, 0, 1, 2]; inv = [3, 4, 5, 6, 7, 8]          # hemisfério sul: verão out–mar
+    pv = sum(P[i] for i in ver)
+    lim = 20 * Ta + (280 if pv >= 0.7 * Pa else 140 if pv >= 0.3 * Pa else 0)
+    if Pa < lim: return ('BW' if Pa < lim / 2 else 'BS') + ('h' if Ta >= 18 else 'k')
+    pseco = min(P)
+    if tf >= 18:
+        if pseco >= 60: return 'Af'
+        if pseco >= 100 - Pa / 25: return 'Am'
+        return 'Aw' if min(P[i] for i in inv) == pseco else 'As'
+    if tq >= 10:
+        k = 'C' if tf > -3 else 'D'
+        if min(P[i] for i in inv) < max(P[i] for i in ver) / 10: s = 'w'
+        elif min(P[i] for i in ver) < 40 and min(P[i] for i in ver) < max(P[i] for i in inv) / 3: s = 's'
+        else: s = 'f'
+        t = 'a' if tq >= 22 else 'b' if sum(1 for x in T if x >= 10) >= 4 else 'c'
+        return k + s + t
+    return 'E'
+KOPPEN = {'Cfa': 'subtropical úmido, verão quente, sem estação seca definida', 'Cfb': 'subtropical úmido, verão ameno, sem estação seca definida',
+          'Cwa': 'subtropical, inverno seco e verão quente', 'Cwb': 'subtropical de altitude, inverno seco e verão ameno', 'Aw': 'tropical com inverno seco',
+          'Am': 'tropical de monção', 'Af': 'tropical úmido sem estação seca', 'As': 'tropical com verão seco'}
+
+@etapa('Aptidão: clima, solos, calcário e unidades de conservação')
+def aptidao():
+    apt = {'fontes': {}}
+    # clima – normais climatológicas por ponto (NASA POWER, série de longo prazo)
+    try:
+        c = MUN.representative_point()
+        r = http(f'https://power.larc.nasa.gov/api/temporal/climatology/point?parameters=PRECTOTCORR,T2M,T2M_MAX,T2M_MIN&community=AG&longitude={c.x:.4f}&latitude={c.y:.4f}&format=JSON')
+        pr = r['properties']['parameter']
+        P = [round(pr['PRECTOTCORR'][m] * d) for m, d in zip(MESES, DIAS)]; T = [round(pr['T2M'][m], 1) for m in MESES]
+        k = koppen(T, P)
+        apt['clima'] = {'chuva_mensal_mm': P, 'temp_media_c': T, 'chuva_anual_mm': sum(P), 'temp_media_anual_c': round(sum(T) / 12, 1),
+                        'temp_max_abs_c': pr['T2M_MAX']['ANN'], 'temp_min_abs_c': pr['T2M_MIN']['ANN'], 'koppen': k, 'koppen_desc': KOPPEN.get(k, ''),
+                        'meses_secos': [NOMES_MES[i] for i, p in enumerate(P) if p < 60], 'ponto': [round(c.x, 4), round(c.y, 4)]}
+        apt['fontes']['clima'] = 'NASA POWER (normais climatológicas por ponto; classificação de Köppen calculada a partir das médias mensais)'
+        log('clima', k, sum(P), 'mm', apt['clima']['meses_secos'])
+    except Exception as e: log('clima falhou', e)
+    # solos – mapa de pedologia do IBGE (BDiA, 1:250.000)
+    try:
+        u = ('https://geoservicos.ibge.gov.br/geoserver/wfs?service=WFS&version=1.0.0&request=GetFeature&typeName=BDIA:pedo_area&outputFormat=application/json'
+             f'&bbox={MINX - 0.01},{MINY - 0.01},{MAXX + 0.01},{MAXY + 0.01},EPSG:4326')
+        fs = http(u, timeout=400)['features']; out = []
+        for f in fs:
+            g = shape(f['geometry']).buffer(0)
+            if not g.intersects(MUN): continue
+            p = {k: v for k, v in f['properties'].items() if isinstance(v, (str, int, float)) and v not in ('', None) and len(str(v)) < 400}
+            out.append({'type': 'Feature', 'geometry': arred(mapping(g.intersection(MUN.buffer(0.005)).simplify(0.0002))), 'properties': p})
+        salvar('solos.geojson', out); apt['fontes']['solos'] = 'IBGE – Banco de Dados de Informações Ambientais (BDiA), pedologia 1:250.000'
+        log('solos', len(out), list(out[0]['properties'].keys()) if out else '')
+    except Exception as e: log('solos falhou', e)
+    # calcário – jazidas com título de lavra/licenciamento no PR (ANM/SIGMINE)
+    try:
+        fs = arcgis_geojson('https://geo.anm.gov.br/arcgis/rest/services/SIGMINE/dados_anm/FeatureServer/0', {'where': "UF='PR' AND SUBS LIKE '%CALC%'"}, margem=3.5)
+        out = []
+        for f in fs:
+            a = f['properties']; fase = (a.get('FASE') or '').upper()
+            if not re.search('LAVRA|LICENCIAMENTO|EXTRA', fase): continue
+            pt = shape(f['geometry']).buffer(0).representative_point()
+            out.append({'type': 'Feature', 'geometry': {'type': 'Point', 'coordinates': [round(pt.x, 5), round(pt.y, 5)]},
+                        'properties': {'Processo': a.get('DSProcesso') or a.get('PROCESSO') or '', 'Fase': (a.get('FASE') or '').capitalize(), 'Substância': (a.get('SUBS') or '').capitalize(), 'Uso': a.get('USO') or ''}})
+        salvar('calcario.geojson', out); apt['fontes']['calcario'] = 'ANM/SIGMINE – processos de calcário em fase de lavra ou licenciamento no Paraná'
+        log('jazidas de calcário (PR, lavra/licenciamento)', len(out))
+    except Exception as e: log('calcário falhou', e)
+    # unidades de conservação – CNUC/MMA (até 10 km)
+    try:
+        pag = http('https://dados.mma.gov.br/dataset/unidadesdeconservacao', raw=True).decode('utf-8', 'ignore')
+        zips = sorted(set(re.findall(r'href="(https://dados\.mma\.gov\.br/[^"]+/shp_cnuc_(\d{4})_(\d{2})[^"]*\.zip)"', pag)), key=lambda x: (x[1], x[2]))
+        url = zips[-1][0]; cache = '/tmp/cnuc.zip'
+        if not os.path.exists(cache): open(cache, 'wb').write(http(url, raw=True, timeout=900))
+        subprocess.run(['ogr2ogr', '-q', '-f', 'GeoJSON', '-t_srs', 'EPSG:4326', '-spat', str(MINX - 0.1), str(MINY - 0.1), str(MAXX + 0.1), str(MAXY + 0.1), '-spat_srs', 'EPSG:4326',
+                        '/tmp/ucs.geojson', '/vsizip/' + cache], check=True)
+        out = []
+        for f in json.load(open('/tmp/ucs.geojson'))['features']:
+            g = shape(f['geometry']).buffer(0)
+            if g.distance(MUN) > 0.1: continue
+            a = {k.lower(): v for k, v in f['properties'].items()}
+            pega = lambda *ks: next((str(a[k]) for k in ks if a.get(k) not in (None, '')), '')
+            out.append({'type': 'Feature', 'geometry': arred(mapping(g.simplify(0.0003))), 'properties': {k: v for k, v in {
+                'nome': pega('nome_uc', 'nome', 'nm_uc'), 'Categoria': pega('categoria', 'categori3', 'cat_manejo'), 'Grupo': pega('grupo', 'grupo_uc'),
+                'Esfera': pega('esfera', 'esfera5', 'esfera_adm'), 'Ano de criação': pega('ano_cria6', 'ano_criacao', 'cria_ano'), 'Ato legal': pega('ato_legal', 'ato_lega9')}.items() if v}})
+        salvar('ucs.geojson', out); apt['fontes']['ucs'] = 'MMA – Cadastro Nacional de Unidades de Conservação (CNUC), ' + re.sub(r'.*shp_cnuc_(\d{4})_(\d{2}).*', r'\2/\1', url)
+        log('unidades de conservação até 10 km', len(out), [f['properties'].get('nome') for f in out][:5])
+    except Exception as e: log('UCs falharam', e)
+    json.dump(apt, open(f'{D}/aptidao.json', 'w'), ensure_ascii=False)
+
 # ---------- 9) config do município ----------
 @etapa('Config')
 def config():
@@ -764,5 +885,5 @@ def config():
         import resumo_regional; resumo_regional.gerar(D)
     except Exception as e: log('resumo regional falhou', e)
 
-ETAPAS = os.environ.get('ETAPAS', 'car,sigef,ibama,microbacias,mb_cobertura,mb_alertas,outorgas,licencas,barragens,massas,hidrografia,relevo,mineracao,risco_sgb,patrimonio,pendencias,config').split(',')
+ETAPAS = os.environ.get('ETAPAS', 'car,sigef,ibama,microbacias,mb_cobertura,mb_alertas,outorgas,licencas,barragens,massas,hidrografia,relevo,mineracao,risco_sgb,patrimonio,aptidao,pendencias,config').split(',')
 for e in ETAPAS: globals()[e.strip()]()
