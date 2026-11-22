@@ -851,7 +851,8 @@ function rxAptidaoHtml(r, area, tab) {
     const cl = r.clima;
     if (cl) {
         const mx = Math.max(...cl.chuva_mensal_mm), M = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
-        h += `<div class="cds n4"><div class="cd"><span>Clima (Köppen)</span><b>${esc(cl.koppen)}</b><small>${esc(cl.koppen_desc || '')}${cl.transicao ? ' – faixa de transição' : ''}</small></div>
+        const kTr = cl.transicao && /^A/.test(cl.koppen), kRot = kTr ? `Cfa / ${cl.koppen}` : cl.koppen, kDesc = kTr ? 'transição entre o subtropical úmido de verão quente (Cfa) e o tropical; inverno ameno, com risco ocasional de geada' : (cl.koppen_desc || '') + (cl.transicao ? ' – faixa de transição' : '');
+        h += `<div class="cds n4"><div class="cd"><span>Clima (Köppen, estimado)</span><b>${esc(kRot)}</b><small>${esc(kDesc)}</small></div>
           <div class="cd"><span>Chuva média anual</span><b>${rxF(cl.chuva_anual_mm, 0)} mm</b><small>${cl.meses_secos.length ? `meses com menos de 60 mm: ${cl.meses_secos.join(', ')}` : 'nenhum mês abaixo de 60 mm'}</small></div>
           <div class="cd"><span>Temperatura média anual</span><b>${rxF(cl.temp_media_anual_c, 1)} °C</b><small>mês mais frio ${rxF(Math.min(...cl.temp_media_c), 1)} °C · mais quente ${rxF(Math.max(...cl.temp_media_c), 1)} °C</small></div>
           <div class="cd"><span>Altitude de referência</span><b>${cl.altitude_m != null ? rxF(cl.altitude_m, 0) + ' m' : '–'}</b><small>ponto central do município</small></div></div>
