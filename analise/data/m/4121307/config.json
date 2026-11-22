@@ -9,7 +9,7 @@
   ],
   "zoom": 10.5
  },
- "atualizado_em": "2026-11-19",
+ "atualizado_em": "2026-11-22",
  "resumo": [
   {
    "valor": "404",
@@ -971,6 +971,10 @@
   "microbacias": "data/m/4121307/microbacias.geojson",
   "declividade": "data/m/4121307/declividade.json",
   "municipio": "Rancho Alegre/PR",
+  "aptidao": "data/m/4121307/aptidao.json",
+  "solos": "data/m/4121307/solos.geojson",
+  "calcario": "data/m/4121307/calcario.geojson",
+  "ucs": "data/m/4121307/ucs.geojson",
   "rios": "data/m/4121307/rios_fbds.geojson",
   "nascentes": "data/m/4121307/nascentes_fbds.geojson",
   "mineracao": "data/m/4121307/mineracao.geojson",

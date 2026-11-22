@@ -1,7 +1,7 @@
 {
  "codigo": "4128500",
  "nome": "Wenceslau Braz",
- "atualizado_em": "2026-11-19",
+ "atualizado_em": "2026-11-22",
  "area_municipio_ha": 39704.4,
  "car": {
   "imoveis_total": 1720,
@@ -27,8 +27,8 @@
    "Grande (acima de 15 MF)": 9
   },
   "porte_area_ha": {
-   "Grande (acima de 15 MF)": 3455.6,
    "Média (4 a 15 MF)": 14528.7,
+   "Grande (acima de 15 MF)": 3455.6,
    "Pequena (até 4 MF)": 27663.4
   },
   "faixa_vegetacao": {

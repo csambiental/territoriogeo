@@ -1,0 +1,17 @@
+/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:39: DeprecationWarning: ssl.TLSVersion.TLSv1 is deprecated
+  SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
+Município 4109708 Ibaiti
+
+===== Aptidão: clima, solos, calcário e unidades de conservação =====
+  altitude: grade NASA 741.43 m, local 588.0 m, correção 1.0 °C
+clima Cfa 1445 mm []
+solos 16 ['id1', 'cd_fcim', 'legenda', 'ar_poli_km', 'leg_ordem', 'legenda_2', 'cd_ord_id', 'cd_leg2_id']
+  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
+jazidas de calcário (PR, lavra/licenciamento) 462
+  camadas CNUC: ['cnuc_2025_08', 'cnuc_2025_08_pontos'] -> usando cnuc_2025_08
+unidades de conservação até 10 km 0 []
+----- Aptidão: clima, solos, calcário e unidades de conservação ok (9s)
+
+===== Config =====
+config ok Ibaiti 1801 imóveis
+----- Config ok (1s)

@@ -1,7 +1,7 @@
 {
  "codigo": "4102406",
  "nome": "Bandeirantes",
- "atualizado_em": "2026-11-19",
+ "atualizado_em": "2026-11-22",
  "area_municipio_ha": 44429.3,
  "car": {
   "imoveis_total": 1635,
@@ -27,9 +27,9 @@
    "Grande (acima de 15 MF)": 16
   },
   "porte_area_ha": {
-   "Grande (acima de 15 MF)": 11758.7,
+   "Média (4 a 15 MF)": 10551.4,
    "Pequena (até 4 MF)": 21882.2,
-   "Média (4 a 15 MF)": 10551.4
+   "Grande (acima de 15 MF)": 11758.7
   },
   "faixa_vegetacao": {
    "Sem informação": 17,

@@ -9,7 +9,7 @@
   ],
   "zoom": 10.5
  },
- "atualizado_em": "2026-11-19",
+ "atualizado_em": "2026-11-22",
  "resumo": [
   {
    "valor": "1.801",
@@ -983,6 +983,10 @@
   "microbacias": "data/m/4109708/microbacias.geojson",
   "declividade": "data/m/4109708/declividade.json",
   "municipio": "Ibaiti/PR",
+  "aptidao": "data/m/4109708/aptidao.json",
+  "solos": "data/m/4109708/solos.geojson",
+  "calcario": "data/m/4109708/calcario.geojson",
+  "ucs": "data/m/4109708/ucs.geojson",
   "rios": "data/m/4109708/rios_fbds.geojson",
   "nascentes": "data/m/4109708/nascentes_fbds.geojson",
   "mineracao": "data/m/4109708/mineracao.geojson",

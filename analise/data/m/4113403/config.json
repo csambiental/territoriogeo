@@ -9,7 +9,7 @@
   ],
   "zoom": 10.5
  },
- "atualizado_em": "2026-11-19",
+ "atualizado_em": "2026-11-22",
  "resumo": [
   {
    "valor": "604",
@@ -975,6 +975,10 @@
   "microbacias": "data/m/4113403/microbacias.geojson",
   "declividade": "data/m/4113403/declividade.json",
   "municipio": "Leópolis/PR",
+  "aptidao": "data/m/4113403/aptidao.json",
+  "solos": "data/m/4113403/solos.geojson",
+  "calcario": "data/m/4113403/calcario.geojson",
+  "ucs": "data/m/4113403/ucs.geojson",
   "rios": "data/m/4113403/rios_fbds.geojson",
   "nascentes": "data/m/4113403/nascentes_fbds.geojson",
   "mineracao": "data/m/4113403/mineracao.geojson",

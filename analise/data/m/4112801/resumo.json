@@ -1,7 +1,7 @@
 {
  "codigo": "4112801",
  "nome": "Joaquim Távora",
- "atualizado_em": "2026-11-19",
+ "atualizado_em": "2026-11-22",
  "area_municipio_ha": 28752.7,
  "car": {
   "imoveis_total": 847,
@@ -27,8 +27,8 @@
    "Média (4 a 15 MF)": 57
   },
   "porte_area_ha": {
-   "Grande (acima de 15 MF)": 11319.9,
    "Média (4 a 15 MF)": 8033.4,
+   "Grande (acima de 15 MF)": 11319.9,
    "Pequena (até 4 MF)": 12787.3
   },
   "faixa_vegetacao": {

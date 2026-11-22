@@ -9,7 +9,7 @@
   ],
   "zoom": 10.5
  },
- "atualizado_em": "2026-11-19",
+ "atualizado_em": "2026-11-22",
  "resumo": [
   {
    "valor": "451",
@@ -979,6 +979,10 @@
   "microbacias": "data/m/4126405/microbacias.geojson",
   "declividade": "data/m/4126405/declividade.json",
   "municipio": "Sertaneja/PR",
+  "aptidao": "data/m/4126405/aptidao.json",
+  "solos": "data/m/4126405/solos.geojson",
+  "calcario": "data/m/4126405/calcario.geojson",
+  "ucs": "data/m/4126405/ucs.geojson",
   "rios": "data/m/4126405/rios_fbds.geojson",
   "nascentes": "data/m/4126405/nascentes_fbds.geojson",
   "mineracao": "data/m/4126405/mineracao.geojson",

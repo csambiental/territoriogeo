@@ -1,7 +1,7 @@
 {
  "codigo": "4113403",
  "nome": "Leópolis",
- "atualizado_em": "2026-11-19",
+ "atualizado_em": "2026-11-22",
  "area_municipio_ha": 34421.7,
  "car": {
   "imoveis_total": 610,
@@ -28,8 +28,8 @@
   },
   "porte_area_ha": {
    "Média (4 a 15 MF)": 9003.4,
-   "Grande (acima de 15 MF)": 14985.7,
-   "Pequena (até 4 MF)": 9713.9
+   "Pequena (até 4 MF)": 9713.9,
+   "Grande (acima de 15 MF)": 14985.7
   },
   "faixa_vegetacao": {
    "10% a 20%": 100,

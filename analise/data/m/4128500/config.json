@@ -9,7 +9,7 @@
   ],
   "zoom": 10.5
  },
- "atualizado_em": "2026-11-19",
+ "atualizado_em": "2026-11-22",
  "resumo": [
   {
    "valor": "1.704",
@@ -995,6 +995,10 @@
   "microbacias": "data/m/4128500/microbacias.geojson",
   "declividade": "data/m/4128500/declividade.json",
   "municipio": "Wenceslau Braz/PR",
+  "aptidao": "data/m/4128500/aptidao.json",
+  "solos": "data/m/4128500/solos.geojson",
+  "calcario": "data/m/4128500/calcario.geojson",
+  "ucs": "data/m/4128500/ucs.geojson",
   "rios": "data/m/4128500/rios_fbds.geojson",
   "nascentes": "data/m/4128500/nascentes_fbds.geojson",
   "mineracao": "data/m/4128500/mineracao.geojson",

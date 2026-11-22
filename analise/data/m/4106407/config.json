@@ -9,7 +9,7 @@
   ],
   "zoom": 10.5
  },
- "atualizado_em": "2026-11-19",
+ "atualizado_em": "2026-11-22",
  "resumo": [
   {
    "valor": "968",
@@ -979,6 +979,10 @@
   "microbacias": "data/m/4106407/microbacias.geojson",
   "declividade": "data/m/4106407/declividade.json",
   "municipio": "Cornélio Procópio/PR",
+  "aptidao": "data/m/4106407/aptidao.json",
+  "solos": "data/m/4106407/solos.geojson",
+  "calcario": "data/m/4106407/calcario.geojson",
+  "ucs": "data/m/4106407/ucs.geojson",
   "rios": "data/m/4106407/rios_fbds.geojson",
   "nascentes": "data/m/4106407/nascentes_fbds.geojson",
   "mineracao": "data/m/4106407/mineracao.geojson",
