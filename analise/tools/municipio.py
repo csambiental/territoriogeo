@@ -779,11 +779,12 @@ def aptidao():
     except Exception as e: log('solos falhou', e)
     # calcário – jazidas com título de lavra/licenciamento no PR (ANM/SIGMINE)
     try:
-        fs = arcgis_geojson('https://geo.anm.gov.br/arcgis/rest/services/SIGMINE/dados_anm/FeatureServer/0', {'where': "UF='PR' AND SUBS LIKE '%CALC%'"}, margem=3.5)
+        fs = arcgis_geojson('https://geo.anm.gov.br/arcgis/rest/services/SIGMINE/dados_anm/FeatureServer/0', {'where': "UF='PR' AND (SUBS LIKE '%CALC%' OR SUBS LIKE '%DOLOM%')"}, margem=3.5)
         out = []
         for f in fs:
             a = f['properties']; fase = (a.get('FASE') or '').upper()
-            if not re.search('LAVRA|LICENCIAMENTO|EXTRA', fase): continue
+            if not re.search('LAVRA|LICENCIAMENTO|EXTRA', fase) or 'GARIMP' in fase: continue
+            if not re.search(r'CALC[ÁA]RIO|DOLOM|CALCITA', (a.get('SUBS') or '').upper()): continue   # exclui calcedônia etc.
             pt = shape(f['geometry']).buffer(0).representative_point()
             out.append({'type': 'Feature', 'geometry': {'type': 'Point', 'coordinates': [round(pt.x, 5), round(pt.y, 5)]},
                         'properties': {'Processo': a.get('DSProcesso') or a.get('PROCESSO') or '', 'Fase': (a.get('FASE') or '').capitalize(), 'Substância': (a.get('SUBS') or '').capitalize(), 'Uso': a.get('USO') or ''}})

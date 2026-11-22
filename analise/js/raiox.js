@@ -215,7 +215,7 @@ async function analisarImovel(nome, alvoCustom) {
             decl: await rxDeclividade(alvo).catch(() => []),
             clima: aptJ && aptJ.clima || null, fontesApt: aptJ && aptJ.fontes || {},
             solos: solA ? Object.values(rxSobreposicoes(alvo, solA.features, 0.0001).reduce((m, x) => { const k = x.f.properties.legenda || x.f.properties.nom_unidad || 'Solo'; (m[k] = m[k] || { f: x.f, ha: 0 }).ha += x.ha; return m; }, {})).sort((a, b) => b.ha - a.ha) : null,
-            calc: calA ? (() => { const c = turf.centroid(alvo); return calA.features.map(f => ({ f, km: turf.distance(c, f, { units: 'kilometers' }) })).sort((a, b) => a.km - b.km); })() : null,
+            calc: calA ? (() => { const c = turf.centroid(alvo); return calA.features.filter(f => /calc[áa]rio|dolom|calcita/i.test(f.properties.Substância || '') && !/garimp/i.test(f.properties.Fase || '')).map(f => ({ f, km: turf.distance(c, f, { units: 'kilometers' }) })).sort((a, b) => a.km - b.km); })() : null,
             ucs: ucA ? (() => { const c = turf.centroid(alvo); return ucA.features.map(f => { let km = 0; try { km = turf.booleanIntersects(alvo, f) ? 0 : Math.min(...turf.flatten(turf.polygonToLine(f)).features.map(l => turf.pointToLineDistance(c, l))); } catch (e) { km = 99; } return { f, km }; }).filter(x => x.km <= 10).sort((a, b) => a.km - b.km); })() : null,
             mbac: mbac.features.filter(m => rxCaixasCruzam(turf.bbox(m), turf.bbox(alvo)) && turf.booleanPointInPolygon(turf.pointOnFeature(alvo), m)).map(m => m.properties.nome || m.properties.rio).slice(0, 1)
         };
