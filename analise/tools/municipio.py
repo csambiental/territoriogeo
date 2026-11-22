@@ -9,7 +9,7 @@ import nomes_rios, ssl_aia
 import json, os, sys, re, io, csv, time, datetime, unicodedata, traceback, subprocess, urllib.request, urllib.parse
 from collections import Counter, defaultdict
 import numpy as np
-from shapely.geometry import shape, mapping, Point, Polygon, MultiPolygon
+from shapely.geometry import shape, mapping, Point, Polygon, MultiPolygon, LineString
 from shapely.ops import unary_union, transform
 from shapely.strtree import STRtree
 from shapely import wkt
@@ -817,6 +817,55 @@ def aptidao():
     except Exception as e: log('UCs falharam', e)
     json.dump(apt, open(f'{D}/aptidao.json', 'w'), ensure_ascii=False)
 
+
+# ---------- 8d) logística e agronegócio (OpenStreetMap via Overpass) ----------
+OVERPASS = ['https://overpass.kumi.systems/api/interpreter', 'https://overpass-api.de/api/interpreter', 'https://overpass.private.coffee/api/interpreter']
+def overpass(q):
+    for ep in OVERPASS:
+        try:
+            req = urllib.request.Request(ep, data=urllib.parse.urlencode({'data': q}).encode(), headers={**UA, 'Accept': 'application/json'})
+            return json.loads(urllib.request.urlopen(req, timeout=300).read())
+        except Exception as e: log('  overpass', ep, str(e)[:120])
+    raise RuntimeError('Overpass indisponível')
+COOP = 'Cooperativa|Coop\\.|Cocamar|Coamo|Integrada|Coopavel|Copacol|C\\.Vale|Copagril|Agrária|Castrolanda|Frísia|Capal|Lar Cooperativa|Belagrícola|Cocari|Coagru|Copercampos|Bunge|Cargill|ADM|Louis Dreyfus|Amaggi|Sementes'
+@etapa('Logística e agronegócio (OpenStreetMap)')
+def logistica():
+    b = lambda m: f'({MINY - m},{MINX - m},{MAXY + m},{MAXX + m})'
+    q = f"""[out:json][timeout:240];(
+      nwr["man_made"="silo"]["name"]{b(0.8)}; nwr["man_made"="silo"]["operator"]{b(0.8)}; nwr["building"="silo"]["name"]{b(0.8)};
+      nwr["landuse"="industrial"]["name"~"{COOP}"]{b(0.8)}; nwr["man_made"~"works|storage_tank"]["name"~"{COOP}"]{b(0.8)};
+      nwr["industrial"~"sugar|ethanol|distillery"]{b(1.2)}; nwr["product"~"sugar|ethanol|açúcar|etanol"]{b(1.2)}; nwr["name"~"^Usina "]["landuse"="industrial"]{b(1.2)};
+      nwr["industrial"="slaughterhouse"]{b(1.2)}; nwr["name"~"Frigor[íi]fico|Abatedouro"]["landuse"="industrial"]{b(1.2)};
+      nwr["aeroway"="aerodrome"]["iata"]{b(3)};
+      node["place"~"city|town"]{b(0.6)};
+    ); out center tags;"""
+    els = overpass(q)['elements']; pts = []
+    for e in els:
+        t = e.get('tags', {}); c = e.get('center') or ({'lon': e['lon'], 'lat': e['lat']} if 'lon' in e else None)
+        if not c: continue
+        nm = t.get('name') or t.get('operator') or ''
+        if t.get('aeroway') == 'aerodrome': cat = 'Aeroporto com voos (IATA)'; nm = f"{nm} ({t.get('iata')})"
+        elif t.get('place'): cat = 'Cidade'
+        elif re.search('sugar|ethanol|distill|açúcar|etanol', t.get('industrial', '') + t.get('product', ''), re.I) or nm.startswith('Usina'): cat = 'Usina de açúcar / etanol'
+        elif t.get('industrial') == 'slaughterhouse' or re.search('Frigor|Abatedouro', nm, re.I): cat = 'Frigorífico / abatedouro'
+        else: cat = 'Armazém, silo ou cooperativa'
+        if not nm: continue
+        pts.append({'type': 'Feature', 'geometry': {'type': 'Point', 'coordinates': [round(c['lon'], 5), round(c['lat'], 5)]}, 'properties': {'nome': nm, 'categoria': cat, **({'populacao': t['population']} if t.get('population') else {})}})
+    # rodovias federais/estaduais e ferrovias (linhas simplificadas)
+    q2 = f"""[out:json][timeout:240];(way["highway"~"^(motorway|trunk|primary)$"]["ref"]{b(0.4)}; way["railway"="rail"]{b(1.0)};); out geom tags;"""
+    lin = {}
+    for e in overpass(q2)['elements']:
+        t = e.get('tags', {}); g = [(p['lon'], p['lat']) for p in e.get('geometry', [])]
+        if len(g) < 2: continue
+        k = ('Ferrovia', t.get('name') or t.get('operator') or 'Ferrovia') if t.get('railway') else ('Rodovia', (t.get('ref') or '').split(';')[0])
+        lin.setdefault(k, []).append(LineString(g))
+    linhas = []
+    for (cat, nm), ls in lin.items():
+        g = unary_union(ls).simplify(0.0008)
+        linhas.append({'type': 'Feature', 'geometry': arred(mapping(g), 5), 'properties': {'categoria': cat, 'nome': nm, **({'pavimento': 'pavimentada'} if cat == 'Rodovia' else {})}})
+    salvar('logistica.geojson', pts + linhas)
+    log('logística: pontos', Counter(f['properties']['categoria'] for f in pts), '| linhas', Counter(f['properties']['categoria'] for f in linhas))
+
 # ---------- 9) config do município ----------
 @etapa('Config')
 def config():
@@ -880,7 +929,7 @@ def config():
     c['raiox'] = {'car': P('car.geojson'), 'sigef': P('sigef.geojson'), 'embargos': P('embargos.geojson'), 'alertas': P('alertas.geojson'),
                   'outorgas': [P('outorgas_rural.geojson'), P('outorgas_urbana.geojson')], 'licencas': P('licencas.geojson') if os.path.exists(P('licencas.geojson')) else None, 'barragens': P('barragens.geojson'), 'massas': P('massas_dagua.geojson'),
                   'microbacias': P('microbacias.geojson'), 'declividade': P('declividade.json'), 'municipio': f'{NOME}/PR'}
-    for k, a in (('aptidao', 'aptidao.json'), ('solos', 'solos.geojson'), ('calcario', 'calcario.geojson'), ('ucs', 'ucs.geojson'), ('rios', 'rios_fbds.geojson'), ('nascentes', 'nascentes_fbds.geojson'), ('mineracao', 'mineracao.geojson'), ('risco', 'risco_sgb.geojson'), ('sitios', 'sitios_arqueologicos.geojson'), ('comunidades', 'comunidades_tradicionais.geojson')):
+    for k, a in (('logistica', 'logistica.geojson'), ('aptidao', 'aptidao.json'), ('solos', 'solos.geojson'), ('calcario', 'calcario.geojson'), ('ucs', 'ucs.geojson'), ('rios', 'rios_fbds.geojson'), ('nascentes', 'nascentes_fbds.geojson'), ('mineracao', 'mineracao.geojson'), ('risco', 'risco_sgb.geojson'), ('sitios', 'sitios_arqueologicos.geojson'), ('comunidades', 'comunidades_tradicionais.geojson')):
         if os.path.exists(P(a)): c['raiox'][k] = P(a)
     if os.path.exists(P('demo.geojson')):  # imóvel fictício de demonstração
         c['raiox']['demo'] = P('demo.geojson')
@@ -901,5 +950,5 @@ def config():
         import resumo_regional; resumo_regional.gerar(D)
     except Exception as e: log('resumo regional falhou', e)
 
-ETAPAS = os.environ.get('ETAPAS', 'car,sigef,ibama,microbacias,mb_cobertura,mb_alertas,outorgas,licencas,barragens,massas,hidrografia,relevo,mineracao,risco_sgb,patrimonio,aptidao,pendencias,config').split(',')
+ETAPAS = os.environ.get('ETAPAS', 'car,sigef,ibama,microbacias,mb_cobertura,mb_alertas,outorgas,licencas,barragens,massas,hidrografia,relevo,mineracao,risco_sgb,patrimonio,aptidao,logistica,pendencias,config').split(',')
 for e in ETAPAS: globals()[e.strip()]()
