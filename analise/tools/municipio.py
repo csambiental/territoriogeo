@@ -745,11 +745,22 @@ def aptidao():
         c = MUN.representative_point()
         r = http(f'https://power.larc.nasa.gov/api/temporal/climatology/point?parameters=PRECTOTCORR,T2M,T2M_MAX,T2M_MIN&community=AG&longitude={c.x:.4f}&latitude={c.y:.4f}&format=JSON')
         pr = r['properties']['parameter']
-        P = [round(pr['PRECTOTCORR'][m] * d) for m, d in zip(MESES, DIAS)]; T = [round(pr['T2M'][m], 1) for m in MESES]
+        z_grade = (r.get('geometry', {}).get('coordinates') or [0, 0, None])[2]
+        try:
+            import math
+            from PIL import Image
+            zz = 12; n = 2 ** zz; fx = (c.x + 180) / 360 * n; fy = (1 - math.asinh(math.tan(math.radians(c.y))) / math.pi) / 2 * n
+            im = np.asarray(Image.open(io.BytesIO(http(f'https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{zz}/{int(fx)}/{int(fy)}.png', raw=True))).convert('RGB')).astype('float32')
+            px = im[int((fy % 1) * 256), int((fx % 1) * 256)]; z_local = float(px[0] * 256 + px[1] + px[2] / 256 - 32768)
+        except Exception as e: z_local = None; log('  altitude local indisponível', e)
+        dz = (z_local - z_grade) if (z_local is not None and z_grade not in (None, -999)) else 0
+        P = [round(pr['PRECTOTCORR'][m] * d) for m, d in zip(MESES, DIAS)]; T = [round(pr['T2M'][m] - 0.0065 * dz, 1) for m in MESES]
+        log('  altitude: grade NASA', z_grade, 'm, local', z_local, 'm, correção', round(-0.0065 * dz, 2), '°C')
         k = koppen(T, P)
         apt['clima'] = {'chuva_mensal_mm': P, 'temp_media_c': T, 'chuva_anual_mm': sum(P), 'temp_media_anual_c': round(sum(T) / 12, 1),
                         'temp_max_abs_c': pr['T2M_MAX']['ANN'], 'temp_min_abs_c': pr['T2M_MIN']['ANN'], 'koppen': k, 'koppen_desc': KOPPEN.get(k, ''),
-                        'meses_secos': [NOMES_MES[i] for i, p in enumerate(P) if p < 60], 'ponto': [round(c.x, 4), round(c.y, 4)]}
+                        'meses_secos': [NOMES_MES[i] for i, p in enumerate(P) if p < 60], 'ponto': [round(c.x, 4), round(c.y, 4)], 'altitude_m': round(z_local) if z_local is not None else None,
+                        'transicao': abs(min(T) - 18) < 0.7}
         apt['fontes']['clima'] = 'NASA POWER (normais climatológicas por ponto; classificação de Köppen calculada a partir das médias mensais)'
         log('clima', k, sum(P), 'mm', apt['clima']['meses_secos'])
     except Exception as e: log('clima falhou', e)
@@ -785,8 +796,12 @@ def aptidao():
         zips = sorted(set(re.findall(r'href="(https://dados\.mma\.gov\.br/[^"]+/shp_cnuc_(\d{4})_(\d{2})[^"]*\.zip)"', pag)), key=lambda x: (x[1], x[2]))
         url = zips[-1][0]; cache = '/tmp/cnuc.zip'
         if not os.path.exists(cache): open(cache, 'wb').write(http(url, raw=True, timeout=900))
+        info = subprocess.run(['ogrinfo', '-ro', '-q', '/vsizip/' + cache], capture_output=True, text=True).stdout
+        camadas = re.findall(r'^\d+: (\S+)', info, re.M); cam = [c for c in camadas if not re.search('ponto|point', c, re.I)] or camadas
+        log('  camadas CNUC:', camadas, '-> usando', cam[0])
+        if os.path.exists('/tmp/ucs.geojson'): os.remove('/tmp/ucs.geojson')
         subprocess.run(['ogr2ogr', '-q', '-f', 'GeoJSON', '-t_srs', 'EPSG:4326', '-spat', str(MINX - 0.1), str(MINY - 0.1), str(MAXX + 0.1), str(MAXY + 0.1), '-spat_srs', 'EPSG:4326',
-                        '/tmp/ucs.geojson', '/vsizip/' + cache], check=True)
+                        '/tmp/ucs.geojson', '/vsizip/' + cache, cam[0]], check=True)
         out = []
         for f in json.load(open('/tmp/ucs.geojson'))['features']:
             g = shape(f['geometry']).buffer(0)
@@ -864,7 +879,7 @@ def config():
     c['raiox'] = {'car': P('car.geojson'), 'sigef': P('sigef.geojson'), 'embargos': P('embargos.geojson'), 'alertas': P('alertas.geojson'),
                   'outorgas': [P('outorgas_rural.geojson'), P('outorgas_urbana.geojson')], 'licencas': P('licencas.geojson') if os.path.exists(P('licencas.geojson')) else None, 'barragens': P('barragens.geojson'), 'massas': P('massas_dagua.geojson'),
                   'microbacias': P('microbacias.geojson'), 'declividade': P('declividade.json'), 'municipio': f'{NOME}/PR'}
-    for k, a in (('rios', 'rios_fbds.geojson'), ('nascentes', 'nascentes_fbds.geojson'), ('mineracao', 'mineracao.geojson'), ('risco', 'risco_sgb.geojson'), ('sitios', 'sitios_arqueologicos.geojson'), ('comunidades', 'comunidades_tradicionais.geojson')):
+    for k, a in (('aptidao', 'aptidao.json'), ('solos', 'solos.geojson'), ('calcario', 'calcario.geojson'), ('ucs', 'ucs.geojson'), ('rios', 'rios_fbds.geojson'), ('nascentes', 'nascentes_fbds.geojson'), ('mineracao', 'mineracao.geojson'), ('risco', 'risco_sgb.geojson'), ('sitios', 'sitios_arqueologicos.geojson'), ('comunidades', 'comunidades_tradicionais.geojson')):
         if os.path.exists(P(a)): c['raiox'][k] = P(a)
     if os.path.exists(P('demo.geojson')):  # imóvel fictício de demonstração
         c['raiox']['demo'] = P('demo.geojson')
