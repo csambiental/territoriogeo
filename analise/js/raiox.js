@@ -112,6 +112,8 @@ function rxNecessidades(p, r, area, uso) {
         'Avaliação geotécnica local e articulação com a Defesa Civil; seguir a intervenção sugerida pelo SGB antes de novas edificações'));
     if (r.sitios && (r.sitios.dentro.length || r.sitios.perto.length)) add(r.sitios.dentro.length ? 1 : 2, 'Patrimônio arqueológico (IPHAN)', `${r.sitios.dentro.length} sítio(s) no imóvel e ${r.sitios.perto.length} a até 1 km`,
         'Antes de obras ou do licenciamento: preencher a FCA no IPHAN e, se exigido, contratar estudo arqueológico (IN IPHAN 01/2015); não intervir no local do sítio');
+    (r.ucs || []).filter(x => x.km <= 3).slice(0, 2).forEach(x => add(x.km ? 2 : 1, 'Unidade de conservação', `${x.f.properties.nome} (${x.f.properties.Categoria || ''}) ${x.km ? `a ${rxF(x.km, 1)} km` : '– o imóvel está dentro da UC'}`,
+        x.km ? 'Verificar o plano de manejo e a zona de amortecimento da UC; atividades licenciáveis podem exigir autorização do órgão gestor (Res. CONAMA 428/2010)' : 'Consultar o plano de manejo e o órgão gestor da UC antes de qualquer intervenção ou licenciamento'));
     (r.comun || []).slice(0, 2).forEach(x => add(x.km <= 3 ? 1 : 2, 'Comunidades tradicionais', `${x.f.properties.nome} ${x.km ? `a ${rxF(x.km, 1)} km` : '(sobreposição)'}`,
         'Verificar no licenciamento a necessidade de manifestação da Funai (terra indígena) ou do Incra/Fundação Palmares (quilombola) – Portaria Interministerial 60/2015'));
     // Reserva Legal
@@ -188,6 +190,7 @@ async function analisarImovel(nome, alvoCustom) {
         const usoArea = alvoCustom ? await areaUsoSolo(alvo).catch(e => { console.error(e); return { uso: [], ano: '' }; }) : null;
         let [sigef, emb, alertas, outR, outU, lic, barr, mbac, mass] = await Promise.all([C.sigef, C.embargos, C.alertas, (C.outorgas || [])[0], (C.outorgas || [])[1], C.licencas, C.barragens, C.microbacias, C.massas].map(a => a ? rxJSON(a).catch(() => ({ features: [] })) : Promise.resolve({ features: [] })));
         const [minA, rskA, sitA, comA] = await Promise.all([C.mineracao, C.risco, C.sitios, C.comunidades].map(a => a ? rxJSON(a).catch(() => ({ features: [] })) : Promise.resolve({ features: [] })));
+        const [aptJ, solA, calA, ucA] = await Promise.all([C.aptidao, C.solos, C.calcario, C.ucs].map(a => a ? rxJSON(a).catch(() => null) : Promise.resolve(null)));
         let licV = (C.licencas ? C.licencas.replace('.geojson', '_vencidas.geojson') : null) ? await rxJSON(C.licencas ? C.licencas.replace('.geojson', '_vencidas.geojson') : null).catch(() => ({ features: [] })) : { features: [] };
         let vizinhos = cars.filter(f => f.properties.situacao !== 'Cancelado' && !f.properties.ficticio);
         if (p.ficticio && C.demo) {  // imóvel de exemplo: só as camadas fictícias, nada de dados reais de terceiros
@@ -210,6 +213,10 @@ async function analisarImovel(nome, alvoCustom) {
             sitios: rxPontos(alvo, sitA.features, 1),
             comun: (() => { const c = turf.centroid(alvo); return comA.features.map(f => { let km = 0; try { km = turf.booleanIntersects(alvo, f) ? 0 : Math.min(...turf.flatten(turf.polygonToLine(f)).features.map(l => turf.pointToLineDistance(c, l))); } catch (e) { km = 99; } return { f, km }; }).filter(x => x.km <= 10).sort((a, b) => a.km - b.km); })(),
             decl: await rxDeclividade(alvo).catch(() => []),
+            clima: aptJ && aptJ.clima || null, fontesApt: aptJ && aptJ.fontes || {},
+            solos: solA ? Object.values(rxSobreposicoes(alvo, solA.features, 0.0001).reduce((m, x) => { const k = x.f.properties.legenda || x.f.properties.nom_unidad || 'Solo'; (m[k] = m[k] || { f: x.f, ha: 0 }).ha += x.ha; return m; }, {})).sort((a, b) => b.ha - a.ha) : null,
+            calc: calA ? (() => { const c = turf.centroid(alvo); return calA.features.map(f => ({ f, km: turf.distance(c, f, { units: 'kilometers' }) })).sort((a, b) => a.km - b.km); })() : null,
+            ucs: ucA ? (() => { const c = turf.centroid(alvo); return ucA.features.map(f => { let km = 0; try { km = turf.booleanIntersects(alvo, f) ? 0 : Math.min(...turf.flatten(turf.polygonToLine(f)).features.map(l => turf.pointToLineDistance(c, l))); } catch (e) { km = 99; } return { f, km }; }).filter(x => x.km <= 10).sort((a, b) => a.km - b.km); })() : null,
             mbac: mbac.features.filter(m => rxCaixasCruzam(turf.bbox(m), turf.bbox(alvo)) && turf.booleanPointInPolygon(turf.pointOnFeature(alvo), m)).map(m => m.properties.nome || m.properties.rio).slice(0, 1)
         };
         const uso = usoArea ? usoArea.uso : Object.keys(p).filter(k => /^(MapBiomas|Uso do solo) \d{4} – /.test(k)).map(k => [k.replace(/^(MapBiomas|Uso do solo) \d{4} – /, '').replace(' (%)', ''), rxNum(p[k])]).sort((a, b) => b[1] - a[1]);
@@ -275,6 +282,9 @@ async function analisarImovel(nome, alvoCustom) {
             : `<p class="hint">${r.riscoMapeado ? 'Nenhum setor de risco do SGB no imóvel.' : 'Município ainda não mapeado pelo SGB na setorização de risco – ausência de setor não significa ausência de risco.'}</p>`;
         B.sitios = (() => { const l = [...r.sitios.dentro, ...r.sitios.perto]; return l.length ? tab(['Sítio', 'Código IPHAN (CNSA)', 'Distância'], l.slice(0, 15).map(x => [esc(x.f.properties.nome.replace('Sítio arqueológico ', '')), esc(x.f.properties['Código IPHAN (CNSA)'] || ''), x.km ? `${rxF(x.km * 1000, 0)} m` : 'dentro do imóvel'])) : '<p class="hint">Nenhum sítio arqueológico cadastrado no IPHAN no imóvel ou a até 1 km.</p>'; })();
         B.comun = r.comun.length ? tab(['Área', 'Tipo', 'Situação / processo', 'Distância'], r.comun.map(x => [esc(x.f.properties.nome), esc(x.f.properties.grupo || ''), esc(x.f.properties['Situação'] || x.f.properties.Processo || ''), x.km ? `${rxF(x.km, 1)} km` : 'sobreposição'])) : '<p class="hint">Nenhuma terra indígena ou território quilombola a menos de 10 km.</p>';
+        B.apt = rxAptidaoHtml(r, area, tab);
+        B.ucs = r.ucs && r.ucs.length ? tab(['Unidade de conservação', 'Categoria', 'Grupo', 'Esfera', 'Distância'], r.ucs.map(x => [esc(x.f.properties.nome || ''), esc(x.f.properties.Categoria || ''), esc(x.f.properties.Grupo || ''), esc(x.f.properties.Esfera || ''), x.km ? `${rxF(x.km, 1)} km` : '<b style="color:#c62828">imóvel dentro da UC</b>'])) : '<p class="hint">Nenhuma unidade de conservação a menos de 10 km.</p>';
+        B.prot = rxProtegidasHtml(r, tab);
         B.emb = tab(['Embargo', 'Situação', 'Data', 'Dentro do imóvel (ha)'], r.emb.map(x => [esc(x.f.properties.nome), esc(x.f.properties['Situação'] || ''), esc(x.f.properties['Data do embargo'] || ''), rxF(x.ha, 3)]));
         B.alertas = tab(['Alerta', 'Detectado em', 'Vetor', 'Dentro do imóvel (ha)'], r.alertas.map(x => [esc(x.f.properties.nome), esc(x.f.properties['Detectado em'] || ''), esc(x.f.properties['Vetor'] || ''), rxF(x.ha, 2)]));
         B.outorgas = (() => { const lista = [...r.agua.dentro, ...r.agua.perto].slice(0, 12), linhas = pts(r.agua, 'Interferência', 'agua'), hoje = new Date();
@@ -559,6 +569,8 @@ function rxChecklist(u) {
         r.emb.map(x => `${x.f.properties.nome} – ${x.f.properties['Situação'] || ''}, ${rxF(x.ha, 2)} ha no imóvel`).join('; '));
     add('Alertas de desmatamento (MapBiomas Alerta)', r.alertas.length ? 'no' : 'ok',
         r.alertas.map(x => `${x.f.properties.nome}: ${rxF(x.ha, 2)} ha, detectado em ${x.f.properties['Detectado em'] || '–'}`).join('; '));
+    if (r.ucs) { const den = r.ucs.filter(x => !x.km), pi = den.filter(x => /prote[çc][ãa]o integral/i.test(`${x.f.properties.Grupo || ''} ${x.f.properties.Categoria || ''}`)), z = r.ucs.filter(x => x.km && x.km <= 3);
+        add('Unidades de conservação (CNUC/MMA)', pi.length ? 'no' : den.length || z.length ? 'at' : 'ok', den.length ? den.map(x => `dentro de ${x.f.properties.nome} (${x.f.properties.Categoria || ''})`).join('; ') : z.length ? `${z[0].f.properties.nome} a ${rxF(z[0].km, 1)} km – verificar zona de amortecimento` : r.ucs.length ? `Nenhuma no imóvel; mais próxima a ${rxF(r.ucs[0].km, 1)} km` : 'Nenhuma a menos de 10 km'); }
     const nat = uso.find(([k]) => /Vegetação (nativa|arbórea)/.test(k)), pv = nat ? nat[1] : (p.veg_nativa_pct ?? null), mf = rxNum(p['Módulos fiscais']);
     add('Reserva Legal – vegetação nativa ≥ 20% (PR)', pv === null ? 'na' : pv >= 20 ? 'ok' : mf <= 4 ? 'at' : 'no',
         pv === null ? 'Sem dado de cobertura para o imóvel' : `Vegetação ${nat && /arbórea/.test(nat[0]) ? 'arbórea' : 'nativa'}: ${rxF(pv, 1)}% (${rxF(pv / 100 * area, 1)} ha); mínimo de 20% = ${rxF(area * 0.2, 1)} ha` + (pv < 20 && mf <= 4 ? ' – imóvel até 4 módulos fiscais: verificar art. 67 do Código Florestal' : ''));
@@ -699,6 +711,9 @@ function rxRelatorioHtml(u, F) {
  .s2-cds { display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 8px; margin: 4px 0 8px; } .s2-cds div { border: 1px solid #dfe8e2; border-radius: 10px; padding: 8px 10px; background: #fafcfb; }
  .s2-cds span { display: block; font-size: 7.5pt; text-transform: uppercase; letter-spacing: .06em; color: #6b7a72; } .s2-cds b { font-size: 13pt; color: #1f4933; } .s2-cds b.s2-leit { font-size: 9.5pt; line-height: 1.3; display: block; }
  .s2-duas { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .s2-duas figure { margin: 0; } .s2-duas figcaption { font-size: 8pt; color: #5f6d66; } .s2-duas img.mapa { max-height: 105mm; object-fit: cover; }
+ .cli { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; height: 120px; align-items: end; margin: 4px 0 2px; }
+ .cli div { display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; font-size: 7.5pt; color: #5f6d66; }
+ .cli em { display: block; width: 70%; background: #1e88e5; border-radius: 3px 3px 0 0; min-height: 2px; } .cli em.sc { background: #f59e0b; } .cli b { font-size: 7.5pt; color: #1d2a24; } .cli small { color: #b71c1c; }
  .noprint { text-align: center; padding: 14px; } .noprint button { padding: 10px 20px; font-size: 14px; background: #1f4933; color: #fff; border: 0; border-radius: 8px; cursor: pointer; }
  @media print { body { background: #fff; } .noprint { display: none; } h4 { break-after: avoid; } img.mapa { break-inside: avoid; max-height: 125mm; object-fit: cover; } }
 </style></head><body>
@@ -734,8 +749,10 @@ ${sec('Cobertura do solo e relevo', 'Declarado no CAR × medido por satélite', 
    <tr><td>Área do imóvel</td><td>${decl ? rxF(decl) + ' ha' : '–'}</td><td>${rxF(area)} ha</td><td class="${decl && Math.abs(area - decl) / decl > .05 ? 'def' : 'bom'}">${decl ? (Math.abs(area - decl) / decl > .05 ? `Diferença de ${rxF(area - decl)} ha (${rxF((area - decl) / decl * 100, 1)}%)` : 'Compatível') : '–'}</td></tr>
    <tr><td>Reserva Legal (mín. 20%)</td><td>${rxF(area * .2, 1)} ha</td><td>${pv === null ? '–' : rxF(pv / 100 * area, 1) + ' ha de vegetação'}</td><td class="${pv !== null && pv < 20 ? 'def' : 'bom'}">${pv === null ? '–' : pv < 20 ? `Déficit: ${rxF((20 - pv) / 100 * area, 1)} ha` : 'Atende'}</td></tr>
    <tr><td>Sobreposição com outros CAR</td><td>0 ha</td><td>${rxF(r.car.reduce((a, x) => a + x.ha, 0))} ha</td><td class="${r.car[0] && r.car[0].ha >= Math.max(1, area * .02) ? 'def' : 'bom'}">${r.car[0] && r.car[0].ha >= Math.max(1, area * .02) ? 'Sobreposição relevante' : 'Só ajustes de divisa'}</td></tr></table>
-  <div class="duas"><div><h4>Uso e cobertura do solo (${u.B.usoFonte})</h4>${barras(uso, corUso)}</div><div><h4>Declividade (Copernicus DEM, classes Embrapa)</h4>${barras(r.decl.filter(d => d.pct >= .05).map(d => [d.nome, d.pct]), corDecl)}</div></div>
+  <div class="duas"><div><h4>Uso e cobertura do solo (${u.B.usoFonte})</h4>${barras(uso, corUso)}</div><div><h4>Declividade (classes Embrapa)</h4>${barras(r.decl.filter(d => d.pct >= .05).map(d => [d.nome, d.pct]), corDecl)}</div></div>
   ${(u.pend || []).length ? `<h4>Observações do cadastro</h4>${u.pend.map(t => `<div class="obs">${esc(t)}</div>`).join('')}` : ''}`)}
+
+${u.B.apt ? sec('Aptidão agrícola e contexto regional', 'Clima, chuva, solos e acesso a calcário', u.B.apt) : ''}
 
 ${u.itr ? sec(`Declaração do ITR${u.itr.exercicio ? ` – exercício ${u.itr.exercicio}` : ''}`, 'Dados quantitativos da DIAC/DIAT (Receita Federal) cruzados com o CAR e o satélite', itrBlocoHtml(u, true) + (u.previa ? `<h4>Declarado × estimado por satélite</h4>${itrComparacaoHtml(u)}` : '')) : ''}
 ${u.previa ? sec(u.itr ? 'Prévia do ITR – base da comparação' : 'Prévia do ITR (estimativa por satélite)', u.itr ? 'Como cada valor estimado foi calculado' : 'O que o imóvel deveria declarar, estimado sem a declaração oficial', itrPreviaHtml(u)) : ''}
@@ -748,7 +765,8 @@ ${sec('Situação fundiária', 'Sobreposições com o CAR e certificação no SI
 ${sec('Mineração e riscos geológicos', 'Direitos minerários da ANM e setores de risco mapeados pelo SGB sobre o imóvel', `
   ${tabela('Processos minerários (ANM/SIGMINE)', u.B.min || '<p class="hint">Sem informação.</p>')}${tabela('Setores de risco geológico (SGB)', u.B.risco || '<p class="hint">Sem informação.</p>')}`)}
 
-${sec('Patrimônio e comunidades tradicionais', 'Sítios arqueológicos do IPHAN e terras indígenas e quilombolas próximos', `
+${sec('Áreas legalmente protegidas e patrimônio', 'Quadro-resumo dos cruzamentos, unidades de conservação, sítios arqueológicos e comunidades tradicionais', `
+  ${u.B.prot ? tabela('Quadro-resumo dos cruzamentos', u.B.prot) : ''}${u.r.ucs ? tabela('Unidades de conservação a até 10 km (CNUC/MMA)', u.B.ucs) : ''}
   ${tabela('Sítios arqueológicos (IPHAN/CNSA) no imóvel ou a até 1 km', u.B.sitios || '<p class="hint">Sem informação.</p>')}${tabela('Terras indígenas e territórios quilombolas a até 10 km', u.B.comun || '<p class="hint">Sem informação.</p>')}`)}
 
 ${sec('Água e licenciamento', 'Outorgas, licenças, barragens e açudes no imóvel ou a até 500 m', `
@@ -824,3 +842,61 @@ document.addEventListener('DOMContentLoaded', () => {
         finally { btn.disabled = false; }
     });
 });
+
+
+// ---------- aptidão agrícola e quadro de áreas protegidas ----------
+function rxAptidaoHtml(r, area, tab) {
+    if (!r.clima && !r.solos && !r.calc) return '';
+    let h = '';
+    const cl = r.clima;
+    if (cl) {
+        const mx = Math.max(...cl.chuva_mensal_mm), M = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+        h += `<div class="cds n4"><div class="cd"><span>Clima (Köppen)</span><b>${esc(cl.koppen)}</b><small>${esc(cl.koppen_desc || '')}${cl.transicao ? ' – faixa de transição' : ''}</small></div>
+          <div class="cd"><span>Chuva média anual</span><b>${rxF(cl.chuva_anual_mm, 0)} mm</b><small>${cl.meses_secos.length ? `meses com menos de 60 mm: ${cl.meses_secos.join(', ')}` : 'nenhum mês abaixo de 60 mm'}</small></div>
+          <div class="cd"><span>Temperatura média anual</span><b>${rxF(cl.temp_media_anual_c, 1)} °C</b><small>mês mais frio ${rxF(Math.min(...cl.temp_media_c), 1)} °C · mais quente ${rxF(Math.max(...cl.temp_media_c), 1)} °C</small></div>
+          <div class="cd"><span>Altitude de referência</span><b>${cl.altitude_m != null ? rxF(cl.altitude_m, 0) + ' m' : '–'}</b><small>ponto central do município</small></div></div>
+          <h4>Chuva e temperatura médias por mês</h4>
+          <div class="cli">${cl.chuva_mensal_mm.map((v, i) => `<div><em style="height:${Math.round(v / mx * 100)}%" class="${v < 60 ? 'sc' : ''}"></em><b>${v}</b><span>${M[i]}</span><small>${rxF(cl.temp_media_c[i], 0)}°</small></div>`).join('')}</div>
+          <div class="leg">Barras: chuva média mensal (mm); em laranja, meses com menos de 60 mm. Abaixo de cada mês, a temperatura média (°C).</div>`;
+    }
+    if (r.solos) {
+        h += `<h4>Solos do imóvel (mapa de solos do IBGE, 1:250.000)</h4>` + (r.solos.length ? tab(['Classe de solo', 'Textura', 'Relevo típico', 'Área no imóvel'],
+            r.solos.map(x => [`<b>${esc(x.f.properties.legenda || '')}</b>${x.f.properties.inclu_p1 ? `<br><span class="hint">inclusão: ${esc(String(x.f.properties.inclu_p1).replace(/^I\s+/, '').toLowerCase())}</span>` : ''}`,
+                esc(x.f.properties.textura || '–'), esc(String(x.f.properties.relevo || '–').replace(/\s+/g, ' ')), `${rxF(Math.min(x.ha, area), 1)} ha (${rxF(Math.min(100, x.ha / area * 100), 0)}%)`]))
+            + `<p class="hint">${rxSoloLeitura(r.solos[0].f.properties)}</p>` : '<p class="hint">Sem mapeamento de solos para o perímetro.</p>');
+    }
+    if (r.calc && r.calc.length) {
+        const pr = r.calc.slice(0, 5);
+        h += `<h4>Jazidas de calcário mais próximas (ANM – lavra ou licenciamento)</h4>` + tab(['Processo ANM', 'Substância', 'Fase', 'Distância em linha reta'], pr.map(x => [esc(x.f.properties.Processo || ''), esc(x.f.properties.Substância || ''), esc(x.f.properties.Fase || ''), `${rxF(x.km, 0)} km`]))
+            + `<p class="hint">Quanto mais perto a jazida, menor o frete do calcário para correção da acidez do solo. Distâncias em linha reta; a distância por estrada costuma ser 20–40% maior.</p>`;
+    }
+    const f = r.fontesApt || {};
+    h += `<p class="hint">Fontes: ${[f.clima, f.solos, f.calcario].filter(Boolean).map(esc).join(' · ')}. Valores climáticos são médias de longo prazo para o ponto central do município.</p>`;
+    return h;
+}
+function rxSoloLeitura(p) {
+    const o = String(p.ordem || p.leg_ordem || '').toUpperCase(), t = String(p.textura || '').toLowerCase(), g = String(p.grande_gru || '').toLowerCase();
+    const fert = /eutr/.test(g) ? 'alta fertilidade natural (eutrófico)' : /distr/.test(g) ? 'baixa fertilidade natural (distrófico) – exige correção e adubação' : '';
+    const dren = /LATOSSOLO/.test(o) ? 'solo profundo, bem drenado e de fácil mecanização' : /NITOSSOLO/.test(o) ? 'solo profundo e bem estruturado, de boa aptidão agrícola' : /ARGISSOLO/.test(o) ? 'solo com aumento de argila em profundidade – mais sujeito à erosão em relevo ondulado' : /NEOSSOLO/.test(o) ? 'solo raso ou pouco desenvolvido – limitações para mecanização e risco de erosão' : /GLEISSOLO|ORGANOSSOLO/.test(o) ? 'solo hidromórfico (encharcado) – geralmente associado a várzeas e APP' : /CAMBISSOLO/.test(o) ? 'solo pouco profundo – aptidão variável conforme o relevo' : '';
+    const arg = /muito argilosa/.test(t) ? 'Textura muito argilosa (mais de 60% de argila): boa retenção de água; no ZARC, solo tipo 3.' : /argilosa/.test(t) ? 'Textura argilosa (35–60% de argila): boa retenção de água; no ZARC, solo tipo 3.' : /m[ée]dia/.test(t) ? 'Textura média (15–35% de argila); no ZARC, solo tipo 2.' : /arenosa/.test(t) ? 'Textura arenosa (menos de 15% de argila): baixa retenção de água; no ZARC, solo tipo 1.' : '';
+    return ['Leitura: ' + [dren, fert].filter(Boolean).join('; ') + '.', arg].filter(x => x.length > 10).join(' ');
+}
+function rxProtegidasHtml(r, tab) {
+    const L = [];
+    const lin = (n, crit, res, ok, fonte) => L.push([n, `<b>${crit}</b>`, res, ok === null ? '<span class="selo na">– não consultado</span>' : ok ? '<span class="selo ok">✓ sem restrição</span>' : '<span class="selo no">✕ verificar</span>', `<span class="hint">${fonte}</span>`]);
+    let i = 1;
+    const ucD = r.ucs ? r.ucs.filter(x => !x.km) : null;
+    lin(i++, 'Unidades de conservação', r.ucs === null ? 'Base não carregada' : ucD.length ? `Dentro de ${esc(ucD[0].f.properties.nome)}` : r.ucs.length ? `Nenhuma no imóvel (mais próxima a ${rxF(r.ucs[0].km, 1)} km)` : 'Nenhuma a até 10 km', r.ucs === null ? null : !ucD.length, 'CNUC/MMA');
+    const ti = (r.comun || []).filter(x => /ind[íi]gena/i.test(x.f.properties.grupo || '')), qu = (r.comun || []).filter(x => /quilomb/i.test(x.f.properties.grupo || ''));
+    lin(i++, 'Terras indígenas', ti.length ? `${ti.length} a até 10 km (mais próxima a ${rxF(ti[0].km, 1)} km)` : 'Nenhuma a até 10 km', !ti.some(x => !x.km), 'Funai');
+    lin(i++, 'Territórios quilombolas', qu.length ? `${qu.length} a até 10 km (mais próximo a ${rxF(qu[0].km, 1)} km)` : 'Nenhum a até 10 km', !qu.some(x => !x.km), 'Incra');
+    lin(i++, 'Sítios arqueológicos', r.sitios ? `${r.sitios.dentro.length} no imóvel · ${r.sitios.perto.length} a até 1 km` : '–', r.sitios ? !r.sitios.dentro.length : null, 'IPHAN/CNSA');
+    const embAt = r.emb.filter(x => x.f.properties['Situação'] !== 'Desembargado');
+    lin(i++, 'Embargos ambientais', embAt.length ? `${embAt.length} embargo(s) ativo(s) no imóvel` : r.emb.length ? 'Apenas embargos já desembargados' : 'Nenhum', !embAt.length, 'IBAMA');
+    lin(i++, 'Alertas de desmatamento', r.alertas.length ? `${r.alertas.length} alerta(s) no imóvel` : 'Nenhum', !r.alertas.length, 'MapBiomas Alerta');
+    lin(i++, 'Processos minerários', (r.min || []).length ? `${r.min.length} processo(s) sobre o imóvel` : 'Nenhum', !(r.min || []).length, 'ANM/SIGMINE');
+    lin(i++, 'Setores de risco geológico', !r.riscoMapeado ? 'Município não mapeado pelo SGB' : (r.risco || []).length ? `${r.risco.length} setor(es) no imóvel` : 'Nenhum', !r.riscoMapeado ? null : !(r.risco || []).length, 'SGB');
+    const mont = (r.decl[4] || {}).pct || 0;
+    lin(i++, 'Encostas muito íngremes (> 45%)', r.decl.length ? (mont >= 0.5 ? `${rxF(mont, 1)}% do imóvel` : 'Não identificadas') : 'Relevo não processado', r.decl.length ? mont < 0.5 : null, 'Modelo digital de terreno');
+    return tab(['Nº', 'Critério analisado', 'Resultado', 'Situação', 'Fonte'], L);
+}
