@@ -1,103 +1,6 @@
 /home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:39: DeprecationWarning: ssl.TLSVersion.TLSv1 is deprecated
   SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
 Município 4113700 Londrina
-limite: IBGE
-
-===== CAR =====
-  CAR baixados 4229
-imóveis 4229 Counter({'Aguardando análise': 2219, 'Analisado – em conformidade': 1451, 'Analisado – notificação pendente': 457, 'Cancelado': 68, 'Em análise': 34}) [('Aguardando análise', 2219), ('Analisado, em conformidade com a Lei nº 12.651/2012', 1213), ('Analisado, aguardando atendimento a notificação', 343), ('Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)', 128), ('Aguardando análise, após revisão ou atendimento da notificação', 114), ('Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais', 110), ('Cancelado por decisão administrativa', 68), ('Em análise', 34)]
------ CAR ok (4s)
-
-===== SIGEF =====
-parcelas 1851 Counter({'Registrada': 1175, 'Não titulada': 668, 'Titulada, não registrada': 8})
------ SIGEF ok (27s)
-
-===== IBAMA =====
-/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:171: DeprecationWarning: The 'shapely.ops.transform()' function is deprecated. Use 'shapely.transform()' or 'shapely.transform_coordseq()' instead. See https://shapely.readthedocs.io/en/latest/manual.html#shapely.ops.transform for more details.
-  g = transform(geo, transform(utm, Point(lon, lat)).buffer(60)); aprox = True
-embargos 7 Counter({'Embargo vigente': 4, 'Desembargado': 3})
------ IBAMA ok (26s)
-
-===== Microbacias =====
-microbacias 210
------ Microbacias ok (13s)
-
-===== MapBiomas cobertura =====
-  indisponível: lulc_10m/collection_2/integration/mapbiomas_10m_collection2_integration_v1-classification_2023.tif HTTP response code: 403
-  indisponível: collection_10/lulc/coverage/brazil_coverage_2024.tif HTTP response code: 403
-  indisponível: collection_10/lulc/coverage/brasil_coverage_2024.tif HTTP response code: 403
-  indisponível: collection_10/lclu/coverage/brazil_coverage_2024.tif HTTP response code: 403
-  indisponível: collection_10/lclu/coverage/brasil_coverage_2024.tif HTTP response code: 403
-  indisponível: collection_10/lulc/coverage/brazil_coverage_2023.tif HTTP response code: 403
-  indisponível: collection_9/lclu/coverage/brasil_coverage_2023.tif HTTP response code: 403
-  indisponível: collection_9/lulc/coverage/brasil_coverage_2023.tif HTTP response code: 403
-  indisponível: collection_8/lclu/coverage/brasil_coverage_2022.tif HTTP response code: 403
-uso do solo: reserva Impact Observatory 2023 (6770, 5037)
-grupos (%) {'Vegetação arbórea': 25.7, 'Agricultura': 59.3, 'Pastagem e campos': 5.5, 'Área urbanizada': 8.7, 'Água': 0.9, 'Outras áreas': 0.0}
------ MapBiomas cobertura ok (10s)
-
-===== MapBiomas alertas =====
-camada mapbiomas-alertas:dashboard-alert-rural-properties-shapefile
-alertas 25
------ MapBiomas alertas ok (4s)
-
-===== Outorgas SIGARH =====
-   00_PUBLICACOES/outorgas_sigarh/FeatureServer camada 0 lote 1000
-   00_PUBLICACOES/outorgas_sigarh/FeatureServer camada 0 lote 1000
-   00_PUBLICACOES/outorgas_sigarh/FeatureServer camada 0 lote 137
-outorgas rural 342 fora do CAR 484
------ Outorgas SIGARH ok (33s)
-
-===== Licenças ambientais IAT (SGA/SIA) =====
-  GeoPR: 10352 licenças (com histórico); SGA consulta pública: 2115
-  940 licenças só no SGA (sem coordenada no GeoPR)
-  10612 licenças, 1351 vigentes e 3820 vencidas no mapa; pontos genéricos: 7; {'Vence em até 6 meses': 146, 'Vigente': 1968, 'Vencida': 4367, 'Vencida (substituída por licença mais recente)': 4131}
-  grupos: {'Licença de Operação': 3048, 'Dispensa de licenciamento': 2758, 'Licença Prévia / de Instalação': 2347, 'Autorização Ambiental': 1860, 'Licença Simplificada': 572, 'Licença por Adesão e Compromisso': 15, 'Renovação de Licença de Instalação (Ampliação)': 7, 'Autorização Florestal': 3, '': 2}
------ Licenças ambientais IAT (SGA/SIA) ok (63s)
-
-===== Barragens IAT + SNISB =====
-   IG/SNISB/FeatureServer camada 0 lote 69
-   Hosted/barragens_dashboard_publico/FeatureServer camada 0 lote 78
-barragens 71 SNISB 40 IAT 54
------ Barragens IAT + SNISB ok (58s)
-
-===== Massas d'água (ANA) =====
-   SPR/Massa_dagua/FeatureServer camada 0 lote 284
-massas d'água 144
------ Massas d'água (ANA) ok (7s)
-
-===== Hidrografia FBDS (IAT) =====
-   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
-   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
-   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
-   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
-   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
-   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
-   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 998
-fbds_rio_ate10m_larg 232
-   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 1000
-   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 1000
-   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 292
-fbds_nascentes 1370
------ Hidrografia FBDS (IAT) ok (51s)
-
-===== Relevo =====
-relevo: cotas 328.8387145996094 927.4231567382812
------ Relevo ok (21s)
-
-===== Mineração (ANM/SIGMINE) =====
-  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
-processos minerários 71 Counter({'Lavra / extração': 36, 'Pesquisa mineral': 24, 'Disponibilidade': 11})
------ Mineração (ANM/SIGMINE) ok (4s)
-
-===== Setores de risco (SGB) =====
-setores de risco SGB 0
------ Setores de risco (SGB) ok (1s)
-
-===== Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas =====
-sítios arqueológicos 15
-terras indígenas e quilombolas (até 10 km) 2 Counter({'Terra indígena': 2})
------ Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas ok (3s)
 
 ===== Aptidão: clima, solos, calcário e unidades de conservação =====
   altitude: grade NASA 631.22 m, local 497.0 m, correção 0.87 °C
@@ -108,15 +11,16 @@ clima Cfa 1519 mm []
   tentativa 4 HTTP Error 503: Service Unavailable
   tentativa 5 HTTP Error 503: Service Unavailable
 solos falhou falhou https://geoservicos.ibge.gov.br/geoserver/wfs?service=WFS&version=1.0.0&request=GetFeature&typeName=BDIA:pedo_area&outputFormat=application/json&bbox=-51.331599999999995,-23.7891,-50.8663,-23.16139999
+  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
 jazidas de calcário (PR, lavra/licenciamento) 462
   camadas CNUC: ['cnuc_2025_08', 'cnuc_2025_08_pontos'] -> usando cnuc_2025_08
 unidades de conservação até 10 km 4 ['PARQUE NATURAL MUNICIPAL DANZIGER HOF', 'PARQUE NATURAL MUNICIPAL PEROBA ROSA', 'PARQUE ESTADUAL DE IBIPORÃ', 'PARQUE ESTADUAL DO PENHASCO VERDE']
------ Aptidão: clima, solos, calcário e unidades de conservação ok (687s)
+----- Aptidão: clima, solos, calcário e unidades de conservação ok (708s)
 
 ===== Logística e agronegócio (OpenStreetMap) =====
   overpass https://overpass.kumi.systems/api/interpreter HTTP Error 504: Gateway Timeout
   overpass https://overpass-api.de/api/interpreter HTTP Error 502: Bad Gateway
-  overpass https://overpass.private.coffee/api/interpreter HTTP Error 502: Bad Gateway
+  overpass https://overpass.private.coffee/api/interpreter The read operation timed out
 Traceback (most recent call last):
   File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 63, in run
     try: fn(); log(f'----- {nome} ok ({time.time() - t0:.0f}s)')
@@ -129,10 +33,6 @@ Traceback (most recent call last):
 RuntimeError: Overpass indisponível
 ----- Logística e agronegócio (OpenStreetMap) FALHOU
 
-===== Pendências =====
-Counter({'Atenção': 2340, 'Sem pendência identificada': 1229, 'Prioridade média': 343, 'Prioridade alta': 249, 'Cancelado': 68})
------ Pendências ok (2s)
-
 ===== Config =====
 config ok Londrina 4161 imóveis
------ Config ok (2s)
+----- Config ok (3s)
