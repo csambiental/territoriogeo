@@ -2,15 +2,10 @@
   SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
 Município 4108700 Grandes Rios
 
-===== Aptidão: clima, solos, calcário e unidades de conservação =====
-  altitude: grade NASA 674.86 m, local 703.0 m, correção -0.18 °C
-clima Cfa 1560 mm []
-solos 13 ['id1', 'cd_fcim', 'nom_unidad', 'cod_simbol', 'val_ncompo', 'legenda', 'ordem', 'subordem', 'grande_gru', 'subgrupos', 'textura', 'horizonte', 'relevo', 'componente', 'component1', 'inclu_p1', 'ar_poli_km', 'leg_ordem', 'legenda_2', 'cd_ord_id', 'cd_leg2_id']
-  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
-jazidas de calcário (PR, lavra/licenciamento) 462
-  camadas CNUC: ['cnuc_2025_08', 'cnuc_2025_08_pontos'] -> usando cnuc_2025_08
-unidades de conservação até 10 km 0 []
------ Aptidão: clima, solos, calcário e unidades de conservação ok (7s)
+===== Logística e agronegócio (OpenStreetMap) =====
+  overpass https://overpass.kumi.systems/api/interpreter HTTP Error 504: Gateway Timeout
+logística: pontos Counter({'Armazém, silo ou cooperativa': 53, 'Aeroporto com voos (IATA)': 43, 'Cidade': 18, 'Frigorífico / abatedouro': 11, 'Usina de açúcar / etanol': 5}) | linhas Counter({'Ferrovia': 15, 'Rodovia': 12})
+----- Logística e agronegócio (OpenStreetMap) ok (532s)
 
 ===== Config =====
 config ok Grandes Rios 911 imóveis

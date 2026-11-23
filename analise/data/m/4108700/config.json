@@ -9,7 +9,7 @@
   ],
   "zoom": 10.5
  },
- "atualizado_em": "2026-11-22",
+ "atualizado_em": "2026-11-23",
  "resumo": [
   {
    "valor": "911",
@@ -984,6 +984,7 @@
   "microbacias": "data/m/4108700/microbacias.geojson",
   "declividade": "data/m/4108700/declividade.json",
   "municipio": "Grandes Rios/PR",
+  "logistica": "data/m/4108700/logistica.geojson",
   "aptidao": "data/m/4108700/aptidao.json",
   "solos": "data/m/4108700/solos.geojson",
   "calcario": "data/m/4108700/calcario.geojson",

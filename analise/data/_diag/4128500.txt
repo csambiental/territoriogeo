@@ -2,15 +2,22 @@
   SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
 Município 4128500 Wenceslau Braz
 
-===== Aptidão: clima, solos, calcário e unidades de conservação =====
-  altitude: grade NASA 741.43 m, local 839.0 m, correção -0.63 °C
-clima Cfa 1445 mm []
-solos 7 ['id1', 'cd_fcim', 'nom_unidad', 'cod_simbol', 'val_ncompo', 'legenda', 'ordem', 'subordem', 'grande_gru', 'subgrupos', 'textura', 'horizonte', 'relevo', 'componente', 'component1', 'inclu_p1', 'ar_poli_km', 'leg_ordem', 'legenda_2', 'cd_ord_id', 'cd_leg2_id']
-  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
-jazidas de calcário (PR, lavra/licenciamento) 462
-  camadas CNUC: ['cnuc_2025_08', 'cnuc_2025_08_pontos'] -> usando cnuc_2025_08
-unidades de conservação até 10 km 1 ['RESERVA PARTICULAR DO PATRIMÔNIO NATURAL FAZENDA BARRA MANSA']
------ Aptidão: clima, solos, calcário e unidades de conservação ok (8s)
+===== Logística e agronegócio (OpenStreetMap) =====
+  overpass https://overpass.kumi.systems/api/interpreter HTTP Error 502: Bad Gateway
+  overpass https://overpass.kumi.systems/api/interpreter HTTP Error 504: Gateway Timeout
+  overpass https://overpass-api.de/api/interpreter HTTP Error 502: Bad Gateway
+  overpass https://overpass.private.coffee/api/interpreter HTTP Error 504: Gateway Timeout
+Traceback (most recent call last):
+  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 63, in run
+    try: fn(); log(f'----- {nome} ok ({time.time() - t0:.0f}s)')
+         ^^^^
+  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 857, in logistica
+    for e in overpass(q2)['elements']:
+             ^^^^^^^^^^^^
+  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 829, in overpass
+    raise RuntimeError('Overpass indisponível')
+RuntimeError: Overpass indisponível
+----- Logística e agronegócio (OpenStreetMap) FALHOU
 
 ===== Config =====
 config ok Wenceslau Braz 1704 imóveis

@@ -2,15 +2,12 @@
   SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
 Município 4112801 Joaquim Távora
 
-===== Aptidão: clima, solos, calcário e unidades de conservação =====
-  altitude: grade NASA 555.51 m, local 578.0 m, correção -0.15 °C
-clima Cfa 1378 mm ['ago']
-solos 8 ['id1', 'cd_fcim', 'nom_unidad', 'cod_simbol', 'val_ncompo', 'legenda', 'ordem', 'subordem', 'grande_gru', 'subgrupos', 'textura', 'horizonte', 'relevo', 'componente', 'inclu_p1', 'ar_poli_km', 'leg_ordem', 'legenda_2', 'cd_ord_id', 'cd_leg2_id']
-  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
-jazidas de calcário (PR, lavra/licenciamento) 462
-  camadas CNUC: ['cnuc_2025_08', 'cnuc_2025_08_pontos'] -> usando cnuc_2025_08
-unidades de conservação até 10 km 0 []
------ Aptidão: clima, solos, calcário e unidades de conservação ok (9s)
+===== Logística e agronegócio (OpenStreetMap) =====
+  overpass https://overpass.kumi.systems/api/interpreter HTTP Error 504: Gateway Timeout
+  overpass https://overpass-api.de/api/interpreter HTTP Error 502: Bad Gateway
+  overpass https://overpass.kumi.systems/api/interpreter HTTP Error 504: Gateway Timeout
+logística: pontos Counter() | linhas Counter({'Rodovia': 25, 'Ferrovia': 12})
+----- Logística e agronegócio (OpenStreetMap) ok (610s)
 
 ===== Config =====
 config ok Joaquim Távora 845 imóveis

@@ -2,15 +2,11 @@
   SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
 Município 4126405 Sertaneja
 
-===== Aptidão: clima, solos, calcário e unidades de conservação =====
-  altitude: grade NASA 453.47 m, local 370.0 m, correção 0.54 °C
-clima Am 1369 mm ['ago']
-solos 10 ['id1', 'cd_fcim', 'legenda', 'ar_poli_km', 'leg_ordem', 'legenda_2', 'cd_ord_id', 'cd_leg2_id']
-  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
-jazidas de calcário (PR, lavra/licenciamento) 462
-  camadas CNUC: ['cnuc_2025_08', 'cnuc_2025_08_pontos'] -> usando cnuc_2025_08
-unidades de conservação até 10 km 0 []
------ Aptidão: clima, solos, calcário e unidades de conservação ok (8s)
+===== Logística e agronegócio (OpenStreetMap) =====
+  overpass https://overpass.kumi.systems/api/interpreter HTTP Error 504: Gateway Timeout
+  overpass https://overpass.kumi.systems/api/interpreter The read operation timed out
+logística: pontos Counter({'Armazém, silo ou cooperativa': 58, 'Aeroporto com voos (IATA)': 37, 'Cidade': 32, 'Frigorífico / abatedouro': 20, 'Usina de açúcar / etanol': 13}) | linhas Counter({'Rodovia': 22, 'Ferrovia': 12})
+----- Logística e agronegócio (OpenStreetMap) ok (592s)
 
 ===== Config =====
 config ok Sertaneja 451 imóveis
