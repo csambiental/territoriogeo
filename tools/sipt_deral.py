@@ -9,7 +9,9 @@ norm = lambda s: re.sub(r'[^A-Z0-9 ]', '', unicodedata.normalize('NFKD', s).enco
 APT = ['lavoura_boa', 'lavoura_regular', 'lavoura_restrita', 'pastagem_plantada', 'silvicultura_pastagem_natural', 'preservacao']
 res = {}
 with pdfplumber.open(io.BytesIO(b)) as pdf:
-    print('páginas', len(pdf.pages)); print((pdf.pages[0].extract_text() or '')[:1200])
+    print('páginas', len(pdf.pages))
+    for i in (1, 2):
+        if i < len(pdf.pages): print(f'--- pág {i+1}'); print('\n'.join((pdf.pages[i].extract_text() or '').split('\n')[:25]))
     for pg in pdf.pages:
         for ln in (pg.extract_text() or '').split('\n'):
             m = re.match(r'^\s*(\d{7})\s+(.+?)\s+((?:\d{1,3}(?:\.\d{3})*(?:,\d{2})?\s+){5}\d{1,3}(?:\.\d{3})*(?:,\d{2})?)\s*$', ln)
