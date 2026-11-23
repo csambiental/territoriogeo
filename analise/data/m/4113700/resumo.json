@@ -1,0 +1,134 @@
+{
+ "codigo": "4113700",
+ "nome": "Londrina",
+ "atualizado_em": "2026-11-23",
+ "area_municipio_ha": 164909.7,
+ "car": {
+  "imoveis_total": 4229,
+  "imoveis_ativos": 4161,
+  "area_ativos_ha": 146727.8,
+  "status": {
+   "Ativo": 4157,
+   "Pendente": 4,
+   "Cancelado": 68
+  },
+  "condicao": {
+   "Aguardando análise": 2219,
+   "Em análise": 34,
+   "Analisado, aguardando atendimento a notificação": 343,
+   "Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)": 128,
+   "Analisado, em conformidade com a Lei nº 12.651/2012": 1213,
+   "Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais": 110,
+   "Aguardando análise, após revisão ou atendimento da notificação": 114
+  },
+  "porte": {
+   "Pequena (até 4 MF)": 3659,
+   "Média (4 a 15 MF)": 365,
+   "Grande (acima de 15 MF)": 137
+  },
+  "porte_area_ha": {
+   "Pequena (até 4 MF)": 48939.4,
+   "Grande (acima de 15 MF)": 66337.9,
+   "Média (4 a 15 MF)": 31450.5
+  },
+  "faixa_vegetacao": {
+   "20% ou mais": 1671,
+   "10% a 20%": 777,
+   "Menos de 5%": 1215,
+   "Sem informação": 35,
+   "5% a 10%": 463
+  },
+  "pendencia_nivel": {
+   "Atenção": 2340,
+   "Prioridade média": 343,
+   "Prioridade alta": 249,
+   "Sem pendência identificada": 1229
+  },
+  "georreferenciamento": {
+   "Certificado (≥ 50% da área)": 779,
+   "Não localizado no SIGEF": 3246,
+   "Parcial": 136
+  },
+  "possivel_deficit_rl": 249,
+  "atividade_sem_outorga": 26,
+  "com_alerta": 14,
+  "com_embargo_vigente": 0
+ },
+ "sigef": {
+  "parcelas": 1851,
+  "area_ha": 80635.6
+ },
+ "alertas": {
+  "n": 12,
+  "area_ha": 28.9,
+  "imoveis": 19
+ },
+ "embargos": {
+  "n": 7,
+  "situacao": {
+   "Desembargado": 3,
+   "Embargo vigente": 4
+  }
+ },
+ "outorgas_rurais": {
+  "n": 342,
+  "tipo": {
+   "Poço (água subterrânea)": 178,
+   "Captação superficial": 123,
+   "Obras e intervenções em rios": 27,
+   "Lançamento de efluentes": 6,
+   "Barragem / soleira": 8
+  }
+ },
+ "licencas": {
+  "n": 1351,
+  "tipo": {
+   "Dispensa de licenciamento": 800,
+   "Licença Simplificada": 127,
+   "Licença de Operação": 257,
+   "Autorização Ambiental": 125,
+   "Licença Prévia / de Instalação": 38,
+   "Licença por Adesão e Compromisso": 4
+  },
+  "situacao": {
+   "Vigente": 1243,
+   "Vence em até 6 meses": 108
+  },
+  "vencidas_sem_renovacao": 3820
+ },
+ "mineracao": {
+  "n": 71,
+  "fase": {
+   "Lavra / extração": 36,
+   "Pesquisa mineral": 24,
+   "Disponibilidade": 11
+  },
+  "imoveis": 270
+ },
+ "risco_sgb": {
+  "n": 0,
+  "mapeado": false,
+  "imoveis": 0
+ },
+ "patrimonio": {
+  "sitios": 15,
+  "imoveis_perto_sitio": 164,
+  "comunidades": 2
+ },
+ "barragens": 71,
+ "massas_dagua": 144,
+ "nascentes": 1370,
+ "rios_km": 2286.2,
+ "uso_solo": {
+  "ano": 2023,
+  "fonte": "Esri/Impact Observatory 10 m, 2023 (MapBiomas indisponível para download)",
+  "grupos": {
+   "Vegetação arbórea": 42299.9,
+   "Agricultura": 97790.2,
+   "Pastagem e campos": 8998.8,
+   "Área urbanizada": 14392.7,
+   "Água": 1419.3,
+   "Outras áreas": 8.8
+  }
+ }
+}
