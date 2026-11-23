@@ -43,7 +43,7 @@ const HR_TILE = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imag
 // monta a imagem de alta resolução com as telhas do Esri World Imagery (mesmas do mapa) e recorta a caixa pedida
 async function hrMosaico(g, x0, y0, x1, y1, W, H) {
     const R = 20037508.342789244, res = (x1 - x0) / W;
-    const z = Math.max(1, Math.min(19, Math.ceil(Math.log2(2 * R / 256 / res))));
+    const z = Math.max(1, Math.min(17, Math.ceil(Math.log2(2 * R / 256 / res))));   // no interior, acima do zoom 17 o Esri costuma não ter imagem
     const t = 2 * R / 2 ** z, c0 = Math.floor((x0 + R) / t), c1 = Math.floor((x1 + R) / t), l0 = Math.floor((R - y1) / t), l1 = Math.floor((R - y0) / t);
     const sx = W / (x1 - x0), sy = H / (y1 - y0), jobs = [];
     for (let l = l0; l <= l1; l++) for (let c = c0; c <= c1; c++) jobs.push((async () => {
