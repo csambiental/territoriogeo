@@ -39,7 +39,19 @@ function s2LinkCopernicus(lng, lat, data, ndvi) {   // abre o Copernicus Browser
     return `https://browser.dataspace.copernicus.eu/?${p}`;
 }
 // imagem do imóvel para o relatório: Sentinel-2 + perímetro em vermelho
-const HR_URL = 'https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export';
+const HR_TILE = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile';
+// monta a imagem de alta resolução com as telhas do Esri World Imagery (mesmas do mapa) e recorta a caixa pedida
+async function hrMosaico(g, x0, y0, x1, y1, W, H) {
+    const R = 20037508.342789244, res = (x1 - x0) / W;
+    const z = Math.max(1, Math.min(19, Math.ceil(Math.log2(2 * R / 256 / res))));
+    const t = 2 * R / 2 ** z, c0 = Math.floor((x0 + R) / t), c1 = Math.floor((x1 + R) / t), l0 = Math.floor((R - y1) / t), l1 = Math.floor((R - y0) / t);
+    const sx = W / (x1 - x0), sy = H / (y1 - y0), jobs = [];
+    for (let l = l0; l <= l1; l++) for (let c = c0; c <= c1; c++) jobs.push((async () => {
+        try { const im = await createImageBitmap(await (await fetch(`${HR_TILE}/${z}/${l}/${c}`)).blob());
+            const tx = c * t - R, ty = R - l * t; g.drawImage(im, (tx - x0) * sx, (y1 - ty) * sy, t * sx + 0.5, t * sy + 0.5); } catch (e) { }
+    })());
+    await Promise.all(jobs);
+}
 // realce de contraste (corta 2% de cada ponta em cada canal) – a cor natural do Sentinel sai escura em áreas pequenas
 function s2Realce(g, W, H) {
     const d = g.getImageData(0, 0, W, H), px = d.data, lim = [];
@@ -57,10 +69,7 @@ async function s2Foto(alvo, regra, px = 900, base = null, alfa = 1, realce = fal
     // ajusta a caixa à proporção da imagem
     const esc = Math.max(wM / W, hM / H), cx = (x0 + x1) / 2, cy = (y0 + y1) / 2; x0 = cx - W * esc / 2; x1 = cx + W * esc / 2; y0 = cy - H * esc / 2; y1 = cy + H * esc / 2;
     const cv = document.createElement('canvas'); cv.width = W; cv.height = H; const g = cv.getContext('2d');
-    if (base === 'hr') {
-        const hr = await createImageBitmap(await (await fetch(`${HR_URL}?bbox=${x0},${y0},${x1},${y1}&bboxSR=3857&imageSR=3857&size=${W},${H}&format=jpg&f=image`)).blob());
-        g.drawImage(hr, 0, 0, W, H);
-    }
+    if (base === 'hr') await hrMosaico(g, x0, y0, x1, y1, W, H);
     if (regra) {
         const url = `${S2_URL}/exportImage?bbox=${x0},${y0},${x1},${y1}&bboxSR=3857&imageSR=3857&size=${W},${H}&format=jpgpng&f=image&renderingRule=${s2q({ rasterFunction: S2_REGRAS[regra] })}&mosaicRule=${s2q(S2_MOSAICO)}`;
         const img = await createImageBitmap(await (await fetch(url)).blob());
