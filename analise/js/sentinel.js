@@ -39,17 +39,34 @@ function s2LinkCopernicus(lng, lat, data, ndvi) {   // abre o Copernicus Browser
     return `https://browser.dataspace.copernicus.eu/?${p}`;
 }
 // imagem do imóvel para o relatório: Sentinel-2 + perímetro em vermelho
-async function s2Foto(alvo, regra, px = 900) {
+const HR_URL = 'https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export';
+// realce de contraste (corta 2% de cada ponta em cada canal) – a cor natural do Sentinel sai escura em áreas pequenas
+function s2Realce(g, W, H) {
+    const d = g.getImageData(0, 0, W, H), px = d.data, lim = [];
+    for (let c = 0; c < 3; c++) { const h = new Array(256).fill(0); let n = 0; for (let i = c; i < px.length; i += 4) if (px[i + 3]) { h[px[i]]++; n++; }
+        let a = 0, lo = 0, hi = 255; for (let v = 0; v < 256; v++) { a += h[v]; if (a <= n * 0.02) lo = v; if (a <= n * 0.98) hi = v; } lim.push([lo, Math.max(lo + 1, hi)]); }
+    for (let i = 0; i < px.length; i += 4) for (let c = 0; c < 3; c++) { const [lo, hi] = lim[c]; px[i + c] = Math.max(0, Math.min(255, (px[i + c] - lo) / (hi - lo) * 255)); }
+    g.putImageData(d, 0, 0);
+}
+// base: 'hr' desenha a imagem de alta resolução (Esri World Imagery) por baixo; alfa: transparência do Sentinel sobre ela
+async function s2Foto(alvo, regra, px = 900, base = null, alfa = 1, realce = false) {
     const bb = turf.bbox(alvo), m = Math.max(bb[2] - bb[0], bb[3] - bb[1]) * 0.12;
     const merc = ([x, y]) => [x * 20037508.34 / 180, Math.log(Math.tan((90 + y) * Math.PI / 360)) * 6378137];
     let [x0, y0] = merc([bb[0] - m, bb[1] - m]), [x1, y1] = merc([bb[2] + m, bb[3] + m]);
     const wM = x1 - x0, hM = y1 - y0, W = px, H = Math.round(px * Math.min(1.2, Math.max(0.55, hM / wM)));
     // ajusta a caixa à proporção da imagem
     const esc = Math.max(wM / W, hM / H), cx = (x0 + x1) / 2, cy = (y0 + y1) / 2; x0 = cx - W * esc / 2; x1 = cx + W * esc / 2; y0 = cy - H * esc / 2; y1 = cy + H * esc / 2;
-    const url = `${S2_URL}/exportImage?bbox=${x0},${y0},${x1},${y1}&bboxSR=3857&imageSR=3857&size=${W},${H}&format=jpgpng&f=image&renderingRule=${s2q({ rasterFunction: S2_REGRAS[regra] })}&mosaicRule=${s2q(S2_MOSAICO)}`;
-    const blob = await (await fetch(url)).blob(), img = await createImageBitmap(blob);
     const cv = document.createElement('canvas'); cv.width = W; cv.height = H; const g = cv.getContext('2d');
-    g.drawImage(img, 0, 0, W, H);
+    if (base === 'hr') {
+        const hr = await createImageBitmap(await (await fetch(`${HR_URL}?bbox=${x0},${y0},${x1},${y1}&bboxSR=3857&imageSR=3857&size=${W},${H}&format=jpg&f=image`)).blob());
+        g.drawImage(hr, 0, 0, W, H);
+    }
+    if (regra) {
+        const url = `${S2_URL}/exportImage?bbox=${x0},${y0},${x1},${y1}&bboxSR=3857&imageSR=3857&size=${W},${H}&format=jpgpng&f=image&renderingRule=${s2q({ rasterFunction: S2_REGRAS[regra] })}&mosaicRule=${s2q(S2_MOSAICO)}`;
+        const img = await createImageBitmap(await (await fetch(url)).blob());
+        g.globalAlpha = alfa; g.drawImage(img, 0, 0, W, H); g.globalAlpha = 1;
+        if (realce) s2Realce(g, W, H);
+    }
     const pt = c => { const [x, y] = merc(c); return [(x - x0) / (x1 - x0) * W, (y1 - y) / (y1 - y0) * H]; };
     g.lineJoin = 'round';
     for (const f of turf.flatten(alvo).features) for (const anel of f.geometry.coordinates) {
@@ -73,9 +90,11 @@ async function s2EstatNdvi(alvo) {   // NDVI médio e distribuição por classes
 }
 async function s2DadosRelatorio(alvo) {
     const bb = turf.bbox(alvo), [lng, lat] = turf.centroid(alvo).geometry.coordinates;
-    const [cenas, cor, ndvi, est] = await Promise.all([s2Cenas(bb, 6).catch(() => []), s2Foto(alvo, 'cor').catch(() => null), s2Foto(alvo, 'ndvi').catch(() => null), s2EstatNdvi(alvo).catch(() => null)]);
+    const ha = turf.area(alvo) / 1e4, peq = ha < 50;
+    const [cenas, hr, cor, ndvi, est] = await Promise.all([s2Cenas(bb, 6).catch(() => []), s2Foto(alvo, null, 900, 'hr').catch(() => null), s2Foto(alvo, 'cor', 600, null, 1, true).catch(() => null),
+        (peq ? s2Foto(alvo, 'ndvi', 900, 'hr', 0.55) : s2Foto(alvo, 'ndvi')).catch(() => null), s2EstatNdvi(alvo).catch(() => null)]);
     const data = cenas[0]?.data || null;
-    return { cenas, data, cor, ndvi, est, link: s2LinkCopernicus(lng, lat, data, false), linkNdvi: s2LinkCopernicus(lng, lat, data, true) };
+    return { cenas, data, hr, cor, ndvi, est, ndviSobre: peq, link: s2LinkCopernicus(lng, lat, data, false), linkNdvi: s2LinkCopernicus(lng, lat, data, true) };
 }
 function s2Html(s) {
     if (!s || (!s.cor && !s.ndvi)) return '<p class="hint">Imagem Sentinel-2 indisponível no momento.</p>';
@@ -83,7 +102,8 @@ function s2Html(s) {
     const leitura = !s.est ? '' : s.est.media >= 0.45 ? 'vegetação densa e vigorosa na maior parte do imóvel' : s.est.media >= 0.3 ? 'cobertura vegetal moderada (lavoura em desenvolvimento, pastagem ou mata mista)' : s.est.media >= 0.15 ? 'vegetação rala ou seca em boa parte do imóvel (entressafra, pasto degradado ou palhada)' : 'predomínio de solo exposto, palhada ou água';
     return `<div class="s2-cds"><div><span>Cena mais recente sem nuvens</span><b>${d}</b></div><div><span>NDVI médio do imóvel</span><b>${s.est ? s.est.media.toFixed(2).replace('.', ',') : '–'}</b></div>
         <div><span>Leitura</span><b class="s2-leit">${leitura || '–'}</b></div></div>
-      <div class="s2-duas">${s.cor ? `<figure><img class="mapa" src="${s.cor}" alt="Sentinel-2 cor natural"><figcaption>Cor natural (Sentinel-2, 10 m)</figcaption></figure>` : ''}${s.ndvi ? `<figure><img class="mapa" src="${s.ndvi}" alt="NDVI"><figcaption>NDVI – vigor da vegetação</figcaption></figure>` : ''}</div>
+      <div class="s2-duas">${s.hr ? `<figure><img class="mapa" src="${s.hr}" alt="Imagem de alta resolução"><figcaption>Alta resolução (Esri World Imagery, menos de 1 m) – a data da foto varia e pode ter meses ou anos</figcaption></figure>` : s.cor ? `<figure><img class="mapa" src="${s.cor}" alt="Sentinel-2 cor natural"><figcaption>Cor natural (Sentinel-2, 10 m)</figcaption></figure>` : ''}${s.ndvi ? `<figure><img class="mapa" src="${s.ndvi}" alt="NDVI"><figcaption>NDVI em ${d} – vigor da vegetação${s.ndviSobre ? ', sobre a imagem de alta resolução' : ''}</figcaption></figure>` : ''}</div>
+      ${s.hr && s.cor ? `<div class="s2-hoje"><img src="${s.cor}" alt="Sentinel-2 cor natural"><div><b>Como estava em ${d}</b><span>Sentinel-2 em cor natural (10 m por pixel, contraste realçado). Menos nítida, mas é a foto mais recente: serve para conferir se houve mudança em relação à imagem de alta resolução – colheita, plantio, abertura de área, obras.</span></div></div>` : ''}
       ${s.est ? `<h4>Vegetação dentro do perímetro (NDVI)</h4>${s.est.dist.map((c, i) => `<div class="br"><span>${c.nome}</span><i><em style="width:${Math.min(100, c.pct)}%;background:${cores[i]}"></em></i><b>${c.pct.toFixed(1).replace('.', ',')}%</b></div>`).join('')}` : ''}
       ${s.cenas.length > 1 ? `<p class="hint">Outras cenas sem nuvens recentes: ${s.cenas.slice(1).map(c => c.data.toLocaleDateString('pt-BR')).filter((v, i, a) => a.indexOf(v) === i).join(' · ')}.</p>` : ''}
       <p class="hint">Mosaico da cena mais recente com até 10% de nuvens em cada ponto (Copernicus Sentinel-2, via Esri). Para comparar outras datas: <a href="${s.link}">abrir no Copernicus Browser (cor natural)</a> · <a href="${s.linkNdvi}">NDVI</a>.</p>`;

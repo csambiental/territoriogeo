@@ -713,6 +713,8 @@ function rxRelatorioHtml(u, F) {
  .dk.rx-tab th { background: #1d2a24; color: #fff; }
  .s2-cds { display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 8px; margin: 4px 0 8px; } .s2-cds div { border: 1px solid #dfe8e2; border-radius: 10px; padding: 8px 10px; background: #fafcfb; }
  .s2-cds span { display: block; font-size: 7.5pt; text-transform: uppercase; letter-spacing: .06em; color: #6b7a72; } .s2-cds b { font-size: 13pt; color: #1f4933; } .s2-cds b.s2-leit { font-size: 9.5pt; line-height: 1.3; display: block; }
+ .s2-hoje { display: grid; grid-template-columns: 38% 1fr; gap: 12px; align-items: center; border: 1px solid #dfe8e2; border-radius: 10px; padding: 8px; margin: 8px 0; background: #fafcfb; break-inside: avoid; }
+ .s2-hoje img { width: 100%; border-radius: 8px; } .s2-hoje b { display: block; color: #1f4933; font-size: 10pt; } .s2-hoje span { font-size: 8.5pt; color: #5f6d66; }
  .s2-duas { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .s2-duas figure { margin: 0; } .s2-duas figcaption { font-size: 8pt; color: #5f6d66; } .s2-duas img.mapa { max-height: 105mm; object-fit: cover; }
  .cli { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; height: 120px; align-items: end; margin: 4px 0 2px; }
  .cli div { display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; font-size: 7.5pt; color: #5f6d66; }
@@ -739,7 +741,7 @@ ${sec('Detalhes do imóvel', 'Informações cadastrais e localização', `
   ${card('Município', esc(mun))}${card('Microbacia', esc(r.mbac[0] || '–'), '', 'l2')}</div>
   ${F.foto ? `<img class="mapa" src="${F.foto}" alt="Localização"><div class="leg">Perímetro do imóvel (vermelho) sobre imagem de satélite (Esri World Imagery).</div>` : ''}`)}
 
-${F.s2 ? sec('Imagem de satélite mais recente', 'Sentinel-2: como o imóvel está hoje', s2Html(F.s2)) : ''}
+${F.s2 ? sec('Imagem de satélite e vigor da vegetação', 'Alta resolução para enxergar o imóvel e Sentinel-2 para a situação mais recente', s2Html(F.s2)) : ''}
 ${F.serie && F.serie.length > 1 ? sec('Série histórica do vigor da vegetação', `NDVI anual ${F.serie[0].ano}–${F.serie[F.serie.length - 1].ano} (Landsat)`, lsSerieHtml(F.serie)) : ''}
 
 ${sec('Resultado da análise', 'Resumo dos indicadores consultados', `
