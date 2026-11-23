@@ -14,10 +14,10 @@ with pdfplumber.open(io.BytesIO(b)) as pdf:
         if i < len(pdf.pages): print(f'--- pág {i+1}'); print('\n'.join((pdf.pages[i].extract_text() or '').split('\n')[:25]))
     for pg in pdf.pages:
         for ln in (pg.extract_text() or '').split('\n'):
-            m = re.match(r'^\s*(\d{7})\s+(.+?)\s+((?:\d{1,3}(?:\.\d{3})*(?:,\d{2})?\s+){5}\d{1,3}(?:\.\d{3})*(?:,\d{2})?)\s*$', ln)
+            m = re.match(r'^\s*(.+?)\s+(\d{7})\s+((?:\d{1,3}(?:\.\d{3})*\s+){5}\d{1,3}(?:\.\d{3})*)\s*$', ln)
             if not m: continue
-            v = [float(x.replace('.', '').replace(',', '.')) for x in m.group(3).split()]
-            res[norm(m.group(2))] = {'cod': m.group(1), 'nome': m.group(2).strip(), **dict(zip(APT, v))}
+            v = [float(x.replace('.', '')) for x in m.group(3).split()]
+            res[norm(m.group(1))] = {'cod': m.group(2), 'nome': m.group(1).strip(), **dict(zip(APT, v))}
 print('municípios', len(res)); [print(k, res.get(k)) for k in ('URAI', 'LONDRINA', 'TAMARANA')]
 json.dump({'fonte': 'SEAB/DERAL – Equivalência dos preços de terras para o SIPT 2026 (VTN em R$/ha por aptidão agrícola)', 'url': URL, 'aptidoes': APT, 'municipios': res},
           open(f'{OUT}/vtn_deral_sipt_2026.json', 'w'), ensure_ascii=False)
