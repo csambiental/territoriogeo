@@ -239,7 +239,7 @@ async function itrAppEstimada(u) {   // APP pelas faixas do Código Florestal (L
     const encosta = ((u.r.decl[4] || {}).pct || 0) / 100 * u.area;   // relevo > 45% de declividade: conferir encostas > 45° (APP) em campo
     return { app: Math.min(u.area, Math.max(0, app)), det, encosta, temHidro: !!(rios || nasc) };
 }
-let ITR_VTN = null;
+let ITR_VTN = null, ITR_DERAL = null;
 async function itrPrevia(u) {
     const area = u.area, U = itrUsoHa(u.uso || [], area), notas = [];
     const A = await itrAppEstimada(u).catch(e => (console.error(e), { app: 0, det: {}, encosta: 0, temHidro: false }));
@@ -263,11 +263,22 @@ async function itrPrevia(u) {
             ['Benfeitorias e demais áreas', Math.max(0, area - naoTrib - U.agua - veg - pas - refl), v(1)]];
         vtnDet = partes.filter(p => p[1] > 0.005); vtn = vtnDet.reduce((a, [, ha, val]) => a + ha * val, 0);
     } else notas.push('Município sem tabela de VTN carregada: valor da terra nua não estimado.');
+    // segunda referência: equivalência SIPT publicada pelo DERAL/SEAB
+    ITR_DERAL = ITR_DERAL || await rxJSON('data/itr/vtn_deral_sipt_2026.json').catch(() => null);
+    const td = ITR_DERAL && ITR_DERAL.municipios[itrNormMun(u.C.municipio || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Z0-9 ]/g, '')];
+    let vtnDeral = null;
+    if (td && vtnDet.length) {
+        const ord = ITR_DERAL.aptidoes, val = { 0: td[ord[0]], 1: td[ord[1]], 2: td[ord[2]], 3: td[ord[3]], 4: td[ord[4]], 5: td[ord[5]] };
+        const mapa = ['Lavoura – aptidão boa', 'Lavoura – aptidão regular', 'Lavoura – aptidão restrita', 'Pastagem plantada', 'Silvicultura', 'Preservação', 'Benfeitorias'];
+        vtnDeral = vtnDet.reduce((a, [n, ha]) => { const i = mapa.findIndex(m => n.startsWith(m)); return a + ha * (i === 6 ? val[1] : val[i] ?? val[1]); }, 0);
+        vtnDet = vtnDet.map(([n, ha, v]) => { const i = mapa.findIndex(m => n.startsWith(m)); return [n, ha, v, i === 6 ? val[1] : val[i]]; });
+        if (vtn && Math.abs(vtnDeral - vtn) / vtn > 0.03) notas.push(`A tabela da Receita para o município difere da equivalência do DERAL/SEAB: pelo DERAL o VTN seria ${itrRS(vtnDeral)} (${vtnDeral > vtn ? '+' : ''}${itrF((vtnDeral / vtn - 1) * 100, 0)}%). A Receita usa a própria tabela (SIPT) na fiscalização; a do DERAL é a referência técnica estadual.`);
+    }
     const aliq = itrAliquota(area, gu), vtnTrib = vtn != null ? vtn * trib / area : null, imposto = vtnTrib != null ? Math.max(10, vtnTrib * aliq / 100) : null;
     if (area <= 30) notas.push('Imóvel de até 30 ha: pode ser isento do ITR (pequena gleba, art. 3º da Lei 9.393/96) se o proprietário o explorar e não tiver outro imóvel.');
     if (area < 200) notas.push('Imóvel com menos de 200 ha: dispensado dos índices de lotação da pecuária (IN SRF 256/2002, art. 24, § 3º) – toda a pastagem efetivamente usada é aceita.');
     else notas.push('Imóvel com 200 ha ou mais: a pastagem só é aceita se o rebanho atingir o índice de lotação da zona de pecuária do município (confirmar o índice antes de declarar).');
-    return { area, app, rl, flor, naoTrib, trib, benf, aprov, veg, pas, refl, util, gu, vtn, vtnTrib, aliq, imposto, vtnDet, uso: U, A, notas, tabela: ITR_VTN && ITR_VTN.fonte };
+    return { area, app, rl, flor, naoTrib, trib, benf, aprov, veg, pas, refl, util, gu, vtn, vtnTrib, aliq, imposto, vtnDet, vtnDeral, uso: U, A, notas, tabela: ITR_VTN && ITR_VTN.fonte, tabelaDeral: td ? ITR_DERAL.fonte : null };
 }
 const ITR_COMP = [ // [campo da declaração, campo da prévia, rótulo, tolerância relativa]
     ['areaTotal', 'area', 'Área total'], ['app', 'app', 'APP'], ['rl', 'rl', 'Reserva Legal'], ['florestasNativas', 'flor', 'Florestas nativas (fora de APP/RL)'],
@@ -294,8 +305,9 @@ function itrPreviaHtml(u) {
     return `<div class="itr-cds"><div><span>Área tributável</span><b>${itrF(P.trib)} ha</b></div><div><span>Grau de utilização</span><b>${itrF(P.gu)}%</b></div><div><span>APP + RL + florestas</span><b>${itrF(P.naoTrib)} ha</b></div>
         <div><span>Valor da terra nua</span><b>${P.vtn == null ? '–' : itrRS(P.vtn)}</b></div><div><span>Alíquota</span><b>${itrF(P.aliq, 2)}%</b></div><div><span>Imposto estimado</span><b>${P.imposto == null ? '–' : itrRS(P.imposto)}</b></div></div>
       <div class="itr-duas"><div><h4>Distribuição da área estimada (ha)</h4><table class="rx-tab">${L.map(([n, v, b]) => `<tr><td>${n}<br><span class="hint">${b}</span></td><td style="text-align:right"><b>${itrF(v)}</b></td></tr>`).join('')}</table></div>
-      <div><h4>Valor da terra nua por aptidão</h4><table class="rx-tab"><tr><th>Aptidão (tabela da Receita)</th><th>ha</th><th>R$/ha</th></tr>${P.vtnDet.map(([n, ha, v]) => `<tr><td>${n}</td><td>${itrF(ha)}</td><td style="white-space:nowrap">${itrRS(v)}</td></tr>`).join('')}</table>
-      <p class="hint">${esc(P.tabela || '')}. Aptidão da lavoura pela declividade do imóvel.</p></div></div>
+      <div><h4>Valor da terra nua por aptidão</h4><table class="rx-tab"><tr><th>Aptidão</th><th>ha</th><th>Receita (R$/ha)</th>${P.vtnDeral != null ? '<th>DERAL (R$/ha)</th>' : ''}</tr>${P.vtnDet.map(([n, ha, v, vd]) => `<tr><td>${n}</td><td>${itrF(ha)}</td><td style="white-space:nowrap">${itrRS(v)}</td>${P.vtnDeral != null ? `<td style="white-space:nowrap">${vd != null ? itrRS(vd) : '–'}</td>` : ''}</tr>`).join('')}
+        <tr><td><b>Total</b></td><td></td><td style="white-space:nowrap"><b>${P.vtn == null ? '–' : itrRS(P.vtn)}</b></td>${P.vtnDeral != null ? `<td style="white-space:nowrap"><b>${itrRS(P.vtnDeral)}</b></td>` : ''}</tr></table>
+      <p class="hint">${esc(P.tabela || '')}${P.tabelaDeral ? '; ' + esc(P.tabelaDeral) : ''}. Aptidão da lavoura pela declividade do imóvel.</p></div></div>
       ${P.notas.length ? `<ul class="hint">${P.notas.map(n => `<li>${esc(n)}</li>`).join('')}</ul>` : ''}
       <p class="hint">Prévia estimada por satélite, CAR e tabelas oficiais – serve para orientar a declaração e conferir inconsistências. Não substitui a DITR nem o levantamento de campo; rebanho, benfeitorias e situação do proprietário precisam ser informados pelo produtor.</p>`;
 }
