@@ -3,17 +3,5 @@
 Município 4124707 São Jerônimo da Serra
 
 ===== Logística e agronegócio (OpenStreetMap) =====
-  overpass https://overpass.kumi.systems/api/interpreter HTTP Error 504: Gateway Timeout
-  overpass https://overpass-api.de/api/interpreter HTTP Error 502: Bad Gateway
-  overpass https://overpass.private.coffee/api/interpreter HTTP Error 504: Gateway Timeout
-Traceback (most recent call last):
-  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 63, in run
-    try: fn(); log(f'----- {nome} ok ({time.time() - t0:.0f}s)')
-         ^^^^
-  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 842, in logistica
-    els = overpass(q)['elements']; pts = []
-          ^^^^^^^^^^^
-  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 829, in overpass
-    raise RuntimeError('Overpass indisponível')
-RuntimeError: Overpass indisponível
------ Logística e agronegócio (OpenStreetMap) FALHOU
+logística: pontos Counter() | linhas Counter({'Rodovia': 19, 'Ferrovia': 14})
+----- Logística e agronegócio (OpenStreetMap) ok (385s)
