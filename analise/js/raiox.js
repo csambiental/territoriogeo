@@ -533,8 +533,9 @@ async function gerarRelatorioRaiox() {
     const s2 = typeof s2DadosRelatorio === 'function' ? await s2DadosRelatorio(u.alvo).catch(e => (console.error(e), null)) : null;
     etapa('série histórica do NDVI (Landsat)');
     const serie = u.serie || (typeof lsSerieNdvi === 'function' ? await lsSerieNdvi(u.alvo).catch(e => (console.error(e), null)) : null);
+    const cd = typeof cdFotos === 'function' ? await cdFotos(u, etapa).catch(e => (console.error(e), null)) : null;
     map.jumpTo({ center: centro, zoom });
-    const janela = { partes: [rxRelatorioHtml(u, { foto, foto2, foto3, foto4, s2, serie })] };
+    const janela = { partes: [rxRelatorioHtml(u, { foto, foto2, foto3, foto4, s2, serie, cd })] };
     const url = URL.createObjectURL(new Blob(janela.partes, { type: 'text/html;charset=utf-8' }));
     const nomeArq = `raio-x_${u.nome}.html`;
     aviso.innerHTML = `<div><b>Relatório pronto</b><a class="btn btn-solid" href="${url}" target="_blank" rel="noopener" id="rxAbrir">Abrir relatório</a>
@@ -759,7 +760,7 @@ ${sec('Cobertura do solo e relevo', 'Declarado no CAR × medido por satélite', 
   <div class="duas"><div><h4>Uso e cobertura do solo (${u.B.usoFonte})</h4>${barras(uso, corUso)}</div><div><h4>Declividade (classes Embrapa)</h4>${barras(r.decl.filter(d => d.pct >= .05).map(d => [d.nome, d.pct]), corDecl)}</div></div>
   ${(u.pend || []).length ? `<h4>Observações do cadastro</h4>${u.pend.map(t => `<div class="obs">${esc(t)}</div>`).join('')}` : ''}`)}
 
-${u.decl ? sec('CAR declarado × verificado', 'Temas declarados no SICAR comparados com o satélite e as bases públicas', cdQuadroHtml(u)) : ''}
+${typeof cdSecoesHtml === 'function' ? cdSecoesHtml(u, F.cd, sec, F.foto) : ''}
 
 ${u.B.apt ? sec('Aptidão agrícola e contexto regional', 'Clima, chuva, solos e acesso a calcário', u.B.apt) : ''}
 ${(() => { const v = rxValorTerraHtml(u); return u.B.log || v ? sec('Logística e referência de valor da terra', 'Distâncias até a infraestrutura do agronegócio e preços de terra do DERAL/SEAB para o município', (u.B.log || '') + v) : ''; })()}
