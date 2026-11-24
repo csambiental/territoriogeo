@@ -1,0 +1,20 @@
+name: CAR declarado – geometrias (branch car-geo)
+on: workflow_dispatch
+permissions: { contents: write }
+jobs:
+  processar:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL; df -h /tmp; free -g
+      - run: pip install -q gdown pyogrio geopandas shapely
+      - working-directory: analise
+        run: python3 tools/car_declarado_geo.py /tmp/cargeo
+      - name: Publicar no branch car-geo
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          du -sh /tmp/cargeo; ls /tmp/cargeo | wc -l
+          mkdir /tmp/pub && cd /tmp/pub && git init -q -b car-geo && cp -r /tmp/cargeo/. .
+          git add -A && git commit -q -m "Geometrias declaradas no CAR (SICAR, PR) por município"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" car-geo
