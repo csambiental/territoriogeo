@@ -1,0 +1,132 @@
+{
+ "codigo": "4109807",
+ "nome": "Ibiporã",
+ "atualizado_em": "2026-11-24",
+ "area_municipio_ha": 29710.7,
+ "car": {
+  "imoveis_total": 1140,
+  "imoveis_ativos": 1119,
+  "area_ativos_ha": 26187.9,
+  "status": {
+   "Ativo": 1119,
+   "Cancelado": 21
+  },
+  "condicao": {
+   "Aguardando análise": 597,
+   "Em análise": 15,
+   "Analisado, aguardando atendimento a notificação": 76,
+   "Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)": 28,
+   "Analisado, em conformidade com a Lei nº 12.651/2012": 369,
+   "Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais": 13,
+   "Aguardando análise, após revisão ou atendimento da notificação": 21
+  },
+  "porte": {
+   "Pequena (até 4 MF)": 1008,
+   "Média (4 a 15 MF)": 95,
+   "Grande (acima de 15 MF)": 16
+  },
+  "porte_area_ha": {
+   "Média (4 a 15 MF)": 7730.0,
+   "Grande (acima de 15 MF)": 5239.8,
+   "Pequena (até 4 MF)": 13218.1
+  },
+  "faixa_vegetacao": {
+   "Sem informação": 16,
+   "10% a 20%": 193,
+   "20% ou mais": 332,
+   "Menos de 5%": 427,
+   "5% a 10%": 151
+  },
+  "pendencia_nivel": {
+   "Atenção": 586,
+   "Prioridade média": 109,
+   "Prioridade alta": 62,
+   "Sem pendência identificada": 362
+  },
+  "georreferenciamento": {
+   "Não localizado no SIGEF": 919,
+   "Certificado (≥ 50% da área)": 168,
+   "Parcial": 32
+  },
+  "possivel_deficit_rl": 75,
+  "atividade_sem_outorga": 18,
+  "com_alerta": 5,
+  "com_embargo_vigente": 0
+ },
+ "sigef": {
+  "parcelas": 301,
+  "area_ha": 8903.4
+ },
+ "alertas": {
+  "n": 2,
+  "area_ha": 7.2,
+  "imoveis": 5
+ },
+ "embargos": {
+  "n": 1,
+  "situacao": {
+   "Embargo vigente": 1
+  }
+ },
+ "outorgas_rurais": {
+  "n": 57,
+  "tipo": {
+   "Poço (água subterrânea)": 35,
+   "Captação superficial": 12,
+   "Lançamento de efluentes": 4,
+   "Obras e intervenções em rios": 3,
+   "Barragem / soleira": 3
+  }
+ },
+ "licencas": {
+  "n": 414,
+  "tipo": {
+   "Dispensa de licenciamento": 252,
+   "Licença de Operação": 74,
+   "Licença por Adesão e Compromisso": 16,
+   "Licença Prévia / de Instalação": 19,
+   "Licença Simplificada": 36,
+   "Autorização Ambiental": 17
+  },
+  "situacao": {
+   "Vigente": 383,
+   "Vence em até 6 meses": 31
+  },
+  "vencidas_sem_renovacao": 749
+ },
+ "mineracao": {
+  "n": 44,
+  "fase": {
+   "Lavra / extração": 23,
+   "Pesquisa mineral": 16,
+   "Disponibilidade": 5
+  },
+  "imoveis": 110
+ },
+ "risco_sgb": {
+  "n": 0,
+  "mapeado": false,
+  "imoveis": 0
+ },
+ "patrimonio": {
+  "sitios": 2,
+  "imoveis_perto_sitio": 21,
+  "comunidades": 0
+ },
+ "barragens": 13,
+ "massas_dagua": 39,
+ "nascentes": 123,
+ "rios_km": 2439.1,
+ "uso_solo": {
+  "ano": 2023,
+  "fonte": "Esri/Impact Observatory 10 m, 2023 (MapBiomas indisponível para download)",
+  "grupos": {
+   "Vegetação arbórea": 4969.3,
+   "Agricultura": 20565.2,
+   "Pastagem e campos": 1015.3,
+   "Área urbanizada": 2406.9,
+   "Água": 747.9,
+   "Outras áreas": 6.1
+  }
+ }
+}
