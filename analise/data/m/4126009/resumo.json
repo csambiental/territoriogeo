@@ -1,0 +1,123 @@
+{
+ "codigo": "4126009",
+ "nome": "São Sebastião da Amoreira",
+ "atualizado_em": "2026-11-24",
+ "area_municipio_ha": 22647.6,
+ "car": {
+  "imoveis_total": 533,
+  "imoveis_ativos": 500,
+  "area_ativos_ha": 22205.2,
+  "status": {
+   "Ativo": 500,
+   "Cancelado": 33
+  },
+  "condicao": {
+   "Aguardando análise": 236,
+   "Em análise": 4,
+   "Analisado, aguardando atendimento a notificação": 22,
+   "Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)": 18,
+   "Analisado, em conformidade com a Lei nº 12.651/2012": 193,
+   "Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais": 17,
+   "Aguardando análise, após revisão ou atendimento da notificação": 10
+  },
+  "porte": {
+   "Pequena (até 4 MF)": 464,
+   "Grande (acima de 15 MF)": 9,
+   "Média (4 a 15 MF)": 27
+  },
+  "porte_area_ha": {
+   "Pequena (até 4 MF)": 9096.4,
+   "Média (4 a 15 MF)": 3508.4,
+   "Grande (acima de 15 MF)": 9600.4
+  },
+  "faixa_vegetacao": {
+   "10% a 20%": 126,
+   "20% ou mais": 98,
+   "Menos de 5%": 169,
+   "5% a 10%": 102,
+   "Sem informação": 5
+  },
+  "pendencia_nivel": {
+   "Atenção": 223,
+   "Prioridade média": 45,
+   "Prioridade alta": 5,
+   "Sem pendência identificada": 227
+  },
+  "georreferenciamento": {
+   "Certificado (≥ 50% da área)": 123,
+   "Não localizado no SIGEF": 365,
+   "Parcial": 12
+  },
+  "possivel_deficit_rl": 19,
+  "atividade_sem_outorga": 4,
+  "com_alerta": 0,
+  "com_embargo_vigente": 0
+ },
+ "sigef": {
+  "parcelas": 215,
+  "area_ha": 13184.9
+ },
+ "alertas": {
+  "n": 1,
+  "area_ha": 0.0,
+  "imoveis": 0
+ },
+ "embargos": {
+  "n": 0,
+  "situacao": {}
+ },
+ "outorgas_rurais": {
+  "n": 47,
+  "tipo": {
+   "Poço (água subterrânea)": 17,
+   "Captação superficial": 22,
+   "Barragem / soleira": 8
+  }
+ },
+ "licencas": {
+  "n": 34,
+  "tipo": {
+   "Dispensa de licenciamento": 16,
+   "Licença de Operação": 9,
+   "Licença Prévia / de Instalação": 4,
+   "Licença Simplificada": 3,
+   "Autorização Ambiental": 1,
+   "Licença por Adesão e Compromisso": 1
+  },
+  "situacao": {
+   "Vigente": 31,
+   "Vence em até 6 meses": 3
+  },
+  "vencidas_sem_renovacao": 92
+ },
+ "mineracao": {
+  "n": 0,
+  "fase": {},
+  "imoveis": 0
+ },
+ "risco_sgb": {
+  "n": 0,
+  "mapeado": false,
+  "imoveis": 0
+ },
+ "patrimonio": {
+  "sitios": 0,
+  "imoveis_perto_sitio": 0,
+  "comunidades": 0
+ },
+ "barragens": 23,
+ "massas_dagua": 35,
+ "nascentes": 125,
+ "rios_km": 24.5,
+ "uso_solo": {
+  "ano": 2023,
+  "fonte": "Esri/Impact Observatory 10 m, 2023 (MapBiomas indisponível para download)",
+  "grupos": {
+   "Vegetação arbórea": 3816.8,
+   "Agricultura": 18016.3,
+   "Pastagem e campos": 271.1,
+   "Área urbanizada": 381.3,
+   "Água": 162.1
+  }
+ }
+}

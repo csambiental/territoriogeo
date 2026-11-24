@@ -1,0 +1,127 @@
+{
+ "codigo": "4124707",
+ "nome": "São Jerônimo da Serra",
+ "atualizado_em": "2026-11-24",
+ "area_municipio_ha": 82201.3,
+ "car": {
+  "imoveis_total": 1465,
+  "imoveis_ativos": 1449,
+  "area_ativos_ha": 78096.8,
+  "status": {
+   "Ativo": 1431,
+   "Pendente": 18,
+   "Cancelado": 16
+  },
+  "condicao": {
+   "Aguardando análise": 1053,
+   "Em análise": 12,
+   "Analisado, aguardando atendimento a notificação": 80,
+   "Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)": 61,
+   "Analisado, em conformidade com a Lei nº 12.651/2012": 212,
+   "Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais": 15,
+   "Aguardando análise, após revisão ou atendimento da notificação": 16
+  },
+  "porte": {
+   "Pequena (até 4 MF)": 1241,
+   "Média (4 a 15 MF)": 172,
+   "Grande (acima de 15 MF)": 36
+  },
+  "porte_area_ha": {
+   "Pequena (até 4 MF)": 32349.9,
+   "Grande (acima de 15 MF)": 17792.2,
+   "Média (4 a 15 MF)": 27954.7
+  },
+  "faixa_vegetacao": {
+   "20% ou mais": 901,
+   "Menos de 5%": 202,
+   "Sem informação": 24,
+   "5% a 10%": 101,
+   "10% a 20%": 221
+  },
+  "pendencia_nivel": {
+   "Prioridade média": 239,
+   "Atenção": 1144,
+   "Prioridade alta": 46,
+   "Sem pendência identificada": 20
+  },
+  "georreferenciamento": {
+   "Não localizado no SIGEF": 1074,
+   "Certificado (≥ 50% da área)": 281,
+   "Parcial": 94
+  },
+  "possivel_deficit_rl": 34,
+  "atividade_sem_outorga": 5,
+  "com_alerta": 10,
+  "com_embargo_vigente": 0
+ },
+ "sigef": {
+  "parcelas": 402,
+  "area_ha": 28757.3
+ },
+ "alertas": {
+  "n": 9,
+  "area_ha": 31.4,
+  "imoveis": 12
+ },
+ "embargos": {
+  "n": 0,
+  "situacao": {}
+ },
+ "outorgas_rurais": {
+  "n": 64,
+  "tipo": {
+   "Captação superficial": 52,
+   "Obras e intervenções em rios": 4,
+   "Poço (água subterrânea)": 8
+  }
+ },
+ "licencas": {
+  "n": 71,
+  "tipo": {
+   "Dispensa de licenciamento": 50,
+   "Licença por Adesão e Compromisso": 7,
+   "Licença de Operação": 8,
+   "Licença Simplificada": 3,
+   "Licença Prévia / de Instalação": 3
+  },
+  "situacao": {
+   "Vigente": 66,
+   "Vence em até 6 meses": 5
+  },
+  "vencidas_sem_renovacao": 70
+ },
+ "mineracao": {
+  "n": 54,
+  "fase": {
+   "Lavra / extração": 32,
+   "Pesquisa mineral": 14,
+   "Disponibilidade": 8
+  },
+  "imoveis": 108
+ },
+ "risco_sgb": {
+  "n": 0,
+  "mapeado": false,
+  "imoveis": 0
+ },
+ "patrimonio": {
+  "sitios": 17,
+  "imoveis_perto_sitio": 90,
+  "comunidades": 3
+ },
+ "barragens": 21,
+ "massas_dagua": 91,
+ "nascentes": 1484,
+ "rios_km": 2158.6,
+ "uso_solo": {
+  "ano": 2023,
+  "fonte": "Esri/Impact Observatory 10 m, 2023 (MapBiomas indisponível para download)",
+  "grupos": {
+   "Vegetação arbórea": 37488.7,
+   "Agricultura": 29707.1,
+   "Pastagem e campos": 13764.5,
+   "Área urbanizada": 609.9,
+   "Água": 631.2
+  }
+ }
+}

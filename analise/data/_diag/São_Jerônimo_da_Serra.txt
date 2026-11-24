@@ -1,0 +1,128 @@
+/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:39: DeprecationWarning: ssl.TLSVersion.TLSv1 is deprecated
+  SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
+Município 4124707 São Jerônimo da Serra
+limite: IBGE
+
+===== CAR =====
+  CAR baixados 1465
+imóveis 1465 Counter({'Aguardando análise': 1053, 'Analisado – em conformidade': 288, 'Analisado – notificação pendente': 96, 'Cancelado': 16, 'Em análise': 12}) [('Aguardando análise', 1053), ('Analisado, em conformidade com a Lei nº 12.651/2012', 212), ('Analisado, aguardando atendimento a notificação', 80), ('Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)', 61), ('Cancelado por decisão administrativa', 16), ('Aguardando análise, após revisão ou atendimento da notificação', 16), ('Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais', 15), ('Em análise', 12)]
+----- CAR ok (2s)
+
+===== SIGEF =====
+parcelas 402 Counter({'Registrada': 400, 'Titulada, não registrada': 2})
+----- SIGEF ok (12s)
+
+===== IBAMA =====
+/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:171: DeprecationWarning: The 'shapely.ops.transform()' function is deprecated. Use 'shapely.transform()' or 'shapely.transform_coordseq()' instead. See https://shapely.readthedocs.io/en/latest/manual.html#shapely.ops.transform for more details.
+  g = transform(geo, transform(utm, Point(lon, lat)).buffer(60)); aprox = True
+embargos 0 Counter()
+----- IBAMA ok (25s)
+
+===== Microbacias =====
+microbacias 126
+----- Microbacias ok (2s)
+
+===== MapBiomas cobertura =====
+  indisponível: lulc_10m/collection_2/integration/mapbiomas_10m_collection2_integration_v1-classification_2023.tif HTTP response code: 403
+  indisponível: collection_10/lulc/coverage/brazil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lulc/coverage/brasil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lclu/coverage/brazil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lclu/coverage/brasil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lulc/coverage/brazil_coverage_2023.tif HTTP response code: 403
+  indisponível: collection_9/lclu/coverage/brasil_coverage_2023.tif HTTP response code: 403
+  indisponível: collection_9/lulc/coverage/brasil_coverage_2023.tif HTTP response code: 403
+  indisponível: collection_8/lclu/coverage/brasil_coverage_2022.tif HTTP response code: 403
+uso do solo: reserva Impact Observatory 2023 (4204, 4543)
+grupos (%) {'Vegetação arbórea': 45.6, 'Agricultura': 36.1, 'Pastagem e campos': 16.7, 'Área urbanizada': 0.7, 'Água': 0.8, 'Outras áreas': 0.0}
+----- MapBiomas cobertura ok (6s)
+
+===== MapBiomas alertas =====
+camada mapbiomas-alertas:dashboard-alert-rural-properties-shapefile
+alertas 13
+----- MapBiomas alertas ok (2s)
+
+===== Outorgas SIGARH =====
+   00_PUBLICACOES/outorgas_sigarh/FeatureServer camada 0 lote 306
+outorgas rural 64 fora do CAR 13
+----- Outorgas SIGARH ok (3s)
+
+===== Licenças ambientais IAT (SGA/SIA) =====
+  GeoPR: 254 licenças (com histórico); SGA consulta pública: 95
+  32 licenças só no SGA (sem coordenada no GeoPR)
+  273 licenças, 71 vigentes e 70 vencidas no mapa; pontos genéricos: 2; {'Vence em até 6 meses': 6, 'Vigente': 90, 'Vencida': 94, 'Vencida (substituída por licença mais recente)': 83}
+  grupos: {'Dispensa de licenciamento': 92, 'Licença Prévia / de Instalação': 77, 'Licença de Operação': 51, 'Autorização Ambiental': 36, 'Licença Simplificada': 10, 'Licença por Adesão e Compromisso': 7}
+----- Licenças ambientais IAT (SGA/SIA) ok (18s)
+
+===== Barragens IAT + SNISB =====
+   IG/SNISB/FeatureServer camada 0 lote 24
+   Hosted/barragens_dashboard_publico/FeatureServer camada 0 lote 53
+barragens 21 SNISB 6 IAT 17
+----- Barragens IAT + SNISB ok (25s)
+
+===== Massas d'água (ANA) =====
+   SPR/Massa_dagua/FeatureServer camada 0 lote 195
+massas d'água 91
+----- Massas d'água (ANA) ok (10s)
+
+===== Hidrografia FBDS (IAT) =====
+   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 999
+fbds_rio_ate10m_larg 65
+   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 654
+fbds_nascentes 1484
+----- Hidrografia FBDS (IAT) ok (24s)
+
+===== Relevo =====
+relevo: cotas 411.0 1208.3646240234375
+----- Relevo ok (15s)
+
+===== Mineração (ANM/SIGMINE) =====
+  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
+processos minerários 54 Counter({'Lavra / extração': 32, 'Pesquisa mineral': 14, 'Disponibilidade': 8})
+----- Mineração (ANM/SIGMINE) ok (3s)
+
+===== Setores de risco (SGB) =====
+setores de risco SGB 0
+----- Setores de risco (SGB) ok (1s)
+
+===== Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas =====
+sítios arqueológicos 17
+terras indígenas e quilombolas (até 10 km) 3 Counter({'Terra indígena': 3})
+----- Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas ok (3s)
+
+===== Aptidão: clima, solos, calcário e unidades de conservação =====
+  altitude: grade NASA 609.72 m, local 930.0 m, correção -2.08 °C
+clima Cfa 1410 mm []
+solos 18 ['id1', 'cd_fcim', 'legenda', 'ar_poli_km', 'leg_ordem', 'legenda_2', 'cd_ord_id', 'cd_leg2_id']
+jazidas de calcário (PR, lavra/licenciamento) 462
+  camadas CNUC: ['cnuc_2025_08', 'cnuc_2025_08_pontos'] -> usando cnuc_2025_08
+unidades de conservação até 10 km 1 ['PARQUE ESTADUAL DO PENHASCO VERDE']
+----- Aptidão: clima, solos, calcário e unidades de conservação ok (17s)
+
+===== Logística e agronegócio (OpenStreetMap) =====
+  overpass https://overpass.kumi.systems/api/interpreter HTTP Error 502: Bad Gateway
+  overpass https://overpass-api.de/api/interpreter HTTP Error 502: Bad Gateway
+  overpass https://overpass.private.coffee/api/interpreter HTTP Error 504: Gateway Timeout
+Traceback (most recent call last):
+  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 63, in run
+    try: fn(); log(f'----- {nome} ok ({time.time() - t0:.0f}s)')
+         ^^^^
+  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 857, in logistica
+    for e in overpass(q2)['elements']:
+             ^^^^^^^^^^^^
+  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 829, in overpass
+    raise RuntimeError('Overpass indisponível')
+RuntimeError: Overpass indisponível
+----- Logística e agronegócio (OpenStreetMap) FALHOU
+
+===== Pendências =====
+Counter({'Atenção': 1144, 'Prioridade média': 239, 'Prioridade alta': 46, 'Sem pendência identificada': 20, 'Cancelado': 16})
+----- Pendências ok (2s)
+
+===== Config =====
+config ok São Jerônimo da Serra 1449 imóveis
+----- Config ok (1s)

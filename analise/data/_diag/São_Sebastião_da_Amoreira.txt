@@ -1,0 +1,128 @@
+/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:39: DeprecationWarning: ssl.TLSVersion.TLSv1 is deprecated
+  SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
+Município 4126009 São Sebastião da Amoreira
+limite: IBGE
+
+===== CAR =====
+  CAR baixados 533
+imóveis 533 Counter({'Aguardando análise': 236, 'Analisado – em conformidade': 228, 'Cancelado': 33, 'Analisado – notificação pendente': 32, 'Em análise': 4}) [('Aguardando análise', 236), ('Analisado, em conformidade com a Lei nº 12.651/2012', 193), ('Cancelado por decisão administrativa', 33), ('Analisado, aguardando atendimento a notificação', 22), ('Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)', 18), ('Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais', 17), ('Aguardando análise, após revisão ou atendimento da notificação', 10), ('Em análise', 4)]
+----- CAR ok (2s)
+
+===== SIGEF =====
+parcelas 215 Counter({'Registrada': 215})
+----- SIGEF ok (9s)
+
+===== IBAMA =====
+/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:171: DeprecationWarning: The 'shapely.ops.transform()' function is deprecated. Use 'shapely.transform()' or 'shapely.transform_coordseq()' instead. See https://shapely.readthedocs.io/en/latest/manual.html#shapely.ops.transform for more details.
+  g = transform(geo, transform(utm, Point(lon, lat)).buffer(60)); aprox = True
+embargos 0 Counter()
+----- IBAMA ok (16s)
+
+===== Microbacias =====
+microbacias 31
+----- Microbacias ok (1s)
+
+===== MapBiomas cobertura =====
+  indisponível: lulc_10m/collection_2/integration/mapbiomas_10m_collection2_integration_v1-classification_2023.tif HTTP response code: 403
+  indisponível: collection_10/lulc/coverage/brazil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lulc/coverage/brasil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lclu/coverage/brazil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lclu/coverage/brasil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lulc/coverage/brazil_coverage_2023.tif HTTP response code: 403
+  indisponível: collection_9/lclu/coverage/brasil_coverage_2023.tif HTTP response code: 403
+  indisponível: collection_9/lulc/coverage/brasil_coverage_2023.tif HTTP response code: 403
+  indisponível: collection_8/lclu/coverage/brasil_coverage_2022.tif HTTP response code: 403
+uso do solo: reserva Impact Observatory 2023 (2464, 2162)
+grupos (%) {'Vegetação arbórea': 16.9, 'Agricultura': 79.6, 'Pastagem e campos': 1.2, 'Área urbanizada': 1.7, 'Água': 0.7, 'Outras áreas': 0.0}
+----- MapBiomas cobertura ok (3s)
+
+===== MapBiomas alertas =====
+  tentativa 1 HTTP Error 400: Bad Request
+  tentativa 2 HTTP Error 400: Bad Request
+  tentativa 1 HTTP Error 400: Bad Request
+  tentativa 2 HTTP Error 400: Bad Request
+camada mapbiomas-alertas:mv_rural_properties_with_alerts_published
+alertas 1
+----- MapBiomas alertas ok (63s)
+
+===== Outorgas SIGARH =====
+  tentativa 1 HTTP Error 503: 503
+   00_PUBLICACOES/outorgas_sigarh/FeatureServer camada 0 lote 143
+outorgas rural 47 fora do CAR 4
+----- Outorgas SIGARH ok (81s)
+
+===== Licenças ambientais IAT (SGA/SIA) =====
+  GeoPR: 205 licenças (com histórico); SGA consulta pública: 41
+  12 licenças só no SGA (sem coordenada no GeoPR)
+  207 licenças, 34 vigentes e 92 vencidas no mapa; pontos genéricos: 1; {'Vence em até 6 meses': 3, 'Vigente': 36, 'Vencida': 104, 'Vencida (substituída por licença mais recente)': 64}
+  grupos: {'Licença Prévia / de Instalação': 94, 'Licença de Operação': 44, 'Dispensa de licenciamento': 38, 'Autorização Ambiental': 16, 'Licença Simplificada': 13, 'Licença por Adesão e Compromisso': 2}
+----- Licenças ambientais IAT (SGA/SIA) ok (83s)
+
+===== Barragens IAT + SNISB =====
+   IG/SNISB/FeatureServer camada 0 lote 27
+   Hosted/barragens_dashboard_publico/FeatureServer camada 0 lote 38
+barragens 23 SNISB 16 IAT 15
+----- Barragens IAT + SNISB ok (34s)
+
+===== Massas d'água (ANA) =====
+   SPR/Massa_dagua/FeatureServer camada 0 lote 65
+massas d'água 35
+----- Massas d'água (ANA) ok (2s)
+
+===== Hidrografia FBDS (IAT) =====
+   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 999
+fbds_rio_ate10m_larg 5
+   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 245
+fbds_nascentes 125
+----- Hidrografia FBDS (IAT) ok (13s)
+
+===== Relevo =====
+relevo: cotas 445.825927734375 797.7815551757812
+----- Relevo ok (4s)
+
+===== Mineração (ANM/SIGMINE) =====
+  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
+processos minerários 0 Counter()
+----- Mineração (ANM/SIGMINE) ok (3s)
+
+===== Setores de risco (SGB) =====
+setores de risco SGB 0
+----- Setores de risco (SGB) ok (1s)
+
+===== Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas =====
+sítios arqueológicos 0
+terras indígenas e quilombolas (até 10 km) 0 Counter()
+----- Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas ok (2s)
+
+===== Aptidão: clima, solos, calcário e unidades de conservação =====
+  altitude: grade NASA 609.72 m, local 664.0 m, correção -0.35 °C
+clima Cfa 1410 mm []
+solos 12 ['id1', 'cd_fcim', 'legenda', 'ar_poli_km', 'leg_ordem', 'legenda_2', 'cd_ord_id', 'cd_leg2_id']
+jazidas de calcário (PR, lavra/licenciamento) 462
+  camadas CNUC: ['cnuc_2025_08', 'cnuc_2025_08_pontos'] -> usando cnuc_2025_08
+unidades de conservação até 10 km 0 []
+----- Aptidão: clima, solos, calcário e unidades de conservação ok (7s)
+
+===== Logística e agronegócio (OpenStreetMap) =====
+  overpass https://overpass.kumi.systems/api/interpreter The read operation timed out
+  overpass https://overpass-api.de/api/interpreter HTTP Error 502: Bad Gateway
+  overpass https://overpass.private.coffee/api/interpreter HTTP Error 502: Bad Gateway
+Traceback (most recent call last):
+  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 63, in run
+    try: fn(); log(f'----- {nome} ok ({time.time() - t0:.0f}s)')
+         ^^^^
+  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 842, in logistica
+    els = overpass(q)['elements']; pts = []
+          ^^^^^^^^^^^
+  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 829, in overpass
+    raise RuntimeError('Overpass indisponível')
+RuntimeError: Overpass indisponível
+----- Logística e agronegócio (OpenStreetMap) FALHOU
+
+===== Pendências =====
+Counter({'Sem pendência identificada': 227, 'Atenção': 223, 'Prioridade média': 45, 'Cancelado': 33, 'Prioridade alta': 5})
+----- Pendências ok (0s)
+
+===== Config =====
+config ok São Sebastião da Amoreira 500 imóveis
+----- Config ok (0s)
