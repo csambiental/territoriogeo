@@ -342,7 +342,7 @@ async function analisarImovel(nome, alvoCustom) {
         if (typeof lsSerieNdvi === 'function') lsSerieNdvi(alvo).then(sr => { if (!RX.ultimo || RX.ultimo.nome !== nome || !sr || sr.length < 2) return; RX.ultimo.serie = sr;
             const box = document.createElement('div'); box.className = 'ls-box'; box.innerHTML = `<h3>Série histórica do NDVI (${sr[0].ano}–${sr[sr.length - 1].ano})</h3>${lsSerieHtml(sr)}`;
             document.getElementById('raioxCorpo').querySelector('.rx-flags')?.after(box); }).catch(e => console.error('série NDVI', e));
-        itrPrevia(RX.ultimo).then(pv => { if (RX.ultimo && RX.ultimo.nome === nome) { RX.ultimo.previa = pv; rxMostrarItr(); } }).catch(e => console.error('prévia ITR', e));
+        Promise.all([itrPrevia(RX.ultimo), typeof cdDeclarado === 'function' && !alvoCustom ? cdDeclarado(nome).catch(() => null) : null]).then(([pv, dc]) => { if (RX.ultimo && RX.ultimo.nome === nome) { RX.ultimo.previa = pv; RX.ultimo.decl = dc; rxMostrarItr(); rxMostrarDecl(); } }).catch(e => console.error('prévia ITR', e));
         document.getElementById('raioxPdf').disabled = false;
     } catch (e) {
         console.error(e); corpo.innerHTML = '<p>Não foi possível concluir a análise. Tente novamente.</p>';
@@ -512,6 +512,7 @@ async function gerarRelatorioRaiox() {
         u.linkVerif = `${location.origin}${location.pathname.replace(/[^/]*$/, '')}verificar.html#${b64}`;
     } catch (e) { console.error('código de autenticidade', e); }
     if (!u.previa) { try { u.previa = await itrPrevia(u); } catch (e) { console.error(e); } }
+    if (u.decl === undefined && typeof cdDeclarado === 'function') u.decl = await cdDeclarado(u.nome).catch(() => null);
     // monta tudo nesta aba (o mapa precisa estar visível para desenhar) e só no fim abre o relatório
     document.getElementById('raioxDialog').close();
     const aviso = document.createElement('div'); aviso.className = 'rx-progresso';
@@ -613,10 +614,11 @@ function rxChecklist(u) {
         lic.length ? lic.slice(0, 5).map(x => `${x.f.properties.Modalidade || 'Licença'} nº ${x.f.properties['Nº do documento'] || 's/ nº'} – ${x.f.properties.Atividade || ''}, validade ${x.f.properties.Validade || '–'}`).join('; ') : 'Nenhuma licença localizada dentro do imóvel');
     if (u.itr) G.push(itrChecklist(u));
     const gp = itrPrevChecklist(u); if (gp) G.push(gp);
+    const gd = typeof cdChecklist === 'function' ? cdChecklist(u) : null; if (gd) G.splice(2, 0, gd);
     return G;
 }
 function rxRelatorioHtml(u, F) {
-    const { p, r, area, uso } = u, G = rxChecklist(u), N = [...u.N.filter(n => n.tema !== 'Vistoria'), ...(u.itr ? itrPendencias(u) : []), ...itrPrevPendencias(u), ...u.N.filter(n => n.tema === 'Vistoria')].sort((a, b) => a.prior - b.prior);
+    const { p, r, area, uso } = u, G = rxChecklist(u), N = [...u.N.filter(n => n.tema !== 'Vistoria'), ...(u.itr ? itrPendencias(u) : []), ...itrPrevPendencias(u), ...(typeof cdPendencias === 'function' ? cdPendencias(u) : []), ...u.N.filter(n => n.tema === 'Vistoria')].sort((a, b) => a.prior - b.prior);
     const dataHora = u.quando.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
     const mun = (u.C.municipio || ((dadosGerais.cliente || {}).nome || '').replace(/^.*– */, '')) || '–';
     const cod = (String(u.C.car || '').match(/data\/m\/(\d{7})\//) || [])[1];
@@ -695,7 +697,7 @@ function rxRelatorioHtml(u, F) {
  .selo.ok { background: #e7f5ec; color: #1b6b3a; } .selo.at { background: #fff3d6; color: #8a5a00; } .selo.no { background: #fdecea; color: #b71c1c; } .selo.na { background: #eef1ef; color: #7b8781; }
  .dot.ok { background: #2e7d32; } .dot.at { background: #f9a825; } .dot.no { background: #c62828; } .dot.na { background: #b0bab4; }
  .dk { width: 100%; border-collapse: collapse; border-radius: 10px; overflow: hidden; margin: 6px 0; font-size: 9.5pt; } .dk th { background: #1d2a24; color: #fff; text-align: left; padding: 7px 8px; font-size: 8pt; text-transform: uppercase; letter-spacing: .05em; }
- .dk td { padding: 7px 8px; border-bottom: 1px solid #e5ebe7; } .dk .def { color: #c62828; font-weight: 700; } .dk .bom { color: #1b6b3a; font-weight: 700; }
+ .dk td { padding: 7px 8px; border-bottom: 1px solid #e5ebe7; } .dk .def { color: #c62828; font-weight: 700; } .dk .bom { color: #1b6b3a; font-weight: 700; } .dk .at { color: #e65100; font-weight: 700; }
  .br { display: grid; grid-template-columns: 52% 1fr 44px; gap: 6px; align-items: center; margin: 4px 0; font-size: 8.5pt; } .br span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .br i { height: 10px; background: #eef2ef; border-radius: 5px; overflow: hidden; } .br em { display: block; height: 100%; border-radius: 5px; } .br b { text-align: right; }
  .duas { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
  img.mapa { width: 100%; border-radius: 10px; border: 1px solid #cfd8d3; margin: 4px 0 2px; } .leg { font-size: 8pt; color: #5f6d66; margin-bottom: 6px; }
@@ -756,6 +758,8 @@ ${sec('Cobertura do solo e relevo', 'Declarado no CAR × medido por satélite', 
    <tr><td>Sobreposição com outros CAR</td><td>0 ha</td><td>${rxF(r.car.reduce((a, x) => a + x.ha, 0))} ha</td><td class="${r.car[0] && r.car[0].ha >= Math.max(1, area * .02) ? 'def' : 'bom'}">${r.car[0] && r.car[0].ha >= Math.max(1, area * .02) ? 'Sobreposição relevante' : 'Só ajustes de divisa'}</td></tr></table>
   <div class="duas"><div><h4>Uso e cobertura do solo (${u.B.usoFonte})</h4>${barras(uso, corUso)}</div><div><h4>Declividade (classes Embrapa)</h4>${barras(r.decl.filter(d => d.pct >= .05).map(d => [d.nome, d.pct]), corDecl)}</div></div>
   ${(u.pend || []).length ? `<h4>Observações do cadastro</h4>${u.pend.map(t => `<div class="obs">${esc(t)}</div>`).join('')}` : ''}`)}
+
+${u.decl ? sec('CAR declarado × verificado', 'Temas declarados no SICAR comparados com o satélite e as bases públicas', cdQuadroHtml(u)) : ''}
 
 ${u.B.apt ? sec('Aptidão agrícola e contexto regional', 'Clima, chuva, solos e acesso a calcário', u.B.apt) : ''}
 ${(() => { const v = rxValorTerraHtml(u); return u.B.log || v ? sec('Logística e referência de valor da terra', 'Distâncias até a infraestrutura do agronegócio e preços de terra do DERAL/SEAB para o município', (u.B.log || '') + v) : ''; })()}
@@ -819,6 +823,13 @@ ${sec('Metodologia e fontes', 'Como esta análise foi feita', `
 })();
 
 // ---------- ITR anexado pelo usuário ----------
+function rxMostrarDecl() {
+    const u = RX.ultimo; if (!u || !u.decl) return;
+    const corpo = document.getElementById('raioxCorpo'); if (!corpo || corpo.querySelector('.cd-box')) return;
+    const box = document.createElement('div'); box.className = 'cd-box';
+    box.innerHTML = `<h3>CAR declarado × verificado</h3>${cdQuadroHtml(u, 'rx-tab dk')}`;
+    (corpo.querySelector('.ls-box') || corpo.querySelector('.rx-flags'))?.after(box);
+}
 function rxMostrarItr() {
     const u = RX.ultimo, corpo = document.getElementById('raioxCorpo'); if (!u || !corpo) return;
     corpo.querySelector('.itr-box')?.remove();
