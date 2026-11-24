@@ -1,111 +1,11 @@
 /home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:39: DeprecationWarning: ssl.TLSVersion.TLSv1 is deprecated
   SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
 Município 4109807 Ibiporã
-limite: IBGE
-
-===== CAR =====
-  CAR baixados 1140
-imóveis 1140 Counter({'Aguardando análise': 597, 'Analisado – em conformidade': 410, 'Analisado – notificação pendente': 97, 'Cancelado': 21, 'Em análise': 15}) [('Aguardando análise', 597), ('Analisado, em conformidade com a Lei nº 12.651/2012', 369), ('Analisado, aguardando atendimento a notificação', 76), ('Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)', 28), ('Cancelado por decisão administrativa', 21), ('Aguardando análise, após revisão ou atendimento da notificação', 21), ('Em análise', 15), ('Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais', 13)]
------ CAR ok (2s)
-
-===== SIGEF =====
-parcelas 301 Counter({'Registrada': 301})
------ SIGEF ok (12s)
-
-===== IBAMA =====
-/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:171: DeprecationWarning: The 'shapely.ops.transform()' function is deprecated. Use 'shapely.transform()' or 'shapely.transform_coordseq()' instead. See https://shapely.readthedocs.io/en/latest/manual.html#shapely.ops.transform for more details.
-  g = transform(geo, transform(utm, Point(lon, lat)).buffer(60)); aprox = True
-embargos 1 Counter({'Embargo vigente': 1})
------ IBAMA ok (27s)
-
-===== Microbacias =====
-microbacias 46
------ Microbacias ok (13s)
-
-===== MapBiomas cobertura =====
-  indisponível: lulc_10m/collection_2/integration/mapbiomas_10m_collection2_integration_v1-classification_2023.tif HTTP response code: 403
-  indisponível: collection_10/lulc/coverage/brazil_coverage_2024.tif HTTP response code: 403
-  indisponível: collection_10/lulc/coverage/brasil_coverage_2024.tif HTTP response code: 403
-  indisponível: collection_10/lclu/coverage/brazil_coverage_2024.tif HTTP response code: 403
-  indisponível: collection_10/lclu/coverage/brasil_coverage_2024.tif HTTP response code: 403
-  indisponível: collection_10/lulc/coverage/brazil_coverage_2023.tif HTTP response code: 403
-  indisponível: collection_9/lclu/coverage/brasil_coverage_2023.tif HTTP response code: 403
-  indisponível: collection_9/lulc/coverage/brasil_coverage_2023.tif HTTP response code: 403
-  indisponível: collection_8/lclu/coverage/brasil_coverage_2022.tif HTTP response code: 403
-uso do solo: reserva Impact Observatory 2023 (2781, 2608)
-grupos (%) {'Vegetação arbórea': 16.7, 'Agricultura': 69.2, 'Pastagem e campos': 3.4, 'Área urbanizada': 8.1, 'Água': 2.5, 'Outras áreas': 0.0}
------ MapBiomas cobertura ok (6s)
-
-===== MapBiomas alertas =====
-camada mapbiomas-alertas:dashboard-alert-rural-properties-shapefile
-alertas 6
------ MapBiomas alertas ok (2s)
-
-===== Outorgas SIGARH =====
-  tentativa 1 HTTP Error 503: 503
-   00_PUBLICACOES/outorgas_sigarh/FeatureServer camada 0 lote 552
-outorgas rural 57 fora do CAR 45
------ Outorgas SIGARH ok (76s)
-
-===== Licenças ambientais IAT (SGA/SIA) =====
-  GeoPR: 2224 licenças (com histórico); SGA consulta pública: 695
-  313 licenças só no SGA (sem coordenada no GeoPR)
-  2385 licenças, 414 vigentes e 749 vencidas no mapa; pontos genéricos: 5; {'Vence em até 6 meses': 42, 'Vigente': 652, 'Vencida': 830, 'Vencida (substituída por licença mais recente)': 861}
-  grupos: {'Dispensa de licenciamento': 678, 'Licença Prévia / de Instalação': 610, 'Licença de Operação': 607, 'Autorização Ambiental': 303, 'Licença Simplificada': 152, 'Licença por Adesão e Compromisso': 33, '': 1, 'Autorização Florestal': 1}
------ Licenças ambientais IAT (SGA/SIA) ok (95s)
-
-===== Barragens IAT + SNISB =====
-   IG/SNISB/FeatureServer camada 0 lote 24
-   Hosted/barragens_dashboard_publico/FeatureServer camada 0 lote 26
-barragens 13 SNISB 10 IAT 8
------ Barragens IAT + SNISB ok (16s)
-
-===== Massas d'água (ANA) =====
-   SPR/Massa_dagua/FeatureServer camada 0 lote 80
-massas d'água 39
------ Massas d'água (ANA) ok (3s)
-
-===== Hidrografia FBDS (IAT) =====
-   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
-   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
-   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 1000
-   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 215
-fbds_rio_ate10m_larg 1951
-   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 244
-fbds_nascentes 123
------ Hidrografia FBDS (IAT) ok (37s)
-
-===== Relevo =====
-relevo: cotas 328.8387145996094 620.3416137695312
------ Relevo ok (7s)
-
-===== Mineração (ANM/SIGMINE) =====
-  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
-processos minerários 44 Counter({'Lavra / extração': 23, 'Pesquisa mineral': 16, 'Disponibilidade': 5})
------ Mineração (ANM/SIGMINE) ok (3s)
-
-===== Setores de risco (SGB) =====
-setores de risco SGB 0
------ Setores de risco (SGB) ok (1s)
-
-===== Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas =====
-sítios arqueológicos 2
-terras indígenas e quilombolas (até 10 km) 0 Counter()
------ Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas ok (3s)
-
-===== Aptidão: clima, solos, calcário e unidades de conservação =====
-  altitude: grade NASA 454.93 m, local 444.0 m, correção 0.07 °C
-clima Am 1453 mm ['ago']
-solos 12 ['id1', 'cd_fcim', 'legenda', 'ar_poli_km', 'leg_ordem', 'legenda_2', 'cd_ord_id', 'cd_leg2_id']
-jazidas de calcário (PR, lavra/licenciamento) 462
-  camadas CNUC: ['cnuc_2025_08', 'cnuc_2025_08_pontos'] -> usando cnuc_2025_08
-unidades de conservação até 10 km 2 ['PARQUE NATURAL MUNICIPAL PEROBA ROSA', 'PARQUE ESTADUAL DE IBIPORÃ']
------ Aptidão: clima, solos, calcário e unidades de conservação ok (316s)
 
 ===== Logística e agronegócio (OpenStreetMap) =====
   overpass https://overpass.kumi.systems/api/interpreter HTTP Error 504: Gateway Timeout
   overpass https://overpass-api.de/api/interpreter HTTP Error 502: Bad Gateway
-  overpass https://overpass.private.coffee/api/interpreter HTTP Error 502: Bad Gateway
+  overpass https://overpass.private.coffee/api/interpreter The read operation timed out
 Traceback (most recent call last):
   File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 63, in run
     try: fn(); log(f'----- {nome} ok ({time.time() - t0:.0f}s)')
@@ -117,11 +17,3 @@ Traceback (most recent call last):
     raise RuntimeError('Overpass indisponível')
 RuntimeError: Overpass indisponível
 ----- Logística e agronegócio (OpenStreetMap) FALHOU
-
-===== Pendências =====
-Counter({'Atenção': 586, 'Sem pendência identificada': 362, 'Prioridade média': 109, 'Prioridade alta': 62, 'Cancelado': 21})
------ Pendências ok (1s)
-
-===== Config =====
-config ok Ibiporã 1119 imóveis
------ Config ok (1s)
