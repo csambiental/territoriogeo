@@ -970,38 +970,40 @@ function rxValorTerraHtml(u) {
 const rxSemAcento = t => String(t).normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 function rxCertDados(u) {
     const v = u.verif || {}, f = (x, c = 2) => x == null ? '–' : rxF(x, c);
-    return [['Código de autenticidade', u.codigo || '–'], ['Imóvel (CAR)', v.car || u.nome], ['Município', v.mun ? v.mun + '/PR' : '–'], ['Área analisada', f(v.ha) + ' ha'],
+    return [['Código de autenticidade', u.codigo || '–'], ['Imóvel (CAR)', v.car || u.nome], ['Município', v.mun ? (/\/PR$/.test(v.mun) ? v.mun : v.mun + '/PR') : '–'], ['Área analisada', f(v.ha) + ' ha'],
         ['Localização (centro)', v.lat != null ? `${String(v.lat).replace('.', ',')}; ${String(v.lon).replace('.', ',')}` : '–'],
         ['Emitido em', u.quando.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })], ['Base de dados de', v.dados ? v.dados.split('-').reverse().join('/') : '–'],
         ['Alertas no relatório', `${v.alertas ? v.alertas.vermelho : 0} vermelho(s) · ${v.alertas ? v.alertas.amarelo : 0} amarelo(s)`],
         ['Embargos IBAMA na área', String(v.embargos ?? 0)], ['Alertas de desmatamento na área', String(v.desmate ?? 0)],
         ['Vegetação nativa', v.nativa == null ? '–' : f(v.nativa, 1) + '%'], ['Área com parcelas SIGEF', f(v.sigef_ha) + ' ha']];
 }
-function rxTextoQR(u) {
-    return rxSemAcento(['CS Consultoria Ambiental - Raio-X do Imovel Rural', ...rxCertDados(u).map(([k, x]) => `${k}: ${x}`)].join('\n'));
+function rxTextoQR(u) {   // texto curto (QR menos denso, lê fácil no celular)
+    const d = Object.fromEntries(rxCertDados(u)), al = (u.verif || {}).alertas || {};
+    return rxSemAcento(['CS Consultoria Ambiental - Raio-X do Imovel Rural', `Codigo: ${d['Código de autenticidade']}`, `CAR: ${d['Imóvel (CAR)']}`, `Municipio: ${d['Município']}`,
+        `Area: ${d['Área analisada']}`, `Emitido em: ${d['Emitido em']}`, `Alertas: ${al.vermelho || 0} vermelho(s), ${al.amarelo || 0} amarelo(s)`].join('\n'));
 }
 function rxCertificadoHtml(u) {
     const logo = new URL('logo.png', location.href).href, cs = dadosGerais.cs_contato || {};
     const contato = [cs.site, cs.telefone, cs.email].filter(Boolean).map(esc).join('  ·  ');
-    let qrSvg = ''; try { const q = qrcode(0, 'M'); q.addData(rxTextoQR(u)); q.make(); qrSvg = q.createSvgTag({ cellSize: 4, margin: 2, scalable: true }); } catch (e) { }
+    let qrSvg = ''; try { const q = qrcode(0, 'L'); q.addData(rxTextoQR(u)); q.make(); qrSvg = q.createSvgTag({ cellSize: 4, margin: 4, scalable: true }); } catch (e) { }
     const L = rxCertDados(u);
     return `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Certificado de autenticidade – ${esc(u.codigo || '')}</title><style>
 @page { size: A4; margin: 0; } * { box-sizing: border-box; } body { margin: 0; font: 10.5pt/1.45 'Segoe UI', Arial, sans-serif; color: #1f2b25; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-.f { width: 210mm; min-height: 297mm; padding: 16mm 18mm; position: relative; } .moldura { border: 2.5px solid #1b4d32; border-radius: 6mm; padding: 12mm 14mm; min-height: 263mm; position: relative; }
+.f { width: 210mm; height: 297mm; padding: 12mm 14mm; position: relative; overflow: hidden; } .moldura { border: 2.5px solid #1b4d32; border-radius: 6mm; padding: 10mm 13mm 18mm; height: 273mm; position: relative; }
 .moldura::before { content: ''; position: absolute; inset: 3mm; border: 1px solid #9cc5ab; border-radius: 4mm; pointer-events: none; }
-.top { display: flex; justify-content: space-between; align-items: center; } .top img { height: 20mm; } .top .d { font-size: 9pt; color: #5f6d66; text-align: right; }
-h1 { font-size: 24pt; margin: 14mm 0 2mm; color: #1b4d32; letter-spacing: .5px; text-align: center; } .sub { text-align: center; color: #5f6d66; margin: 0 0 10mm; }
-.cod { text-align: center; margin: 0 auto 8mm; } .cod span { display: block; font-size: 9pt; color: #5f6d66; text-transform: uppercase; letter-spacing: 1.5px; }
+.top { display: flex; justify-content: space-between; align-items: center; } .top img { height: 16mm; } .top .d { font-size: 9pt; color: #5f6d66; text-align: right; }
+h1 { font-size: 22pt; margin: 8mm 0 1mm; color: #1b4d32; letter-spacing: .5px; text-align: center; } .sub { text-align: center; color: #5f6d66; margin: 0 0 6mm; }
+.cod { text-align: center; margin: 0 auto 6mm; } .cod span { display: block; font-size: 9pt; color: #5f6d66; text-transform: uppercase; letter-spacing: 1.5px; }
 .cod b { display: inline-block; font: 700 22pt Consolas, 'Courier New', monospace; color: #1b6b3a; border: 2px solid #1b6b3a; border-radius: 3mm; padding: 2mm 6mm; margin-top: 2mm; letter-spacing: 2px; }
-.g { display: grid; grid-template-columns: 1fr 46mm; gap: 8mm; align-items: start; } table { width: 100%; border-collapse: collapse; } td { padding: 2.2mm 2mm; border-bottom: 1px solid #e3ece6; vertical-align: top; }
+.g { display: grid; grid-template-columns: 1fr 46mm; gap: 8mm; align-items: start; } table { width: 100%; border-collapse: collapse; } td { padding: 1.4mm 2mm; font-size: 9.5pt; border-bottom: 1px solid #e3ece6; vertical-align: top; }
 td:first-child { color: #5f6d66; width: 46%; } td:last-child { font-weight: 600; word-break: break-all; } .qr svg { width: 46mm; height: 46mm; } .qr p { font-size: 8pt; color: #5f6d66; text-align: center; margin: 1mm 0 0; }
-.txt { margin-top: 9mm; font-size: 9.5pt; text-align: justify; } .rod { position: absolute; left: 14mm; right: 14mm; bottom: 10mm; font-size: 8.5pt; color: #5f6d66; border-top: 1px solid #dfe8e2; padding-top: 3mm; display: flex; justify-content: space-between; }
+.txt { margin-top: 6mm; font-size: 9pt; text-align: justify; } .txt p { margin: 0 0 2.5mm; } .rod { position: absolute; left: 14mm; right: 14mm; bottom: 10mm; font-size: 8.5pt; color: #5f6d66; border-top: 1px solid #dfe8e2; padding-top: 3mm; display: flex; justify-content: space-between; }
 </style></head><body><div class="f"><div class="moldura">
 <div class="top"><img src="${logo}" alt="CS Consultoria Ambiental"><div class="d">Raio-X do Imóvel Rural<br>Diagnóstico Ambiental Rural</div></div>
 <h1>Certificado de Autenticidade</h1><p class="sub">Relatório Raio-X do Imóvel Rural emitido pela CS Consultoria Ambiental</p>
 <div class="cod"><span>Código de autenticidade</span><b>${esc(u.codigo || '–')}</b></div>
 <div class="g"><table>${L.slice(1).map(([k, x]) => `<tr><td>${esc(k)}</td><td>${esc(x)}</td></tr>`).join('')}</table>
-<div class="qr">${qrSvg}<p>O QR code contém estes mesmos dados, legíveis pela câmera do celular, sem acesso a site.</p></div></div>
+<div class="qr">${qrSvg}<p>O QR code contém o código e os dados principais deste certificado, legíveis pela câmera do celular, sem acesso a site.</p></div></div>
 <div class="txt"><p>Certificamos que o relatório identificado acima foi emitido pela CS Consultoria Ambiental na data e hora indicadas, com os resultados aqui resumidos. O código de autenticidade é calculado a partir desses dados: qualquer alteração no relatório produz números diferentes dos registrados neste certificado.</p>
 <p>Para conferir, compare o código impresso no rodapé de todas as páginas do relatório e os números acima com os do relatório recebido. Em caso de dúvida, a CS Consultoria Ambiental pode confirmar a emissão pelo código.</p>
 <p>O relatório é uma análise automática sobre bases públicas oficiais e não substitui vistoria de campo nem consulta oficial aos órgãos ambientais.</p></div>
