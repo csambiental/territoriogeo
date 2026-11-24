@@ -33,17 +33,27 @@ for nome, fid in ARQ.items():
     with zipfile.ZipFile(z) as zf: shps = [i.filename for i in zf.infolist() if i.filename.lower().endswith('.shp')]
     cont = collections.Counter()
     for shp in shps:
-        meta, _, _, campos = raw.read(f'/vsizip/{z}/{shp}', read_geometry=False, columns=['cod_imovel', 'nom_tema', 'num_area'], encoding='ISO-8859-1')
-        cod, tem, area = campos
+        meta, _, _, campos = raw.read(f'/vsizip/{z}/{shp}', read_geometry=False, encoding='ISO-8859-1')
+        nomes = [str(n).lower() for n in meta['fields']]
+        col = {n: campos[i] for i, n in enumerate(nomes)}
+        print(f'  {shp}: campos {nomes}, {len(campos[0]) if campos else 0} registros; exemplo',
+              {n: (str(col[n][0])[:60] if len(col[n]) else None) for n in nomes}, flush=True)
+        cod = col.get('cod_imovel'); tem = col.get('nom_tema'); area = col.get('num_area')
+        if cod is None: continue
+        if tem is None: tem = [None] * len(cod)
+        if area is None: area = [0] * len(cod)
         for c, t, a in zip(cod, tem, area):
-            m = re.match(r'^PR-(\d{7})-', c or '')
+            m = re.match(r'^\s*PR-?(\d{7})', str(c or ''), re.I)
             if not m: continue
-            t = (t or nome).strip()
+            c = str(c).strip().upper()
+            t = (str(t).strip() if t is not None and str(t).strip() else nome)
             if t not in ti: ti[t] = len(temas); temas.append(t)
             i = ti[t]; d = acum[m.group(1)][c]
             v = d.get(i)
-            if v: v[0] += float(a or 0); v[1] += 1
-            else: d[i] = [float(a or 0), 1]
+            try: a = float(a or 0)
+            except Exception: a = 0.0
+            if v: v[0] += a; v[1] += 1
+            else: d[i] = [a, 1]
             cont[t] += 1
     os.remove(z)
     resumo[nome] = dict(cont)
