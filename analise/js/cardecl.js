@@ -32,7 +32,7 @@ function cdComparar(u) {
     const D = u.decl; if (!D) return [];
     const area = u.area, P = u.previa || null, L = [], f = (v, c = 1) => rxF(v, c) + ' ha';
     const nat = (u.uso || []).find(([k]) => /Vegetação (nativa|arbórea)/.test(k));
-    const vegMed = P ? P.veg : nat ? nat[1] / 100 * area : null;
+    const vegMed = P && P.uso && P.uso.veg != null ? P.uso.veg : nat ? nat[1] / 100 * area : null; // vegetação nativa medida (P.veg = lavouras!)
     // vegetação nativa
     if (vegMed != null) { const dif = D.veg - vegMed, lim = Math.max(2, 0.1 * Math.max(D.veg, vegMed));
         L.push({ rot: 'Remanescente de vegetação nativa', decl: f(D.veg), ver: f(vegMed) + ' (satélite)', st: Math.abs(dif) <= lim ? 'ok' : dif > 0 ? 'no' : 'at',
