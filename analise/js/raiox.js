@@ -619,7 +619,7 @@ function rxChecklist(u) {
     return G;
 }
 function rxRelatorioHtml(u, F) {
-    const { p, r, area, uso } = u, G = rxChecklist(u), N = [...u.N.filter(n => n.tema !== 'Vistoria'), ...(u.itr ? itrPendencias(u) : []), ...itrPrevPendencias(u), ...(typeof cdPendencias === 'function' ? cdPendencias(u) : []), ...u.N.filter(n => n.tema === 'Vistoria')].sort((a, b) => a.prior - b.prior);
+    const { p, r, area, uso } = u, G = rxChecklist(u), N = [...u.N.filter(n => n.tema !== 'Vistoria'), ...(u.itr ? itrPendencias(u) : []), ...itrPrevPendencias(u), ...(typeof cdPendencias === 'function' ? cdPendencias(u) : []), ...(window.RX_NOTAS || []).filter(n => n.d).map(n => ({ prior: 2, tema: 'Documentos × CAR', achado: n.a, adequacao: n.d })), ...u.N.filter(n => n.tema === 'Vistoria')].sort((a, b) => a.prior - b.prior);
     const dataHora = u.quando.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
     const mun = (u.C.municipio || ((dadosGerais.cliente || {}).nome || '').replace(/^.*– */, '')) || '–';
     const cod = (String(u.C.car || '').match(/data\/m\/(\d{7})\//) || [])[1];
@@ -758,7 +758,7 @@ ${sec('Cobertura do solo e relevo', 'Declarado no CAR × medido por satélite', 
    <tr><td>Reserva Legal (mín. 20%)</td><td>${rxF(area * .2, 1)} ha</td><td>${pv === null ? '–' : rxF(pv / 100 * area, 1) + ' ha de vegetação'}</td><td class="${pv !== null && pv < 20 ? 'def' : 'bom'}">${pv === null ? '–' : pv < 20 ? `Déficit: ${rxF((20 - pv) / 100 * area, 1)} ha` : 'Atende'}</td></tr>
    <tr><td>Sobreposição com outros CAR</td><td>0 ha</td><td>${rxF(r.car.reduce((a, x) => a + x.ha, 0))} ha</td><td class="${r.car[0] && r.car[0].ha >= Math.max(1, area * .02) ? 'def' : 'bom'}">${r.car[0] && r.car[0].ha >= Math.max(1, area * .02) ? 'Sobreposição relevante' : 'Só ajustes de divisa'}</td></tr></table>
   <div class="duas"><div><h4>Uso e cobertura do solo (${u.B.usoFonte})</h4>${barras(uso, corUso)}</div><div><h4>Declividade (classes Embrapa)</h4>${barras(r.decl.filter(d => d.pct >= .05).map(d => [d.nome, d.pct]), corDecl)}</div></div>
-  ${(u.pend || []).length ? `<h4>Observações do cadastro</h4>${u.pend.map(t => `<div class="obs">${esc(t)}</div>`).join('')}` : ''}`)}
+  ${(() => { const ob = [...(u.pend || []), ...(window.RX_NOTAS || []).map(n => n.a)]; return ob.length ? `<h4>Observações do cadastro</h4>${ob.map(t => `<div class="obs">${esc(t)}</div>`).join('')}` : ''; })()}`)}
 
 ${typeof cdSecoesHtml === 'function' ? cdSecoesHtml(u, F.cd, sec, F.foto) : ''}
 

@@ -35,7 +35,7 @@ function cdComparar(u) {
     const nat = (u.uso || []).find(([k]) => /Vegetação (nativa|arbórea)/.test(k));
     const vegMed = P && P.uso && P.uso.veg != null ? P.uso.veg : nat ? nat[1] / 100 * area : null; // vegetação nativa medida (P.veg = lavouras!)
     // vegetação nativa
-    if (vegMed != null) { const dif = D.veg - vegMed, lim = Math.max(2, 0.1 * Math.max(D.veg, vegMed));
+    if (vegMed != null) { const dif = D.veg - vegMed, lim = Math.max(Math.min(2, 0.05 * area), 0.1 * Math.max(D.veg, vegMed));
         L.push({ rot: 'Remanescente de vegetação nativa', decl: f(D.veg), ver: f(vegMed) + ' (satélite)', st: Math.abs(dif) <= lim ? 'ok' : dif > 0 ? 'no' : 'at',
             txt: Math.abs(dif) <= lim ? 'Compatível' : dif > 0 ? `Declarado ${f(dif)} acima do medido – vegetação declarada onde o satélite não encontra` : `Satélite mede ${f(-dif)} a mais – vegetação não declarada (pode reforçar a RL)` }); }
     // reserva legal
@@ -44,7 +44,7 @@ function cdComparar(u) {
           st: def <= 0.05 * min ? 'ok' : mf && mf <= 4 ? 'at' : 'no', txt: def <= 0.05 * min ? 'Atende o mínimo legal' : `Déficit declarado de ${f(def)}${mf && mf <= 4 ? ' – imóvel até 4 módulos: pode valer a vegetação de 22/07/2008 (art. 67)' : ' – recompor, regenerar ou compensar (PRA)'}` });
       if (vegMed != null && D.rl > vegMed * 1.05 + 1) L.push({ rot: 'Reserva Legal × vegetação existente', decl: f(D.rl), ver: f(vegMed) + ' de vegetação', st: 'at', txt: `RL declarada maior que a vegetação medida em ${f(D.rl - vegMed)} – parte da RL pode estar sem cobertura (recomposição)` }); }
     // APP
-    if (P) { const dif = D.app - P.app, lim = Math.max(2, 0.2 * Math.max(D.app, P.app));
+    if (P) { const dif = D.app - P.app, lim = Math.max(Math.min(2, 0.05 * area), 0.2 * Math.max(D.app, P.app));
         L.push({ rot: 'APP total', decl: f(D.app), ver: f(P.app) + ' (faixas legais estimadas)', st: Math.abs(dif) <= lim ? 'ok' : dif < 0 ? 'no' : 'at',
             txt: Math.abs(dif) <= lim ? 'Compatível' : dif < 0 ? `APP declarada ${f(-dif)} menor que a estimada – conferir rios/nascentes não declarados` : `APP declarada ${f(dif)} maior que a estimada – conferir traçado da hidrografia` }); }
     if (D.appRecompor > 0.01) L.push({ rot: 'APP a recompor (declarada)', decl: f(D.appRecompor, 2), ver: '–', st: 'at', txt: 'Passivo de APP declarado: recomposição via PRA' });
@@ -63,8 +63,8 @@ function cdComparar(u) {
           txt: art > D.reserv ? `${art - D.reserv} açude(s) sem APP de reservatório declarada` : 'Compatível' }); }
     // área consolidada
     if (vegMed != null) { const antr = Math.max(0, area - vegMed), exc = D.cons - antr;
-        L.push({ rot: 'Área consolidada (uso antes de 22/07/2008)', decl: f(D.cons), ver: f(antr) + ' de área aberta hoje', st: exc > Math.max(2, 0.05 * area) ? 'at' : 'ok',
-            txt: exc > Math.max(2, 0.05 * area) ? `Consolidada declarada ${f(exc)} acima da área aberta – possível sobreposição com vegetação` : 'Compatível' }); }
+        L.push({ rot: 'Área consolidada (uso antes de 22/07/2008)', decl: f(D.cons), ver: f(antr) + ' de área aberta hoje', st: exc > Math.max(Math.min(2, 0.1 * area), 0.05 * area) ? 'at' : 'ok',
+            txt: exc > Math.max(Math.min(2, 0.1 * area), 0.05 * area) ? `Consolidada declarada ${f(exc)} acima da área aberta – possível sobreposição com vegetação` : 'Compatível' }); }
     if (D.restrito > 0.01) L.push({ rot: 'Uso restrito (25–45° / pantanal)', decl: f(D.restrito, 2), ver: '–', st: 'na', txt: 'Manejo sustentável; vedada conversão de vegetação' });
     if (D.pousio > 0.01) L.push({ rot: 'Área de pousio', decl: f(D.pousio, 2), ver: '–', st: 'na', txt: 'Conferir se o pousio não ultrapassa 5 anos' });
     if (D.servidao > 0.01) L.push({ rot: 'Servidão administrativa', decl: f(D.servidao, 2), ver: '–', st: 'na', txt: 'Excluída da área líquida do imóvel' });
