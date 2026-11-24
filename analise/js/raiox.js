@@ -498,7 +498,7 @@ async function gerarRelatorioRaiox() {
     const u = RX.ultimo; if (!u) return;
     // código de autenticidade: resumo do laudo + responsável técnico, conferível pelo QR na página verificar.html
     try {
-        const resp = (document.getElementById('raioxResp')?.value || '').trim();
+        const resp = '';   // responsável técnico fora do relatório por enquanto
         try { localStorage.setItem('rx-resp', resp); } catch (e) { }
         const cnt = c => (u.flags || []).filter(f => f[0] === c).length, nat = (u.uso || []).find(([k]) => /Vegetação (nativa|arbórea)/.test(k));
         const [lg, lt] = turf.centroid(u.alvo).geometry.coordinates;
@@ -809,7 +809,7 @@ ${sec('Metodologia e fontes', 'Como esta análise foi feita', `
   </div>
   <p class="hint">Legenda dos selos: <b>Em acordo</b> – nada encontrado ou situação regular; <b>Atenção</b> – item a verificar ou que pode exigir adequação; <b>Em desacordo</b> – restrição ou pendência identificada nas bases; <b>Não se aplica</b> – não há o elemento no imóvel ou não há dado.</p>
   <p class="hint">Privacidade: este relatório não exibe CPF, CNPJ nem dados pessoais de proprietários. Titulares de outorgas e licenças aparecem como constam nas consultas públicas do IAT.</p>
-  <div class="valida"><div class="qr">${qr(link, 96)}</div><div><b>Código de autenticidade</b><br><span class="mono">${u.codigo}</span>${u.resp ? `<br>Responsável técnico: <b>${esc(u.resp)}</b>` : ''}<br><span class="hint">Aponte a câmera para o QR code para conferir a autenticidade deste relatório (código, data, hora, responsável e resultados) e refazer a análise com os dados mais recentes. Dados do mapa atualizados em ${esc(dadosGerais.atualizado_em || '')}. Emitido em ${esc(dataHora)}.</span></div></div>${blocoCS}`)}
+  <div class="valida"><div class="qr">${qr(link, 96)}</div><div><b>Código de autenticidade</b><br><span class="mono">${u.codigo}</span>${u.resp ? `<br>Responsável técnico: <b>${esc(u.resp)}</b>` : ''}<br><span class="hint">Aponte a câmera para o QR code para conferir a autenticidade deste relatório (código, data, hora e resultados). Dados do mapa atualizados em ${esc(dadosGerais.atualizado_em || '')}. Emitido em ${esc(dataHora)}.</span></div></div>${blocoCS}`)}
 </div></body></html>`;
 }
 // abre o Raio-X direto quando o link traz ?car=… (usado pelo QR code do relatório)
