@@ -1,0 +1,80 @@
+{
+ "fonte": "SICAR – base de downloads (temas declarados), PR",
+ "baixado_em": "2026-11-24",
+ "temas": [
+  "Area de Uso Restrito para declividade de 25 a 45 graus",
+  "Area de Uso Restrito para regioes pantaneiras",
+  "Area de Pousio",
+  "Area de Servidao Administrativa Total",
+  "Reserva Legal Proposta",
+  "Reserva Legal Aprovada e nao Averbada",
+  "Reserva Legal Averbada",
+  "Area Consolidada",
+  "Remanescente de Vegetacao Nativa",
+  "Curso d'agua natural de ate 10 metros",
+  "Lago ou lagoa natural",
+  "Reservatorio artificial decorrente de barramento ou represamento de cursos d'agua naturais",
+  "Curso d'agua natural de 50 a 200 metros",
+  "Curso d'agua natural de 200 a 600 metros",
+  "Curso d'agua natural de 10 a 50 metros",
+  "Curso d'agua natural acima de 600 metros",
+  "APP Total",
+  "Area de Preservacao Permanente em area antropizada nao declarada como area consolidada",
+  "Area de Preservacao Permanente a Recompor de Rios ate 10 metros",
+  "Area de Preservacao Permanente de Nascentes ou Olhos D'agua Perenes",
+  "Area de Preservacao Permanente a Recompor de Nascentes ou Olhos D'agua Perenes",
+  "Area de Preservacao Permanente a Recompor de Rios de 50 ate 200 metros",
+  "Area de Preservacao Permanente a Recompor de Lagos e Lagoas Naturais",
+  "Area de Preservacao Permanente a Recompor de Rios de 10 ate 50 metros",
+  "Area de Preservacao Permanente a Recompor de Rios de 200 ate 600 metros",
+  "Area de Preservacao Permanente a Recompor de Veredas",
+  "Area de Preservacao Permanente a Recompor de Rios com mais de 600 metros"
+ ],
+ "feicoes": {
+  "USO_RESTRITO": {
+   "Area de Uso Restrito para declividade de 25 a 45 graus": 4164,
+   "Area de Uso Restrito para regioes pantaneiras": 304
+  },
+  "AREA_POUSIO": {
+   "Area de Pousio": 14649
+  },
+  "SERVIDAO_ADMINISTRATIVA": {
+   "Area de Servidao Administrativa Total": 152858
+  },
+  "RESERVA_LEGAL": {
+   "Reserva Legal Proposta": 309582,
+   "Reserva Legal Aprovada e nao Averbada": 4792,
+   "Reserva Legal Averbada": 40846
+  },
+  "AREA_CONSOLIDADA": {
+   "Area Consolidada": 514805
+  },
+  "VEGETACAO_NATIVA": {
+   "Remanescente de Vegetacao Nativa": 401012
+  },
+  "HIDROGRAFIA": {
+   "Curso d'agua natural de ate 10 metros": 380332,
+   "Lago ou lagoa natural": 17482,
+   "Reservatorio artificial decorrente de barramento ou represamento de cursos d'agua naturais": 13279,
+   "Curso d'agua natural de 50 a 200 metros": 5042,
+   "Curso d'agua natural de 200 a 600 metros": 1308,
+   "Curso d'agua natural de 10 a 50 metros": 15188,
+   "Curso d'agua natural acima de 600 metros": 552
+  },
+  "APPS": {
+   "APP Total": 388521,
+   "Area de Preservacao Permanente em area antropizada nao declarada como area consolidada": 289988,
+   "Area de Preservacao Permanente a Recompor de Rios ate 10 metros": 422872,
+   "Area de Preservacao Permanente de Nascentes ou Olhos D'agua Perenes": 230081,
+   "Area de Preservacao Permanente a Recompor de Nascentes ou Olhos D'agua Perenes": 51153,
+   "Area de Preservacao Permanente a Recompor de Rios de 50 ate 200 metros": 2658,
+   "Area de Preservacao Permanente a Recompor de Lagos e Lagoas Naturais": 1883,
+   "Area de Preservacao Permanente a Recompor de Rios de 10 ate 50 metros": 9624,
+   "Area de Preservacao Permanente a Recompor de Rios de 200 ate 600 metros": 682,
+   "Area de Preservacao Permanente a Recompor de Veredas": 1408,
+   "Area de Preservacao Permanente a Recompor de Rios com mais de 600 metros": 147
+  }
+ },
+ "municipios": 399,
+ "bytes": 1582775082
+}
