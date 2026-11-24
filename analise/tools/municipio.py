@@ -820,12 +820,15 @@ def aptidao():
 
 # ---------- 8d) logística e agronegócio (OpenStreetMap via Overpass) ----------
 OVERPASS = ['https://overpass.kumi.systems/api/interpreter', 'https://overpass-api.de/api/interpreter', 'https://overpass.private.coffee/api/interpreter']
+OVERPASS.append('https://maps.mail.ru/osm/tools/overpass/api/interpreter')
 def overpass(q):
-    for ep in OVERPASS:
-        try:
-            req = urllib.request.Request(ep, data=urllib.parse.urlencode({'data': q}).encode(), headers={**UA, 'Accept': 'application/json'})
-            return json.loads(urllib.request.urlopen(req, timeout=300).read())
-        except Exception as e: log('  overpass', ep, str(e)[:120])
+    for rodada in range(4):   # servidores públicos sobrecarregados: repete com intervalo crescente
+        for ep in OVERPASS:
+            try:
+                req = urllib.request.Request(ep, data=urllib.parse.urlencode({'data': q}).encode(), headers={**UA, 'Accept': 'application/json'})
+                return json.loads(urllib.request.urlopen(req, timeout=300).read())
+            except Exception as e: log('  overpass', rodada, ep, str(e)[:120])
+        time.sleep(60 * (rodada + 1))
     raise RuntimeError('Overpass indisponível')
 COOP = 'Cooperativa|Coop\\.|Cocamar|Coamo|Integrada|Coopavel|Copacol|C\\.Vale|Copagril|Agrária|Castrolanda|Frísia|Capal|Lar Cooperativa|Belagrícola|Cocari|Coagru|Copercampos|Bunge|Cargill|ADM|Louis Dreyfus|Amaggi|Sementes'
 @etapa('Logística e agronegócio (OpenStreetMap)')
