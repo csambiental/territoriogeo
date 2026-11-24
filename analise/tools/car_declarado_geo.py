@@ -53,7 +53,15 @@ def codificar(g):
     return None
 
 temas, ti = [], {}
-acum = collections.defaultdict(lambda: collections.defaultdict(list))   # acum[mun][cod] = [[i, tipo, coords], ...]
+TMP = '/tmp/cargeo_tmp'; os.makedirs(TMP, exist_ok=True)   # um arquivo de linhas por município (memória baixa)
+arqs = {}
+def saida(mun):
+    if mun not in arqs:
+        if len(arqs) > 200:
+            for a in arqs.values(): a.close()
+            arqs.clear()
+        arqs[mun] = open(f'{TMP}/{mun}.jsonl', 'a')
+    return arqs[mun]
 resumo = {}
 for nome, fid in ARQ.items():
     t0 = time.time(); z = f'/tmp/{nome}.zip'
@@ -81,7 +89,7 @@ for nome, fid in ARQ.items():
             r = codificar(g)
             if not r: continue
             if t not in ti: ti[t] = len(temas); temas.append(t)
-            acum[m.group(1)][str(c).strip().upper()].append([ti[t], r[0], r[1]])
+            saida(m.group(1)).write(json.dumps([str(c).strip().upper(), ti[t], r[0], r[1]], separators=(',', ':')) + '\n')
             cont[t] += 1
         print(f'  {shp}: {len(df)} feições mantidas, {time.time() - t0:.0f}s', flush=True)
         del df, geo, orig
@@ -89,16 +97,20 @@ for nome, fid in ARQ.items():
     resumo[nome] = dict(cont)
     print(f'{nome}: {sum(cont.values())} feições, {time.time() - t0:.0f}s', dict(cont), flush=True)
 
-total = 0
-for mun, imv in acum.items():
+for a in arqs.values(): a.close()
+total = 0; muns = 0
+for nome_arq in sorted(os.listdir(TMP)):
+    mun = nome_arq[:7]; muns += 1
     os.makedirs(f'{OUT}/{mun}', exist_ok=True)
-    grupos = collections.defaultdict(dict)
-    for c, l in imv.items():
+    grupos = collections.defaultdict(lambda: collections.defaultdict(list))
+    for ln in open(f'{TMP}/{nome_arq}'):
+        c, i, k, g = json.loads(ln)
         h = (c.split('-')[2][:1] if c.count('-') >= 2 else '0').upper()
-        grupos[h][c] = l
+        grupos[h][c].append([i, k, g])
     for h, d in grupos.items():
         s = json.dumps({'temas': temas, 'i': d}, ensure_ascii=False, separators=(',', ':'))
         open(f'{OUT}/{mun}/{h}.json', 'w').write(s); total += len(s)
+    os.remove(f'{TMP}/{nome_arq}'); del grupos
 json.dump({'fonte': 'SICAR – base de downloads (temas declarados), PR', 'baixado_em': '2026-11-24', 'temas': temas, 'feicoes': resumo,
-           'municipios': len(acum), 'bytes': total}, open(f'{OUT}/_info.json', 'w'), ensure_ascii=False, indent=1)
-print('municípios', len(acum), 'tamanho total', round(total / 1e6), 'MB')
+           'municipios': muns, 'bytes': total}, open(f'{OUT}/_info.json', 'w'), ensure_ascii=False, indent=1)
+print('municípios', muns, 'tamanho total', round(total / 1e6), 'MB')
