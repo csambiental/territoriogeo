@@ -13,7 +13,7 @@ jobs:
         run: python3 tools/car_declarado_geo.py /tmp/cargeo
       - name: Publicar no branch car-geo
         run: |
-          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"; git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           du -sh /tmp/cargeo; ls /tmp/cargeo | wc -l
           mkdir /tmp/pub && cd /tmp/pub && git init -q -b car-geo && cp -r /tmp/cargeo/. .
           git add -A && git commit -q -m "Geometrias declaradas no CAR (SICAR, PR) por município"
