@@ -3,13 +3,14 @@
 async function cdDeclarado(nome) {
     const m = /^PR-(\d{7})-/.exec(nome || ''); if (!m) return null;
     const d = await rxJSON(`data/car_declarado/${m[1]}.json`).catch(() => null);
-    const l = d && d.imoveis && d.imoveis[nome]; if (!l) return null;
+    if (!d || !d.imoveis) return null;
+    const l = d.imoveis[nome] || [];   // imóvel ausente da base temática = nenhum tema georreferenciado declarado
     const T = {}; l.forEach(([i, a, n]) => { T[d.temas[i]] = { ha: a, n }; });
     const s = re => Object.entries(T).filter(([k]) => re.test(k)).reduce((a, [, v]) => ({ ha: a.ha + v.ha, n: a.n + v.n }), { ha: 0, n: 0 });
     const g = k => T[k] || { ha: 0, n: 0 };
     const rlTipo = ['Reserva Legal Averbada', 'Reserva Legal Aprovada e nao Averbada', 'Reserva Legal Proposta'].filter(k => T[k]).map(k => k.replace('Reserva Legal ', '').replace('nao', 'não').toLowerCase());
     return {
-        T,
+        T, vazio: !l.length,
         app: T['APP Total'] ? T['APP Total'].ha : s(/^Area de Preservacao Permanente (de|em) /).ha,
         appVeg: g('Area de Preservacao Permanente em area de Vegetacao Nativa').ha,
         appRecompor: s(/a Recompor/).ha,
@@ -218,7 +219,7 @@ function cdFrentes(u) {
     return F;
 }
 async function cdFotos(u, etapa) {
-    if (!u.decl) return null;
+    if (!u.decl || u.decl.vazio) { if (u.decl) await cdPrepararGeo(u).catch(() => null); return null; }
     await cdPrepararGeo(u).catch(e => console.error('CAR declarado – geometrias', e));
     const F = cdFrentes(u); if (!u.declGeo) return { F, fotos: {} };
     const fotos = {}, X = u.cdX || {};
@@ -257,6 +258,9 @@ function cdConsideracoes(u) {
 }
 function cdSecoesHtml(u, R, sec, fotoImovel) {
     if (!u.decl) return '';
+    if (u.decl.vazio) return sec('Análise da declaração do CAR', 'Temas declarados no SICAR comparados com o satélite e as bases públicas',
+        `<div class="cd-ap" style="border-left:4px solid #8a5a00;background:#fff6dd;border-radius:6px;padding:8px 10px;font-size:9.5pt"><b style="color:#8a5a00">! Nenhum tema georreferenciado declarado</b><br>O CAR <span class="mono">${esc(u.nome)}</span> não traz, na base do SICAR, desenho de APP, Reserva Legal, vegetação nativa, área consolidada, cursos d'água ou nascentes – só o perímetro. Informações apenas documentais (como Reserva Legal averbada em matrícula) não aparecem no mapa do cadastro e precisam ser desenhadas na retificação do CAR.</div>`
+        + '<h4>Declarado × verificado</h4>' + cdQuadroHtml(u) + '<h4>Considerações</h4>' + cdConsideracoes(u));
     const { F, fotos } = R || { F: cdFrentes(u), fotos: {} };
     const ST = { ok: ['✓', 'Compatível', '#1b6b3a', '#e7f5ec'], at: ['!', 'Atenção', '#8a5a00', '#fff6dd'], no: ['✕', 'Divergência', '#b71c1c', '#fdecea'], na: ['•', 'Informação', '#5f6d66', '#eef1ef'] };
     const ap = l => l.length ? l.map(a => { const s = ST[a.st] || ST.na; return `<div class="cd-ap" style="border-left-color:${s[2]};background:${s[3]}"><b style="color:${s[2]}">${s[0]} ${s[1]} – ${esc(a.rot)}</b><span>${esc(a.txt)}</span></div>`; }).join('')
