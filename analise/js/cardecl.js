@@ -270,7 +270,10 @@ function cdSecoesHtml(u, R, sec, fotoImovel) {
     const D = u.decl, decl = rxNum(u.p && u.p['Área (ha)']);
     const imovel = `<div class="cd-fr"><h4>Área do imóvel</h4>${fotoImovel ? `<img class="mapa" src="${fotoImovel}" alt="Perímetro">` : ''}
       <p>Perímetro declarado no CAR <span class="mono">${esc(u.nome)}</span>, com ${rxF(u.area, 2)} ha calculados${decl ? ` (${rxF(decl, 2)} ha declarados)` : ''}. O perímetro é informado pelo responsável pelo cadastro; recomenda-se conferir as divisas com a matrícula e, quando houver, com a certificação no SIGEF.</p>
-      ${ap(decl && Math.abs(u.area - decl) / decl > .05 ? [{ st: 'at', rot: 'Área do imóvel', txt: `Diferença de ${rxF(u.area - decl, 2)} ha entre a área calculada e a declarada` }] : [])}</div>`;
+      ${(() => { const L = [], sg = Math.min(u.area, (u.sigef || []).reduce((a, x) => a + x.ha, 0));
+          if (decl && Math.abs(u.area - decl) / decl > .05) L.push({ st: 'at', rot: 'Área do imóvel', txt: `Diferença de ${rxF(u.area - decl, 2)} ha entre a área calculada e a declarada` });
+          if (sg < 0.5 * u.area) L.push({ st: 'at', rot: 'Georreferenciamento', txt: sg > 0 ? `Só ${rxF(sg / u.area * 100, 0)}% do imóvel tem parcela certificada no SIGEF/INCRA` : 'Imóvel sem georreferenciamento certificado no SIGEF/INCRA – perímetro do CAR sem confirmação por levantamento certificado' });
+          return ap(L); })()}</div>`;
     const blocos = F.map(fr => `<div class="cd-fr"><h4>${esc(fr.titulo)}</h4>${fotos[fr.id] ? `<img class="mapa" src="${fotos[fr.id]}" alt="${esc(fr.titulo)}">${cdLegenda(fr.gs.filter(g => cdDoGrupo(u.declGeo, g).features.length), fr.leg || '')}` : ''}
       <p>${fr.texto}</p>${ap(fr.ap)}</div>`).join('');
     return css + sec('Análise da declaração do CAR', `Temas declarados no SICAR, um a um, com os apontamentos da comparação automática${u.declGeo ? '' : ' (mapas por tema indisponíveis para este imóvel)'}`, imovel + blocos)

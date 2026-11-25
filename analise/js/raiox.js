@@ -126,8 +126,8 @@ function rxNecessidades(p, r, area, uso) {
     if (maior && maior.ha >= Math.max(1, area * 0.02)) add(2, 'Sobreposição de CAR', `${rxF(maior.ha)} ha (${rxF(maior.ha / area * 100, 1)}%) sobre o CAR ${maior.f.properties.nome}`, 'Conferir divisas com o vizinho e retificar o perímetro no CAR (o próprio e/ou o do vizinho)');
     // SIGEF / INCRA
     const cobS = Math.min(area, r.sigef.reduce((a, x) => a + x.ha, 0)) / area;
-    if (cobS < 0.5) add(mf > 4 ? 2 : 3, 'Georreferenciamento', r.sigef.length ? `SIGEF cobre só ${rxF(cobS * 100, 0)}% do imóvel` : 'Sem parcela certificada no SIGEF/INCRA',
-        'Georreferenciamento e certificação no SIGEF/INCRA (exigido para desmembramento, remembramento e transferência)');
+    if (cobS < 0.5) add(2, 'Georreferenciamento', r.sigef.length ? `Ponto de atenção: SIGEF cobre só ${rxF(cobS * 100, 0)}% do imóvel` : 'Ponto de atenção: imóvel sem georreferenciamento certificado no SIGEF/INCRA',
+        'Georreferenciamento e certificação no SIGEF/INCRA, com averbação na matrícula. Obrigatório para desmembramento, remembramento, transferência e outros atos de registro; os prazos do Decreto nº 4.449/2002 (alterado pelo Decreto nº 9.311/2018) já se encerraram para todos os tamanhos de imóvel, inclusive abaixo de 25 ha (20/11/2025)');
     const semReg = r.sigef.filter(x => x.f.properties['Situação'] && x.f.properties['Situação'] !== 'Registrada');
     if (semReg.length) add(2, 'Registro', `${semReg.length} parcela(s) SIGEF ainda sem registro em cartório`, 'Averbação/registro da certificação SIGEF na matrícula do imóvel');
     // relevo
@@ -235,7 +235,7 @@ async function analisarImovel(nome, alvoCustom) {
         else if (maiorCar >= Math.max(1, area * 0.02)) flags.push(['amarelo', `Sobreposição relevante com outro CAR: ${rxF(maiorCar)} ha (${rxF(maiorCar / area * 100, 1)}% do imóvel)`]);
         else if (r.car.length) flags.push(['verde', `Só pequenas sobreposições nas divisas (${rxF(sobreCar)} ha com ${r.car.length} CAR vizinho(s)) – provável diferença de traçado`]);
         if (r.sigef.length && sobreSigef < area * 0.5) flags.push(['amarelo', `Parcelas SIGEF cobrem só ${rxF(sobreSigef / area * 100, 0)}% do imóvel`]);
-        if (!r.sigef.length) flags.push(['amarelo', 'Nenhuma parcela SIGEF/INCRA sobre o imóvel']);
+        if (!r.sigef.length) flags.push(['amarelo', 'Imóvel sem georreferenciamento certificado no SIGEF/INCRA']);
         const forte = r.decl.slice(3).reduce((s, d) => s + d.pct, 0);
         if (forte >= 10) flags.push(['amarelo', `${rxF(forte, 0)}% do imóvel em relevo forte ondulado ou mais (≥ 20%)`]);
         { const hj = new Date(), dt = v => { const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(v || ''); return m ? new Date(+m[3], m[2] - 1, +m[1]) : null; };
@@ -591,7 +591,7 @@ function rxChecklist(u) {
     add('Sobreposição com outros imóveis do CAR', maior && maior.ha >= Math.max(1, area * 0.02) ? 'no' : 'ok',
         r.car.length ? `${r.car.length} imóvel(is); maior sobreposição ${rxF(maior.ha)} ha (${rxF(maior.ha / area * 100, 1)}%)` : 'Nenhuma');
     const cobS = Math.min(area, r.sigef.reduce((a, x) => a + x.ha, 0)) / area;
-    add('Georreferenciamento certificado (SIGEF/INCRA)', cobS >= 0.9 ? 'ok' : cobS >= 0.5 ? 'at' : mf > 4 ? 'no' : 'at', `${rxF(cobS * 100, 0)}% do imóvel coberto por parcelas certificadas`);
+    add('Georreferenciamento certificado (SIGEF/INCRA)', cobS >= 0.9 ? 'ok' : cobS >= 0.5 ? 'at' : mf > 4 ? 'no' : 'at', cobS < 0.01 ? 'Ponto de atenção: imóvel sem georreferenciamento certificado no SIGEF/INCRA' : `${rxF(cobS * 100, 0)}% do imóvel coberto por parcelas certificadas`);
     const semReg = r.sigef.filter(x => x.f.properties['Situação'] && x.f.properties['Situação'] !== 'Registrada');
     add('Registro da certificação em cartório', !r.sigef.length ? 'na' : semReg.length ? 'at' : 'ok', semReg.length ? `${semReg.length} parcela(s) sem registro` : '');
     // ÁGUA
