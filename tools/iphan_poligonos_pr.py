@@ -1,7 +1,5 @@
 """Baixa os PERÍMETROS (polígonos) de sítios arqueológicos do IPHAN (SICG) no Paraná → sitios_pol_pr.geojson"""
 import json, urllib.request, urllib.parse, sys
-from shapely.geometry import shape, mapping
-from shapely import force_2d
 OUT = sys.argv[1]; UA = {'User-Agent': 'Mozilla/5.0 (csambiental)'}
 BB = (-54.7, -26.8, -47.9, -22.4)
 feats, start = [], 0
@@ -15,10 +13,9 @@ while True:
     for f in fs:
         a = f['properties']
         if not (a.get('co_iphan') or '').startswith('PR'): continue
-        g = force_2d(shape(f['geometry'])).buffer(0)
-        if g.is_empty: continue
-        def r(o): return [r(x) for x in o] if isinstance(o, (list, tuple)) else round(o, 6)
-        m = mapping(g); m = {'type': m['type'], 'coordinates': r(m['coordinates'])}
+        if not f.get('geometry'): continue
+        def r(o): return ([round(o[0], 6), round(o[1], 6)] if o and not isinstance(o[0], list) else [r(x) for x in o])
+        m = {'type': f['geometry']['type'], 'coordinates': r(f['geometry']['coordinates'])}
         feats.append({'type': 'Feature', 'geometry': m, 'properties': {k: v for k, v in {
             'nome': f"Sítio arqueológico {(a.get('identificacao_bem') or '').strip()}".strip(), 'grupo': 'Sítio arqueológico (perímetro)',
             'Código IPHAN (CNSA)': a.get('co_iphan') or '', 'Classificação': a.get('ds_classificacao') or '', 'Localidade': a.get('no_logradouro') or '',
