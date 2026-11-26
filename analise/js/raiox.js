@@ -546,7 +546,7 @@ async function rxFotoProtegidas(alvo, itens) {
         rxDesenharAlvo(alvo, false);
         map.addLayer({ id: 'rx-pr-f', type: 'fill', source: 'rx-pr', paint: { 'fill-color': ['get', 'cor'], 'fill-opacity': 0.22 } });
         map.addLayer({ id: 'rx-pr-l', type: 'line', source: 'rx-pr', paint: { 'line-color': ['get', 'cor'], 'line-width': 2.5 } });
-        map.addLayer({ id: 'rx-pr-i', type: 'fill', source: 'rx-pr-int', paint: { 'fill-color': '#ffd600', 'fill-opacity': 0.55, 'fill-outline-color': '#ffffff' } });
+        map.addLayer({ id: 'rx-pr-i', type: 'fill', source: 'rx-pr-int', paint: { 'fill-color': '#ffd600', 'fill-opacity': 0.3, 'fill-outline-color': '#ffffff' } });
         map.addLayer({ id: 'rx-pr-p', type: 'circle', source: 'rx-pr-pt', paint: { 'circle-radius': 7, 'circle-color': 'rgba(213,0,249,0.25)', 'circle-stroke-color': RX_PROT_COR.sit, 'circle-stroke-width': 2.5 } });
         map.addLayer({ id: 'rx-pr-s', type: 'fill', source: 'rx-pr-sit', paint: { 'fill-color': RX_PROT_COR.sit, 'fill-opacity': 0.6 } });
         map.addLayer({ id: 'rx-pr-sl', type: 'line', source: 'rx-pr-sit', paint: { 'line-color': '#ffffff', 'line-width': 1.5 } });
@@ -565,7 +565,7 @@ function rxProtegidasMapaHtml(u, foto) {
     if (!it.length) return '';
     const leg = `<div class="leg"><span style="border:3px solid #ff1744"></span>imóvel <span style="background:${RX_PROT_COR.uc}55;border:2px solid ${RX_PROT_COR.uc}"></span>unidade de conservação <span style="background:${RX_PROT_COR.com}55;border:2px solid ${RX_PROT_COR.com}"></span>terra indígena / quilombola <span style="background:#ffd600"></span>área sobreposta ao imóvel <span style="background:${RX_PROT_COR.sit};border-radius:50%"></span>sítio arqueológico (perímetro ou ponto IPHAN) – nº = linha da tabela</div>`;
     const linhas = it.map(x => `<tr><td>${x.n}</td><td>${esc(x.nome.replace('Sítio arqueológico ', x.tipo === 'sit' ? '' : 'Sítio arqueológico '))}</td><td>${esc(x.tipo === 'uc' ? 'Unidade de conservação' : x.tipo === 'com' ? 'Comunidade tradicional' : 'Sítio arqueológico')} – ${esc(x.det)}</td><td>${x.tipo === 'sit' ? (x.km ? `fora, a ${rxF(x.km * 1000, 0)} m` : `<b style="color:#c62828">dentro${x.pol && x.ha ? ` – ${rxM2(x.ha)}` : ''}</b>`) : `<b style="color:#c62828">${rxF(x.ha, 2)} ha</b>`}</td><td>${x.tipo === 'sit' ? (x.km ? '–' : x.ha ? `${rxF(x.ha / u.area * 100, 2)}%` : '–') : `${rxF(x.ha / u.area * 100, 1)}%`}</td></tr>`).join('');
-    return `<h3>Mapa – áreas protegidas e patrimônio sobre o imóvel</h3>${foto ? `<img class="mapa" src="${foto}" alt="Áreas protegidas e patrimônio">${leg}` : ''}
+    return `<div style="break-inside:avoid;page-break-inside:avoid"><h3>Mapa – áreas protegidas e patrimônio sobre o imóvel</h3>${foto ? `<img class="mapa" src="${foto}" alt="Áreas protegidas e patrimônio">${leg}` : ''}</div>
   <table><thead><tr><th>Nº</th><th>Área</th><th>Tipo</th><th>Sobreposição no imóvel</th><th>% do imóvel</th></tr></thead><tbody>${linhas}</tbody></table>
   <p class="hint">Perímetros oficiais: unidades de conservação (CNUC/MMA), terras indígenas (Funai), territórios quilombolas (Incra) e sítios arqueológicos (IPHAN – SICG). Sítios sem perímetro cadastrado aparecem pelo ponto do CNSA. A sobreposição é calculada sobre o perímetro declarado no CAR.</p>`;
 }
