@@ -25,6 +25,30 @@ function rxSobreposicoes(alvo, feats, minHa = 0.01) {
     }
     return out.sort((a, b) => b.ha - a.ha);
 }
+// sítios arqueológicos com perímetro (IPHAN/SICG): dentro (com área sobre o imóvel) ou a até raioKm
+function rxSitiosPoligono(alvo, feats, raioKm = 1) {
+    const bb = turf.bbox(alvo), m = raioKm / 100, out = [];
+    const ls = turf.flatten(turf.polygonToLine(alvo)).features;
+    for (const f of feats) {
+        if (!f.geometry || f.geometry.type === 'Point') continue;
+        const b = turf.bbox(f);
+        if (!rxCaixasCruzam([bb[0] - m, bb[1] - m, bb[2] + m, bb[3] + m], b)) continue;
+        const c = turf.pointOnFeature(f), i = rxCaixasCruzam(bb, b) ? rxInter(alvo, f) : null;
+        if (i || turf.booleanPointInPolygon(c, alvo)) { out.push({ f, km: 0, ha: i ? rxHa(i) : 0, haSitio: rxHa(f), pol: true }); continue; }
+        const km = Math.min(...ls.map(l => turf.pointToLineDistance(c, l)));
+        if (km <= raioKm) out.push({ f, km, ha: 0, haSitio: rxHa(f), pol: true });
+    }
+    return out.sort((a, b) => a.km - b.km);
+}
+// une os sítios em ponto (CNSA) com os perímetros (SICG): o perímetro substitui o ponto do mesmo código
+function rxJuntarSitios(r) {
+    if (!r.sitios || !r.sitPol) return;
+    const cod = x => x.f.properties['Código IPHAN (CNSA)'] || x.f.properties.nome;
+    const pol = new Map(r.sitPol.map(x => [cod(x), x]));
+    const todos = [...r.sitios.dentro, ...r.sitios.perto].filter(x => !pol.has(cod(x))).concat(r.sitPol);
+    r.sitios = { dentro: todos.filter(x => !x.km), perto: todos.filter(x => x.km).sort((a, b) => a.km - b.km) };
+}
+const rxM2 = ha => ha >= 1 ? `${rxF(ha, 2)} ha` : `${rxF(ha * 1e4, 0)} m²`;
 // barragem cadastrada (ponto) a até 200 m do espelho d'água
 function rxBarragemDaMassa(m, barrs) {
     const bb = turf.bbox(m), d = 0.002;
@@ -110,11 +134,12 @@ function rxNecessidades(p, r, area, uso) {
         'Verificar o direito minerário na ANM: fase, titular, servidão e renda/indenização ao superficiário (Código de Mineração, art. 11 e 27) e licenciamento ambiental da atividade'));
     (r.risco || []).forEach(x => add(/alto/i.test(x.f.properties['Grau de risco'] || '') ? 1 : 2, 'Risco geológico (SGB)', `${x.f.properties.nome} – risco ${(x.f.properties['Grau de risco'] || '').toLowerCase()} (${x.f.properties.Processo || ''})`,
         'Avaliação geotécnica local e articulação com a Defesa Civil; seguir a intervenção sugerida pelo SGB antes de novas edificações'));
-    if (r.sitios && (r.sitios.dentro.length || r.sitios.perto.length)) add(r.sitios.dentro.length ? 1 : 2, 'Patrimônio arqueológico (IPHAN)', `${r.sitios.dentro.length} sítio(s) no imóvel e ${r.sitios.perto.length} a até 1 km`,
+    if (r.sitios && (r.sitios.dentro.length || r.sitios.perto.length)) add(r.sitios.dentro.length ? 1 : 2, 'Patrimônio arqueológico (IPHAN)', `${r.sitios.dentro.length ? `${r.sitios.dentro.length} sítio(s) no imóvel (${r.sitios.dentro.map(x => `${x.f.properties.nome.replace('Sítio arqueológico ', '')}${x.pol ? ` – perímetro de ${rxM2(x.haSitio)}` : ' – só ponto'}`).join('; ')})` : 'Nenhum sítio no imóvel'} e ${r.sitios.perto.length} a até 1 km – ver mapa de áreas protegidas e patrimônio`,
         'Antes de obras ou do licenciamento: preencher a FCA no IPHAN e, se exigido, contratar estudo arqueológico (IN IPHAN 01/2015); não intervir no local do sítio');
-    (r.ucs || []).filter(x => x.km <= 3).slice(0, 2).forEach(x => add(x.km ? 2 : 1, 'Unidade de conservação', `${x.f.properties.nome} (${x.f.properties.Categoria || ''}) ${x.km ? `a ${rxF(x.km, 1)} km` : '– o imóvel está dentro da UC'}`,
-        x.km ? 'Verificar o plano de manejo e a zona de amortecimento da UC; atividades licenciáveis podem exigir autorização do órgão gestor (Res. CONAMA 428/2010)' : 'Consultar o plano de manejo e o órgão gestor da UC antes de qualquer intervenção ou licenciamento'));
-    (r.comun || []).slice(0, 2).forEach(x => add(x.km <= 3 ? 1 : 2, 'Comunidades tradicionais', `${x.f.properties.nome} ${x.km ? `a ${rxF(x.km, 1)} km` : '(sobreposição)'}`,
+    (r.ucs || []).filter(x => x.km <= 3).slice(0, 2).forEach(x => { const sb = (r.ucSob || []).find(y => y.f === x.f), pi = /prote[çc][ãa]o integral/i.test(`${x.f.properties.Grupo || ''} ${x.f.properties.Categoria || ''}`);
+        add(x.km ? 2 : pi ? 1 : 2, 'Unidade de conservação', `${x.f.properties.nome} (${x.f.properties.Categoria || ''}) ${x.km ? `a ${rxF(x.km, 1)} km` : sb ? `– sobreposição de ${rxF(sb.ha, 2)} ha (${rxF(sb.ha / r.areaHa * 100, 1)}% do imóvel), ver mapa` : '– o imóvel está dentro da UC'}`,
+        x.km ? 'Verificar o plano de manejo e a zona de amortecimento da UC; atividades licenciáveis podem exigir autorização do órgão gestor (Res. CONAMA 428/2010)' : pi ? 'UC de proteção integral: posse e domínio públicos (Lei 9.985/2000) – consultar o órgão gestor sobre regularização fundiária/indenização e não intervir na área sobreposta' : 'Consultar o plano de manejo e o zoneamento da UC e o órgão gestor antes de qualquer intervenção ou licenciamento na área sobreposta'); });
+    (r.comun || []).slice(0, 2).forEach(x => add(x.km <= 3 ? 1 : 2, 'Comunidades tradicionais', `${x.f.properties.nome} ${x.km ? `a ${rxF(x.km, 1)} km` : (() => { const sb = (r.comSob || []).find(y => y.f === x.f); return sb ? `(sobreposição de ${rxF(sb.ha, 2)} ha – ${rxF(sb.ha / r.areaHa * 100, 1)}% do imóvel, ver mapa)` : '(sobreposição)'; })()}`,
         'Verificar no licenciamento a necessidade de manifestação da Funai (terra indígena) ou do Incra/Fundação Palmares (quilombola) – Portaria Interministerial 60/2015'));
     // Reserva Legal
     const nat = uso.find(([k]) => /Vegetação (nativa|arbórea)/.test(k));
@@ -190,6 +215,7 @@ async function analisarImovel(nome, alvoCustom) {
         const usoArea = alvoCustom ? await areaUsoSolo(alvo).catch(e => { console.error(e); return { uso: [], ano: '' }; }) : null;
         let [sigef, emb, alertas, outR, outU, lic, barr, mbac, mass] = await Promise.all([C.sigef, C.embargos, C.alertas, (C.outorgas || [])[0], (C.outorgas || [])[1], C.licencas, C.barragens, C.microbacias, C.massas].map(a => a ? rxJSON(a).catch(() => ({ features: [] })) : Promise.resolve({ features: [] })));
         const [minA, rskA, sitA, comA] = await Promise.all([C.mineracao, C.risco, C.sitios, C.comunidades].map(a => a ? rxJSON(a).catch(() => ({ features: [] })) : Promise.resolve({ features: [] })));
+        const sitPolA = await rxJSON('data/sitios_pol_pr.geojson').catch(() => ({ features: [] }));
         const [aptJ, solA, calA, ucA, logA] = await Promise.all([C.aptidao, C.solos, C.calcario, C.ucs, C.logistica].map(a => a ? rxJSON(a).catch(() => null) : Promise.resolve(null)));
         RX_DERAL = RX_DERAL || await rxJSON('data/itr/precos_deral_2026.json').catch(() => null);
         let licV = (C.licencas ? C.licencas.replace('.geojson', '_vencidas.geojson') : null) ? await rxJSON(C.licencas ? C.licencas.replace('.geojson', '_vencidas.geojson') : null).catch(() => ({ features: [] })) : { features: [] };
@@ -197,7 +223,7 @@ async function analisarImovel(nome, alvoCustom) {
         if (p.ficticio && C.demo) {  // imóvel de exemplo: só as camadas fictícias, nada de dados reais de terceiros
             const dm = await rxJSON(C.demo), so = k => ({ features: dm.features.filter(f => f.properties.camada === k) }), vazio = { features: [] };
             vizinhos = so('car').features; sigef = so('sigef'); emb = vazio; alertas = vazio; outR = so('outorga'); outU = vazio;
-            lic = so('licenca'); licV = vazio; barr = so('barragem'); mass = so('massa'); minA.features = []; rskA.features = []; sitA.features = []; comA.features = [];
+            lic = so('licenca'); licV = vazio; barr = so('barragem'); mass = so('massa'); minA.features = []; rskA.features = []; sitA.features = []; comA.features = []; sitPolA.features = [];
         }
         const r = {
             car: rxSobreposicoes(alvo, vizinhos, 0.05),
@@ -212,6 +238,8 @@ async function analisarImovel(nome, alvoCustom) {
             risco: rxSobreposicoes(alvo, rskA.features, 0.0001),
             riscoMapeado: !!(rskA.mapeado || rskA.features.length),
             sitios: rxPontos(alvo, sitA.features, 1),
+            sitPol: rxSitiosPoligono(alvo, sitPolA.features, 1),
+            comSob: rxSobreposicoes(alvo, comA.features, 0.0001),
             comun: (() => { const c = turf.centroid(alvo); return comA.features.map(f => { let km = 0; try { km = turf.booleanIntersects(alvo, f) ? 0 : Math.min(...turf.flatten(turf.polygonToLine(f)).features.map(l => turf.pointToLineDistance(c, l))); } catch (e) { km = 99; } return { f, km }; }).filter(x => x.km <= 10).sort((a, b) => a.km - b.km); })(),
             decl: await rxDeclividade(alvo).catch(() => []),
             clima: aptJ && aptJ.clima || null, fontesApt: aptJ && aptJ.fontes || {},
@@ -219,8 +247,10 @@ async function analisarImovel(nome, alvoCustom) {
             calc: calA ? (() => { const c = turf.centroid(alvo); return calA.features.filter(f => /calc[áa]rio|dolom|calcita/i.test(f.properties.Substância || '') && !/garimp/i.test(f.properties.Fase || '')).map(f => ({ f, km: turf.distance(c, f, { units: 'kilometers' }) })).sort((a, b) => a.km - b.km); })() : null,
             log: logA ? rxLogistica(alvo, logA.features) : null,
             ucs: ucA ? (() => { const c = turf.centroid(alvo); return ucA.features.map(f => { let km = 0; try { km = turf.booleanIntersects(alvo, f) ? 0 : Math.min(...turf.flatten(turf.polygonToLine(f)).features.map(l => turf.pointToLineDistance(c, l))); } catch (e) { km = 99; } return { f, km }; }).filter(x => x.km <= 10).sort((a, b) => a.km - b.km); })() : null,
+            ucSob: ucA ? rxSobreposicoes(alvo, ucA.features, 0.0001) : null,
             mbac: mbac.features.filter(m => rxCaixasCruzam(turf.bbox(m), turf.bbox(alvo)) && turf.booleanPointInPolygon(turf.pointOnFeature(alvo), m)).map(m => m.properties.nome || m.properties.rio).slice(0, 1)
         };
+        rxJuntarSitios(r); r.areaHa = area;
         const uso = usoArea ? usoArea.uso : Object.keys(p).filter(k => /^(MapBiomas|Uso do solo) \d{4} – /.test(k)).map(k => [k.replace(/^(MapBiomas|Uso do solo) \d{4} – /, '').replace(' (%)', ''), rxNum(p[k])]).sort((a, b) => b[1] - a[1]);
         const pend = Object.keys(p).filter(k => /^Pendência \d+$/.test(k)).map(k => p[k]);
         const sobreCar = r.car.reduce((s, x) => s + x.ha, 0), sobreSigef = r.sigef.reduce((s, x) => s + x.ha, 0);
@@ -282,11 +312,11 @@ async function analisarImovel(nome, alvoCustom) {
         B.min = tab(['Processo', 'Fase', 'Substância', 'Uso', 'Titular', 'No imóvel (ha)'], r.min.map(x => [esc(x.f.properties.Processo || ''), esc(x.f.properties.Fase || ''), esc(x.f.properties.Substância || ''), esc(x.f.properties.Uso || ''), esc(x.f.properties.Titular || ''), rxF(x.ha, 2)]));
         B.risco = r.risco.length ? tab(['Setor', 'Grau de risco', 'Processo', 'Local', 'Mapeado em', 'Intervenção sugerida'], r.risco.map(x => [esc(x.f.properties.nome || ''), esc(x.f.properties['Grau de risco'] || ''), esc(x.f.properties.Processo || ''), esc(x.f.properties.Local || ''), esc(x.f.properties['Mapeado em'] || ''), esc(x.f.properties['Intervenção sugerida'] || '')]))
             : `<p class="hint">${r.riscoMapeado ? 'Nenhum setor de risco do SGB no imóvel.' : 'Município ainda não mapeado pelo SGB na setorização de risco – ausência de setor não significa ausência de risco.'}</p>`;
-        B.sitios = (() => { const l = [...r.sitios.dentro, ...r.sitios.perto]; return l.length ? tab(['Sítio', 'Código IPHAN (CNSA)', 'Distância'], l.slice(0, 15).map(x => [esc(x.f.properties.nome.replace('Sítio arqueológico ', '')), esc(x.f.properties['Código IPHAN (CNSA)'] || ''), x.km ? `${rxF(x.km * 1000, 0)} m` : 'dentro do imóvel'])) : '<p class="hint">Nenhum sítio arqueológico cadastrado no IPHAN no imóvel ou a até 1 km.</p>'; })();
-        B.comun = r.comun.length ? tab(['Área', 'Tipo', 'Situação / processo', 'Distância'], r.comun.map(x => [esc(x.f.properties.nome), esc(x.f.properties.grupo || ''), esc(x.f.properties['Situação'] || x.f.properties.Processo || ''), x.km ? `${rxF(x.km, 1)} km` : 'sobreposição'])) : '<p class="hint">Nenhuma terra indígena ou território quilombola a menos de 10 km.</p>';
+        B.sitios = (() => { const l = [...r.sitios.dentro, ...r.sitios.perto]; return l.length ? tab(['Sítio', 'Código IPHAN (CNSA)', 'Perímetro no IPHAN', 'Situação'], l.slice(0, 15).map(x => [esc(x.f.properties.nome.replace('Sítio arqueológico ', '')), esc(x.f.properties['Código IPHAN (CNSA)'] || ''), x.pol ? rxM2(x.haSitio) : 'só ponto (sem perímetro)', x.km ? `a ${rxF(x.km * 1000, 0)} m do imóvel` : `<b style="color:#c62828">dentro do imóvel${x.pol && x.ha ? ` (${rxM2(x.ha)})` : ''}</b>`])) : '<p class="hint">Nenhum sítio arqueológico cadastrado no IPHAN no imóvel ou a até 1 km.</p>'; })();
+        B.comun = r.comun.length ? tab(['Área', 'Tipo', 'Situação / processo', 'Distância'], r.comun.map(x => [esc(x.f.properties.nome), esc(x.f.properties.grupo || ''), esc(x.f.properties['Situação'] || x.f.properties.Processo || ''), x.km ? `${rxF(x.km, 1)} km` : (() => { const sb = (r.comSob || []).find(y => y.f === x.f); return `<b style="color:#c62828">sobreposição${sb ? `: ${rxF(sb.ha, 2)} ha (${rxF(sb.ha / area * 100, 1)}%)` : ''}</b>`; })()])) : '<p class="hint">Nenhuma terra indígena ou território quilombola a menos de 10 km.</p>';
         B.apt = rxAptidaoHtml(r, area, tab);
         B.log = rxLogisticaHtml(r, tab);
-        B.ucs = r.ucs && r.ucs.length ? tab(['Unidade de conservação', 'Categoria', 'Grupo', 'Esfera', 'Distância'], r.ucs.map(x => [esc(x.f.properties.nome || ''), esc(x.f.properties.Categoria || ''), esc(x.f.properties.Grupo || ''), esc(x.f.properties.Esfera || ''), x.km ? `${rxF(x.km, 1)} km` : '<b style="color:#c62828">imóvel dentro da UC</b>'])) : '<p class="hint">Nenhuma unidade de conservação a menos de 10 km.</p>';
+        B.ucs = r.ucs && r.ucs.length ? tab(['Unidade de conservação', 'Categoria', 'Grupo', 'Esfera', 'Distância'], r.ucs.map(x => [esc(x.f.properties.nome || ''), esc(x.f.properties.Categoria || ''), esc(x.f.properties.Grupo || ''), esc(x.f.properties.Esfera || ''), x.km ? `${rxF(x.km, 1)} km` : (() => { const sb = (r.ucSob || []).find(y => y.f === x.f); return `<b style="color:#c62828">sobreposição${sb ? `: ${rxF(sb.ha, 2)} ha (${rxF(sb.ha / area * 100, 1)}%)` : ''}</b>`; })()])) : '<p class="hint">Nenhuma unidade de conservação a menos de 10 km.</p>';
         B.prot = rxProtegidasHtml(r, tab);
         B.emb = tab(['Embargo', 'Situação', 'Data', 'Dentro do imóvel (ha)'], r.emb.map(x => [esc(x.f.properties.nome), esc(x.f.properties['Situação'] || ''), esc(x.f.properties['Data do embargo'] || ''), rxF(x.ha, 3)]));
         B.alertas = tab(['Alerta', 'Detectado em', 'Vetor', 'Dentro do imóvel (ha)'], r.alertas.map(x => [esc(x.f.properties.nome), esc(x.f.properties['Detectado em'] || ''), esc(x.f.properties['Vetor'] || ''), rxF(x.ha, 2)]));
@@ -494,6 +524,51 @@ async function rxFotoPontos(alvo, pontos) {
         rxRestaurar(estado); map.getSource('rx-pt') && map.removeSource('rx-pt');
     }
 }
+// imagem 5: áreas protegidas e patrimônio – UC, terra indígena/quilombola e sítios arqueológicos sobre o imóvel, com a área sobreposta destacada
+const RX_PROT_COR = { uc: '#2e7d32', com: '#ef6c00', sit: '#d500f9' };
+function rxItensProtegidas(r) {
+    const it = [];
+    (r.ucSob || []).forEach(x => it.push({ f: x.f, tipo: 'uc', ha: x.ha, nome: x.f.properties.nome, det: x.f.properties.Categoria || 'Unidade de conservação' }));
+    (r.comSob || []).forEach(x => it.push({ f: x.f, tipo: 'com', ha: x.ha, nome: x.f.properties.nome, det: x.f.properties.grupo || '' }));
+    if (r.sitios) [...r.sitios.dentro, ...r.sitios.perto].slice(0, 12).forEach(x => it.push({ f: x.f, tipo: 'sit', ha: x.ha || 0, km: x.km, pol: !!x.pol, haSitio: x.haSitio, nome: x.f.properties.nome, det: x.pol ? `perímetro IPHAN de ${rxM2(x.haSitio)}` : 'ponto IPHAN (sem perímetro)' }));
+    return it.map((x, i) => ({ ...x, n: i + 1 }));
+}
+async function rxFotoProtegidas(alvo, itens) {
+    const estado = rxEsconderCamadas(), ids = ['rx-pr-f', 'rx-pr-l', 'rx-pr-i', 'rx-pr-s', 'rx-pr-sl', 'rx-pr-p'];
+    try {
+        const areas = itens.filter(x => x.tipo !== 'sit'), sit = itens.filter(x => x.tipo === 'sit');
+        map.addSource('rx-pr', { type: 'geojson', data: turf.featureCollection(areas.map(x => ({ type: 'Feature', geometry: x.f.geometry, properties: { cor: RX_PROT_COR[x.tipo] } }))) });
+        map.addSource('rx-pr-int', { type: 'geojson', data: turf.featureCollection(areas.map(x => rxInter(alvo, x.f)).filter(Boolean).map(g => ({ ...g, properties: {} }))) });
+        const sp = sit.filter(x => x.pol), pt = sit.filter(x => !x.pol);
+        // perímetros muito pequenos (abrigos de poucos m²) ganham também um círculo para aparecer na escala do imóvel
+        map.addSource('rx-pr-sit', { type: 'geojson', data: turf.featureCollection(sp.map(x => ({ type: 'Feature', geometry: x.f.geometry, properties: {} }))) });
+        map.addSource('rx-pr-pt', { type: 'geojson', data: turf.featureCollection(sit.map(x => turf.pointOnFeature(x.f))) });
+        rxDesenharAlvo(alvo, false);
+        map.addLayer({ id: 'rx-pr-f', type: 'fill', source: 'rx-pr', paint: { 'fill-color': ['get', 'cor'], 'fill-opacity': 0.22 } });
+        map.addLayer({ id: 'rx-pr-l', type: 'line', source: 'rx-pr', paint: { 'line-color': ['get', 'cor'], 'line-width': 2.5 } });
+        map.addLayer({ id: 'rx-pr-i', type: 'fill', source: 'rx-pr-int', paint: { 'fill-color': '#ffd600', 'fill-opacity': 0.55, 'fill-outline-color': '#ffffff' } });
+        map.addLayer({ id: 'rx-pr-p', type: 'circle', source: 'rx-pr-pt', paint: { 'circle-radius': 7, 'circle-color': 'rgba(213,0,249,0.25)', 'circle-stroke-color': RX_PROT_COR.sit, 'circle-stroke-width': 2.5 } });
+        map.addLayer({ id: 'rx-pr-s', type: 'fill', source: 'rx-pr-sit', paint: { 'fill-color': RX_PROT_COR.sit, 'fill-opacity': 0.6 } });
+        map.addLayer({ id: 'rx-pr-sl', type: 'line', source: 'rx-pr-sit', paint: { 'line-color': '#ffffff', 'line-width': 1.5 } });
+        map.moveLayer('rx-alvo-linha');
+        const caixa = turf.bbox(turf.featureCollection([alvo, ...sit.map(x => x.f)]));
+        map.fitBounds([[caixa[0], caixa[1]], [caixa[2], caixa[3]]], { padding: 110, maxZoom: 17, duration: 0 });
+        const rot = itens.map(x => { const i = x.tipo === 'sit' ? null : rxInter(alvo, x.f); return { c: turf.pointOnFeature(i || x.f).geometry.coordinates, n: x.n, cor: RX_PROT_COR[x.tipo] }; });
+        return await rxCapturar(alvo, rot);
+    } finally {
+        ids.forEach(id => map.getLayer(id) && map.removeLayer(id));
+        rxRestaurar(estado); ['rx-pr', 'rx-pr-int', 'rx-pr-sit', 'rx-pr-pt'].forEach(id => map.getSource(id) && map.removeSource(id));
+    }
+}
+function rxProtegidasMapaHtml(u, foto) {
+    const it = rxItensProtegidas(u.r);
+    if (!it.length) return '';
+    const leg = `<div class="leg"><span style="border:3px solid #ff1744"></span>imóvel <span style="background:${RX_PROT_COR.uc}55;border:2px solid ${RX_PROT_COR.uc}"></span>unidade de conservação <span style="background:${RX_PROT_COR.com}55;border:2px solid ${RX_PROT_COR.com}"></span>terra indígena / quilombola <span style="background:#ffd600"></span>área sobreposta ao imóvel <span style="background:${RX_PROT_COR.sit};border-radius:50%"></span>sítio arqueológico (perímetro ou ponto IPHAN) – nº = linha da tabela</div>`;
+    const linhas = it.map(x => `<tr><td>${x.n}</td><td>${esc(x.nome.replace('Sítio arqueológico ', x.tipo === 'sit' ? '' : 'Sítio arqueológico '))}</td><td>${esc(x.tipo === 'uc' ? 'Unidade de conservação' : x.tipo === 'com' ? 'Comunidade tradicional' : 'Sítio arqueológico')} – ${esc(x.det)}</td><td>${x.tipo === 'sit' ? (x.km ? `fora, a ${rxF(x.km * 1000, 0)} m` : `<b style="color:#c62828">dentro${x.pol && x.ha ? ` – ${rxM2(x.ha)}` : ''}</b>`) : `<b style="color:#c62828">${rxF(x.ha, 2)} ha</b>`}</td><td>${x.tipo === 'sit' ? (x.km ? '–' : x.ha ? `${rxF(x.ha / u.area * 100, 2)}%` : '–') : `${rxF(x.ha / u.area * 100, 1)}%`}</td></tr>`).join('');
+    return `<h3>Mapa – áreas protegidas e patrimônio sobre o imóvel</h3>${foto ? `<img class="mapa" src="${foto}" alt="Áreas protegidas e patrimônio">${leg}` : ''}
+  <table><thead><tr><th>Nº</th><th>Área</th><th>Tipo</th><th>Sobreposição no imóvel</th><th>% do imóvel</th></tr></thead><tbody>${linhas}</tbody></table>
+  <p class="hint">Perímetros oficiais: unidades de conservação (CNUC/MMA), terras indígenas (Funai), territórios quilombolas (Incra) e sítios arqueológicos (IPHAN – SICG). Sítios sem perímetro cadastrado aparecem pelo ponto do CNSA. A sobreposição é calculada sobre o perímetro declarado no CAR.</p>`;
+}
 async function gerarRelatorioRaiox() {
     const u = RX.ultimo; if (!u) return;
     // código de autenticidade: resumo do laudo + responsável técnico, conferível pelo QR na página verificar.html
@@ -529,13 +604,16 @@ async function gerarRelatorioRaiox() {
     const foto3 = parc.length ? await rxFotoSigef(u.alvo, parc) : null;
     etapa('mapa de outorgas e licenças (4/4)');
     const foto4 = (u.pontos || []).length ? await rxFotoPontos(u.alvo, u.pontos) : null;
+    etapa('mapa de áreas protegidas e patrimônio');
+    const itProt = rxItensProtegidas(u.r);
+    const foto5 = itProt.length ? await rxFotoProtegidas(u.alvo, itProt).catch(e => (console.error(e), null)) : null;
     etapa('imagem Sentinel-2 mais recente e NDVI');
     const s2 = typeof s2DadosRelatorio === 'function' ? await s2DadosRelatorio(u.alvo).catch(e => (console.error(e), null)) : null;
     etapa('série histórica do NDVI (Landsat)');
     const serie = u.serie || (typeof lsSerieNdvi === 'function' ? await lsSerieNdvi(u.alvo).catch(e => (console.error(e), null)) : null);
     const cd = typeof cdFotos === 'function' ? await cdFotos(u, etapa).catch(e => (console.error(e), null)) : null;
     map.jumpTo({ center: centro, zoom });
-    const janela = { partes: [rxRelatorioHtml(u, { foto, foto2, foto3, foto4, s2, serie, cd })] };
+    const janela = { partes: [rxRelatorioHtml(u, { foto, foto2, foto3, foto4, foto5, s2, serie, cd })] };
     const url = URL.createObjectURL(new Blob(janela.partes, { type: 'text/html;charset=utf-8' }));
     const urlCert = URL.createObjectURL(new Blob([rxCertificadoHtml(u)], { type: 'text/html;charset=utf-8' }));
     const nomeArq = `raio-x_${u.nome}.html`;
@@ -778,7 +856,7 @@ ${sec('Mineração e riscos geológicos', 'Direitos minerários da ANM e setores
   ${tabela('Processos minerários (ANM/SIGMINE)', u.B.min || '<p class="hint">Sem informação.</p>')}${tabela('Setores de risco geológico (SGB)', u.B.risco || '<p class="hint">Sem informação.</p>')}`)}
 
 ${sec('Áreas legalmente protegidas e patrimônio', 'Quadro-resumo dos cruzamentos, unidades de conservação, sítios arqueológicos e comunidades tradicionais', `
-  ${u.B.prot ? tabela('Quadro-resumo dos cruzamentos', u.B.prot) : ''}${u.r.ucs ? tabela('Unidades de conservação a até 10 km (CNUC/MMA)', u.B.ucs) : ''}
+  ${u.B.prot ? tabela('Quadro-resumo dos cruzamentos', u.B.prot) : ''}${rxProtegidasMapaHtml(u, F.foto5)}${u.r.ucs ? tabela('Unidades de conservação a até 10 km (CNUC/MMA)', u.B.ucs) : ''}
   ${tabela('Sítios arqueológicos (IPHAN/CNSA) no imóvel ou a até 1 km', u.B.sitios || '<p class="hint">Sem informação.</p>')}${tabela('Terras indígenas e territórios quilombolas a até 10 km', u.B.comun || '<p class="hint">Sem informação.</p>')}`)}
 
 ${sec('Água e licenciamento', 'Outorgas, licenças, barragens e açudes no imóvel ou a até 500 m', `
@@ -906,7 +984,7 @@ function rxProtegidasHtml(r, tab) {
     const lin = (n, crit, res, ok, fonte) => L.push([n, `<b>${crit}</b>`, res, ok === null ? '<span class="selo na">– não consultado</span>' : ok ? '<span class="selo ok">✓ sem restrição</span>' : '<span class="selo no">✕ verificar</span>', `<span class="hint">${fonte}</span>`]);
     let i = 1;
     const ucD = r.ucs ? r.ucs.filter(x => !x.km) : null;
-    lin(i++, 'Unidades de conservação', r.ucs === null ? 'Base não carregada' : ucD.length ? `Dentro de ${esc(ucD[0].f.properties.nome)}` : r.ucs.length ? `Nenhuma no imóvel (mais próxima a ${rxF(r.ucs[0].km, 1)} km)` : 'Nenhuma a até 10 km', r.ucs === null ? null : !ucD.length, 'CNUC/MMA');
+    lin(i++, 'Unidades de conservação', r.ucs === null ? 'Base não carregada' : ucD.length ? ucD.map(x => { const sb = (r.ucSob || []).find(y => y.f === x.f); return `${esc(x.f.properties.nome)}${sb ? ` – ${rxF(sb.ha, 2)} ha (${rxF(sb.ha / (r.areaHa || 1) * 100, 1)}%)` : ''}`; }).join('; ') : r.ucs.length ? `Nenhuma no imóvel (mais próxima a ${rxF(r.ucs[0].km, 1)} km)` : 'Nenhuma a até 10 km', r.ucs === null ? null : !ucD.length, 'CNUC/MMA');
     const ti = (r.comun || []).filter(x => /ind[íi]gena/i.test(x.f.properties.grupo || '')), qu = (r.comun || []).filter(x => /quilomb/i.test(x.f.properties.grupo || ''));
     lin(i++, 'Terras indígenas', ti.length ? `${ti.length} a até 10 km (mais próxima a ${rxF(ti[0].km, 1)} km)` : 'Nenhuma a até 10 km', !ti.some(x => !x.km), 'Funai');
     lin(i++, 'Territórios quilombolas', qu.length ? `${qu.length} a até 10 km (mais próximo a ${rxF(qu[0].km, 1)} km)` : 'Nenhum a até 10 km', !qu.some(x => !x.km), 'Incra');
