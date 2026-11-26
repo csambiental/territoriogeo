@@ -1,0 +1,123 @@
+{
+ "codigo": "4112009",
+ "nome": "Jaguariaíva",
+ "atualizado_em": "2026-11-26",
+ "area_municipio_ha": 144977.2,
+ "car": {
+  "imoveis_total": 1873,
+  "imoveis_ativos": 1860,
+  "area_ativos_ha": 156119.4,
+  "status": {
+   "Ativo": 1859,
+   "Pendente": 1,
+   "Cancelado": 13
+  },
+  "condicao": {
+   "Aguardando análise": 1197,
+   "Em análise": 12,
+   "Analisado, aguardando atendimento a notificação": 62,
+   "Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)": 108,
+   "Analisado, em conformidade com a Lei nº 12.651/2012": 417,
+   "Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais": 53,
+   "Aguardando análise, após revisão ou atendimento da notificação": 11
+  },
+  "porte": {
+   "Pequena (até 4 MF)": 1559,
+   "Grande (acima de 15 MF)": 101,
+   "Média (4 a 15 MF)": 200
+  },
+  "porte_area_ha": {
+   "Média (4 a 15 MF)": 31163.8,
+   "Grande (acima de 15 MF)": 99998.5,
+   "Pequena (até 4 MF)": 24957.1
+  },
+  "faixa_vegetacao": {
+   "Sem informação": 42,
+   "20% ou mais": 1581,
+   "10% a 20%": 123,
+   "Menos de 5%": 77,
+   "5% a 10%": 37
+  },
+  "pendencia_nivel": {
+   "Atenção": 1192,
+   "Prioridade média": 193,
+   "Prioridade alta": 39,
+   "Sem pendência identificada": 436
+  },
+  "georreferenciamento": {
+   "Certificado (≥ 50% da área)": 552,
+   "Não localizado no SIGEF": 1249,
+   "Parcial": 59
+  },
+  "possivel_deficit_rl": 39,
+  "atividade_sem_outorga": 0,
+  "com_alerta": 40,
+  "com_embargo_vigente": 3
+ },
+ "sigef": {
+  "parcelas": 862,
+  "area_ha": 96144.4
+ },
+ "alertas": {
+  "n": 34,
+  "area_ha": 246.1,
+  "imoveis": 50
+ },
+ "embargos": {
+  "n": 3,
+  "situacao": {
+   "Embargo vigente": 3
+  }
+ },
+ "outorgas_rurais": {
+  "n": 108,
+  "tipo": {
+   "Poço (água subterrânea)": 24,
+   "Captação superficial": 77,
+   "Lançamento de efluentes": 2,
+   "Barragem / soleira": 2,
+   "Obras e intervenções em rios": 3
+  }
+ },
+ "licencas": {
+  "n": 0,
+  "tipo": {},
+  "situacao": {},
+  "vencidas_sem_renovacao": 0
+ },
+ "mineracao": {
+  "n": 67,
+  "fase": {
+   "Lavra / extração": 24,
+   "Disponibilidade": 14,
+   "Pesquisa mineral": 29
+  },
+  "imoveis": 372
+ },
+ "risco_sgb": {
+  "n": 3,
+  "mapeado": true,
+  "imoveis": 0
+ },
+ "patrimonio": {
+  "sitios": 16,
+  "imoveis_perto_sitio": 99,
+  "comunidades": 2
+ },
+ "barragens": 17,
+ "massas_dagua": 53,
+ "nascentes": 3441,
+ "rios_km": 51.3,
+ "uso_solo": {
+  "ano": 2023,
+  "fonte": "Esri/Impact Observatory 10 m, 2023 (MapBiomas indisponível para download)",
+  "grupos": {
+   "Vegetação arbórea": 87394.4,
+   "Agricultura": 36435.0,
+   "Pastagem e campos": 19372.7,
+   "Área urbanizada": 1504.6,
+   "Água": 266.1,
+   "Outras áreas": 4.4
+  }
+ }
+}

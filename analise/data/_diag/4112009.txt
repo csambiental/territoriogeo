@@ -1,0 +1,132 @@
+/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:39: DeprecationWarning: ssl.TLSVersion.TLSv1 is deprecated
+  SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
+Município 4112009 Jaguariaíva
+limite: IBGE
+
+===== CAR =====
+  CAR baixados 1873
+imóveis 1873 Counter({'Aguardando análise': 1197, 'Analisado – em conformidade': 578, 'Analisado – notificação pendente': 73, 'Cancelado': 13, 'Em análise': 12}) [('Aguardando análise', 1197), ('Analisado, em conformidade com a Lei nº 12.651/2012', 417), ('Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)', 108), ('Analisado, aguardando atendimento a notificação', 62), ('Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais', 53), ('Cancelado por decisão administrativa', 13), ('Em análise', 12), ('Aguardando análise, após revisão ou atendimento da notificação', 11)]
+----- CAR ok (5s)
+
+===== SIGEF =====
+parcelas 862 Counter({'Registrada': 726, 'Titulada, não registrada': 133, ' ': 2, 'Não titulada': 1})
+----- SIGEF ok (18s)
+
+===== IBAMA =====
+/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:171: DeprecationWarning: The 'shapely.ops.transform()' function is deprecated. Use 'shapely.transform()' or 'shapely.transform_coordseq()' instead. See https://shapely.readthedocs.io/en/latest/manual.html#shapely.ops.transform for more details.
+  g = transform(geo, transform(utm, Point(lon, lat)).buffer(60)); aprox = True
+embargos 3 Counter({'Embargo vigente': 3})
+----- IBAMA ok (29s)
+
+===== Microbacias =====
+microbacias 203
+----- Microbacias ok (16s)
+
+===== MapBiomas cobertura =====
+  indisponível: lulc_10m/collection_2/integration/mapbiomas_10m_collection2_integration_v1-classification_2023.tif HTTP response code: 403
+  indisponível: collection_10/lulc/coverage/brazil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lulc/coverage/brasil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lclu/coverage/brazil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lclu/coverage/brasil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lulc/coverage/brazil_coverage_2023.tif HTTP response code: 403
+  indisponível: collection_9/lclu/coverage/brasil_coverage_2023.tif HTTP response code: 403
+  indisponível: collection_9/lulc/coverage/brasil_coverage_2023.tif HTTP response code: 403
+  indisponível: collection_8/lclu/coverage/brasil_coverage_2022.tif HTTP response code: 403
+uso do solo: reserva Impact Observatory 2023 (6147, 5976)
+grupos (%) {'Vegetação arbórea': 60.3, 'Agricultura': 25.1, 'Pastagem e campos': 13.4, 'Área urbanizada': 1.0, 'Água': 0.2, 'Outras áreas': 0.0}
+----- MapBiomas cobertura ok (10s)
+
+===== MapBiomas alertas =====
+camada mapbiomas-alertas:dashboard-alert-rural-properties-shapefile
+alertas 66
+----- MapBiomas alertas ok (5s)
+
+===== Outorgas SIGARH =====
+   00_PUBLICACOES/outorgas_sigarh/FeatureServer camada 0 lote 779
+outorgas rural 108 fora do CAR 37
+----- Outorgas SIGARH ok (8s)
+
+===== Licenças ambientais IAT (SGA/SIA) =====
+Traceback (most recent call last):
+  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 63, in run
+    try: fn(); log(f'----- {nome} ok ({time.time() - t0:.0f}s)')
+         ^^^^
+  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py", line 459, in licencas
+    licencas_iat.gerar(COD, D)
+  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/licencas_iat.py", line 99, in gerar
+    geo = baixar_geopr(cod)
+          ^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/territoriogeo/territoriogeo/analise/tools/licencas_iat.py", line 61, in baixar_geopr
+    if 'error' in d: raise RuntimeError(d['error'])
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: {'code': 503, 'message': 'Error handling service request :Wait timeout for the request exceeded.', 'details': []}
+----- Licenças ambientais IAT (SGA/SIA) FALHOU
+
+===== Barragens IAT + SNISB =====
+   IG/SNISB/FeatureServer camada 0 lote 28
+   Hosted/barragens_dashboard_publico/FeatureServer camada 0 lote 38
+barragens 17 SNISB 8 IAT 12
+----- Barragens IAT + SNISB ok (26s)
+
+===== Massas d'água (ANA) =====
+   SPR/Massa_dagua/FeatureServer camada 0 lote 159
+massas d'água 53
+----- Massas d'água (ANA) ok (9s)
+
+===== Hidrografia FBDS (IAT) =====
+   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 999
+fbds_rio_ate10m_larg 51
+   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 1000
+   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 710
+fbds_nascentes 3441
+----- Hidrografia FBDS (IAT) ok (30s)
+
+===== Relevo =====
+relevo: cotas 514.5 1359.8377685546875
+----- Relevo ok (19s)
+
+===== Mineração (ANM/SIGMINE) =====
+  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
+processos minerários 67 Counter({'Pesquisa mineral': 29, 'Lavra / extração': 24, 'Disponibilidade': 14})
+----- Mineração (ANM/SIGMINE) ok (4s)
+
+===== Setores de risco (SGB) =====
+setores de risco SGB 3
+----- Setores de risco (SGB) ok (1s)
+
+===== Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas =====
+sítios arqueológicos 16
+terras indígenas e quilombolas (até 10 km) 2 Counter({'Território quilombola': 2})
+----- Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas ok (3s)
+
+===== Aptidão: clima, solos, calcário e unidades de conservação =====
+  altitude: grade NASA 967.9 m, local 1123.0 m, correção -1.01 °C
+clima Cfb 1495 mm []
+solos 25 ['id1', 'cd_fcim', 'nom_unidad', 'cod_simbol', 'val_ncompo', 'legenda', 'ordem', 'subordem', 'grande_gru', 'subgrupos', 'textura', 'horizonte', 'relevo', 'componente', 'inclu_p1', 'ar_poli_km', 'leg_ordem', 'legenda_2', 'cd_ord_id', 'cd_leg2_id']
+jazidas de calcário (PR, lavra/licenciamento) 462
+  camadas CNUC: ['cnuc_2025_08', 'cnuc_2025_08_pontos'] -> usando cnuc_2025_08
+unidades de conservação até 10 km 5 ['PARQUE ESTADUAL VALE DO CÓDO', 'RESERVA PARTICULAR DO PATRIMÔNIO NATURAL VILAR', 'RESERVA PARTICULAR DO PATRIMÔNIO NATURAL FAZENDA BARRA MANSA', 'ÁREA DE PROTEÇÃO AMBIENTAL ESTADUAL DA ESCARPA DEVONIANA', 'PARQUE ESTADUAL DO CERRADO']
+----- Aptidão: clima, solos, calcário e unidades de conservação ok (511s)
+
+===== Logística e agronegócio (OpenStreetMap) =====
+  overpass 0 https://overpass.kumi.systems/api/interpreter HTTP Error 504: Gateway Timeout
+  overpass 0 https://overpass-api.de/api/interpreter HTTP Error 502: Bad Gateway
+  overpass 0 https://overpass.private.coffee/api/interpreter HTTP Error 504: Gateway Timeout
+  overpass 0 https://overpass.kumi.systems/api/interpreter The read operation timed out
+  overpass 0 https://overpass-api.de/api/interpreter HTTP Error 502: Bad Gateway
+logística: pontos Counter({'Aeroporto com voos (IATA)': 49, 'Armazém, silo ou cooperativa': 31, 'Cidade': 22, 'Frigorífico / abatedouro': 5, 'Usina de açúcar / etanol': 4}) | linhas Counter({'Rodovia': 19, 'Ferrovia': 16})
+----- Logística e agronegócio (OpenStreetMap) ok (838s)
+
+===== Pendências =====
+Counter({'Atenção': 1192, 'Sem pendência identificada': 436, 'Prioridade média': 193, 'Prioridade alta': 39, 'Cancelado': 13})
+----- Pendências ok (2s)
+
+===== Config =====
+config ok Jaguariaíva 1860 imóveis
+----- Config ok (2s)

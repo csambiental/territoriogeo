@@ -30,6 +30,12 @@
   "atualizado_em": "2026-11-24"
  },
  {
+  "codigo": "4112009",
+  "nome": "Jaguariaíva",
+  "imoveis": 1860,
+  "atualizado_em": "2026-11-26"
+ },
+ {
   "codigo": "4112801",
   "nome": "Joaquim Távora",
   "imoveis": 845,
@@ -46,6 +52,12 @@
   "nome": "Londrina",
   "imoveis": 4161,
   "atualizado_em": "2026-11-23"
+ },
+ {
+  "codigo": "4119400",
+  "nome": "Piraí do Sul",
+  "imoveis": 2116,
+  "atualizado_em": "2026-11-26"
  },
  {
   "codigo": "4121307",

@@ -1,0 +1,134 @@
+{
+ "codigo": "4119400",
+ "nome": "Piraí do Sul",
+ "atualizado_em": "2026-11-26",
+ "area_municipio_ha": 134236.0,
+ "car": {
+  "imoveis_total": 2143,
+  "imoveis_ativos": 2116,
+  "area_ativos_ha": 131141.7,
+  "status": {
+   "Ativo": 2092,
+   "Pendente": 24,
+   "Cancelado": 27
+  },
+  "condicao": {
+   "Aguardando análise": 1256,
+   "Em análise": 20,
+   "Analisado, aguardando atendimento a notificação": 56,
+   "Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)": 102,
+   "Analisado, em conformidade com a Lei nº 12.651/2012": 592,
+   "Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais": 77,
+   "Aguardando análise, após revisão ou atendimento da notificação": 13
+  },
+  "porte": {
+   "Pequena (até 4 MF)": 1795,
+   "Média (4 a 15 MF)": 214,
+   "Grande (acima de 15 MF)": 107
+  },
+  "porte_area_ha": {
+   "Pequena (até 4 MF)": 25791.7,
+   "Grande (acima de 15 MF)": 78593.8,
+   "Média (4 a 15 MF)": 26756.2
+  },
+  "faixa_vegetacao": {
+   "20% ou mais": 1689,
+   "10% a 20%": 198,
+   "Menos de 5%": 147,
+   "5% a 10%": 64,
+   "Sem informação": 18
+  },
+  "pendencia_nivel": {
+   "Atenção": 1293,
+   "Prioridade média": 369,
+   "Prioridade alta": 103,
+   "Sem pendência identificada": 351
+  },
+  "georreferenciamento": {
+   "Não localizado no SIGEF": 1609,
+   "Certificado (≥ 50% da área)": 455,
+   "Parcial": 52
+  },
+  "possivel_deficit_rl": 40,
+  "atividade_sem_outorga": 150,
+  "com_alerta": 58,
+  "com_embargo_vigente": 11
+ },
+ "sigef": {
+  "parcelas": 772,
+  "area_ha": 72009.1
+ },
+ "alertas": {
+  "n": 39,
+  "area_ha": 244.1,
+  "imoveis": 74
+ },
+ "embargos": {
+  "n": 19,
+  "situacao": {
+   "Embargo vigente": 17,
+   "Desembargado": 2
+  }
+ },
+ "outorgas_rurais": {
+  "n": 192,
+  "tipo": {
+   "Poço (água subterrânea)": 58,
+   "Captação superficial": 124,
+   "Obras e intervenções em rios": 1,
+   "Barragem / soleira": 7,
+   "Lançamento de efluentes": 2
+  }
+ },
+ "licencas": {
+  "n": 451,
+  "tipo": {
+   "Licença Simplificada": 103,
+   "Dispensa de licenciamento": 187,
+   "Licença por Adesão e Compromisso": 33,
+   "Licença de Operação": 76,
+   "Licença Prévia / de Instalação": 13,
+   "Autorização Ambiental": 39
+  },
+  "situacao": {
+   "Vence em até 6 meses": 42,
+   "Vigente": 409
+  },
+  "vencidas_sem_renovacao": 436
+ },
+ "mineracao": {
+  "n": 68,
+  "fase": {
+   "Lavra / extração": 33,
+   "Disponibilidade": 10,
+   "Pesquisa mineral": 25
+  },
+  "imoveis": 1020
+ },
+ "risco_sgb": {
+  "n": 0,
+  "mapeado": false,
+  "imoveis": 0
+ },
+ "patrimonio": {
+  "sitios": 42,
+  "imoveis_perto_sitio": 148,
+  "comunidades": 1
+ },
+ "barragens": 42,
+ "massas_dagua": 89,
+ "nascentes": 2691,
+ "rios_km": 2845.0,
+ "uso_solo": {
+  "ano": 2023,
+  "fonte": "Esri/Impact Observatory 10 m, 2023 (MapBiomas indisponível para download)",
+  "grupos": {
+   "Vegetação arbórea": 65085.8,
+   "Agricultura": 46357.9,
+   "Pastagem e campos": 21188.0,
+   "Área urbanizada": 1501.7,
+   "Água": 96.5,
+   "Outras áreas": 6.1
+  }
+ }
+}
