@@ -1,0 +1,127 @@
+{
+ "codigo": "4102802",
+ "nome": "Bela Vista do Paraíso",
+ "atualizado_em": "2026-11-27",
+ "area_municipio_ha": 24216.3,
+ "car": {
+  "imoveis_total": 563,
+  "imoveis_ativos": 548,
+  "area_ativos_ha": 24442.1,
+  "status": {
+   "Ativo": 547,
+   "Pendente": 1,
+   "Cancelado": 15
+  },
+  "condicao": {
+   "Aguardando análise": 249,
+   "Em análise": 6,
+   "Analisado, aguardando atendimento a notificação": 27,
+   "Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)": 15,
+   "Analisado, em conformidade com a Lei nº 12.651/2012": 202,
+   "Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais": 34,
+   "Aguardando análise, após revisão ou atendimento da notificação": 15
+  },
+  "porte": {
+   "Pequena (até 4 MF)": 494,
+   "Grande (acima de 15 MF)": 15,
+   "Média (4 a 15 MF)": 39
+  },
+  "porte_area_ha": {
+   "Grande (acima de 15 MF)": 10442.2,
+   "Média (4 a 15 MF)": 4533.6,
+   "Pequena (até 4 MF)": 9466.3
+  },
+  "faixa_vegetacao": {
+   "Menos de 5%": 281,
+   "5% a 10%": 81,
+   "10% a 20%": 87,
+   "20% ou mais": 97,
+   "Sem informação": 2
+  },
+  "pendencia_nivel": {
+   "Atenção": 241,
+   "Prioridade média": 29,
+   "Prioridade alta": 34,
+   "Sem pendência identificada": 244
+  },
+  "georreferenciamento": {
+   "Certificado (≥ 50% da área)": 171,
+   "Não localizado no SIGEF": 354,
+   "Parcial": 23
+  },
+  "possivel_deficit_rl": 43,
+  "atividade_sem_outorga": 12,
+  "com_alerta": 1,
+  "com_embargo_vigente": 0
+ },
+ "sigef": {
+  "parcelas": 280,
+  "area_ha": 12949.2
+ },
+ "alertas": {
+  "n": 1,
+  "area_ha": 0.4,
+  "imoveis": 1
+ },
+ "embargos": {
+  "n": 1,
+  "situacao": {
+   "Desembargado": 1
+  }
+ },
+ "outorgas_rurais": {
+  "n": 12,
+  "tipo": {
+   "Poço (água subterrânea)": 8,
+   "Captação superficial": 3,
+   "Obras e intervenções em rios": 1
+  }
+ },
+ "licencas": {
+  "n": 55,
+  "tipo": {
+   "Dispensa de licenciamento": 29,
+   "Licença de Operação": 7,
+   "Licença Simplificada": 11,
+   "Autorização Ambiental": 2,
+   "Licença Prévia / de Instalação": 6
+  },
+  "situacao": {
+   "Vigente": 51,
+   "Vence em até 6 meses": 4
+  },
+  "vencidas_sem_renovacao": 140
+ },
+ "mineracao": {
+  "n": 1,
+  "fase": {
+   "Lavra / extração": 1
+  },
+  "imoveis": 1
+ },
+ "risco_sgb": {
+  "n": 0,
+  "mapeado": false,
+  "imoveis": 0
+ },
+ "patrimonio": {
+  "sitios": 0,
+  "imoveis_perto_sitio": 0,
+  "comunidades": 0
+ },
+ "barragens": 3,
+ "massas_dagua": 13,
+ "nascentes": 73,
+ "rios_km": 218.3,
+ "uso_solo": {
+  "ano": 2023,
+  "fonte": "Esri/Impact Observatory 10 m, 2023 (MapBiomas indisponível para download)",
+  "grupos": {
+   "Vegetação arbórea": 3574.3,
+   "Agricultura": 19436.6,
+   "Pastagem e campos": 545.8,
+   "Área urbanizada": 630.1,
+   "Água": 29.5
+  }
+ }
+}

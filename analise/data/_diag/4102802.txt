@@ -1,0 +1,125 @@
+/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:39: DeprecationWarning: ssl.TLSVersion.TLSv1 is deprecated
+  SSL_LEGADO.minimum_version = ssl.TLSVersion.TLSv1
+Município 4102802 Bela Vista do Paraíso
+limite: IBGE
+
+===== CAR =====
+  CAR baixados 563
+imóveis 563 Counter({'Analisado – em conformidade': 251, 'Aguardando análise': 249, 'Analisado – notificação pendente': 42, 'Cancelado': 15, 'Em análise': 6}) [('Aguardando análise', 249), ('Analisado, em conformidade com a Lei nº 12.651/2012', 202), ('Analisado, em conformidade com a Lei nº 12.651/2012, com ativos ambientais', 34), ('Analisado, aguardando atendimento a notificação', 27), ('Analisado, aguardando regularização ambiental (Lei nº 12.651/2012)', 15), ('Cancelado por decisão administrativa', 15), ('Aguardando análise, após revisão ou atendimento da notificação', 15), ('Em análise', 6)]
+----- CAR ok (3s)
+
+===== SIGEF =====
+parcelas 280 Counter({'Registrada': 280})
+----- SIGEF ok (3s)
+
+===== IBAMA =====
+/home/runner/work/territoriogeo/territoriogeo/analise/tools/municipio.py:171: DeprecationWarning: The 'shapely.ops.transform()' function is deprecated. Use 'shapely.transform()' or 'shapely.transform_coordseq()' instead. See https://shapely.readthedocs.io/en/latest/manual.html#shapely.ops.transform for more details.
+  g = transform(geo, transform(utm, Point(lon, lat)).buffer(60)); aprox = True
+embargos 1 Counter({'Desembargado': 1})
+----- IBAMA ok (30s)
+
+===== Microbacias =====
+microbacias 38
+----- Microbacias ok (13s)
+
+===== MapBiomas cobertura =====
+  indisponível: lulc_10m/collection_2/integration/mapbiomas_10m_collection2_integration_v1-classification_2023.tif HTTP response code: 403
+  indisponível: collection_10/lulc/coverage/brazil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lulc/coverage/brasil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lclu/coverage/brazil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lclu/coverage/brasil_coverage_2024.tif HTTP response code: 403
+  indisponível: collection_10/lulc/coverage/brazil_coverage_2023.tif HTTP response code: 403
+  indisponível: collection_9/lclu/coverage/brasil_coverage_2023.tif HTTP response code: 403
+  indisponível: collection_9/lulc/coverage/brasil_coverage_2023.tif HTTP response code: 403
+  indisponível: collection_8/lclu/coverage/brasil_coverage_2022.tif HTTP response code: 403
+uso do solo: reserva Impact Observatory 2023 (2579, 2111)
+grupos (%) {'Vegetação arbórea': 14.8, 'Agricultura': 80.3, 'Pastagem e campos': 2.3, 'Área urbanizada': 2.6, 'Água': 0.1, 'Outras áreas': 0.0}
+----- MapBiomas cobertura ok (4s)
+
+===== MapBiomas alertas =====
+camada mapbiomas-alertas:dashboard-alert-rural-properties-shapefile
+alertas 1
+----- MapBiomas alertas ok (1s)
+
+===== Outorgas SIGARH =====
+   00_PUBLICACOES/outorgas_sigarh/FeatureServer camada 0 lote 71
+outorgas rural 12 fora do CAR 6
+----- Outorgas SIGARH ok (3s)
+
+===== Licenças ambientais IAT (SGA/SIA) =====
+  GeoPR: 385 licenças (com histórico); SGA consulta pública: 94
+  46 licenças só no SGA (sem coordenada no GeoPR)
+  420 licenças, 55 vigentes e 140 vencidas no mapa; pontos genéricos: 2; {'Vence em até 6 meses': 4, 'Vigente': 90, 'Vencida': 154, 'Vencida (substituída por licença mais recente)': 172}
+  grupos: {'Licença de Operação': 146, 'Licença Prévia / de Instalação': 145, 'Dispensa de licenciamento': 71, 'Autorização Ambiental': 27, 'Licença Simplificada': 26, 'Licença por Adesão e Compromisso': 5}
+----- Licenças ambientais IAT (SGA/SIA) ok (6s)
+
+===== Barragens IAT + SNISB =====
+   IG/SNISB/FeatureServer camada 0 lote 2
+   Hosted/barragens_dashboard_publico/FeatureServer camada 0 lote 7
+barragens 3 SNISB 0 IAT 3
+----- Barragens IAT + SNISB ok (24s)
+
+===== Massas d'água (ANA) =====
+   SPR/Massa_dagua/FeatureServer camada 0 lote 21
+massas d'água 13
+----- Massas d'água (ANA) ok (1s)
+
+===== Hidrografia FBDS (IAT) =====
+   00_PUBLICACOES/fbds_rio_ate10m_larg/FeatureServer camada 0 lote 792
+fbds_rio_ate10m_larg 403
+   00_PUBLICACOES/fbds_nascentes/FeatureServer camada 0 lote 114
+fbds_nascentes 73
+----- Hidrografia FBDS (IAT) ok (10s)
+
+===== Relevo =====
+relevo: cotas 329.9518127441406 635.062255859375
+----- Relevo ok (5s)
+
+===== Mineração (ANM/SIGMINE) =====
+  cadeia AIA não obtida para geo.anm.gov.br Unable to load PEM file. See https://cryptography.io/en/latest/faq/#why-can-t-i-import-my-pem-file for more details. MalformedFraming
+processos minerários 1 Counter({'Lavra / extração': 1})
+----- Mineração (ANM/SIGMINE) ok (1s)
+
+===== Setores de risco (SGB) =====
+setores de risco SGB 0
+----- Setores de risco (SGB) ok (1s)
+
+===== Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas =====
+sítios arqueológicos 0
+terras indígenas e quilombolas (até 10 km) 0 Counter()
+----- Patrimônio arqueológico (IPHAN), terras indígenas e quilombolas ok (1s)
+
+===== Aptidão: clima, solos, calcário e unidades de conservação =====
+  altitude: grade NASA 454.93 m, local 458.0 m, correção -0.02 °C
+clima Cfa 1453 mm ['ago']
+solos 8 ['id1', 'cd_fcim', 'nom_unidad', 'cod_simbol', 'val_ncompo', 'legenda', 'ordem', 'subordem', 'grande_gru', 'subgrupos', 'textura', 'horizonte', 'relevo', 'componente', 'ar_poli_km', 'leg_ordem', 'legenda_2', 'cd_ord_id', 'cd_leg2_id']
+jazidas de calcário (PR, lavra/licenciamento) 462
+  camadas CNUC: ['cnuc_2025_08', 'cnuc_2025_08_pontos'] -> usando cnuc_2025_08
+unidades de conservação até 10 km 0 []
+----- Aptidão: clima, solos, calcário e unidades de conservação ok (15s)
+
+===== Logística e agronegócio (OpenStreetMap) =====
+  overpass 0 https://overpass.kumi.systems/api/interpreter The read operation timed out
+  overpass 0 https://overpass-api.de/api/interpreter <urlopen error [Errno 101] Network is unreachable>
+  overpass 0 https://overpass.private.coffee/api/interpreter HTTP Error 502: Bad Gateway
+  overpass 0 https://maps.mail.ru/osm/tools/overpass/api/interpreter HTTP Error 504: Gateway Time-out
+  overpass 1 https://overpass.kumi.systems/api/interpreter The read operation timed out
+  overpass 1 https://overpass-api.de/api/interpreter <urlopen error [Errno 101] Network is unreachable>
+  overpass 1 https://overpass.private.coffee/api/interpreter The read operation timed out
+  overpass 1 https://maps.mail.ru/osm/tools/overpass/api/interpreter HTTP Error 504: Gateway Time-out
+  overpass 2 https://overpass.kumi.systems/api/interpreter HTTP Error 502: Bad Gateway
+  overpass 2 https://overpass-api.de/api/interpreter <urlopen error [Errno 101] Network is unreachable>
+  overpass 2 https://overpass.private.coffee/api/interpreter HTTP Error 502: Bad Gateway
+  overpass 0 https://overpass.kumi.systems/api/interpreter The read operation timed out
+  overpass 0 https://overpass-api.de/api/interpreter <urlopen error [Errno 101] Network is unreachable>
+  overpass 0 https://overpass.private.coffee/api/interpreter HTTP Error 504: Gateway Timeout
+logística: pontos Counter({'Armazém, silo ou cooperativa': 82, 'Aeroporto com voos (IATA)': 34, 'Cidade': 28, 'Frigorífico / abatedouro': 20, 'Usina de açúcar / etanol': 12}) | linhas Counter({'Rodovia': 27, 'Ferrovia': 13})
+----- Logística e agronegócio (OpenStreetMap) ok (2120s)
+
+===== Pendências =====
+Counter({'Sem pendência identificada': 244, 'Atenção': 241, 'Prioridade alta': 34, 'Prioridade média': 29, 'Cancelado': 15})
+----- Pendências ok (0s)
+
+===== Config =====
+config ok Bela Vista do Paraíso 548 imóveis
+----- Config ok (0s)
