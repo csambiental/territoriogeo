@@ -62,7 +62,7 @@ function rxAplicarTitulares(r, lista) {
     if (!r.lic) return;
     r.titulares = rxTitulares(r, lista || []);
     const hoje = new Date();
-    r.titulares.semXY = (lista || []).filter(l => !l.no_mapa && r.titulares.doGrupo(l.nome) && (rxData(l.validade) || 0) >= hoje);
+    r.titulares.hist = (lista || []).filter(l => r.titulares.doGrupo(l.nome)).sort((a, b) => (rxData(a.emissao) || 0) - (rxData(b.emissao) || 0));
     for (const x of [...r.lic.dentro, ...r.lic.perto]) {
         const q = x.f.properties; x.terceiro = !r.titulares.doGrupo(q.nome);
         const v = rxData(q.Validade);
@@ -70,7 +70,7 @@ function rxAplicarTitulares(r, lista) {
     }
 }
 const rxLicDoGrupo = r => (r.lic?.dentro || []).filter(x => !x.terceiro && !/substituída/.test(x.f.properties.situacao || ''));
-const rxSubstTxt = sb => `${sb.l.modalidade} nº ${sb.l.documento} (${sb.l.atividade}), válida até ${sb.l.validade}`;
+const rxSubstTxt = sb => `${sb.l.modalidade} nº ${sb.l.documento} (${sb.l.atividade}), válida até ${sb.l.validade}${sb.tipo === 'mesma' ? ' – mesma atividade' : ' – atividade equivalente'}`;
 // distância (km) entre as divisas de dois polígonos – a mesma medida em todas as seções (RX-03)
 function rxDistBordas(alvo, f) {
     if (turf.booleanIntersects(alvo, f)) return 0;
@@ -248,8 +248,8 @@ function rxNecessidades(p, r, area, uso) {
         'Conferir cadastro no SNISB/IAT, outorga do barramento e obrigações de segurança de barragem (Lei 12.334/2010)');
     r.massas.filter(x => /artificial/.test(x.f.properties.grupo) && !x.barr).slice(0, 8).forEach(x => add(2, 'Açude / represa', `Espelho d'água artificial de ${x.f.properties['Área (ha)']} ha sem barragem localizada no SNISB/IAT`,
         'Verificar a regularização do barramento (outorga ou dispensa no IAT/SIGARH e cadastro no SNISB) e a APP do entorno (art. 4º, III, da Lei 12.651/2012; dispensada abaixo de 1 ha, § 4º)'));
-    rxLicDoGrupo(r).filter(x => x.subst && x.subst.tipo === 'equivalente').forEach(x => add(3, 'Licença ambiental', `${x.f.properties.Modalidade || 'Licença'} nº ${x.f.properties['Nº do documento'] || 's/ nº'} (${x.f.properties.Atividade || ''}) vencida em ${x.f.properties.Validade} – provavelmente substituída por ${rxSubstTxt(x.subst)}`,
-        'Confirmar no SGA se a licença mais recente abrange esta atividade (atividade equivalente, não idêntica)'));
+    rxLicDoGrupo(r).filter(x => x.subst).forEach(x => add(3, 'Licença ambiental – a conferir', `${x.f.properties.Modalidade || 'Licença'} nº ${x.f.properties['Nº do documento'] || 's/ nº'} (${x.f.properties.Atividade || ''}) vencida em ${x.f.properties.Validade} – possível sucessora no histórico do grupo: ${rxSubstTxt(x.subst)}`,
+        'Conferir no SGA (e com o cliente) se a licença mais recente abrange esta atividade e este local; se não, regularizar no IAT – ver histórico de licenciamento'));
     rxLicDoGrupo(r).filter(x => !x.subst).forEach(x => { const v = rxData(x.f.properties.Validade); if (v && v < em12m) add(v < hoje ? (hoje - v > 5 * 365 * 864e5 ? 3 : 1) : 2, 'Licença ambiental', `${x.f.properties.Modalidade || 'Licença'} nº ${x.f.properties['Nº do documento'] || 's/ nº'} (${x.f.properties.Atividade || ''}) – ${rxData(x.f.properties.Validade) < hoje ? 'vencida em' : 'vence em'} ${x.f.properties.Validade}`, (v < hoje && hoje - v > 5 * 365 * 864e5) ? 'Verificar se a atividade continua; se sim, regularizar o licenciamento no IAT (SGA)' : 'Renovação da licença ambiental no IAT (SGA)'); });
     add(3, 'Vistoria', 'Análise feita só com bases públicas', 'Vistoria de campo e conferência documental (matrícula, CCIR, ITR, CAR) para confirmar os itens acima');
     return N.sort((a, b) => a.prior - b.prior);
@@ -393,7 +393,7 @@ async function analisarImovel(nome, alvoCustom) {
                     return [l[0], l[1], l[2], `<span class="mono">${esc(q['Portaria / declaração'] || '–')}</span>${q.Documento ? `<br><span class="hint">${esc(q.Documento)}${q['Situação'] ? ' · ' + esc(q['Situação']) : ''}</span>` : ''}`, venc(q), l[3], l[4]]; })); })();
         B.licencas = C.licencas === null ? '' : (() => { if (!r.lic) return '<p class="hint">Camada de licenças não disponível neste município.</p>'; const lista = [...r.lic.dentro, ...r.lic.perto].slice(0, 12), linhas = pts(r.lic, 'Atividade', 'lic'), hoje = new Date();
                 const venc = (q, x) => { const v = q.Validade || ''; const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(v); if (!v) return '–'; if (!m) return esc(v); const d = new Date(+m[3], m[2] - 1, +m[1]), dias = (d - hoje) / 864e5;
-                    if (dias < 0 && x.subst) return `${esc(v)}<br><b style="color:#2e7d32">${x.subst.tipo === 'mesma' ? 'Substituída' : 'Provavelmente substituída'} por ${esc(x.subst.l.modalidade)} nº ${esc(x.subst.l.documento)} até ${esc(x.subst.l.validade)}</b>${x.subst.tipo === 'mesma' ? '' : '<br><span class="hint">atividade equivalente – confirmar</span>'}`;
+                    if (dias < 0 && x.subst) return `<b style="color:#c62828">${esc(v)} – vencida</b><br><b style="color:#e65100">possível sucessora: ${esc(x.subst.l.modalidade)} nº ${esc(x.subst.l.documento)} até ${esc(x.subst.l.validade)}</b><br><span class="hint">${x.subst.tipo === 'mesma' ? 'mesma atividade' : 'atividade equivalente'} – a conferir</span>`;
                     return dias < 0 ? `<b style="color:#c62828">${esc(v)}<br>vencida</b>` : dias <= 180 ? `<b style="color:#e65100">${esc(v)}<br>vence em ${Math.ceil(dias)} dias</b>` : esc(v); };
                 const linha = (l, i) => { const x = lista[i], q = x.f.properties;
                     return [l[0], l[1], l[2] + (q['Atividade específica'] && q['Atividade específica'] !== q.Atividade ? `<br><span class="hint">${esc(q['Atividade específica'])}</span>` : ''),
@@ -401,10 +401,11 @@ async function analisarImovel(nome, alvoCustom) {
                 const cab = ['Nº', 'Titular (SGA)', 'Atividade', 'Modalidade e nº do documento', 'Validade', 'Posição', 'Coordenadas (lat, long)'];
                 const idx = linhas.map((l, i) => i), gr = idx.filter(i => !lista[i].terceiro && !lista[i].km), ent = idx.filter(i => lista[i].terceiro || lista[i].km);
                 // licenças do mesmo grupo que existem só no SGA (sem coordenada) e estão vigentes
-                const semXY = (r.titulares || {}).semXY || [];
+                const hist = (r.titulares || {}).hist || [];
+                const sit = l => { const v = rxData(l.validade); return !v ? esc(l.situacao || '–') : v >= hoje ? '<b style="color:#2e7d32">vigente</b>' : /substitu/.test(l.situacao || '') ? 'vencida – há licença posterior da mesma atividade' : 'vencida'; };
                 const T = r.titulares;
                 const aviso = T && T.nomes.length ? `<p class="hint">Titulares agrupados para análise: <b>${T.nomes.map(esc).join('; ')}</b> – ${T.informados ? 'informados pelo analista' : 'sugeridos automaticamente pela semelhança de nome'}; confirmar na Fase 2.</p>` : '';
-                return `${aviso}<h4>Do titular / grupo – no imóvel</h4>${gr.length ? tab(cab, gr.map(i => linha(linhas[i], i))) : '<p class="hint">Nenhuma licença do titular/grupo com coordenada dentro do imóvel.</p>'}${semXY.length ? `<h4>Do titular / grupo – vigentes sem coordenada no IAT</h4>${tab(['Titular (SGA)', 'Atividade', 'Modalidade e nº', 'Emissão', 'Validade'], semXY.map(l => [esc(l.nome), esc(l.atividade), `${esc(l.modalidade)} nº ${esc(l.documento)}`, esc(l.emissao), esc(l.validade)]))}` : ''}
+                return `${aviso}<h4>Do titular / grupo – no imóvel</h4>${gr.length ? tab(cab, gr.map(i => linha(linhas[i], i))) : '<p class="hint">Nenhuma licença do titular/grupo com coordenada dentro do imóvel.</p>'}${hist.length ? `<h4>Histórico de licenciamento do titular / grupo (${hist.length} registro(s) no SGA/SIA) – a conferir</h4><p class="hint">Todas as licenças dos titulares agrupados no município, em ordem de emissão, inclusive as sem coordenada no IAT. Serve para resgatar a trajetória do licenciamento; a relação entre elas (sucessão, ampliação, outro local) precisa ser conferida nos documentos.</p>${tab(['Emissão', 'Titular (SGA)', 'Atividade', 'Modalidade e nº', 'Validade', 'Situação', 'Localização no IAT'], hist.map(l => [esc(l.emissao || '–'), esc(l.nome), esc(l.atividade || ''), `${esc(l.modalidade || '')} nº ${esc(l.documento || '–')}`, esc(l.validade || '–'), sit(l), l.no_mapa ? 'com coordenada' : '<span style="color:#e65100">sem coordenada</span>']))}` : ''}
                     ${ent.length ? `<h4>De terceiros e do entorno (a até 500 m) – informativo</h4>${tab(cab, ent.map(i => { const c = linha(linhas[i], i); c[1] += lista[i].terceiro ? '<br><span class="hint">terceiro – não conta para o imóvel</span>' : ''; return c; }))}` : ''}`; })();
         B.barragens = (() => { const lista = [...r.barr.dentro, ...r.barr.perto].slice(0, 12); const linhas = pts(r.barr, 'Fonte', 'barr');
                 return tab(['Nº', 'Barragem', 'Fonte', 'Risco / DPA', 'Uso · altura · volume', 'Posição', 'Coordenadas (lat, long)'], linhas.map((l, i) => { const q = lista[i].f.properties;
@@ -766,7 +767,7 @@ function rxChecklist(u) {
     const lv = lic.filter(x => { const v = dt(x.f.properties.Validade); return v && v < hoje && hoje - v <= 5 * 365 * 864e5; }), lb = lic.filter(x => { const v = dt(x.f.properties.Validade); return v && v >= hoje && v - hoje <= d6; });
     add('Licenças ambientais no imóvel (IAT – SGA/SIA)', u.C.licencas === null || !r.lic ? 'na' : !lic.length ? 'na' : lv.length ? 'no' : lb.length ? 'at' : 'ok',
         (lic.length ? lic.slice(0, 5).map(x => `${x.f.properties.Modalidade || 'Licença'} nº ${x.f.properties['Nº do documento'] || 's/ nº'} – ${x.f.properties.Atividade || ''}, validade ${x.f.properties.Validade || '–'}`).join('; ') : 'Nenhuma licença do titular/grupo localizada dentro do imóvel')
-        + (() => { const sb = rxLicDoGrupo(r).filter(x => x.subst); return sb.length ? `. Substituídas: ${sb.map(x => `${x.f.properties.Modalidade?.split(' ')[0] || ''} nº ${x.f.properties['Nº do documento']} → ${rxSubstTxt(x.subst)}${x.subst.tipo === 'equivalente' ? ' (atividade equivalente – confirmar)' : ''}`).join('; ')}` : ''; })()
+        + (() => { const sb = rxLicDoGrupo(r).filter(x => x.subst); return sb.length ? `. Possíveis sucessoras (a conferir): ${sb.map(x => `${x.f.properties.Modalidade?.split(' ')[0] || ''} nº ${x.f.properties['Nº do documento']} → ${rxSubstTxt(x.subst)}`).join('; ')}` : ''; })()
         + (() => { const t = (r.lic?.dentro || []).filter(x => x.terceiro).length; return t ? `. ${t} licença(s) de terceiros no perímetro não contam aqui (ver tabela de entorno)` : ''; })());
     if (u.itr) G.push(itrChecklist(u));
     const gp = itrPrevChecklist(u); if (gp) G.push(gp);
