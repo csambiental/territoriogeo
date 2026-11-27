@@ -224,7 +224,9 @@ async function itrAppEstimada(u) {   // APP pelas faixas do Código Florestal (L
     const faixas = [], det = { rios: 0, nascentes: 0, lagos: 0, represas: 0 };
     const [rios, nasc] = await Promise.all([u.C.rios, u.C.nascentes].map(a => a ? rxJSON(a).catch(() => ({ features: [] })) : Promise.resolve(null)));
     if (rios) rios.features.filter(dentro).forEach(f => { faixas.push(turf.buffer(f, 0.030, { units: 'kilometers', steps: 6 })); det.rios++; });
-    if (nasc) nasc.features.filter(dentro).forEach(f => { faixas.push(turf.buffer(f, 0.050, { units: 'kilometers', steps: 12 })); det.nascentes++; });
+    // nascentes: conta as do imóvel e, à parte, as de até 50 m fora da divisa (a APP delas alcança o imóvel) – mesmo critério do CAR declarado × verificado
+    if (nasc) nasc.features.filter(dentro).forEach(f => { let dIn = false, km = 9; try { dIn = turf.booleanPointInPolygon(f, alvo); if (!dIn) km = Math.min(...turf.flatten(turf.polygonToLine(alvo)).features.map(l => turf.pointToLineDistance(f, l))); } catch (e) { }
+        if (!dIn && km > 0.05) return; faixas.push(turf.buffer(f, 0.050, { units: 'kilometers', steps: 12 })); dIn ? det.nascentes++ : det.nascBorda = (det.nascBorda || 0) + 1; });
     (u.r.massas || []).forEach(x => { const art = /artificial/.test(x.f.properties.grupo || ''), ha = rxNum(x.f.properties['Área (ha)']);
         if (art && ha < 1) return;  // dispensada abaixo de 1 ha (§ 4º)
         const larg = art ? 0.015 : ha > 20 ? 0.100 : 0.050; faixas.push(turf.buffer(x.f, larg, { units: 'kilometers', steps: 6 })); art ? det.represas++ : det.lagos++; });
@@ -298,7 +300,7 @@ function itrComparar(u) {
 }
 function itrPreviaHtml(u) {
     const P = u.previa; if (!P) return '';
-    const L = [['Área total do imóvel (perímetro do CAR)', P.area, 'CAR'], ['Área de Preservação Permanente – APP', P.app, `faixas legais: ${P.A.det.rios || 0} trecho(s) de rio, ${P.A.det.nascentes || 0} nascente(s), ${(P.A.det.lagos || 0) + (P.A.det.represas || 0)} lago(s)/represa(s)`],
+    const L = [['Área total do imóvel (perímetro do CAR)', P.area, 'CAR'], ['Área de Preservação Permanente – APP', P.app, `faixas legais: ${P.A.det.rios || 0} trecho(s) de rio, ${P.A.det.nascentes || 0} nascente(s) no imóvel${P.A.det.nascBorda ? ` + ${P.A.det.nascBorda} a até 50 m fora da divisa` : ''}, ${(P.A.det.lagos || 0) + (P.A.det.represas || 0)} lago(s)/represa(s)`],
         ['Reserva Legal (até 20%, sobre vegetação existente)', P.rl, 'vegetação nativa medida'], ['Florestas nativas fora de APP/RL', P.flor, 'satélite'], ['Área tributável', P.trib, 'calculada'],
         ['Benfeitorias (área construída)', P.benf, 'satélite'], ['Área aproveitável', P.aprov, 'calculada'], ['Produtos vegetais (lavouras)', P.veg, 'satélite'], ['Pastagem', P.pas, 'satélite'],
         ['Reflorestamento (silvicultura)', P.refl, 'satélite'], ['Área utilizada na atividade rural', P.util, 'calculada']];

@@ -25,6 +25,67 @@ function rxSobreposicoes(alvo, feats, minHa = 0.01) {
     }
     return out.sort((a, b) => b.ha - a.ha);
 }
+// ---------- titulares do grupo, licenças de terceiros e licença substituta (backlog RX-01, RX-02, RX-05) ----------
+const rxNomeNorm = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().replace(/[^A-Z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
+const RX_PUBLICO = /\b(PREFEITURA|MUNICIPIO|ESTADO DO PARANA|GOVERNO|SECRETARIA|DEPARTAMENTO|CAMARA MUNICIPAL|COPEL|SANEPAR|DER|DNIT|INSTITUTO AGUA E TERRA|EMATER|IDR|UNIVERSIDADE|AUTARQUIA|CONSORCIO INTERMUNICIPAL)\b/;
+// palavras que não identificam um grupo (formas societárias, ramos e sobrenomes muito comuns)
+const RX_STOP = new Set(('LTDA EIRELI EPP MEI SOCIEDADE ANONIMA COMERCIO INDUSTRIA AGRO AGROPECUARIA AGRICOLA AGROINDUSTRIAL SEMENTES FAZENDA FAZENDAS SITIO TRANSPORTES TRANSPORTADORA SERVICOS CEREAIS ARMAZENS ' +
+    'IMPORTACAO EXPORTACAO FILHO FILHOS JUNIOR NETO SOBRINHO COOPERATIVA GRAOS POSTO POSTOS COMBUSTIVEIS GRUPO HOLDING PARTICIPACOES EMPREENDIMENTOS ADMINISTRACAO ' +
+    'SILVA SANTOS OLIVEIRA SOUZA SOUSA PEREIRA LIMA FERREIRA COSTA RODRIGUES ALVES GOMES RIBEIRO MARTINS CARVALHO ALMEIDA LOPES SOARES FERNANDES VIEIRA BARBOSA ROCHA DIAS NASCIMENTO ' +
+    'ANDRADE MOREIRA NUNES MARQUES MACHADO MENDES FREITAS CARDOSO RAMOS GONCALVES SANTANA TEIXEIRA CORREA BATISTA CAMPOS MIRANDA ARAUJO MORAES BORGES PINTO CAVALCANTI').split(' '));
+const rxTokens = s => rxNomeNorm(s).split(' ').filter(t => t.length >= 4 && !RX_STOP.has(t));
+// grupo de titulares: os informados pelo analista ou, sem isso, os titulares (não públicos) das licenças dentro do imóvel + nomes da base com o mesmo sobrenome/razão
+function rxTitulares(r, lista) {
+    const inf = (Array.isArray(window.RX_TITULARES) ? window.RX_TITULARES : []).map(x => String(x).trim()).filter(Boolean);
+    const dentro = (r.lic?.dentro || []).map(x => x.f.properties.nome).filter(Boolean);
+    const base = inf.length ? inf : dentro.filter(n => !RX_PUBLICO.test(rxNomeNorm(n)));
+    const tk = new Set(base.flatMap(rxTokens)), exatos = new Set(base.map(rxNomeNorm));
+    const doGrupo = n => { const N = rxNomeNorm(n); if (!N) return false; if (exatos.has(N)) return true; if (RX_PUBLICO.test(N)) return false; return rxTokens(n).some(t => tk.has(t)); };
+    const nomes = [...new Set([...dentro, ...lista.map(l => l.nome)].filter(doGrupo).map(n => n.trim()))].sort();
+    return { informados: inf.length > 0, nomes, doGrupo };
+}
+// atividades equivalentes para reconhecer a licença que substituiu outra (lista a validar pela equipe técnica)
+const RX_EQUIV = [/sement|beneficiamento de gr|armazen|secagem|silo|cereal/, /combustive|abastecimento/, /avicult|aviario|frango|\baves\b/, /suinocult|suino/, /bovinocult|confinamento|bovino|leite|ordenha/,
+    /piscicult|aquicult|peixe/, /lavador|lavagem/, /irriga/, /latic/, /abate|frigor/];
+const rxAtivN = s => rxNomeNorm(s).toLowerCase();
+const rxClasse = a => RX_EQUIV.findIndex(re => re.test(rxAtivN(a)));
+function rxSubstituta(q, lista, G) {
+    const hoje = new Date(), em = rxData(q['Emissão']), a = rxAtivN(q.Atividade), cl = rxClasse(q.Atividade), doc = String(q['Nº do documento'] || '');
+    const cand = lista.filter(l => G.doGrupo(l.nome) && String(l.documento || '') !== doc && (rxData(l.validade) || 0) >= hoje && (!em || (rxData(l.emissao) || 0) > em))
+        .sort((x, y) => (rxData(y.emissao) || 0) - (rxData(x.emissao) || 0));
+    const ex = cand.find(l => rxAtivN(l.atividade) === a);
+    if (ex) return { l: ex, tipo: 'mesma' };
+    const eq = cl >= 0 ? cand.find(l => rxClasse(l.atividade) === cl) : null;
+    return eq ? { l: eq, tipo: 'equivalente' } : null;
+}
+function rxAplicarTitulares(r, lista) {
+    if (!r.lic) return;
+    r.titulares = rxTitulares(r, lista || []);
+    const hoje = new Date();
+    r.titulares.semXY = (lista || []).filter(l => !l.no_mapa && r.titulares.doGrupo(l.nome) && (rxData(l.validade) || 0) >= hoje);
+    for (const x of [...r.lic.dentro, ...r.lic.perto]) {
+        const q = x.f.properties; x.terceiro = !r.titulares.doGrupo(q.nome);
+        const v = rxData(q.Validade);
+        if (!x.terceiro && v && v < hoje) { const sb = rxSubstituta(q, lista || [], r.titulares); if (sb) x.subst = sb; }
+    }
+}
+const rxLicDoGrupo = r => (r.lic?.dentro || []).filter(x => !x.terceiro && !/substituída/.test(x.f.properties.situacao || ''));
+const rxSubstTxt = sb => `${sb.l.modalidade} nº ${sb.l.documento} (${sb.l.atividade}), válida até ${sb.l.validade}`;
+// distância (km) entre as divisas de dois polígonos – a mesma medida em todas as seções (RX-03)
+function rxDistBordas(alvo, f) {
+    if (turf.booleanIntersects(alvo, f)) return 0;
+    const la = turf.flatten(turf.polygonToLine(alvo)).features, lf = turf.flatten(turf.polygonToLine(f)).features;
+    const va = turf.explode(turf.simplify(alvo, { tolerance: 0.0001 })).features, vf = turf.explode(turf.simplify(f, { tolerance: 0.0003 })).features;
+    let m = Infinity;
+    for (const v of va) for (const l of lf) m = Math.min(m, turf.pointToLineDistance(v, l));
+    for (const v of vf) for (const l of la) m = Math.min(m, turf.pointToLineDistance(v, l));
+    return m;
+}
+function rxProximas(alvo, feats, raio = 10) {
+    const c = turf.centroid(alvo);
+    return feats.map(f => { let km; try { km = turf.booleanIntersects(alvo, f) ? 0 : Math.min(...turf.flatten(turf.polygonToLine(f)).features.map(l => turf.pointToLineDistance(c, l))); } catch (e) { km = 99; } return { f, km }; })
+        .filter(x => x.km <= raio + 5).map(x => { if (x.km) { try { x.km = rxDistBordas(alvo, x.f); } catch (e) { } } return x; }).filter(x => x.km <= raio).sort((a, b) => a.km - b.km);
+}
 // sítios arqueológicos com perímetro (IPHAN/SICG): dentro (com área sobre o imóvel) ou a até raioKm
 function rxSitiosPoligono(alvo, feats, raioKm = 1) {
     const bb = turf.bbox(alvo), m = raioKm / 100, out = [];
@@ -173,7 +234,7 @@ function rxNecessidades(p, r, area, uso) {
     }
     // atividade licenciada que consome água × outorga de captação no imóvel
     const RX_AGUA = /avicult|suinocult|bovinocult|bubalinocult|ovinocult|caprinocult|equinocult|cunicult|piscicult|aquicult|carcinicult|ranicult|cria[çc][ãa]o de (animais|aves|su[íi]nos|bovinos|frangos|peixes)|confinamento|leite|latic|abate|frigor|alimentos|bebida|f[ée]cula|amido|aguardente|cacha[çc]a|destilaria|usina|curtume|irriga|viveiro|hortali|cogumel|lavagem|lavador|beneficiamento/i, RX_CAPTA = /capta|subterr|po[çc]o|insignific|uso independente/i;
-    const licAgua = (r.lic?.dentro || []).filter(x => !/substituída|^Vencida$/.test(x.f.properties.situacao || '') && RX_AGUA.test(`${x.f.properties.Atividade || ''} ${x.f.properties['Atividade específica'] || ''}`));
+    const licAgua = (r.lic?.dentro || []).filter(x => !x.terceiro && !/substituída|^Vencida$/.test(x.f.properties.situacao || '') && RX_AGUA.test(`${x.f.properties.Atividade || ''} ${x.f.properties['Atividade específica'] || ''}`));
     const captaImovel = ag.filter(x => RX_CAPTA.test(`${x.f.properties.Interferência || ''} ${x.f.properties.Documento || ''} ${x.f.properties.grupo || ''}`));
     if (licAgua.length && !captaImovel.length) add(1, 'Uso da água × licença', `Atividade licenciada com consumo de água (${[...new Set(licAgua.map(x => x.f.properties.Atividade))].slice(0, 3).join(', ')}) e nenhuma outorga de captação localizada no imóvel`,
         'Verificar a fonte de água da atividade (poço, nascente, rio, açude, rede) e regularizar no IAT/SIGARH: outorga de captação ou declaração de uso independente de outorga; instalar hidrômetro');
@@ -187,7 +248,9 @@ function rxNecessidades(p, r, area, uso) {
         'Conferir cadastro no SNISB/IAT, outorga do barramento e obrigações de segurança de barragem (Lei 12.334/2010)');
     r.massas.filter(x => /artificial/.test(x.f.properties.grupo) && !x.barr).slice(0, 8).forEach(x => add(2, 'Açude / represa', `Espelho d'água artificial de ${x.f.properties['Área (ha)']} ha sem barragem localizada no SNISB/IAT`,
         'Verificar a regularização do barramento (outorga ou dispensa no IAT/SIGARH e cadastro no SNISB) e a APP do entorno (art. 4º, III, da Lei 12.651/2012; dispensada abaixo de 1 ha, § 4º)'));
-    (r.lic?.dentro || []).filter(x => !/substituída/.test(x.f.properties.situacao || '')).forEach(x => { const v = rxData(x.f.properties.Validade); if (v && v < em12m) add(v < hoje ? (hoje - v > 5 * 365 * 864e5 ? 3 : 1) : 2, 'Licença ambiental', `${x.f.properties.Modalidade || 'Licença'} nº ${x.f.properties['Nº do documento'] || 's/ nº'} (${x.f.properties.Atividade || ''}) – ${rxData(x.f.properties.Validade) < hoje ? 'vencida em' : 'vence em'} ${x.f.properties.Validade}`, (v < hoje && hoje - v > 5 * 365 * 864e5) ? 'Verificar se a atividade continua; se sim, regularizar o licenciamento no IAT (SGA)' : 'Renovação da licença ambiental no IAT (SGA)'); });
+    rxLicDoGrupo(r).filter(x => x.subst && x.subst.tipo === 'equivalente').forEach(x => add(3, 'Licença ambiental', `${x.f.properties.Modalidade || 'Licença'} nº ${x.f.properties['Nº do documento'] || 's/ nº'} (${x.f.properties.Atividade || ''}) vencida em ${x.f.properties.Validade} – provavelmente substituída por ${rxSubstTxt(x.subst)}`,
+        'Confirmar no SGA se a licença mais recente abrange esta atividade (atividade equivalente, não idêntica)'));
+    rxLicDoGrupo(r).filter(x => !x.subst).forEach(x => { const v = rxData(x.f.properties.Validade); if (v && v < em12m) add(v < hoje ? (hoje - v > 5 * 365 * 864e5 ? 3 : 1) : 2, 'Licença ambiental', `${x.f.properties.Modalidade || 'Licença'} nº ${x.f.properties['Nº do documento'] || 's/ nº'} (${x.f.properties.Atividade || ''}) – ${rxData(x.f.properties.Validade) < hoje ? 'vencida em' : 'vence em'} ${x.f.properties.Validade}`, (v < hoje && hoje - v > 5 * 365 * 864e5) ? 'Verificar se a atividade continua; se sim, regularizar o licenciamento no IAT (SGA)' : 'Renovação da licença ambiental no IAT (SGA)'); });
     add(3, 'Vistoria', 'Análise feita só com bases públicas', 'Vistoria de campo e conferência documental (matrícula, CCIR, ITR, CAR) para confirmar os itens acima');
     return N.sort((a, b) => a.prior - b.prior);
 }
@@ -216,6 +279,7 @@ async function analisarImovel(nome, alvoCustom) {
         let [sigef, emb, alertas, outR, outU, lic, barr, mbac, mass] = await Promise.all([C.sigef, C.embargos, C.alertas, (C.outorgas || [])[0], (C.outorgas || [])[1], C.licencas, C.barragens, C.microbacias, C.massas].map(a => a ? rxJSON(a).catch(() => ({ features: [] })) : Promise.resolve({ features: [] })));
         const [minA, rskA, sitA, comA] = await Promise.all([C.mineracao, C.risco, C.sitios, C.comunidades].map(a => a ? rxJSON(a).catch(() => ({ features: [] })) : Promise.resolve({ features: [] })));
         const sitPolA = await rxJSON('data/sitios_pol_pr.geojson').catch(() => ({ features: [] }));
+        const licLista = C.licencas && /licencas\.geojson$/.test(C.licencas) ? ((await rxJSON(C.licencas.replace(/licencas\.geojson$/, 'licencas.json')).catch(() => null)) || {}).licencas || [] : [];
         const [aptJ, solA, calA, ucA, logA] = await Promise.all([C.aptidao, C.solos, C.calcario, C.ucs, C.logistica].map(a => a ? rxJSON(a).catch(() => null) : Promise.resolve(null)));
         RX_DERAL = RX_DERAL || await rxJSON('data/itr/precos_deral_2026.json').catch(() => null);
         let licV = (C.licencas ? C.licencas.replace('.geojson', '_vencidas.geojson') : null) ? await rxJSON(C.licencas ? C.licencas.replace('.geojson', '_vencidas.geojson') : null).catch(() => ({ features: [] })) : { features: [] };
@@ -240,19 +304,20 @@ async function analisarImovel(nome, alvoCustom) {
             sitios: rxPontos(alvo, sitA.features, 1),
             sitPol: rxSitiosPoligono(alvo, sitPolA.features, 1),
             comSob: rxSobreposicoes(alvo, comA.features, 0.0001),
-            comun: (() => { const c = turf.centroid(alvo); return comA.features.map(f => { let km = 0; try { km = turf.booleanIntersects(alvo, f) ? 0 : Math.min(...turf.flatten(turf.polygonToLine(f)).features.map(l => turf.pointToLineDistance(c, l))); } catch (e) { km = 99; } return { f, km }; }).filter(x => x.km <= 10).sort((a, b) => a.km - b.km); })(),
+            comun: rxProximas(alvo, comA.features),
             decl: await rxDeclividade(alvo).catch(() => []),
             clima: aptJ && aptJ.clima || null, fontesApt: aptJ && aptJ.fontes || {},
             solos: solA ? Object.values(rxSobreposicoes(alvo, solA.features, 0.0001).reduce((m, x) => { const k = x.f.properties.legenda || x.f.properties.nom_unidad || 'Solo'; (m[k] = m[k] || { f: x.f, ha: 0 }).ha += x.ha; return m; }, {})).sort((a, b) => b.ha - a.ha) : null,
             calc: calA ? (() => { const c = turf.centroid(alvo); return calA.features.filter(f => /calc[áa]rio|dolom|calcita/i.test(f.properties.Substância || '') && !/garimp/i.test(f.properties.Fase || '')).map(f => ({ f, km: turf.distance(c, f, { units: 'kilometers' }) })).sort((a, b) => a.km - b.km); })() : null,
             log: logA ? rxLogistica(alvo, logA.features) : null,
-            ucs: ucA ? (() => { const c = turf.centroid(alvo); return ucA.features.map(f => { let km = 0; try { km = turf.booleanIntersects(alvo, f) ? 0 : Math.min(...turf.flatten(turf.polygonToLine(f)).features.map(l => turf.pointToLineDistance(c, l))); } catch (e) { km = 99; } return { f, km }; }).filter(x => x.km <= 10).sort((a, b) => a.km - b.km); })() : null,
+            ucs: ucA ? rxProximas(alvo, ucA.features) : null,
             ucSob: ucA ? rxSobreposicoes(alvo, ucA.features, 0.0001) : null,
             mbac: mbac.features.filter(m => rxCaixasCruzam(turf.bbox(m), turf.bbox(alvo)) && turf.booleanPointInPolygon(turf.pointOnFeature(alvo), m)).map(m => m.properties.nome || m.properties.rio).slice(0, 1)
         };
         rxJuntarSitios(r); r.areaHa = area;
+        if (!p.ficticio) rxAplicarTitulares(r, licLista);
         const uso = usoArea ? usoArea.uso : Object.keys(p).filter(k => /^(MapBiomas|Uso do solo) \d{4} – /.test(k)).map(k => [k.replace(/^(MapBiomas|Uso do solo) \d{4} – /, '').replace(' (%)', ''), rxNum(p[k])]).sort((a, b) => b[1] - a[1]);
-        const pend = Object.keys(p).filter(k => /^Pendência \d+$/.test(k)).map(k => p[k]);
+        const pend = Object.keys(p).filter(k => /^Pendência \d+$/.test(k)).map(k => p[k]).filter(t => !/Comunidade tradicional|Unidade de conserva|georreferenciamento|SIGEF|Embargo|Alerta|arqueol|minera|risco geol/i.test(t));
         const sobreCar = r.car.reduce((s, x) => s + x.ha, 0), sobreSigef = r.sigef.reduce((s, x) => s + x.ha, 0);
         const quando = new Date();
         const codigo = await rxCodigo({ nome, r: { car: r.car.map(x => [x.f.properties.nome, x.ha.toFixed(3)]), sigef: r.sigef.map(x => [x.f.properties['Parcela SIGEF'], x.ha.toFixed(3)]), emb: r.emb.length, al: r.alertas.length, decl: r.decl.map(d => d.pct.toFixed(1)) }, dados: dadosGerais.atualizado_em, quando: quando.toISOString() });
@@ -277,7 +342,7 @@ async function analisarImovel(nome, alvoCustom) {
           const ok = ags.filter(x => !venc.includes(x) && !breve.includes(x));
           if (ok.length) flags.push(['verde', `${ok.length} outorga(s) vigente(s) no imóvel: ${ok.slice(0, 4).map(no).join('; ')}${ok.length > 4 ? ' …' : ''}`]); }
         { const RXA = /avicult|suinocult|bovinocult|bubalinocult|ovinocult|caprinocult|equinocult|cunicult|piscicult|aquicult|carcinicult|ranicult|cria[çc][ãa]o de (animais|aves|su[íi]nos|bovinos|frangos|peixes)|confinamento|leite|latic|abate|frigor|alimentos|bebida|f[ée]cula|amido|aguardente|cacha[çc]a|destilaria|usina|curtume|irriga|viveiro|hortali|cogumel|lavagem|lavador|beneficiamento/i, RXC = /capta|subterr|po[çc]o|insignific|uso independente/i;
-          const la = (r.lic?.dentro || []).filter(x => !/substituída|^Vencida$/.test(x.f.properties.situacao || '') && RXA.test(`${x.f.properties.Atividade || ''} ${x.f.properties['Atividade específica'] || ''}`));
+          const la = (r.lic?.dentro || []).filter(x => !x.terceiro && !/substituída|^Vencida$/.test(x.f.properties.situacao || '') && RXA.test(`${x.f.properties.Atividade || ''} ${x.f.properties['Atividade específica'] || ''}`));
           if (la.length && !r.agua.dentro.some(x => RXC.test(`${x.f.properties.Interferência || ''} ${x.f.properties.Documento || ''} ${x.f.properties.grupo || ''}`)))
               flags.push(['amarelo', `Atividade licenciada com consumo de água (${la[0].f.properties.Atividade}) sem outorga de captação localizada no imóvel`]); }
         { const lav = r.min.filter(x => x.f.properties.grupo === 'Lavra / extração'), pes = r.min.filter(x => x.f.properties.grupo !== 'Lavra / extração');
@@ -327,11 +392,20 @@ async function analisarImovel(nome, alvoCustom) {
                 return tab(['Nº', 'Titular (SIGARH)', 'Tipo', 'Nº da outorga / declaração', 'Vencimento', 'Posição', 'Coordenadas (lat, long – SIRGAS 2000)'], linhas.map((l, i) => { const q = lista[i].f.properties;
                     return [l[0], l[1], l[2], `<span class="mono">${esc(q['Portaria / declaração'] || '–')}</span>${q.Documento ? `<br><span class="hint">${esc(q.Documento)}${q['Situação'] ? ' · ' + esc(q['Situação']) : ''}</span>` : ''}`, venc(q), l[3], l[4]]; })); })();
         B.licencas = C.licencas === null ? '' : (() => { if (!r.lic) return '<p class="hint">Camada de licenças não disponível neste município.</p>'; const lista = [...r.lic.dentro, ...r.lic.perto].slice(0, 12), linhas = pts(r.lic, 'Atividade', 'lic'), hoje = new Date();
-                const venc = q => { const v = q.Validade || ''; const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(v); if (!v) return '–'; if (!m) return esc(v); const d = new Date(+m[3], m[2] - 1, +m[1]), dias = (d - hoje) / 864e5;
+                const venc = (q, x) => { const v = q.Validade || ''; const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(v); if (!v) return '–'; if (!m) return esc(v); const d = new Date(+m[3], m[2] - 1, +m[1]), dias = (d - hoje) / 864e5;
+                    if (dias < 0 && x.subst) return `${esc(v)}<br><b style="color:#2e7d32">${x.subst.tipo === 'mesma' ? 'Substituída' : 'Provavelmente substituída'} por ${esc(x.subst.l.modalidade)} nº ${esc(x.subst.l.documento)} até ${esc(x.subst.l.validade)}</b>${x.subst.tipo === 'mesma' ? '' : '<br><span class="hint">atividade equivalente – confirmar</span>'}`;
                     return dias < 0 ? `<b style="color:#c62828">${esc(v)}<br>vencida</b>` : dias <= 180 ? `<b style="color:#e65100">${esc(v)}<br>vence em ${Math.ceil(dias)} dias</b>` : esc(v); };
-                return tab(['Nº', 'Titular (SGA)', 'Atividade', 'Modalidade e nº do documento', 'Validade', 'Posição', 'Coordenadas (lat, long)'], linhas.map((l, i) => { const q = lista[i].f.properties;
+                const linha = (l, i) => { const x = lista[i], q = x.f.properties;
                     return [l[0], l[1], l[2] + (q['Atividade específica'] && q['Atividade específica'] !== q.Atividade ? `<br><span class="hint">${esc(q['Atividade específica'])}</span>` : ''),
-                        `${esc(q.Modalidade || '')}<br><span class="mono">nº ${esc(q['Nº do documento'] || '–')}</span>${q.link ? `<br><a href="${esc(q.link)}" target="_blank" rel="noopener">licença no SGA (PDF) ↗</a>` : ''}`, venc(q), l[3], l[4]]; })); })();
+                        `${esc(q.Modalidade || '')}<br><span class="mono">nº ${esc(q['Nº do documento'] || '–')}</span>${q.link ? `<br><a href="${esc(q.link)}" target="_blank" rel="noopener">licença no SGA (PDF) ↗</a>` : ''}`, x.terceiro ? esc(q.Validade || '–') : venc(q, x), l[3], l[4]]; };
+                const cab = ['Nº', 'Titular (SGA)', 'Atividade', 'Modalidade e nº do documento', 'Validade', 'Posição', 'Coordenadas (lat, long)'];
+                const idx = linhas.map((l, i) => i), gr = idx.filter(i => !lista[i].terceiro && !lista[i].km), ent = idx.filter(i => lista[i].terceiro || lista[i].km);
+                // licenças do mesmo grupo que existem só no SGA (sem coordenada) e estão vigentes
+                const semXY = (r.titulares || {}).semXY || [];
+                const T = r.titulares;
+                const aviso = T && T.nomes.length ? `<p class="hint">Titulares agrupados para análise: <b>${T.nomes.map(esc).join('; ')}</b> – ${T.informados ? 'informados pelo analista' : 'sugeridos automaticamente pela semelhança de nome'}; confirmar na Fase 2.</p>` : '';
+                return `${aviso}<h4>Do titular / grupo – no imóvel</h4>${gr.length ? tab(cab, gr.map(i => linha(linhas[i], i))) : '<p class="hint">Nenhuma licença do titular/grupo com coordenada dentro do imóvel.</p>'}${semXY.length ? `<h4>Do titular / grupo – vigentes sem coordenada no IAT</h4>${tab(['Titular (SGA)', 'Atividade', 'Modalidade e nº', 'Emissão', 'Validade'], semXY.map(l => [esc(l.nome), esc(l.atividade), `${esc(l.modalidade)} nº ${esc(l.documento)}`, esc(l.emissao), esc(l.validade)]))}` : ''}
+                    ${ent.length ? `<h4>De terceiros e do entorno (a até 500 m) – informativo</h4>${tab(cab, ent.map(i => { const c = linha(linhas[i], i); c[1] += lista[i].terceiro ? '<br><span class="hint">terceiro – não conta para o imóvel</span>' : ''; return c; }))}` : ''}`; })();
         B.barragens = (() => { const lista = [...r.barr.dentro, ...r.barr.perto].slice(0, 12); const linhas = pts(r.barr, 'Fonte', 'barr');
                 return tab(['Nº', 'Barragem', 'Fonte', 'Risco / DPA', 'Uso · altura · volume', 'Posição', 'Coordenadas (lat, long)'], linhas.map((l, i) => { const q = lista[i].f.properties;
                     return [l[0], l[1] + (q.Empreendedor ? `<br><span class="hint">${esc(q.Empreendedor)}</span>` : ''), l[2], `${esc(q.risco || '–')} / ${esc(q.dpa || '–')}`,
@@ -679,7 +753,7 @@ function rxChecklist(u) {
     add('Outorgas de uso da água no imóvel (SIGARH)', !ag.length ? 'na' : venc.length ? 'no' : breve.length ? 'at' : 'ok',
         ag.length ? ag.slice(0, 6).map(x => `nº ${x.f.properties['Portaria / declaração'] || 's/ nº'} – ${(x.f.properties.Interferência || 'outorga').toLowerCase()}, vence ${x.f.properties.Vencimento || '–'}`).join('; ') : 'Nenhuma outorga localizada dentro do imóvel');
     const RXA = /avicult|suinocult|bovinocult|bubalinocult|ovinocult|caprinocult|equinocult|cunicult|piscicult|aquicult|carcinicult|ranicult|cria[çc][ãa]o de (animais|aves|su[íi]nos|bovinos|frangos|peixes)|confinamento|leite|latic|abate|frigor|alimentos|bebida|f[ée]cula|amido|aguardente|cacha[çc]a|destilaria|usina|curtume|irriga|viveiro|hortali|cogumel|lavagem|lavador|beneficiamento/i, RXC = /capta|subterr|po[çc]o|insignific|uso independente/i;
-    const la = (r.lic?.dentro || []).filter(x => !/substituída|^Vencida$/.test(x.f.properties.situacao || '') && RXA.test(`${x.f.properties.Atividade || ''} ${x.f.properties['Atividade específica'] || ''}`));
+    const la = (r.lic?.dentro || []).filter(x => !x.terceiro && !/substituída|^Vencida$/.test(x.f.properties.situacao || '') && RXA.test(`${x.f.properties.Atividade || ''} ${x.f.properties['Atividade específica'] || ''}`));
     const capta = ag.some(x => RXC.test(`${x.f.properties.Interferência || ''} ${x.f.properties.Documento || ''} ${x.f.properties.grupo || ''}`));
     add('Atividade licenciada com consumo de água × outorga de captação', !la.length ? 'na' : capta ? 'ok' : 'no', la.length ? `${la[0].f.properties.Atividade}${capta ? ' – outorga de captação localizada' : ' – sem outorga de captação no imóvel'}` : '');
     const pnsb = r.barr.dentro.filter(x => /^sim/i.test(x.f.properties['Regulada pela PNSB'] || '') && /^n[ãa]o/i.test(x.f.properties['Plano de segurança'] || '')), alto = r.barr.dentro.filter(x => x.f.properties.risco === 'Alto');
@@ -688,10 +762,12 @@ function rxChecklist(u) {
     add('Açudes e represas com barragem cadastrada (SNISB/IAT)', !art.length ? 'na' : sem.length ? 'at' : 'ok', art.length ? `${art.length} espelho(s) d'água artificial(is); ${sem.length} sem barragem localizada` : '');
     // LICENCIAMENTO
     add = grupo('Licenciamento ambiental');
-    const lic = (r.lic?.dentro || []).filter(x => !/substituída/.test(x.f.properties.situacao || ''));
+    const lic = rxLicDoGrupo(r).filter(x => !x.subst);
     const lv = lic.filter(x => { const v = dt(x.f.properties.Validade); return v && v < hoje && hoje - v <= 5 * 365 * 864e5; }), lb = lic.filter(x => { const v = dt(x.f.properties.Validade); return v && v >= hoje && v - hoje <= d6; });
     add('Licenças ambientais no imóvel (IAT – SGA/SIA)', u.C.licencas === null || !r.lic ? 'na' : !lic.length ? 'na' : lv.length ? 'no' : lb.length ? 'at' : 'ok',
-        lic.length ? lic.slice(0, 5).map(x => `${x.f.properties.Modalidade || 'Licença'} nº ${x.f.properties['Nº do documento'] || 's/ nº'} – ${x.f.properties.Atividade || ''}, validade ${x.f.properties.Validade || '–'}`).join('; ') : 'Nenhuma licença localizada dentro do imóvel');
+        (lic.length ? lic.slice(0, 5).map(x => `${x.f.properties.Modalidade || 'Licença'} nº ${x.f.properties['Nº do documento'] || 's/ nº'} – ${x.f.properties.Atividade || ''}, validade ${x.f.properties.Validade || '–'}`).join('; ') : 'Nenhuma licença do titular/grupo localizada dentro do imóvel')
+        + (() => { const sb = rxLicDoGrupo(r).filter(x => x.subst); return sb.length ? `. Substituídas: ${sb.map(x => `${x.f.properties.Modalidade?.split(' ')[0] || ''} nº ${x.f.properties['Nº do documento']} → ${rxSubstTxt(x.subst)}${x.subst.tipo === 'equivalente' ? ' (atividade equivalente – confirmar)' : ''}`).join('; ')}` : ''; })()
+        + (() => { const t = (r.lic?.dentro || []).filter(x => x.terceiro).length; return t ? `. ${t} licença(s) de terceiros no perímetro não contam aqui (ver tabela de entorno)` : ''; })());
     if (u.itr) G.push(itrChecklist(u));
     const gp = itrPrevChecklist(u); if (gp) G.push(gp);
     const gd = typeof cdChecklist === 'function' ? cdChecklist(u) : null; if (gd) G.splice(2, 0, gd);
@@ -828,7 +904,7 @@ ${F.serie && F.serie.length > 1 ? sec('Série histórica do vigor da vegetação
 
 ${sec('Resultado da análise', 'Resumo dos indicadores consultados', `
   <div class="placar"><div class="g"><b>${emAcordo}/${avaliados}</b><span>indicadores em acordo</span></div><div class="ok"><b>${cont('ok')}</b><span>✓ em acordo</span></div><div class="at"><b>${cont('at')}</b><span>! atenção</span></div><div class="no"><b>${cont('no')}</b><span>✕ em desacordo</span></div></div>
-  <div class="cds n4">${card('Vegetação nativa', pv === null ? '–' : rxF(pv, 1) + '%', pv === null ? '' : `${rxF(pv / 100 * area, 1)} ha`)}${card('Certificação SIGEF', rxF(cobS * 100, 0) + '%', 'da área do imóvel')}${card('Outorgas no imóvel', String(r.agua.dentro.length), 'SIGARH/IAT')}${card('Licenças no imóvel', String((r.lic?.dentro || []).length), 'SGA/SIA – IAT')}</div>
+  <div class="cds n4">${card('Vegetação nativa', pv === null ? '–' : rxF(pv, 1) + '%', pv === null ? '' : `${rxF(pv / 100 * area, 1)} ha`)}${card('Certificação SIGEF', rxF(cobS * 100, 0) + '%', 'da área do imóvel')}${card('Outorgas no imóvel', String(r.agua.dentro.length), 'SIGARH/IAT')}${card('Licenças no imóvel', String(rxLicDoGrupo(r).length), 'do titular/grupo – SGA/SIA')}</div>
   ${G.map(g => `<table class="ck"><caption>${g.nome}</caption><tr><th>Indicador</th><th>Status</th></tr>${g.itens.map(i => `<tr><td><span class="dot ${RX_ST[i.st][2]}"></span>${esc(i.ind)}${i.det ? `<span class="det">${esc(i.det)}</span>` : ''}</td><td>${selo(i.st)}</td></tr>`).join('')}</table>`).join('')}`)}
 
 ${sec('Cobertura do solo e relevo', 'Declarado no CAR × medido por satélite', `
