@@ -765,7 +765,7 @@ function rxChecklist(u) {
     add = grupo('Licenciamento ambiental');
     const lic = rxLicDoGrupo(r).filter(x => !x.subst);
     const lv = lic.filter(x => { const v = dt(x.f.properties.Validade); return v && v < hoje && hoje - v <= 5 * 365 * 864e5; }), lb = lic.filter(x => { const v = dt(x.f.properties.Validade); return v && v >= hoje && v - hoje <= d6; });
-    add('Licenças ambientais no imóvel (IAT – SGA/SIA)', u.C.licencas === null || !r.lic ? 'na' : !lic.length ? 'na' : lv.length ? 'no' : lb.length ? 'at' : 'ok',
+    add('Licenças ambientais no imóvel (IAT – SGA/SIA)', u.C.licencas === null || !r.lic ? 'na' : !lic.length && !rxLicDoGrupo(r).some(x => x.subst) ? 'na' : lv.length ? 'no' : lb.length || rxLicDoGrupo(r).some(x => x.subst) ? 'at' : 'ok',
         (lic.length ? lic.slice(0, 5).map(x => `${x.f.properties.Modalidade || 'Licença'} nº ${x.f.properties['Nº do documento'] || 's/ nº'} – ${x.f.properties.Atividade || ''}, validade ${x.f.properties.Validade || '–'}`).join('; ') : 'Nenhuma licença do titular/grupo localizada dentro do imóvel')
         + (() => { const sb = rxLicDoGrupo(r).filter(x => x.subst); return sb.length ? `. Possíveis sucessoras (a conferir): ${sb.map(x => `${x.f.properties.Modalidade?.split(' ')[0] || ''} nº ${x.f.properties['Nº do documento']} → ${rxSubstTxt(x.subst)}`).join('; ')}` : ''; })()
         + (() => { const t = (r.lic?.dentro || []).filter(x => x.terceiro).length; return t ? `. ${t} licença(s) de terceiros no perímetro não contam aqui (ver tabela de entorno)` : ''; })());
