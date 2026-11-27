@@ -57,7 +57,7 @@ function areaRedesenhar() {
     if (p.length >= 3) fs.unshift(turf.polygon([[...p, p[0]]])); else if (p.length === 2) fs.unshift(turf.lineString(p));
     areaFonte(turf.featureCollection(fs));
     const s = document.getElementById('areaStatus');
-    if (s) s.textContent = p.length < 3 ? `Clique no mapa para marcar os cantos da área (${p.length} ponto${p.length === 1 ? '' : 's'}).` : `${p.length} pontos · ${rxF(turf.area(turf.polygon([[...p, p[0]]])) / 1e4)} ha. Clique em "Concluir e analisar".`;
+    if (s) s.textContent = p.length < 3 ? `Clique no mapa para marcar os cantos da área (${p.length} ponto${p.length === 1 ? '' : 's'}).` : `${p.length} pontos · ${(turf.area(turf.polygon([[...p, p[0]]])) / 1e4).toLocaleString('pt-BR', { maximumFractionDigits: 2 })} ha. Clique em "Concluir e analisar".`;
 }
 const areaClique = e => { AREA.pontos.push([e.lngLat.lng, e.lngLat.lat]); areaRedesenhar(); };
 function areaIniciarDesenho() {
@@ -115,6 +115,7 @@ async function areaLerArquivo(arq) {
 
 // ---------- análise ----------
 async function areaAnalisar(alvo) {
+    if (window.rxGarantirMotor && !(await window.rxGarantirMotor())) return;
     areaFonte(turf.featureCollection([alvo]));
     map.fitBounds(turf.bbox(alvo), { padding: 80, duration: 900 });
     const mun = (dadosGerais.raiox || {}).municipio || 'o município';
